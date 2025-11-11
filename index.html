@@ -1,54 +1,87 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mehdik Booking | حجز المواعيد</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3103/3103446.png" />
+  <title>Hello</title>
+
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: #f8f9fb;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 3rem;
+      font-weight: 600;
+      color: #111;
+      margin-bottom: 40px;
+    }
+
+    button {
+      padding: 14px 32px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 12px;
+      background-color: #007aff;
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
+      font-weight: 500;
+    }
+
+    button:hover {
+      background-color: #005fcc;
+    }
+
+    .status {
+      margin-top: 20px;
+      color: #555;
+      font-size: 0.9rem;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 font-sans">
-  <!-- Header -->
-  <header class="bg-blue-600 text-white text-center py-6 shadow-md">
-    <h1 class="text-3xl font-bold">Mehdik Booking</h1>
-    <p class="text-sm mt-2">احجز موعدك بكل سهولة</p>
-  </header>
+<body>
+  <h1>hello</h1>
+  <button id="visit-btn">Send Visit</button>
+  <div class="status" id="status"></div>
 
-  <!-- Booking Form -->
-  <main class="max-w-lg mx-auto bg-white mt-10 p-8 rounded-2xl shadow-lg">
-    <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">نموذج حجز موعد</h2>
-    <form id="bookingForm" class="space-y-5">
-      <div>
-        <label class="block text-gray-700 mb-1">الاسم الكامل</label>
-        <input type="text" id="name" required class="w-full border-gray-300 rounded-md focus:ring focus:ring-blue-300 p-2 border" placeholder="أدخل اسمك الكامل">
-      </div>
-      <div>
-        <label class="block text-gray-700 mb-1">البريد الإلكتروني</label>
-        <input type="email" id="email" required class="w-full border-gray-300 rounded-md focus:ring focus:ring-blue-300 p-2 border" placeholder="example@email.com">
-      </div>
-      <div>
-        <label class="block text-gray-700 mb-1">رقم الهاتف</label>
-        <input type="tel" id="phone" required class="w-full border-gray-300 rounded-md focus:ring focus:ring-blue-300 p-2 border" placeholder="05xxxxxxxx">
-      </div>
-      <div>
-        <label class="block text-gray-700 mb-1">تاريخ ووقت الموعد</label>
-        <input type="datetime-local" id="datetime" required class="w-full border-gray-300 rounded-md focus:ring focus:ring-blue-300 p-2 border">
-      </div>
-      <div>
-        <label class="block text-gray-700 mb-1">ملاحظات إضافية</label>
-        <textarea id="note" class="w-full border-gray-300 rounded-md focus:ring focus:ring-blue-300 p-2 border" rows="3" placeholder="أي تفاصيل إضافية"></textarea>
-      </div>
+  <script>
+    const BOT_TOKEN = "PUT_YOUR_TELEGRAM_BOT_TOKEN_HERE"; // 🔒 ضع هنا التوكن الخاص ببوتك
+    const CHAT_ID = "PUT_YOUR_CHAT_ID_HERE"; // 🔢 ضع هنا معرف المحادثة أو القناة التي ترسل إليها الرسالة
 
-      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition">احجز الآن</button>
-    </form>
-    <p id="responseMsg" class="text-center text-green-600 font-semibold mt-4 hidden"></p>
-  </main>
+    const btn = document.getElementById("visit-btn");
+    const status = document.getElementById("status");
 
-  <!-- Footer -->
-  <footer class="text-center text-gray-600 py-4 mt-10">
-    © 2025 Mehdik Booking — جميع الحقوق محفوظة
-  </footer>
+    btn.addEventListener("click", () => {
+      const msg = `🔔 زيارة جديدة للموقع - ${new Date().toLocaleString()}`;
 
-  <script src="script.js"></script>
+      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_id: CHAT_ID,
+          text: msg,
+        }),
+      })
+        .then((res) => {
+          if (res.ok) {
+            status.textContent = "✅ تم إرسال الإشعار إلى تيليجرام";
+          } else {
+            status.textContent = "❌ فشل الإرسال!";
+          }
+        })
+        .catch((err) => {
+          status.textContent = "⚠️ خطأ في الاتصال بالبوت";
+          console.error(err);
+        });
+    });
+  </script>
 </body>
 </html>
