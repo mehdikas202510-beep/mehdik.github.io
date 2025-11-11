@@ -1,256 +1,170 @@
-<!DOCTYPE html>
-<html lang="ar" dir="ltr">
+<!doctype html>
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>حجز موعد</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hello – iPhone style + DVD bounce</title>
+  <!-- فونت سكربت قريبة من أسلوب "hello" في iPhone -->
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
   <style>
     :root{
-      --blue:#0d6efd;
-      --green:#27ae60;
-      --red:#e74c3c;
-      --grey:#c9ced6;
-      --text:#222;
-      --muted:#666;
+      --bg1: 255, 99, 132;
+      --bg2: 54, 162, 235;
+      --bg3: 99, 255, 200;
+      --glow: 255, 255, 255;
     }
     *{box-sizing:border-box}
+    html,body{height:100%;margin:0}
     body{
-      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial; color:var(--text); background:#fff;
+      overflow:hidden;
+      background: radial-gradient(circle at 20% 20%, rgba(var(--bg1),0.35), transparent 40%),
+                  radial-gradient(circle at 80% 30%, rgba(var(--bg2),0.35), transparent 45%),
+                  radial-gradient(circle at 50% 80%, rgba(var(--bg3),0.35), transparent 40%),
+                  linear-gradient(120deg, #0f1222, #12182a 40%, #0e0f1c);
+      animation: bgFloat 20s ease-in-out infinite alternate;
+      font-synthesis-weight: none;
     }
-    .container{
-      max-width:980px; margin:24px auto 48px; padding:0 16px;
+    @keyframes bgFloat{
+      0%{background-position: 0 0, 0 0, 0 0, 0 0}
+      100%{background-position: 10px -20px, -30px 20px, 20px 30px, 0 0}
     }
-    header{ text-align:center; margin:8px 0 24px;}
-    header h2{font-weight:600; letter-spacing:.2px;}
 
-    .grid{ display:grid; grid-template-columns:300px 1fr; gap:26px; align-items:start;}
-
-    /* Calendar */
-    .calendar{ border:1px solid #e6e8eb; border-radius:8px; overflow:hidden;}
-    .cal-head{ display:flex; justify-content:space-between; align-items:center; padding:10px 12px; background:#f8f9fb; border-bottom:1px solid #e6e8eb;}
-    .cal-head .month{ font-weight:600; color:#0b0f19;}
-    .nav-btn{ background:transparent; border:0; font-size:18px; padding:6px 8px; cursor:pointer; color:#334155}
-
-    .weekdays, .days{ display:grid; grid-template-columns:repeat(7,1fr);}
-    .weekdays{ background:#f8f9fb; border-bottom:1px solid #e6e8eb;}
-    .weekdays span{ text-align:center; padding:8px 0; font-size:12px; color:#6b7280;}
-
-    .days button{ height:36px; border:0; border-right:1px solid #f0f2f5; border-bottom:1px solid #f0f2f5; background:#fff; font-weight:500; cursor:pointer; position:relative;}
-    .days button:nth-child(7n){ border-right:0; }
-    .days button.is-empty{ background:#fafafa; color:#9aa3af; cursor:default;}
-    .days button.available{ background:#0a7e28; color:#fff;}
-    .days button.unavailable{ background:#d62c20; color:#fff;}
-    .days button.selected{ background:#0a58ca; color:#fff; box-shadow:inset 0 0 0 2px rgba(255,255,255,.4)}
-
-    /* Legend */
-    .legend{ display:flex; gap:16px; align-items:center; padding:10px 12px; font-size:13px; color:#475569}
-    .dot{ width:8px; height:8px; border-radius:50%; display:inline-block; margin-inline-end:6px;}
-    .dot.green{ background:#0a7e28}
-    .dot.red{ background:#d62c20}
-    .dot.blue{ background:#0a58ca}
-    .dot.grey{ background:#9aa3af}
-
-    /* Slots */
-    .panel{ border:1px solid #e6e8eb; border-radius:8px; padding:12px;}
-    .slots{ list-style:none; margin:0; padding:2px 0; display:flex; flex-direction:column; gap:10px;}
-    .slot{ display:flex; align-items:center; justify-content:space-between; border:1px solid #eef0f3; border-radius:8px; padding:10px 12px; cursor:not-allowed; color:#c53b30;}
-    .slot .left{ display:flex; align-items:center; gap:10px;}
-    .bullet{ width:8px; height:8px; border-radius:50%; background:#d62c20 }
-    .slot small{ color:#9aa3af }
-    .slot.available{ color:#177245; border-color:#dff3e6; cursor:pointer;}
-    .slot.available .bullet{ background:#0a7e28 }
-    .slot.selected{ outline:2px solid #0a58ca;}
-
-    /* Footer button */
-    .footer{ margin-top:20px; display:flex; justify-content:center}
-    .book-btn{ background:#0a58ca; color:#fff; border:0; padding:12px 28px; border-radius:8px; font-weight:700; letter-spacing:.3px; cursor:not-allowed; opacity:.5;}
-    .book-btn.ready{ cursor:pointer; opacity:1 }
-
-    /* tiny helper */
-    .muted{ color:#64748b; font-size:12px;}
-
-    @media (max-width:760px){
-      .grid{ grid-template-columns:1fr; }
+    /* جسيمات لطيفة في الخلفية */
+    .star{position:fixed; width:2px; height:2px; border-radius:50%;
+      background:rgba(255,255,255,.7); filter:blur(.5px); pointer-events:none;
+      animation: twinkle 3s ease-in-out infinite;
     }
+    @keyframes twinkle{50%{opacity:.2; transform:scale(.8)} }
+
+    #hello{
+      position:fixed; left:0; top:0; will-change: transform, color, text-shadow;
+      font-family: 'Great Vibes', ui-script, "Segoe Script", cursive;
+      font-size: clamp(56px, 14vw, 220px);
+      line-height:1; white-space:nowrap;
+      color: hsl(210 100% 70%);
+      text-shadow:
+        0 0 1px rgba(255,255,255,.6),
+        0 0 12px rgba(var(--glow), .25),
+        0 0 28px rgba(var(--glow), .2);
+      user-select:none;
+      cursor: none; /* لإحساس أنيق */
+      padding: .2em .3em;
+      transition: filter .2s ease;
+    }
+    /* هالة متدرجة شبيهة بقلم ضوئي */
+    #hello::after{
+      content:""; position:absolute; inset:-20px; z-index:-1; border-radius:40px;
+      background: radial-gradient(40% 60% at 40% 60%, rgba(255,255,255,.08), transparent 70%);
+      filter: blur(20px);
+    }
+
+    /* تلميحات للمستخدم */
+    .hint{
+      position:fixed; left:50%; bottom:24px; transform:translateX(-50%);
+      color:#c9cbe1; font: 500 14px/1.2 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      opacity:.7; letter-spacing:.2px; text-align:center;
+      background: rgba(255,255,255,.03); padding:10px 14px; border-radius:14px;
+      border:1px solid rgba(255,255,255,.06); backdrop-filter: blur(8px);
+    }
+    .hint kbd{font:600 12px/1 ui-monospace, SFMono-Regular, Menlo, monospace; background:rgba(255,255,255,.08); padding:.2em .5em; border-radius:6px}
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div style="font-size:18px; color:#94a3b8;">-</div>
-      <h2>Select an available date and time slot</h2>
-    </header>
+  <!-- نجوم خفيفة -->
+  <script>
+    // إنشاء نجوم بسيطة
+    for(let i=0;i<40;i++){
+      const s=document.createElement('div');
+      s.className='star';
+      s.style.left = Math.random()*100 + 'vw';
+      s.style.top  = Math.random()*100 + 'vh';
+      s.style.animationDelay = (Math.random()*3)+'s';
+      s.style.opacity = Math.random()*0.6 + 0.2;
+      document.body.appendChild(s);
+    }
+  </script>
 
-    <div class="grid">
-      <!-- Calendar -->
-      <section class="calendar" aria-label="Calendar">
-        <div class="cal-head">
-          <button class="nav-btn" id="prevMo" aria-label="Previous month">&#8249;</button>
-          <div class="month" id="monthLabel">novembre 2025</div>
-          <button class="nav-btn" id="nextMo" aria-label="Next month">&#8250;</button>
-        </div>
-        <div class="weekdays">
-          <span>lu</span><span>ma</span><span>me</span><span>gi</span><span>ve</span><span>sa</span><span>do</span>
-        </div>
-        <div class="days" id="days"></div>
-        <div class="legend">
-          <span><i class="dot green"></i>Available</span>
-          <span><i class="dot red"></i>Not available</span>
-          <span><i class="dot blue"></i>Day selected</span>
-          <span><i class="dot grey"></i>Days not configured</span>
-        </div>
-      </section>
-
-      <!-- Time slots -->
-      <section class="panel">
-        <ul class="slots" id="slotList"></ul>
-        <div class="muted" id="noSlots" style="display:none">لا توجد أوقات متاحة لهذا اليوم.</div>
-      </section>
-    </div>
-
-    <div class="footer">
-      <button class="book-btn" id="bookBtn">BOOK</button>
-    </div>
-  </div>
+  <div id="hello">hello</div>
+  <div class="hint">يتحرك مثل شعار <b>DVD</b> ويرتد عن الحواف. انقر للتبديل بين السرعات، واضغط <kbd>Space</kbd> لإيقاف/تشغيل.</div>
 
   <script>
-    /* ====== Demo data to mimic the screenshot ====== */
-    const demoMonth = { year: 2025, monthIndex: 10 }; // 0-based -> 10 = November
-    // Calendar coloring like the screenshot (green: 24,25,27)
-    const availableDays = new Set([24,25,27]);
+    const hello = document.getElementById('hello');
 
-    // Time slots for the selected day (only 09:00-09:15 available)
-    const baseSlots = [
-      { t:"09:30 - 09:45", n:0 },
-      { t:"09:00 - 09:15", n:1 },
-      { t:"10:00 - 10:15", n:0 },
-      { t:"11:00 - 11:15", n:0 },
-      { t:"12:00 - 12:15", n:0 },
-      { t:"12:30 - 12:45", n:0 },
-    ];
+    // حجم الكلمة (سنحسبه لاحقًا بعد الرسم)
+    let x = 120, y = 120;     // موضع البداية
+    let vx = 2.2, vy = 1.8;   // السرعة (بكسل/فريم)
+    let speedBoost = 1;       // معامل السرعة
+    let paused = false;
+    let hue = 210;
 
-    /* ====== Elements ====== */
-    const daysEl = document.getElementById('days');
-    const monthLabel = document.getElementById('monthLabel');
-    const slotList = document.getElementById('slotList');
-    const bookBtn = document.getElementById('bookBtn');
-    const noSlots = document.getElementById('noSlots');
+    // ضع الكلمة في الموضع الابتدائي
+    function layout(){
+      const r = hello.getBoundingClientRect();
+      hello.style.transform = `translate(${x}px, ${y}px)`;
+      return r;
+    }
 
-    let selectedDay = null; // number (24/25/27)
-    let selectedSlotIndex = null;
+    // تغيير اللون واللمعان عند الارتداد
+    function bounceSplash(){
+      hue = (hue + 40 + Math.random()*80) % 360;
+      const sat = 90, light = 68;
+      hello.style.color = `hsl(${hue} ${sat}% ${light}%)`;
+      hello.style.textShadow = `0 0 1px rgba(255,255,255,.7), 0 0 14px hsla(${hue}, 100%, 70%, .35), 0 0 36px hsla(${hue}, 100%, 70%, .25)`;
+      // نبضة صغيرة
+      hello.animate([
+        { transform: `translate(${x}px, ${y}px) scale(1) rotate(0.0deg)` },
+        { transform: `translate(${x}px, ${y}px) scale(1.06) rotate(1.5deg)` }
+      ], { duration: 140, easing: 'ease-out' });
+    }
 
-    function renderMonth({year, monthIndex}){
-      const date = new Date(year, monthIndex, 1);
-      const monthName = date.toLocaleDateString('fr-IT',{month:'long'}); // "novembre"
-      monthLabel.textContent = `${monthName} ${year}`;
+    function step(){
+      if(!paused){
+        x += vx * speedBoost;
+        y += vy * speedBoost;
 
-      // compute leading blanks (Mon-first like screenshot)
-      const firstDay = (date.getDay() + 6) % 7; // make Monday=0
-      const daysInMonth = new Date(year, monthIndex+1, 0).getDate();
+        const r = hello.getBoundingClientRect();
+        const w = r.width, h = r.height;
+        const maxX = innerWidth - w;
+        const maxY = innerHeight - h;
 
-      daysEl.innerHTML = '';
-      // previous/next month blanks (as grey)
-      for(let i=0;i<firstDay;i++){
-        const b = document.createElement('button');
-        b.className = 'is-empty';
-        b.disabled = true; b.textContent = '';
-        daysEl.appendChild(b);
+        let hit=false;
+        if(x <= 0){ x = 0; vx = Math.abs(vx); hit=true; }
+        if(x >= maxX){ x = maxX; vx = -Math.abs(vx); hit=true; }
+        if(y <= 0){ y = 0; vy = Math.abs(vy); hit=true; }
+        if(y >= maxY){ y = maxY; vy = -Math.abs(vy); hit=true; }
+
+        if(hit) bounceSplash();
+
+        hello.style.transform = `translate(${x}px, ${y}px)`;
       }
-      for(let d=1; d<=daysInMonth; d++){
-        const btn = document.createElement('button');
-        btn.textContent = d;
-        const isAvail = availableDays.has(d);
-        btn.className = isAvail ? 'available' : 'unavailable';
-        btn.disabled = !isAvail;
-        btn.addEventListener('click', ()=> selectDay(d));
-        if(selectedDay === d) btn.classList.add('selected');
-        daysEl.appendChild(btn);
-      }
-
-      // Fill tail to complete grid (optional)
-      const cells = daysEl.children.length;
-      const tail = (Math.ceil(cells/7)*7) - cells;
-      for(let i=0;i<tail;i++){
-        const b = document.createElement('button');
-        b.className = 'is-empty'; b.disabled = true; daysEl.appendChild(b);
-      }
+      requestAnimationFrame(step);
     }
 
-    function selectDay(day){
-      selectedDay = day; selectedSlotIndex = null;
-      [...daysEl.children].forEach(el=> el.classList.toggle('selected', el.textContent==day));
-      renderSlots();
-      lockBook();
-    }
-
-    function renderSlots(){
-      slotList.innerHTML = '';
-      const slots = baseSlots.map(s=>({...s}));
-      // If the day is 24/25/27, keep the data; else none (but those days are only enabled)
-      if(!selectedDay){ noSlots.style.display='block'; return; }
-      noSlots.style.display='none';
-      slots.forEach((s, idx)=>{
-        const li = document.createElement('li');
-        li.className = 'slot' + (s.n>0? ' available' : '');
-        li.innerHTML = `
-          <div class="left"><span class="bullet"></span><span>${s.t}</span></div>
-          <small>(${s.n})</small>
-        `;
-        if(s.n>0){
-          li.tabIndex = 0;
-          li.addEventListener('click', ()=> selectSlot(idx));
-        }
-        slotList.appendChild(li);
-      });
-    }
-
-    function selectSlot(i){
-      selectedSlotIndex = i;
-      [...slotList.children].forEach((li, idx)=> li.classList.toggle('selected', idx===i));
-      unlockBook();
-    }
-
-    function lockBook(){ bookBtn.classList.remove('ready'); bookBtn.disabled = true; }
-    function unlockBook(){ bookBtn.classList.add('ready'); bookBtn.disabled = false; }
-
-    bookBtn.addEventListener('click', async ()=>{
-      if(bookBtn.disabled) return;
-      const slot = baseSlots[selectedSlotIndex];
-      const payload = {
-        date: `${selectedDay} ${monthLabel.textContent}`,
-        time: slot.t,
-      };
-
-      // ===== Optional: Send to Telegram (client-side) =====
-      // !!! تحذير: لا تضع التوكن الحقيقي في كود الواجهة الأمامية العام !!!
-      // استعمل خادماً وسيطاً (Serverless function) أو استبدل القيمتين أدناه مؤقتاً خلال التطوير فقط.
-      const BOT_TOKEN = "7544882164:AAHUQCd3fnHSwbj6tSPIGSEbRgkOXS3wLTY"; // ⚠️ لا تضع التوكن الحقيقي هنا إذا كان الموقع عاماً
-      const CHAT_ID = "6494466799";
-
-      try{
-        if(BOT_TOKEN !== 'PASTE_YOUR_BOT_TOKEN'){
-          const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,{
-            method:'POST', headers:{'Content-Type':'application/json'},
-            body: JSON.stringify({ chat_id: CHAT_ID, text: `حجز جديد: ${payload.date} — ${payload.time}` })
-          });
-          if(!res.ok) throw new Error('Telegram error');
-          alert('✅ تم تأكيد الحجز وإرسال إشعار.');
-        }else{
-          alert(`✅ تم تأكيد الحجز (تجريبي)\n${payload.date} — ${payload.time}`);
-        }
-      }catch(e){
-        console.error(e);
-        alert('⚠️ حدث خطأ أثناء الإرسال، تم تأكيد الحجز محلياً.');
+    // تفاعل: نقرة = تبديل سرعة، مسافة = إيقاف/تشغيل
+    addEventListener('click', () => {
+      speedBoost = (speedBoost === 1) ? 2.2 : (speedBoost === 2.2 ? 0.6 : 1);
+    });
+    addEventListener('keydown', (e) => {
+      if(e.code === 'Space'){
+        paused = !paused; e.preventDefault();
       }
     });
 
-    // init to match screenshot (no selection yet)
-    renderMonth(demoMonth);
-    renderSlots();
+    // إعادة ضبط عند تغيير الحجم
+    addEventListener('resize', () => {
+      const r = hello.getBoundingClientRect();
+      x = Math.min(x, innerWidth - r.width);
+      y = Math.min(y, innerHeight - r.height);
+    });
 
-    // Disable real month navigation (demo only)
-    document.getElementById('prevMo').addEventListener('click',()=>{})
-    document.getElementById('nextMo').addEventListener('click',()=>{})
+    // وضع البداية في مكان جميل عشوائي
+    requestAnimationFrame(() => {
+      const r = hello.getBoundingClientRect();
+      x = Math.max(20, Math.min(innerWidth - r.width  - 20, Math.random() * (innerWidth  - r.width  - 40)));
+      y = Math.max(20, Math.min(innerHeight - r.height - 20, Math.random() * (innerHeight - r.height - 40)));
+      hello.style.transform = `translate(${x}px, ${y}px)`;
+      step();
+    });
   </script>
 </body>
 </html>
