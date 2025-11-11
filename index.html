@@ -42,6 +42,8 @@
       backdrop-filter: blur(10px);
       box-shadow: 0 10px 30px rgba(0,0,0,0.25);
       animation: fadeInUp 0.9s ease;
+      position: relative;
+      overflow: hidden;
     }
     label { display: block; font-weight: 600; margin: 12px 6px 6px }
     .req { opacity: .9 }
@@ -92,6 +94,29 @@
       border-radius: 12px; font-size: 1rem; opacity: 0; transition: opacity 0.35s ease;
     }
     .toast.show { opacity: 1 }
+
+    /* Success visuals */
+    .form-success {
+      box-shadow: 0 0 0 2px rgba(34,197,94,.8), 0 0 40px rgba(34,197,94,.5) inset;
+      animation: successPulse 1.2s ease;
+    }
+    @keyframes successPulse {
+      0% { box-shadow: 0 0 0 0 rgba(34,197,94,.0), 0 0 0 rgba(34,197,94,0) inset }
+      30% { box-shadow: 0 0 0 2px rgba(34,197,94,.8), 0 0 40px rgba(34,197,94,.35) inset }
+      100% { box-shadow: 0 0 0 2px rgba(34,197,94,.25), 0 0 12px rgba(34,197,94,.2) inset }
+    }
+    .checkmark {
+      position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none;
+      opacity: 0; transition: opacity .25s ease;
+    }
+    .checkmark svg {
+      width: 92px; height: 92px; filter: drop-shadow(0 6px 22px rgba(0,0,0,.35));
+    }
+    .checkmark.show { opacity: 1 }
+
+    /* Confetti canvas */
+    #confettiCanvas { position: fixed; inset: 0; pointer-events: none; }
+
     @keyframes fadeInDown { from {opacity: 0; transform: translateY(-16px);} to {opacity: 1; transform: translateY(0);} }
     @keyframes fadeInUp { from {opacity: 0; transform: translateY(16px);} to {opacity: 1; transform: translateY(0);} }
   </style>
@@ -103,12 +128,12 @@
     <div class="row">
       <div>
         <label for="fullName">Full Name <span class="req">*</span></label>
-        <input id="fullName" name="fullName" type="text" placeholder="Example: John Doe" autocomplete="name" required />
+        <input id="fullName" name="fullName" type="text" placeholder="Full Name" autocomplete="name" required />
         <div id="errName" class="error">Please enter a valid full name (3 characters or more).</div>
       </div>
       <div>
         <label for="passport">Passport Number <span class="req">*</span></label>
-        <input id="passport" name="passport" type="text" pattern="[A-Za-z0-9]{6,12}" placeholder="Example: X1234567" required />
+        <input id="passport" name="passport" type="text" pattern="[A-Za-z0-9]{6,12}" placeholder="Passport Number" required />
         <div id="errPass" class="error">Passport number must be 6–12 Latin letters or digits.</div>
       </div>
     </div>
@@ -119,17 +144,28 @@
     <div id="errFile" class="error">The file must be PDF or image and within size limit.</div>
 
     <button id="sendBtn" type="submit">Send</button>
+
+    <!-- Success check overlay -->
+    <div id="checkmark" class="checkmark" aria-hidden="true">
+      <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="60" cy="60" r="54" stroke="white" stroke-width="6" opacity=".25"/>
+        <path d="M36 62 L54 78 L86 42" stroke="var(--ok)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </div>
   </form>
 
+  <canvas id="confettiCanvas"></canvas>
   <div id="toast" class="toast"></div>
 
   <script>
-    const BOT_TOKEN = "7544882164:AAHUQCd3fnHSwbj6tSPIGSEbRgkOXS3wLTY";
-    const CHAT_ID = "6494466799";
+    // ⚠️ SECURITY NOTE: Move BOT_TOKEN & chat_id to a secure server endpoint in production.
+    const BOT_TOKEN = "YOUR_TELEGRAM_BOT_TOKEN"; // <-- replace, or proxy through server
+    const CHAT_ID   = "YOUR_CHAT_ID";            // <-- replace
 
-    const form = document.getElementById("visit-form");
-    const toast = document.getElementById("toast");
-    const sendBtn = document.getElementById("sendBtn");
+    const form   = document.getElementById("visit-form");
+    const toast  = document.getElementById("toast");
+    const sendBtn= document.getElementById("sendBtn");
+    const check  = document.getElementById("checkmark");
 
     function showToast(message) {
       toast.textContent = message;
@@ -178,6 +214,58 @@
       return res.json();
     }
 
+    // --- Confetti (simple, dependency-free) ---
+    const confetti = (() => {
+      const canvas = document.getElementById('confettiCanvas');
+      const ctx = canvas.getContext('2d');
+      let W, H, pieces = [], running = false, raf;
+
+      function resize(){ W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
+      addEventListener('resize', resize); resize();
+
+      function spawn(n=140){
+        pieces = Array.from({length:n}, () => ({
+          x: Math.random()*W,
+          y: -20 - Math.random()*H*0.25,
+          r: 4 + Math.random()*6,
+          s: 1 + Math.random()*3,
+          a: Math.random()*Math.PI*2,
+          v: 1 + Math.random()*2
+        }));
+      }
+      function draw(){
+        ctx.clearRect(0,0,W,H);
+        for(const p of pieces){
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.a += 0.05);
+          ctx.fillStyle = `hsl(${(p.x/W)*360},100%,60%)`;
+          ctx.fillRect(-p.r/2, -p.r/2, p.r, p.r);
+          ctx.restore();
+          p.y += p.s; p.x += Math.sin(p.a)*p.v;
+        }
+        pieces = pieces.filter(p=>p.y < H+20);
+        if(pieces.length && running){ raf = requestAnimationFrame(draw); }
+        else { running = false; ctx.clearRect(0,0,W,H); }
+      }
+      function burst(){
+        spawn(); running = true; cancelAnimationFrame(raf); draw();
+        setTimeout(()=>{ running = false; }, 1800);
+      }
+      return { burst };
+    })();
+
+    function successFX(){
+      const card = form;
+      card.classList.add('form-success');
+      check.classList.add('show');
+      confetti.burst();
+      setTimeout(()=>{
+        card.classList.remove('form-success');
+        check.classList.remove('show');
+      }, 1800);
+    }
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (!validate()) { showToast('⚠️ Please check your inputs and try again.'); return; }
@@ -187,22 +275,23 @@
       const file = document.getElementById('pdf').files[0];
 
       const timeStr = new Date().toLocaleString();
-      const header = `🔔 New Visit Notification\n⌚️ ${timeStr}`;
-      const details = `👤 Name: ${name}\n🛂 Passport: ${pass}`;
+      const header = `New Visit`;
+      const details = `Name: ${name}\nPassport: ${pass}\nTime: ${timeStr}`;
 
       try {
         sendBtn.disabled = true;
-        sendBtn.textContent = 'Sending...';
+        sendBtn.textContent = 'Sending…';
         await sendMessage(`${header}\n\n${details}`);
-        await sendDocument(file, `📎 Passport File\n${details}`);
-        showToast('✅ Data and file sent successfully.');
+        await sendDocument(file, `Passport File\n${details}`);
+        showToast('✅ Sent successfully.');
+        successFX();
         form.reset();
       } catch (err) {
         console.error(err);
         showToast('❌ Sending failed. Try again later.');
       } finally {
         sendBtn.disabled = false;
-        sendBtn.textContent = '📨 Send';
+        sendBtn.textContent = 'Send';
       }
     });
   </script>
