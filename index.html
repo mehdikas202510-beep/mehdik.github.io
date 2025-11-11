@@ -1,106 +1,148 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>زيارة جديدة</title>
+  <title>حجز موعد</title>
   <style>
+    :root { --bg1:#007aff; --bg2:#00c6ff; --card: rgba(255,255,255,.12); --border: rgba(255,255,255,.2); }
+    * { box-sizing: border-box; }
     body {
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      font-family: "Poppins", sans-serif;
-      background: linear-gradient(135deg, #007aff, #00c6ff);
-      margin: 0;
-      color: #fff;
-      overflow: hidden;
+      margin: 0; font-family: "Cairo", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color: #fff;
+      min-height: 100vh; display: grid; place-items: center;
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
     }
-
-    h1 {
-      font-size: 3rem;
-      font-weight: 700;
-      margin-bottom: 40px;
-      text-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      animation: fadeInDown 1s ease;
+    .shell { width: 100%; max-width: 420px; padding: 24px; }
+    .card {
+      background: var(--card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: 20px; box-shadow: 0 18px 45px rgba(0,0,0,.25);
+      padding: 28px; animation: pop .6s ease;
     }
-
-    button {
-      padding: 15px 35px;
-      font-size: 1.2rem;
-      border: none;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.15);
-      color: #fff;
-      cursor: pointer;
-      backdrop-filter: blur(10px);
-      transition: all 0.3s ease;
-      font-weight: 500;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    h1 { margin: 0 0 6px; font-size: 1.6rem; }
+    .sub { opacity: .9; margin: 0 0 22px; }
+    label { display:block; margin: 14px 0 8px; font-weight:600; }
+    select, input[type="date"] {
+      width: 100%; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--border);
+      background: rgba(255,255,255,.18); color: #fff; outline: none; font: inherit;
     }
-
-    button:hover {
-      transform: scale(1.05);
-      background: rgba(255,255,255,0.25);
-    }
-
-    .toast {
-      position: fixed;
-      bottom: 30px;
-      padding: 15px 25px;
-      background: rgba(0,0,0,0.75);
-      border-radius: 12px;
-      font-size: 1rem;
-      opacity: 0;
-      transition: opacity 0.4s ease;
-    }
-
-    .toast.show {
-      opacity: 1;
-    }
-
-    @keyframes fadeInDown {
-      from {opacity: 0; transform: translateY(-30px);}
-      to {opacity: 1; transform: translateY(0);}
-    }
+    select:disabled { opacity:.6; cursor:not-allowed; }
+    .btn { width:100%; margin-top:18px; padding: 14px; border: 0; border-radius: 14px; font-weight:700; font-size:1.05rem; cursor:pointer;
+      background:#fff; color:#0b69ff; transition: transform .18s ease, filter .18s ease; }
+    .btn:hover { transform: translateY(-1px); filter: brightness(.98); }
+    .btn:active { transform: translateY(0); }
+    .row { display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .toast { position: fixed; bottom: 22px; right: 22px; background: rgba(0,0,0,.82); padding: 12px 16px; border-radius: 12px; opacity:0; transition: opacity .35s ease; font-size:.95rem; }
+    .toast.show { opacity:1; }
+    .hint { display:block; margin-top:6px; font-size:.85rem; opacity:.85; }
+    @keyframes pop { from {opacity:0; transform: translateY(8px) scale(.98);} to {opacity:1; transform: none;} }
   </style>
 </head>
 <body>
-  <h1>👋 أهلاً بك</h1>
-  <button id="visit-btn">📨 إرسال زيارة</button>
-  <div id="toast" class="toast"></div>
+  <main class="shell">
+    <section class="card" id="card">
+      <h1>📅 حجز موعد</h1>
+      <p class="sub">اختَر التاريخ والوقت فقط — دون أي معلومات إضافية.</p>
+
+      <label for="date">التاريخ</label>
+      <input id="date" type="date" />
+      <span class="hint">لا يمكن اختيار تاريخ سابق لليوم.</span>
+
+      <div class="row">
+        <div>
+          <label for="time">الوقت</label>
+          <select id="time" disabled>
+            <option value="">اختر الوقت</option>
+          </select>
+        </div>
+        <div>
+          <label for="duration">المدة</label>
+          <select id="duration">
+            <option value="30">30 دقيقة</option>
+            <option value="45">45 دقيقة</option>
+            <option value="60" selected>60 دقيقة</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="btn" id="book">تأكيد الموعد</button>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"></div>
 
   <script>
-    const BOT_TOKEN = "7544882164:AAHUQCd3fnHSwbj6tSPIGSEbRgkOXS3wLTY";
-    const CHAT_ID = "6494466799";
-    const btn = document.getElementById("visit-btn");
-    const toast = document.getElementById("toast");
+    // ضع بيانات تيليجرام هنا
+    const BOT_TOKEN = "7544882164:AAHUQCd3fnHSwbj6tSPIGSEbRgkOXS3wLTY"; // مثال: 123456789:ABCdef...
+    const CHAT_ID  = "6494466799"; // مثال: -1001234567890 أو رقم المستخدم
 
-    function showToast(message) {
-      toast.textContent = message;
-      toast.classList.add("show");
-      setTimeout(() => toast.classList.remove("show"), 3000);
+    const dateEl = document.getElementById('date');
+    const timeEl = document.getElementById('time');
+    const durationEl = document.getElementById('duration');
+    const bookBtn = document.getElementById('book');
+    const toast = document.getElementById('toast');
+
+    // منع اختيار تواريخ ماضية
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth()+1).padStart(2,'0');
+    const dd = String(today.getDate()).padStart(2,'0');
+    dateEl.min = `${yyyy}-${mm}-${dd}`;
+
+    // توليد أوقات العمل ديناميكياً (10:00 -> 20:00 كل 30 دقيقة)
+    function buildSlots() {
+      timeEl.innerHTML = '<option value="">اختر الوقت</option>';
+      const start = 10*60, end = 20*60, step = 30; // دقائق
+      for (let m = start; m <= end; m += step) {
+        const h = String(Math.floor(m/60)).padStart(2,'0');
+        const min = String(m%60).padStart(2,'0');
+        const label = `${h}:${min}`;
+        const opt = document.createElement('option');
+        opt.value = label;
+        opt.textContent = label;
+        timeEl.appendChild(opt);
+      }
+    }
+    buildSlots();
+
+    // تفعيل اختيار الوقت بعد اختيار التاريخ
+    dateEl.addEventListener('change', () => {
+      timeEl.disabled = !dateEl.value;
+    });
+
+    function showToast(msg) {
+      toast.textContent = msg; toast.classList.add('show');
+      setTimeout(()=> toast.classList.remove('show'), 2800);
     }
 
-    btn.addEventListener("click", async () => {
-      const msg = `🔔 زيارة جديدة للموقع - ${new Date().toLocaleString("ar-EG")}`;
+    function randomId(len=6) {
+      const chars = 'ABCDEFGHJKMNPQRSTUVWXZ23456789';
+      let out = ''; for (let i=0;i<len;i++) out += chars[Math.floor(Math.random()*chars.length)];
+      return out;
+    }
+
+    bookBtn.addEventListener('click', async () => {
+      const date = dateEl.value; const time = timeEl.value; const dur = durationEl.value;
+      if (!date || !time) { showToast('⚠️ الرجاء اختيار التاريخ والوقت'); return; }
+
+      const bookingId = randomId();
+      const msg = `\n🗓️ حجز موعد جديد\n📅 التاريخ: ${date}\n🕒 الوقت: ${time}\n⏳ المدة: ${dur} دقيقة\n🔖 رقم الحجز: ${bookingId}\n⏱️ أُرسل في: ${new Date().toLocaleString('ar-EG')}\n`;
 
       try {
         const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ chat_id: CHAT_ID, text: msg }),
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: CHAT_ID, text: msg })
         });
-
         if (res.ok) {
-          showToast("✅ تم إرسال الإشعار بنجاح!");
+          showToast('✅ تم حجز الموعد وإرسال الإشعار');
+          // إعادة ضبط المدخلات
+          timeEl.value = ''; dateEl.value = ''; timeEl.disabled = true; durationEl.value = '60';
         } else {
-          showToast("❌ فشل الإرسال!");
+          showToast('❌ تعذّر الإرسال، تحقق من الإعدادات');
         }
       } catch (e) {
-        showToast("⚠️ خطأ في الاتصال بالبوت");
-        console.error(e);
+        console.error(e); showToast('⚠️ مشكلة اتصال بالإنترنت أو البوت');
       }
     });
   </script>
