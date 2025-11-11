@@ -1,93 +1,41 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>مهدي كاس — الموقع الشخصي</title>
-  <meta name="description" content="نبذة عني، أعمالي، وروابط التواصل.">
-  <link rel="stylesheet" href="styles.css">
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hello - iPhone Style</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(to bottom, #111, #222);
+      overflow: hidden;
+    }
+
+    h1 {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+      font-size: 4rem;
+      color: white;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+      animation: fadeIn 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0.4;
+        transform: scale(0.95);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+  </style>
 </head>
 <body>
-  <header class="site-header">
-    <div class="container header-inner">
-      <a class="brand" href="#home" aria-label="الصفحة الرئيسية">
-        <img src="favicon.svg" alt="" width="28" height="28" />
-        <span>مهدي كاس</span>
-      </a>
-      <nav class="nav">
-        <button id="themeToggle" class="btn btn-ghost" aria-label="تبديل الوضع">🌓</button>
-        <a href="#about">عنّي</a>
-        <a href="#projects">المشاريع</a>
-        <a href="#contact">تواصل</a>
-      </nav>
-    </div>
-  </header>
-
-  <main id="home">
-    <section class="hero container">
-      <h1>مرحبًا 👋، أنا <span class="accent">مهدي</span></h1>
-      <p class="lead">
-        مطوّر مهتم ببناء تجارب ويب بسيطة وسريعة. هذا نموذج موقع شخصي جاهز للنشر على GitHub Pages.
-      </p>
-      <div class="cta">
-        <a class="btn" href="#projects">استعرض المشاريع</a>
-        <a class="btn btn-ghost" href="#contact">تواصل معي</a>
-      </div>
-    </section>
-
-    <section id="about" class="section container">
-      <h2>عنّي</h2>
-      <p>
-        اكتب هنا نبذة قصيرة عنك: ما الذي تتقنه، وأي تقنيات تعمل بها، وما هي اهتماماتك.
-        يمكنك تعديل هذا النص بسهولة من ملف <code>index.html</code>.
-      </p>
-      <ul class="badges">
-        <li>HTML</li>
-        <li>CSS</li>
-        <li>JavaScript</li>
-        <li>GitHub Pages</li>
-      </ul>
-    </section>
-
-    <section id="projects" class="section container">
-      <h2>المشاريع</h2>
-      <div class="grid">
-        <article class="card">
-          <h3>مشروع ١</h3>
-          <p>وصف قصير للمشروع الأول. ضع رابطًا للمستودع أو نسخة حيّة.</p>
-          <a class="btn-sm" href="#" target="_blank" rel="noopener">زيارة</a>
-        </article>
-        <article class="card">
-          <h3>مشروع ٢</h3>
-          <p>وصف قصير للمشروع الثاني. يمكنك تكرار البطاقة لمشاريع أخرى.</p>
-          <a class="btn-sm" href="#" target="_blank" rel="noopener">زيارة</a>
-        </article>
-        <article class="card">
-          <h3>مشروع ٣</h3>
-          <p>وصف قصير للمشروع الثالث. عدّل المحتوى كما تشاء.</p>
-          <a class="btn-sm" href="#" target="_blank" rel="noopener">زيارة</a>
-        </article>
-      </div>
-    </section>
-
-    <section id="contact" class="section container">
-      <h2>تواصل</h2>
-      <p>راسلني عبر البريد: <a href="mailto:mehdikas202511@gmail.com">mehdikas202511@gmail.com</a></p>
-      <div class="socials">
-        <a href="https://github.com/" target="_blank" rel="noopener" aria-label="GitHub">GitHub</a>
-        <a href="https://x.com/" target="_blank" rel="noopener" aria-label="X">X</a>
-        <a href="https://linkedin.com/" target="_blank" rel="noopener" aria-label="LinkedIn">LinkedIn</a>
-      </div>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <div class="container">
-      <small>© <span id="year"></span> مهدي كاس. كل الحقوق محفوظة.</small>
-    </div>
-  </footer>
-
-  <script src="script.js"></script>
+  <h1>Hello</h1>
 </body>
 </html>
