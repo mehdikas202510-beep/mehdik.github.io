@@ -3,117 +3,105 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>زيارة الموقع</title>
+  <title>زيارة جديدة</title>
   <style>
-    * {
-      box-sizing: border-box;
-      transition: all 0.3s ease;
-    }
-
     body {
       height: 100vh;
-      margin: 0;
-      background: linear-gradient(135deg, #007aff, #00c6ff);
       display: flex;
-      align-items: center;
+      flex-direction: column;
       justify-content: center;
-      font-family: "Cairo", sans-serif;
+      align-items: center;
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #007aff, #00c6ff);
+      margin: 0;
       color: #fff;
-    }
-
-    .card {
-      background: rgba(255, 255, 255, 0.15);
-      border-radius: 20px;
-      padding: 40px 60px;
-      backdrop-filter: blur(10px);
-      text-align: center;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
     }
 
     h1 {
-      font-size: 2.5rem;
+      font-size: 3rem;
       font-weight: 700;
-      margin-bottom: 10px;
-    }
-
-    p {
-      font-size: 1rem;
-      opacity: 0.9;
-      margin-bottom: 30px;
+      margin-bottom: 40px;
+      text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      animation: fadeInDown 1s ease;
     }
 
     button {
-      background: #fff;
-      color: #007aff;
+      padding: 15px 35px;
+      font-size: 1.2rem;
       border: none;
-      border-radius: 12px;
-      padding: 14px 40px;
-      font-size: 1.1rem;
-      font-weight: 600;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.15);
+      color: #fff;
       cursor: pointer;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      font-weight: 500;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     }
 
     button:hover {
       transform: scale(1.05);
-      background: #f1f1f1;
+      background: rgba(255,255,255,0.25);
     }
 
-    .status {
-      margin-top: 25px;
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      padding: 15px 25px;
+      background: rgba(0,0,0,0.75);
+      border-radius: 12px;
       font-size: 1rem;
-      opacity: 0.95;
+      opacity: 0;
+      transition: opacity 0.4s ease;
     }
 
-    .icon {
-      font-size: 50px;
-      margin-bottom: 15px;
+    .toast.show {
+      opacity: 1;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .card {
-      animation: fadeIn 1s ease;
+    @keyframes fadeInDown {
+      from {opacity: 0; transform: translateY(-30px);}
+      to {opacity: 1; transform: translateY(0);}
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <div class="icon">🚀</div>
-    <h1>مرحباً بك!</h1>
-    <p>اضغط الزر لإرسال إشعار إلى بوت التليجرام</p>
-    <button id="visit-btn">إرسال زيارة</button>
-    <div class="status" id="status"></div>
-  </div>
+  <h1>👋 أهلاً بك</h1>
+  <button id="visit-btn">📨 إرسال زيارة</button>
+  <div id="toast" class="toast"></div>
 
   <script>
     const BOT_TOKEN = "7544882164:AAHUQCd3fnHSwbj6tSPIGSEbRgkOXS3wLTY";
     const CHAT_ID = "6494466799";
     const btn = document.getElementById("visit-btn");
-    const status = document.getElementById("status");
+    const toast = document.getElementById("toast");
 
-    btn.addEventListener("click", () => {
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 3000);
+    }
+
+    btn.addEventListener("click", async () => {
       const msg = `🔔 زيارة جديدة للموقع - ${new Date().toLocaleString("ar-EG")}`;
-      status.textContent = "⏳ جاري الإرسال...";
 
-      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chat_id: CHAT_ID, text: msg }),
-      })
-        .then((res) => {
-          if (res.ok) {
-            status.textContent = "✅ تم إرسال الإشعار بنجاح إلى تيليجرام";
-          } else {
-            status.textContent = "❌ فشل الإرسال، تحقق من التوكن أو الـ Chat ID.";
-          }
-        })
-        .catch(() => {
-          status.textContent = "⚠️ خطأ في الاتصال، حاول مجدداً.";
+      try {
+        const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ chat_id: CHAT_ID, text: msg }),
         });
+
+        if (res.ok) {
+          showToast("✅ تم إرسال الإشعار بنجاح!");
+        } else {
+          showToast("❌ فشل الإرسال!");
+        }
+      } catch (e) {
+        showToast("⚠️ خطأ في الاتصال بالبوت");
+        console.error(e);
+      }
     });
   </script>
 </body>
