@@ -2,186 +2,247 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>زيارة جديدة</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>زيارة جديدة • نموذج متقدّم</title>
   <style>
     :root{
-      --glass-bg: rgba(255,255,255,0.12);
-      --glass-bg-hover: rgba(255,255,255,0.22);
-      --danger: #ff5252;
-      --ok: #22c55e;
+      --bg-1:#0e2a47; --bg-2:#0b6bdc; --bg-3:#00c6ff;
+      --card: rgba(255,255,255,0.12);
+      --card-border: rgba(255,255,255,0.22);
+      --muted: rgba(255,255,255,0.75);
+      --accent: #a7f3d0; /* mint */
+      --ok:#22c55e; --warn:#f97316; --err:#ef4444; --ink:#fff;
     }
     *{box-sizing:border-box}
-    body {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, sans-serif;
-      background: linear-gradient(135deg, #007aff, #00c6ff);
-      margin: 0;
-      color: #fff;
-      padding: 20px;
+    html,body{height:100%}
+    body{
+      margin:0; color:var(--ink);
+      font-family: ui-rounded, system-ui, "Tajawal", "Cairo", "Poppins", sans-serif;
+      background: radial-gradient(1200px 1200px at 10% 10%, #0b4f9a22, transparent 60%),
+                  radial-gradient(900px 900px at 85% 15%, #00c6ff22, transparent 60%),
+                  linear-gradient(135deg, var(--bg-2), var(--bg-3));
+      display:grid; place-items:center; padding:24px; overflow-x:hidden
     }
 
-    h1 {
-      font-size: 2.4rem;
-      font-weight: 700;
-      margin: 0 0 18px;
-      text-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      animation: fadeInDown 0.8s ease;
-      text-align:center;
+    /* Animated blobs */
+    .blob{ position:fixed; filter: blur(60px); opacity:.45; z-index:-1; mix-blend-mode:screen }
+    .b1{ width:48vmax; height:48vmax; background:#4f46e5; top:-10vmax; right:-10vmax; border-radius:50%; animation: float 18s ease-in-out infinite }
+    .b2{ width:36vmax; height:36vmax; background:#22d3ee; bottom:-8vmax; left:-6vmax; border-radius:50%; animation: float 22s ease-in-out infinite reverse }
+    @keyframes float { 0%{transform:translate(0,0)} 50%{transform:translate(0,-24px)} 100%{transform:translate(0,0)} }
+
+    .wrap{ width:100%; max-width:760px }
+
+    header{
+      text-align:center; margin-bottom:18px; animation: drop .7s ease both
+    }
+    @keyframes drop{ from{opacity:0; transform:translateY(-8px)} to{opacity:1; transform:translateY(0)} }
+    h1{ margin:0 0 6px; font-size:clamp(1.6rem, 1.1rem + 2vw, 2.4rem) }
+    .sub{ margin:0; opacity:.9 }
+
+    .card{
+      background:var(--card); border:1px solid var(--card-border); border-radius:20px; overflow:hidden;
+      box-shadow:0 20px 60px rgba(0,0,0,.25);
+      backdrop-filter: blur(12px)
     }
 
-    p.subtitle{
-      opacity:.9; margin-top:0; margin-bottom:28px; text-align:center
-    }
+    .progress{ height:3px; background:linear-gradient(90deg, #fff0, #fff8);
+               position:relative; overflow:hidden }
+    .bar{ position:absolute; inset:0; width:30%; background:linear-gradient(90deg,#fff0,#fff);
+          transform: translateX(-100%); animation: indet 1.6s linear infinite }
+    .bar.hide{ display:none }
+    @keyframes indet{ to{ transform: translateX(300%) } }
 
-    form{
-      width: 100%;
-      max-width: 560px;
-      background: rgba(255,255,255,0.12);
-      border: 1px solid rgba(255,255,255,0.25);
-      border-radius: 18px;
-      padding: 22px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-      animation: fadeInUp 0.9s ease;
-    }
+    form{ padding:18px; display:grid; gap:14px }
+    @media(min-width:640px){ form{ padding:22px } }
 
-    label{display:block; font-weight:600; margin: 12px 6px 6px}
-    .req{opacity:.9}
+    .row{ display:grid; gap:12px }
+    @media(min-width:720px){ .row{ grid-template-columns: 1fr 1fr } }
 
-    input[type="text"], input[type="tel"], input[type="file"]{
-      width: 100%;
-      padding: 14px 16px;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.15);
-      color: #fff;
-      border: 1px solid rgba(255,255,255,0.28);
-      outline: none;
-      transition: all .25s ease;
-    }
+    .field{ position:relative }
+    .label{ display:flex; align-items:center; gap:8px; font-weight:700; margin:4px 6px }
+    .must{ color:#fde68a }
 
-    input::file-selector-button{
-      padding: 10px 16px; border: none; border-radius: 12px; background: rgba(0,0,0,.25); color:#fff; margin-inline-end: 12px; cursor:pointer
-    }
+    .input{ width:100%; padding:14px 44px 14px 14px; border-radius:14px; background:rgba(255,255,255,.15);
+            border:1px solid rgba(255,255,255,.28); color:#fff; outline:none; transition:.2s }
+    .input:focus{ box-shadow:0 0 0 3px rgba(255,255,255,.28) }
+    .hint{ font-size:.9rem; color:var(--muted); margin:4px 6px 0 }
+    .err{ color:var(--err); font-size:.92rem; margin:4px 6px; display:none }
 
-    input:focus{ box-shadow: 0 0 0 3px rgba(255,255,255,0.25); }
+    .icon{ position:absolute; inset-inline-start:10px; top:50%; translate:0 -50%; opacity:.9; pointer-events:none }
 
-    .row{ display:grid; grid-template-columns: 1fr; gap:14px }
-    @media(min-width:640px){ .row{ grid-template-columns: 1fr 1fr } }
+    .chip{ display:inline-flex; gap:8px; align-items:center; padding:8px 12px; border-radius:999px; border:1px dashed rgba(255,255,255,.35);
+           background:rgba(0,0,0,.15); font-size:.95rem }
 
-    .help{font-size:.9rem; opacity:.85; margin: 6px 6px 0}
-    .error{ color: var(--danger); margin: 6px 6px 0; display:none }
+    /* Dropzone */
+    .drop{ position:relative; border:2px dashed rgba(255,255,255,.38); border-radius:16px; padding:16px; text-align:center; transition:.2s }
+    .drop.drag{ border-color:#fff; background:rgba(0,0,0,.18) }
+    .drop input[type=file]{ position:absolute; inset:0; opacity:0; cursor:pointer }
+    .fileInfo{ margin-top:8px; font-size:.95rem }
 
-    button{
-      width: 100%;
-      padding: 14px 20px;
-      font-size: 1.1rem;
-      border: none;
-      border-radius: 14px;
-      background: var(--glass-bg);
-      color: #fff;
-      cursor: pointer;
-      backdrop-filter: blur(10px);
-      transition: all 0.25s ease;
-      font-weight: 600;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.22);
-      margin-top: 16px;
-    }
+    .actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:6px }
+    .btn{ flex:1 1 220px; padding:14px 18px; border:0; border-radius:14px; color:#0b1220; font-weight:800; cursor:pointer; transition:.2s }
+    .primary{ background:linear-gradient(135deg,#a7f3d0,#22d3ee) }
+    .primary:disabled{ opacity:.6; cursor:not-allowed }
+    .ghost{ background:rgba(255,255,255,.12); color:#fff; border:1px solid rgba(255,255,255,.28) }
+    .ghost:hover{ background:rgba(255,255,255,.2) }
 
-    button:hover { background: var(--glass-bg-hover); transform: translateY(-1px); }
-    button:disabled{ opacity:.7; cursor:not-allowed }
+    .meta{ display:flex; gap:10px; justify-content:space-between; align-items:center; flex-wrap:wrap; padding:12px 16px; background:rgba(0,0,0,.18) }
+    .kv{ display:flex; gap:8px; align-items:center; font-size:.95rem }
+    .kv b{ color:#e9f7ff }
 
-    .toast {
-      position: fixed; inset-inline: 0; bottom: 24px; margin-inline:auto; width: fit-content;
-      padding: 14px 18px; background: rgba(0,0,0,0.78);
-      border-radius: 12px; font-size: 1rem; opacity: 0; transition: opacity 0.35s ease
-    }
-    .toast.show { opacity: 1 }
+    .toast{ position:fixed; inset-inline:0; bottom:20px; margin-inline:auto; width:fit-content; background:rgba(0,0,0,.8);
+            border:1px solid rgba(255,255,255,.22); padding:12px 16px; border-radius:12px; opacity:0; transition:.3s }
+    .toast.show{ opacity:1 }
 
-    .note{ font-size:.85rem; opacity:.85; margin-top:10px; text-align:center }
-
-    @keyframes fadeInDown { from {opacity: 0; transform: translateY(-16px);} to {opacity: 1; transform: translateY(0);} }
-    @keyframes fadeInUp   { from {opacity: 0; transform: translateY(16px);}  to {opacity: 1; transform: translateY(0);} }
+    footer{ margin-top:14px; text-align:center; color:var(--muted); font-size:.92rem }
   </style>
 </head>
 <body>
-  <h1>👋 أهلاً بك</h1>
-  <p class="subtitle">يرجى تعبئة البيانات التالية لإرسال إشعار زيارة مع نسخة PDF من جواز السفر.</p>
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
 
-  <form id="visit-form">
-    <div class="row">
-      <div>
-        <label for="fullName">الاسم الكامل <span class="req">*</span></label>
-        <input id="fullName" name="fullName" type="text" placeholder="مثال: محمد أحمد العلوي" autocomplete="name" required />
-        <div id="errName" class="error">الرجاء إدخال اسم كامل صالح (٣ أحرف فأكثر).</div>
-      </div>
-      <div>
-        <label for="passport">رقم جواز السفر <span class="req">*</span></label>
-        <input id="passport" name="passport" type="text" inputmode="latin" pattern="[A-Za-z0-9]{6,12}" placeholder="مثال: X1234567" required />
-        <div class="help">٦–١٢ حرف/رقم لاتيني بدون مسافات</div>
-        <div id="errPass" class="error">رقم الجواز يجب أن يكون ٦–١٢ رموز لاتينية/أرقام.</div>
-      </div>
-    </div>
+  <div class="wrap">
+    <header>
+      <h1>👋 أهلاً بك</h1>
+      <p class="sub">نموذج متقدّم لإرسال إشعار الزيارة ورفع جواز السفر (PDF) إلى تيليجرام.</p>
+    </header>
 
-    <label for="pdf">رفع ملف الجواز (PDF فقط) <span class="req">*</span></label>
-    <input id="pdf" name="pdf" type="file" accept="application/pdf" required />
-    <div class="help">الحد الأقصى المقترح 20MB.</div>
-    <div id="errFile" class="error">الملف يجب أن يكون PDF وبحجم مناسب.</div>
+    <section class="card">
+      <div class="progress"><div id="bar" class="bar hide"></div></div>
 
-    <button id="sendBtn" type="submit">📨 إرسال</button>
-    <div class="note">بالضغط على "إرسال" سيتم إرسال البيانات والملف إلى بوت تيليجرام المحدد.</div>
-  </form>
+      <form id="visitForm" novalidate>
+        <div class="row">
+          <div class="field">
+            <label class="label" for="fullName">الاسم الكامل <span class="must">*</span></label>
+            <svg class="icon" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-5 0-9 2.5-9 5.5A1.5 1.5 0 0 0 4.5 21h15A1.5 1.5 0 0 0 21 19.5C21 16.5 17 14 12 14Z" fill="currentColor"/></svg>
+            <input id="fullName" name="fullName" class="input" type="text" placeholder="مثال: محمد أحمد العلوي" autocomplete="name" minlength="3" required />
+            <div id="errName" class="err">الرجاء إدخال الاسم الكامل (٣ أحرف فأكثر).</div>
+          </div>
+
+          <div class="field">
+            <label class="label" for="passport">رقم جواز السفر <span class="must">*</span></label>
+            <svg class="icon" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M6 2h9a3 3 0 0 1 3 3v14a3 3 0 0 1-3 3H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm4 5h5M6 9.5h9M6 13h9M6 16.5h6" stroke="currentColor" stroke-width="2"/></svg>
+            <input id="passport" name="passport" class="input" type="text" inputmode="latin" placeholder="مثال: X1234567" required />
+            <div class="hint"><span id="pc">0</span>/12 — أحرف/أرقام لاتينية (٦–١٢)</div>
+            <div id="errPass" class="err">رقم الجواز يجب أن يكون ٦–١٢ من [A–Z][0–9] بدون مسافات.</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label" for="pdf">رفع ملف الجواز (PDF) <span class="must">*</span></label>
+          <div id="drop" class="drop">
+            <input id="pdf" name="pdf" type="file" accept="application/pdf" />
+            <div>
+              اسحب وأفلت ملف الـPDF هنا أو اضغط للاختيار
+              <div class="fileInfo" id="fileInfo">لم يتم اختيار ملف</div>
+            </div>
+          </div>
+          <div id="errFile" class="err">الملف يجب أن يكون PDF وبحجم ≤ 20MB.</div>
+        </div>
+
+        <div class="meta">
+          <div class="kv"><span class="chip">🚦 حالة التحقق: <b id="state">بانتظار الإدخال</b></span></div>
+          <div class="kv">⏱️ الوقت: <b id="now">—</b></div>
+        </div>
+
+        <div class="actions">
+          <button class="btn ghost" type="button" id="demo">تعبئة تجريبية</button>
+          <button class="btn primary" id="sendBtn" type="submit" disabled>📨 إرسال</button>
+        </div>
+      </form>
+    </section>
+
+    <footer>⚠️ للتنبيه: وضع توكن تيليجرام في الواجهة غير آمن؛ يفضّل وسيط Backend لإخفائه.</footer>
+  </div>
 
   <div id="toast" class="toast"></div>
 
   <script>
-    // ⚠️ ملاحظة أمنية: وضع التوكن في الواجهة مكشوف للمستخدمين. الحل الأفضل هو وسيط (Backend) آمن.
-    const BOT_TOKEN = "7544882164:AAHUQCd3fnHSwbj6tSPIGSEbRgkOXS3wLTY"; // ضع توكن البوت هنا (غير مُستحسن في الواجهة)
-    const CHAT_ID   = "6494466799"; // معرّف القناة/المجموعة/المستخدم
+    // ===== إعدادات تيليجرام (ضع قيمك) =====
+    const BOT_TOKEN = "7544882164:AAHUQCd3fnHSwbj6tSPIGSEbRgkOXS3wLTY"; // ⚠️ مكشوف للعموم إن بقي في الواجهة
+    const CHAT_ID   = "6494466799";
 
-    const form   = document.getElementById("visit-form");
-    const toast  = document.getElementById("toast");
-    const sendBtn= document.getElementById("sendBtn");
+    // ===== عناصر DOM =====
+    const form    = document.getElementById('visitForm');
+    const nameEl  = document.getElementById('fullName');
+    const passEl  = document.getElementById('passport');
+    const fileEl  = document.getElementById('pdf');
+    const drop    = document.getElementById('drop');
+    const fileInfo= document.getElementById('fileInfo');
+    const sendBtn = document.getElementById('sendBtn');
+    const bar     = document.getElementById('bar');
 
-    function showToast(message){
-      toast.textContent = message;
-      toast.classList.add("show");
-      setTimeout(() => toast.classList.remove("show"), 3200);
+    const errName = document.getElementById('errName');
+    const errPass = document.getElementById('errPass');
+    const errFile = document.getElementById('errFile');
+
+    const pc      = document.getElementById('pc');
+    const state   = document.getElementById('state');
+    const nowEl   = document.getElementById('now');
+
+    const toast   = document.getElementById('toast');
+    function showToast(msg){ toast.textContent = msg; toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'), 3200) }
+
+    // ===== أدوات مساعدة =====
+    const passRe = /^[A-Za-z0-9]{6,12}$/;
+    function isPDF(f){ return f && f.type === 'application/pdf' }
+    function inSize(f,maxMB=20){ return f && f.size <= maxMB*1024*1024 }
+
+    function updateClock(){ nowEl.textContent = new Date().toLocaleString('ar-EG') }
+    updateClock(); setInterval(updateClock, 1000);
+
+    function setState(txt, ok){
+      state.textContent = txt;
+      state.style.color = ok? '#c7ffe6':'#ffd7d7'
+    }
+
+    function uppercasePassport(){
+      let v = passEl.value.replace(/\s+/g,'');
+      passEl.value = v.toUpperCase().slice(0,12);
+      pc.textContent = passEl.value.length;
     }
 
     function validate(){
-      const name = document.getElementById('fullName');
-      const pass = document.getElementById('passport');
-      const file = document.getElementById('pdf');
+      const nameOk = nameEl.value.trim().length >= 3;
+      errName.style.display = nameOk ? 'none' : 'block';
 
-      // اسم كامل >= 3 حروف (أي لغة)
-      const okName = (name.value || '').trim().length >= 3;
-      document.getElementById('errName').style.display = okName ? 'none' : 'block';
+      uppercasePassport();
+      const passOk = passRe.test(passEl.value);
+      errPass.style.display = passOk ? 'none' : 'block';
 
-      // جواز 6-12 أحرف/أرقام لاتينية
-      const passRe = /^[A-Za-z0-9]{6,12}$/;
-      const okPass = passRe.test((pass.value || '').trim());
-      document.getElementById('errPass').style.display = okPass ? 'none' : 'block';
+      const f = fileEl.files[0];
+      const fileOk = !!f && isPDF(f) && inSize(f,20);
+      errFile.style.display = fileOk ? 'none' : 'block';
 
-      // ملف PDF وحجم <= 20MB
-      const f = file.files[0];
-      const okFile = !!f && f.type === 'application/pdf' && f.size <= 20 * 1024 * 1024;
-      document.getElementById('errFile').style.display = okFile ? 'none' : 'block';
-
-      return okName && okPass && okFile;
+      const allOk = nameOk && passOk && fileOk;
+      sendBtn.disabled = !allOk;
+      setState(allOk? 'جاهز للإرسال' : 'بانتظار إدخال صحيح', allOk);
+      return allOk;
     }
 
+    nameEl.addEventListener('input', validate);
+    passEl.addEventListener('input', validate);
+    fileEl.addEventListener('change', ()=>{ updateFileInfo(); validate(); });
+
+    function updateFileInfo(){
+      const f = fileEl.files[0];
+      if(!f){ fileInfo.textContent = 'لم يتم اختيار ملف'; return }
+      const mb = (f.size/1024/1024).toFixed(2);
+      fileInfo.textContent = `الاسم: ${f.name} • الحجم: ${mb}MB`;
+    }
+
+    // ===== Dropzone تفعيل السحب والإفلات =====
+    ;['dragenter','dragover'].forEach(evt => drop.addEventListener(evt, e =>{ e.preventDefault(); e.stopPropagation(); drop.classList.add('drag') }))
+    ;['dragleave','drop'].forEach(evt => drop.addEventListener(evt, e =>{ e.preventDefault(); e.stopPropagation(); drop.classList.remove('drag') }))
+    drop.addEventListener('drop', e =>{
+      const f = e.dataTransfer.files?.[0];
+      if(f){ fileEl.files = e.dataTransfer.files; updateFileInfo(); validate(); }
+    })
+
+    // ===== إرسال إلى تيليجرام =====
     async function sendMessage(text){
       const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: CHAT_ID, text })
-      });
+      const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ chat_id: CHAT_ID, text })});
       if(!res.ok) throw new Error('sendMessage failed');
       return res.json();
     }
@@ -192,36 +253,45 @@
       fd.append('chat_id', CHAT_ID);
       fd.append('document', file);
       fd.append('caption', caption);
-      const res = await fetch(url, { method: 'POST', body: fd });
+      const res = await fetch(url, { method:'POST', body: fd });
       if(!res.ok) throw new Error('sendDocument failed');
       return res.json();
     }
 
-    form.addEventListener('submit', async (e) => {
+    function startProgress(){ bar.classList.remove('hide') }
+    function stopProgress(){ bar.classList.add('hide') }
+
+    document.getElementById('demo').addEventListener('click', ()=>{
+      nameEl.value = 'محمد أحمد العلوي';
+      passEl.value = 'X1234567';
+      pc.textContent = passEl.value.length;
+      validate();
+      showToast('تمت التعبئة التجريبية 👌');
+    })
+
+    form.addEventListener('submit', async (e)=>{
       e.preventDefault();
-      if(!validate()) { showToast('⚠️ تحقق من المدخلات ثم أعد المحاولة'); return; }
+      if(!validate()){ showToast('⚠️ يرجى تصحيح المدخلات أولاً'); return }
 
-      const name = document.getElementById('fullName').value.trim();
-      const pass = document.getElementById('passport').value.trim();
-      const file = document.getElementById('pdf').files[0];
-
+      const f = fileEl.files[0];
       const timeStr = new Date().toLocaleString('ar-EG');
-      const header  = `🔔 زيارة جديدة للموقع\n⌚️ ${timeStr}`;
-      const details = `👤 الاسم: ${name}\n🛂 رقم الجواز: ${pass}`;
+      const details = `🔔 زيارة جديدة\n⌚️ ${timeStr}\n👤 الاسم: ${nameEl.value.trim()}\n🛂 رقم الجواز: ${passEl.value}`;
 
-      try {
-        sendBtn.disabled = true; sendBtn.textContent = 'جارٍ الإرسال...';
-        await sendMessage(`${header}\n\n${details}`);
-        await sendDocument(file, `📎 جواز السفر PDF\n${details}`);
+      try{
+        sendBtn.disabled = true; startProgress(); sendBtn.textContent = 'جارٍ الإرسال…';
+        await sendMessage(details);
+        await sendDocument(f, `📎 جواز السفر (PDF)\n${details}`);
         showToast('✅ تم إرسال البيانات والملف بنجاح');
-        form.reset();
-      } catch(err){
-        console.error(err);
-        showToast('❌ فشل الإرسال، حاول لاحقاً');
-      } finally {
-        sendBtn.disabled = false; sendBtn.textContent = '📨 إرسال';
+        form.reset(); updateFileInfo(); validate();
+      }catch(err){
+        console.error(err); showToast('❌ فشل الإرسال. حاول لاحقاً');
+      }finally{
+        stopProgress(); sendBtn.textContent = '📨 إرسال';
       }
-    });
+    })
+
+    // أول تحديث للحالة
+    updateFileInfo(); validate();
   </script>
 </body>
 </html>
