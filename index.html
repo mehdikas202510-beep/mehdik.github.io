@@ -1,302 +1,108 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>واجهة حجز مواعيد - نسخة تجريبية</title>
+  <title>زيارة جديدة</title>
   <style>
-    :root{
-      --primary:#0f6fff; --primary-2:#00c6ff; --bg:#0b1220; --card:#10182b; --muted:#8ca3c7; --ok:#16a34a; --bad:#ef4444; --warn:#f59e0b; --ring:rgba(255,255,255,.08);
+    body {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #007aff, #00c6ff);
+      margin: 0;
+      color: #fff;
+      overflow: hidden;
     }
-    *{box-sizing:border-box}
-    body{margin:0; font-family: system-ui, "Segoe UI", Tahoma, Arial, "Noto Kufi Arabic", sans-serif; background:radial-gradient(1200px 600px at 100% -10%, rgba(0,198,255,.2), transparent 50%),linear-gradient(135deg, #0b1020, #0b1220 60%); color:#e7eefc}
-    .container{max-width:1100px; margin-inline:auto; padding:24px}
 
-    /* Header */
-    header{display:flex; gap:14px; align-items:center; justify-content:space-between; margin-bottom:20px}
-    .brand{display:flex; align-items:center; gap:12px}
-    .logo{width:40px; height:40px; border-radius:12px; background:linear-gradient(135deg,var(--primary),var(--primary-2)); box-shadow:0 8px 30px rgba(15,111,255,.35)}
-    h1{font-size:clamp(20px,2.6vw,28px); margin:0}
-    .sub{color:var(--muted); font-size:.95rem}
+    h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 40px;
+      text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      animation: fadeInDown 1s ease;
+    }
 
-    .card{background:var(--card); border:1px solid var(--ring); border-radius:18px; padding:18px; box-shadow:0 10px 35px rgba(0,0,0,.25)}
+    button {
+      padding: 15px 35px;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      font-weight: 500;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
 
-    /* Grid */
-    .grid{display:grid; grid-template-columns:1.2fr .8fr; gap:16px}
-    @media (max-width:980px){.grid{grid-template-columns:1fr;}}
+    button:hover {
+      transform: scale(1.05);
+      background: rgba(255,255,255,0.25);
+    }
 
-    /* Calendar */
-    .cal-header{display:flex; align-items:center; justify-content:space-between; margin-bottom:12px}
-    .cal-header h3{margin:0; font-size:1.1rem}
-    .cal-nav{display:flex; gap:8px}
-    .btn{border:none; background:linear-gradient(135deg,var(--primary),var(--primary-2)); color:#fff; padding:10px 14px; border-radius:12px; cursor:pointer; box-shadow:0 10px 25px rgba(15,111,255,.35); transition:transform .12s ease}
-    .btn:hover{transform:translateY(-1px)}
-    .btn.secondary{background:#16233b}
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      padding: 15px 25px;
+      background: rgba(0,0,0,0.75);
+      border-radius: 12px;
+      font-size: 1rem;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
 
-    .calendar{display:grid; grid-template-columns:repeat(7,1fr); gap:8px}
-    .dow{color:var(--muted); text-align:center; font-size:.9rem}
-    .day{aspect-ratio:1/1; border-radius:12px; display:flex; align-items:center; justify-content:center; border:1px solid var(--ring); background:#0f1a31; position:relative; cursor:pointer; user-select:none}
-    .day.muted{opacity:.35}
-    .day.available{background:rgba(22,163,74,.12); outline:1px solid rgba(22,163,74,.3)}
-    .day.unavailable{background:rgba(239,68,68,.10)}
-    .day.selected{box-shadow:0 0 0 3px rgba(0,198,255,.35) inset, 0 8px 25px rgba(0,198,255,.15)}
-    .legend{display:flex; gap:14px; align-items:center; flex-wrap:wrap; color:var(--muted); font-size:.92rem; margin-top:12px}
-    .dot{width:10px; height:10px; border-radius:50%}
+    .toast.show {
+      opacity: 1;
+    }
 
-    /* Slots */
-    .slots{display:flex; flex-direction:column; gap:10px}
-    .slot{display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border:1px dashed var(--ring); border-radius:14px; background:#0d182e}
-    .slot .time{font-weight:600}
-    .chip{font-size:.85rem; padding:.2rem .5rem; border-radius:999px; border:1px solid var(--ring); color:var(--muted)}
-    .chip.bad{color:#fecaca; border-color:rgba(239,68,68,.35)}
-    .chip.ok{color:#bbf7d0; border-color:rgba(34,197,94,.35)}
-
-    /* Footer actions */
-    .actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px}
-
-    /* Telegram panel */
-    .panel{display:grid; gap:12px; grid-template-columns:1fr 1fr;}
-    .field{display:flex; flex-direction:column; gap:6px}
-    .label{color:var(--muted); font-size:.9rem}
-    input, select, textarea{background:#0b152a; border:1px solid var(--ring); color:#e7eefc; border-radius:12px; padding:10px 12px; outline:none}
-    textarea{min-height:74px; resize:vertical}
-    @media (max-width:720px){.panel{grid-template-columns:1fr}}
-
-    .toast{position:fixed; bottom:24px; right:24px; background:#0a1222; border:1px solid var(--ring); padding:12px 16px; border-radius:12px; color:#e7eefc; opacity:0; transform:translateY(12px); transition:.25s ease}
-    .toast.show{opacity:1; transform:translateY(0)}
+    @keyframes fadeInDown {
+      from {opacity: 0; transform: translateY(-30px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div class="brand">
-        <div class="logo" aria-hidden="true"></div>
-        <div>
-          <h1>واجهة حجز مواعيد – نموذج تجريبي</h1>
-          <div class="sub">محاكاة لتقويم المواعيد مع أوقات متاحة/غير متاحة، وإرسال إشعار إلى تيليجرام اختياريًا.</div>
-        </div>
-      </div>
-    </header>
-
-    <div class="grid">
-      <!-- Calendar Card -->
-      <section class="card">
-        <div class="cal-header">
-          <h3 id="calTitle">التقويم</h3>
-          <div class="cal-nav">
-            <button class="btn secondary" id="prevMonth" title="الشهر السابق">◀</button>
-            <button class="btn secondary" id="todayBtn" title="اليوم">اليوم</button>
-            <button class="btn secondary" id="nextMonth" title="الشهر التالي">▶</button>
-          </div>
-        </div>
-
-        <div class="calendar" id="calendar">
-          <!-- will be populated by JS -->
-        </div>
-
-        <div class="legend">
-          <span class="dot" style="background:rgba(22,163,74,1)"></span> متاح
-          <span class="dot" style="background:rgba(239,68,68,1)"></span> غير متاح
-          <span class="dot" style="background:rgba(0,198,255,.9)"></span> اليوم المحدد
-        </div>
-
-        <div class="actions">
-          <button class="btn" id="bookBtn">حجز الموعد المحدد</button>
-          <button class="btn secondary" id="clearBtn">إلغاء التحديد</button>
-        </div>
-      </section>
-
-      <!-- Slots + Telegram Card -->
-      <section class="card">
-        <h3 style="margin-top:0">الفترات الزمنية لهذا اليوم</h3>
-        <div id="slots" class="slots"></div>
-        <hr style="border-color:var(--ring); margin:18px 0">
-        <h3 style="margin-top:0">إرسال إشعار تيليجرام (اختياري)</h3>
-        <div class="panel">
-          <div class="field">
-            <label class="label">توكن البوت</label>
-            <input id="botToken" placeholder="ضع توكن البوت هنا">
-          </div>
-          <div class="field">
-            <label class="label">رقم المحادثة (CHAT_ID)</label>
-            <input id="chatId" placeholder="مثال: 123456789">
-          </div>
-          <div class="field" style="grid-column:1/-1">
-            <label class="label">نص الإشعار</label>
-            <textarea id="tgText" placeholder="سيتم استبدال {{date}} بتاريخ الموعد و {{time}} بالساعة المختارة.">🔔 تم طلب حجز موعد بتاريخ {{date}}، الساعة {{time}}</textarea>
-          </div>
-        </div>
-        <div class="actions">
-          <button class="btn" id="notifyBtn">إرسال إشعار</button>
-        </div>
-      </section>
-    </div>
-  </div>
-
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <h1>👋 أهلاً بك</h1>
+  <button id="visit-btn">📨 إرسال زيارة</button>
+  <div id="toast" class="toast"></div>
 
   <script>
-    // ======== Utilities ========
-    const pad = n => String(n).padStart(2,'0');
-    const fmtDate = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    const BOT_TOKEN = "7544882164:AAHUQCd3fnHSwbj6tSPIGSEbRgkOXS3wLTY";
+    const CHAT_ID = "6494466799";
+    const btn = document.getElementById("visit-btn");
+    const toast = document.getElementById("toast");
 
-    function showToast(msg){
-      const t=document.getElementById('toast');
-      t.textContent=msg; t.classList.add('show');
-      clearTimeout(window.__toastTimer);
-      window.__toastTimer=setTimeout(()=>t.classList.remove('show'), 2800);
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 3000);
     }
 
-    // ======== Calendar Model ========
-    const state = {
-      cursor: new Date(), // month cursor
-      selectedDate: null,
-      selectedTime: null,
-      // demo availability map: yyyy-mm-dd => array of times (24h) or [] if none
-      availability: {}
-    };
+    btn.addEventListener("click", async () => {
+      const msg = `🔔 زيارة جديدة للموقع - ${new Date().toLocaleString("ar-EG")}`;
 
-    // Seed with demo availability for the current month and next one
-    function seedAvailability(){
-      const today = new Date();
-      const months = [0,1];
-      const sampleTimes = ["09:30", "10:00", "10:30", "11:00", "11:30", "12:30", "14:00", "15:30"];
-      months.forEach(moff=>{
-        const d = new Date(today.getFullYear(), today.getMonth()+moff, 1);
-        const daysInMonth = new Date(d.getFullYear(), d.getMonth()+1, 0).getDate();
-        for(let i=1;i<=daysInMonth;i++){
-          const cur = new Date(d.getFullYear(), d.getMonth(), i);
-          const key = fmtDate(cur);
-          // pseudo rule: weekends unavailable, even days available with random subset
-          const isWeekend = cur.getDay()===5 || cur.getDay()===6; // Fri/Sat in many locales
-          if(isWeekend){ state.availability[key] = []; }
-          else if(i % 2 === 0){
-            // pick 4 random times
-            const shuffled = [...sampleTimes].sort(()=>Math.random()-.5);
-            state.availability[key] = shuffled.slice(0,4);
-          } else {
-            state.availability[key] = [];
-          }
-        }
-      });
-    }
-
-    // ======== Render Calendar ========
-    function renderCalendar(){
-      const cal = document.getElementById('calendar');
-      cal.innerHTML='';
-      const y=state.cursor.getFullYear();
-      const m=state.cursor.getMonth();
-      const title = new Intl.DateTimeFormat('ar', {month:'long', year:'numeric'}).format(new Date(y,m,1));
-      document.getElementById('calTitle').textContent = `التقويم – ${title}`;
-
-      // day-of-week header (Sat..Fri for RTL)
-      const dowNames = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
-      const order = [6,0,1,2,3,4,5]; // start Sat (rtl aesthetic)
-      order.forEach(i=>{
-        const el=document.createElement('div'); el.className='dow'; el.textContent=dowNames[i]; cal.appendChild(el);
-      });
-
-      const firstDay = new Date(y,m,1);
-      const startPad = (firstDay.getDay()+1)%7; // align with our header order
-      const daysInMonth = new Date(y,m+1,0).getDate();
-
-      for(let i=0;i<startPad;i++){
-        const d = document.createElement('div'); d.className='day muted'; cal.appendChild(d);
-      }
-
-      for(let day=1; day<=daysInMonth; day++){
-        const date = new Date(y,m,day);
-        const key = fmtDate(date);
-        const times = state.availability[key] || [];
-        const div = document.createElement('div');
-        div.className = 'day ' + (times.length? 'available':'unavailable');
-        div.textContent = day;
-        div.tabIndex=0;
-        div.setAttribute('role','button');
-        div.setAttribute('aria-label', `اليوم ${day} ${title} ${(times.length? 'متاح':'غير متاح')}`);
-        div.onclick = ()=> selectDate(date);
-        if(state.selectedDate && fmtDate(state.selectedDate)===key){div.classList.add('selected');}
-        cal.appendChild(div);
-      }
-
-      renderSlots();
-    }
-
-    function selectDate(d){
-      state.selectedDate = d; state.selectedTime = null; renderCalendar();
-    }
-
-    // ======== Slots ========
-    function renderSlots(){
-      const box = document.getElementById('slots');
-      box.innerHTML='';
-      if(!state.selectedDate){
-        box.innerHTML = '<div class="chip">اختر يومًا من التقويم لعرض الأوقات</div>';
-        return;
-      }
-      const key = fmtDate(state.selectedDate);
-      const times = state.availability[key] || [];
-      if(!times.length){
-        const empty = document.createElement('div');
-        empty.className='slot';
-        empty.innerHTML = `<span class="time">لا توجد أوقات متاحة</span><span class="chip bad">0 متاح</span>`;
-        box.appendChild(empty);
-        return;
-      }
-      times.forEach(t=>{
-        const row = document.createElement('div'); row.className='slot';
-        row.innerHTML = `<span class="time">${t}</span><button class="btn secondary">اختيار</button>`;
-        row.querySelector('button').onclick = ()=>{ state.selectedTime=t; highlightRow(row); };
-        box.appendChild(row);
-      });
-    }
-
-    function highlightRow(row){
-      document.querySelectorAll('.slot').forEach(s=>s.style.outline='none');
-      row.style.outline = '2px solid rgba(0,198,255,.35)';
-      showToast('تم اختيار الوقت. اضغط "حجز الموعد المحدد" لإكمال الاختيار');
-    }
-
-    // ======== Actions ========
-    document.getElementById('prevMonth').onclick = ()=>{ state.cursor = new Date(state.cursor.getFullYear(), state.cursor.getMonth()-1, 1); renderCalendar(); };
-    document.getElementById('nextMonth').onclick = ()=>{ state.cursor = new Date(state.cursor.getFullYear(), state.cursor.getMonth()+1, 1); renderCalendar(); };
-    document.getElementById('todayBtn').onclick = ()=>{ state.cursor = new Date(); renderCalendar(); };
-
-    document.getElementById('clearBtn').onclick = ()=>{ state.selectedDate=null; state.selectedTime=null; renderCalendar(); showToast('تم مسح الاختيار'); };
-
-    document.getElementById('bookBtn').onclick = ()=>{
-      if(!state.selectedDate){ return showToast('اختر تاريخًا أولًا'); }
-      if(!state.selectedTime){ return showToast('اختر وقتًا من القائمة'); }
-      const dStr = new Intl.DateTimeFormat('ar-EG',{weekday:'long', day:'2-digit', month:'long', year:'numeric'}).format(state.selectedDate);
-      showToast(`تم تثبيت الموعد: ${dStr} – ${state.selectedTime}`);
-    };
-
-    // ======== Telegram Notify ========
-    document.getElementById('notifyBtn').onclick = async ()=>{
-      const token = document.getElementById('botToken').value.trim();
-      const chat = document.getElementById('chatId').value.trim();
-      const textTpl = document.getElementById('tgText').value;
-      if(!token || !chat){ return showToast('ضع توكن البوت و CHAT_ID'); }
-      if(!state.selectedDate || !state.selectedTime){ return showToast('اختر تاريخًا ووقتًا أولًا'); }
-      const dateF = new Intl.DateTimeFormat('ar-EG',{day:'2-digit', month:'long', year:'numeric'}).format(state.selectedDate);
-      const payload = textTpl.replace('{{date}}', dateF).replace('{{time}}', state.selectedTime);
-
-      try{
-        const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`,{
-          method:'POST', headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({chat_id: chat, text: payload})
+      try {
+        const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ chat_id: CHAT_ID, text: msg }),
         });
-        if(res.ok){ showToast('✅ تم إرسال الإشعار بنجاح'); }
-        else{ showToast('❌ فشل الإرسال – تحقق من البيانات'); }
-      }catch(err){
-        console.error(err); showToast('⚠️ تعذر الاتصال بتيليجرام');
-      }
-    };
 
-    // boot
-    seedAvailability();
-    renderCalendar();
+        if (res.ok) {
+          showToast("✅ تم إرسال الإشعار بنجاح!");
+        } else {
+          showToast("❌ فشل الإرسال!");
+        }
+      } catch (e) {
+        showToast("⚠️ خطأ في الاتصال بالبوت");
+        console.error(e);
+      }
+    });
   </script>
 </body>
 </html>
