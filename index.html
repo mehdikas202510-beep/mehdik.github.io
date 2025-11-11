@@ -1,85 +1,118 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hello</title>
-
+  <title>زيارة الموقع</title>
   <style>
+    * {
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+    }
+
     body {
+      height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #007aff, #00c6ff);
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
-      background: #f8f9fb;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
-      margin: 0;
+      font-family: "Cairo", sans-serif;
+      color: #fff;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      padding: 40px 60px;
+      backdrop-filter: blur(10px);
+      text-align: center;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
     }
 
     h1 {
-      font-size: 3rem;
-      font-weight: 600;
-      color: #111;
-      margin-bottom: 40px;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 1rem;
+      opacity: 0.9;
+      margin-bottom: 30px;
     }
 
     button {
-      padding: 14px 32px;
-      font-size: 1rem;
+      background: #fff;
+      color: #007aff;
       border: none;
       border-radius: 12px;
-      background-color: #007aff;
-      color: white;
+      padding: 14px 40px;
+      font-size: 1.1rem;
+      font-weight: 600;
       cursor: pointer;
-      transition: 0.2s;
-      font-weight: 500;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
     }
 
     button:hover {
-      background-color: #005fcc;
+      transform: scale(1.05);
+      background: #f1f1f1;
     }
 
     .status {
-      margin-top: 20px;
-      color: #555;
-      font-size: 0.9rem;
+      margin-top: 25px;
+      font-size: 1rem;
+      opacity: 0.95;
+    }
+
+    .icon {
+      font-size: 50px;
+      margin-bottom: 15px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card {
+      animation: fadeIn 1s ease;
     }
   </style>
 </head>
 <body>
-  <h1>hello</h1>
-  <button id="visit-btn">Send Visit</button>
-  <div class="status" id="status"></div>
+  <div class="card">
+    <div class="icon">🚀</div>
+    <h1>مرحباً بك!</h1>
+    <p>اضغط الزر لإرسال إشعار إلى بوت التليجرام</p>
+    <button id="visit-btn">إرسال زيارة</button>
+    <div class="status" id="status"></div>
+  </div>
 
   <script>
-    const BOT_TOKEN = "7544882164:AAHUQCd3fnHSwbj6tSPIGSEbRgkOXS3wLTY"; // 🔒 ضع هنا التوكن الخاص ببوتك
-    const CHAT_ID = "6494466799"; // 🔢 ضع هنا معرف المحادثة أو القناة التي ترسل إليها الرسالة
-
+    const BOT_TOKEN = "7544882164:AAHUQCd3fnHSwbj6tSPIGSEbRgkOXS3wLTY";
+    const CHAT_ID = "6494466799";
     const btn = document.getElementById("visit-btn");
     const status = document.getElementById("status");
 
     btn.addEventListener("click", () => {
-      const msg = `🔔 زيارة جديدة للموقع - ${new Date().toLocaleString()}`;
+      const msg = `🔔 زيارة جديدة للموقع - ${new Date().toLocaleString("ar-EG")}`;
+      status.textContent = "⏳ جاري الإرسال...";
 
       fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          chat_id: CHAT_ID,
-          text: msg,
-        }),
+        body: JSON.stringify({ chat_id: CHAT_ID, text: msg }),
       })
         .then((res) => {
           if (res.ok) {
-            status.textContent = "✅ تم إرسال الإشعار إلى تيليجرام";
+            status.textContent = "✅ تم إرسال الإشعار بنجاح إلى تيليجرام";
           } else {
-            status.textContent = "❌ فشل الإرسال!";
+            status.textContent = "❌ فشل الإرسال، تحقق من التوكن أو الـ Chat ID.";
           }
         })
-        .catch((err) => {
-          status.textContent = "⚠️ خطأ في الاتصال بالبوت";
-          console.error(err);
+        .catch(() => {
+          status.textContent = "⚠️ خطأ في الاتصال، حاول مجدداً.";
         });
     });
   </script>
