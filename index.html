@@ -6,158 +6,249 @@
   <title>زيارة جديدة</title>
   <style>
     :root {
-      --glass-bg: rgba(255, 255, 255, 0.12);
-      --glass-bg-hover: rgba(255, 255, 255, 0.22);
-      --danger: #ff5252;
-      --ok: #22c55e;
-      --bg: linear-gradient(135deg, #007aff, #00c6ff);
-      --text-color: #fff;
-      --card-bg: rgba(255, 255, 255, 0.15);
-      --border-color: rgba(255, 255, 255, 0.25);
-    }
-
-    body.light {
-      --bg: linear-gradient(135deg, #e0f7ff, #ffffff);
-      --text-color: #222;
-      --card-bg: rgba(255, 255, 255, 0.8);
-      --border-color: rgba(0, 0, 0, 0.1);
-      --glass-bg: rgba(0, 0, 0, 0.08);
-      --glass-bg-hover: rgba(0, 0, 0, 0.15);
+      --main-bg: #f7f9fc;
+      --card-bg: #ffffff;
+      --border: #e0e4ec;
+      --text-main: #222;
+      --text-sub: #555;
+      --primary: #0078ff;
+      --primary-light: #e8f2ff;
     }
 
     * { box-sizing: border-box; }
 
     body {
-      min-height: 100vh;
+      font-family: "Cairo", system-ui, sans-serif;
+      background: var(--main-bg);
+      color: var(--text-main);
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
-      font-family: "Poppins", system-ui, sans-serif;
-      background: var(--bg);
-      margin: 0;
-      color: var(--text-color);
-      padding: 20px;
-      transition: background 0.4s ease, color 0.4s ease;
+      padding: 30px 20px;
+      min-height: 100vh;
     }
 
     h1 {
-      font-size: 2.2rem;
-      margin: 0 0 12px;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 10px;
       text-align: center;
+      color: var(--primary);
     }
 
-    p.subtitle { opacity: 0.9; text-align: center; margin-bottom: 24px; }
+    p.subtitle {
+      color: var(--text-sub);
+      text-align: center;
+      margin-bottom: 25px;
+      line-height: 1.6;
+    }
 
     form {
-      width: 100%;
-      max-width: 520px;
       background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 18px;
-      padding: 22px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 22px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     }
 
-    label { display: block; font-weight: 600; margin: 10px 4px 6px; }
-    input[type="text"], input[type="tel"], input[type="file"] {
+    label {
+      font-weight: 600;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .req {
+      color: var(--primary);
+    }
+
+    input[type="text"],
+    input[type="tel"],
+    input[type="file"] {
       width: 100%;
-      padding: 14px 16px;
-      border-radius: 14px;
-      border: 1px solid var(--border-color);
-      background: var(--glass-bg);
-      color: var(--text-color);
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
       outline: none;
-      transition: all 0.25s ease;
+      font-size: 1rem;
+      background: var(--primary-light);
+      transition: all 0.2s ease;
     }
 
     input:focus {
-      box-shadow: 0 0 0 3px rgba(0,0,0,0.2);
+      border-color: var(--primary);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(0,120,255,0.1);
     }
 
     input::file-selector-button {
-      padding: 10px 14px;
+      padding: 8px 14px;
+      background: var(--primary);
+      color: #fff;
       border: none;
-      border-radius: 10px;
-      background: var(--glass-bg);
-      color: var(--text-color);
+      border-radius: 8px;
+      margin-inline-end: 10px;
       cursor: pointer;
-      transition: 0.3s;
+      transition: background 0.2s;
     }
 
-    input::file-selector-button:hover { background: var(--glass-bg-hover); }
+    input::file-selector-button:hover {
+      background: #005ec4;
+    }
 
-    .row { display: flex; flex-direction: column; gap: 10px; }
+    .help, .note {
+      font-size: 0.9rem;
+      color: var(--text-sub);
+      margin-top: 6px;
+    }
 
-    .help { font-size: 0.9rem; opacity: 0.8; margin: 4px 6px; }
-    .error { color: var(--danger); margin: 6px 6px 0; display: none; }
+    .error {
+      color: #d72638;
+      font-size: 0.9rem;
+      display: none;
+      margin-top: 4px;
+    }
 
     button {
       width: 100%;
-      padding: 14px 20px;
-      font-size: 1.1rem;
+      margin-top: 20px;
+      padding: 14px;
+      font-size: 1.05rem;
       border: none;
-      border-radius: 14px;
-      background: var(--glass-bg);
-      color: var(--text-color);
-      cursor: pointer;
+      border-radius: 12px;
+      background: var(--primary);
+      color: #fff;
       font-weight: 600;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
-      margin-top: 16px;
+      cursor: pointer;
       transition: all 0.25s ease;
     }
 
-    button:hover { background: var(--glass-bg-hover); }
-
-    .toggle-mode {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      background: var(--glass-bg);
-      border: 1px solid var(--border-color);
-      padding: 8px 14px;
-      border-radius: 12px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      transition: all 0.3s;
+    button:hover {
+      background: #005ec4;
+      transform: translateY(-1px);
     }
-    .toggle-mode:hover { background: var(--glass-bg-hover); }
+
+    button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 25px;
+      background: rgba(0,0,0,0.85);
+      color: #fff;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+
+    .toast.show { opacity: 1; }
+
   </style>
 </head>
 <body>
-  <button class="toggle-mode" id="toggleMode">🌙 الوضع الداكن</button>
-
   <h1>👋 أهلاً بك</h1>
   <p class="subtitle">يرجى تعبئة البيانات التالية لإرسال إشعار زيارة مع نسخة PDF من جواز السفر.</p>
 
-  <form>
-    <div class="row">
-      <div>
-        <label>الاسم الكامل <span class="req">*</span></label>
-        <input type="text" placeholder="مثال: محمد أحمد العلوي" required />
-      </div>
-      <div>
-        <label>رقم جواز السفر <span class="req">*</span></label>
-        <input type="text" placeholder="مثال: X1234567" required />
-        <div class="help">٦–١٢ حرف/رقم لاتيني بدون مسافات</div>
-      </div>
-    </div>
+  <form id="visit-form">
+    <label for="fullName">الاسم الكامل <span class="req">*</span></label>
+    <input id="fullName" name="fullName" type="text" placeholder="مثال: محمد أحمد العلوي" required />
+    <div id="errName" class="error">الرجاء إدخال اسم كامل صالح (٣ أحرف فأكثر).</div>
 
-    <label>رفع ملف الجواز (PDF فقط)</label>
-    <input type="file" accept="application/pdf" required />
+    <label for="passport">رقم جواز السفر <span class="req">*</span></label>
+    <input id="passport" name="passport" type="text" pattern="[A-Za-z0-9]{6,12}" placeholder="مثال: X1234567" required />
+    <div class="help">٦–١٢ حرف/رقم لاتيني بدون مسافات</div>
+    <div id="errPass" class="error">رقم الجواز يجب أن يكون ٦–١٢ رموز لاتينية/أرقام.</div>
+
+    <label for="pdf">رفع ملف الجواز (PDF فقط) <span class="req">*</span></label>
+    <input id="pdf" name="pdf" type="file" accept="application/pdf" required />
     <div class="help">الحد الأقصى المقترح 20MB.</div>
+    <div id="errFile" class="error">الملف يجب أن يكون PDF وبحجم مناسب.</div>
 
-    <button type="submit">📨 إرسال</button>
+    <button id="sendBtn" type="submit">📨 إرسال</button>
+    <div class="note">بالضغط على "إرسال" سيتم إرسال البيانات والملف إلى بوت تيليجرام المحدد.</div>
   </form>
 
+  <div id="toast" class="toast"></div>
+
   <script>
-    const toggle = document.getElementById('toggleMode');
-    toggle.addEventListener('click', () => {
-      document.body.classList.toggle('light');
-      const isLight = document.body.classList.contains('light');
-      toggle.textContent = isLight ? '🌚 الوضع الداكن' : '🌙 الوضع الفاتح';
+    const BOT_TOKEN = "YOUR_BOT_TOKEN";
+    const CHAT_ID   = "YOUR_CHAT_ID";
+
+    const form   = document.getElementById("visit-form");
+    const toast  = document.getElementById("toast");
+    const sendBtn= document.getElementById("sendBtn");
+
+    function showToast(message){
+      toast.textContent = message;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 3000);
+    }
+
+    function validate(){
+      const name = document.getElementById('fullName');
+      const pass = document.getElementById('passport');
+      const file = document.getElementById('pdf');
+
+      const okName = (name.value || '').trim().length >= 3;
+      document.getElementById('errName').style.display = okName ? 'none' : 'block';
+
+      const passRe = /^[A-Za-z0-9]{6,12}$/;
+      const okPass = passRe.test((pass.value || '').trim());
+      document.getElementById('errPass').style.display = okPass ? 'none' : 'block';
+
+      const f = file.files[0];
+      const okFile = !!f && f.type === 'application/pdf' && f.size <= 20 * 1024 * 1024;
+      document.getElementById('errFile').style.display = okFile ? 'none' : 'block';
+
+      return okName && okPass && okFile;
+    }
+
+    async function sendMessage(text){
+      const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+      await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: CHAT_ID, text })
+      });
+    }
+
+    async function sendDocument(file, caption){
+      const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`;
+      const fd = new FormData();
+      fd.append('chat_id', CHAT_ID);
+      fd.append('document', file);
+      fd.append('caption', caption);
+      await fetch(url, { method: 'POST', body: fd });
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if(!validate()) { showToast('⚠️ تحقق من المدخلات ثم أعد المحاولة'); return; }
+
+      const name = document.getElementById('fullName').value.trim();
+      const pass = document.getElementById('passport').value.trim();
+      const file = document.getElementById('pdf').files[0];
+
+      const timeStr = new Date().toLocaleString('ar-EG');
+      const header  = `🔔 زيارة جديدة\n⌚️ ${timeStr}`;
+      const details = `👤 الاسم: ${name}\n🛂 رقم الجواز: ${pass}`;
+
+      try {
+        sendBtn.disabled = true; sendBtn.textContent = 'جارٍ الإرسال...';
+        await sendMessage(`${header}\n\n${details}`);
+        await sendDocument(file, `📎 جواز السفر\n${details}`);
+        showToast('✅ تم إرسال البيانات بنجاح');
+        form.reset();
+      } catch(err){
+        showToast('❌ حدث خطأ أثناء الإرسال');
+      } finally {
+        sendBtn.disabled = false; sendBtn.textContent = '📨 إرسال';
+      }
     });
   </script>
 </body>
