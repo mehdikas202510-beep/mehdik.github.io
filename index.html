@@ -1,169 +1,226 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Hello – iPhone style + DVD bounce</title>
-  <!-- فونت سكربت قريبة من أسلوب "hello" في iPhone -->
-  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>زيارة جديدة</title>
   <style>
     :root{
-      --bg1: 255, 99, 132;
-      --bg2: 54, 162, 235;
-      --bg3: 99, 255, 200;
-      --glow: 255, 255, 255;
+      --glass-bg: rgba(255,255,255,0.12);
+      --glass-bg-hover: rgba(255,255,255,0.22);
+      --danger: #ff5252;
+      --ok: #22c55e;
     }
     *{box-sizing:border-box}
-    html,body{height:100%;margin:0}
-    body{
-      overflow:hidden;
-      background: radial-gradient(circle at 20% 20%, rgba(var(--bg1),0.35), transparent 40%),
-                  radial-gradient(circle at 80% 30%, rgba(var(--bg2),0.35), transparent 45%),
-                  radial-gradient(circle at 50% 80%, rgba(var(--bg3),0.35), transparent 40%),
-                  linear-gradient(120deg, #0f1222, #12182a 40%, #0e0f1c);
-      animation: bgFloat 20s ease-in-out infinite alternate;
-      font-synthesis-weight: none;
-    }
-    @keyframes bgFloat{
-      0%{background-position: 0 0, 0 0, 0 0, 0 0}
-      100%{background-position: 10px -20px, -30px 20px, 20px 30px, 0 0}
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, sans-serif;
+      background: linear-gradient(135deg, #007aff, #00c6ff);
+      margin: 0;
+      color: #fff;
+      padding: 20px;
     }
 
-    /* جسيمات لطيفة في الخلفية */
-    .star{position:fixed; width:2px; height:2px; border-radius:50%;
-      background:rgba(255,255,255,.7); filter:blur(.5px); pointer-events:none;
-      animation: twinkle 3s ease-in-out infinite;
-    }
-    @keyframes twinkle{50%{opacity:.2; transform:scale(.8)} }
-
-    #hello{
-      position:fixed; left:0; top:0; will-change: transform, color, text-shadow;
-      font-family: 'Great Vibes', ui-script, "Segoe Script", cursive;
-      font-size: clamp(56px, 14vw, 220px);
-      line-height:1; white-space:nowrap;
-      color: hsl(210 100% 70%);
-      text-shadow:
-        0 0 1px rgba(255,255,255,.6),
-        0 0 12px rgba(var(--glow), .25),
-        0 0 28px rgba(var(--glow), .2);
-      user-select:none;
-      cursor: none; /* لإحساس أنيق */
-      padding: .2em .3em;
-      transition: filter .2s ease;
-    }
-    /* هالة متدرجة شبيهة بقلم ضوئي */
-    #hello::after{
-      content:""; position:absolute; inset:-20px; z-index:-1; border-radius:40px;
-      background: radial-gradient(40% 60% at 40% 60%, rgba(255,255,255,.08), transparent 70%);
-      filter: blur(20px);
+    h1 {
+      font-size: 2.4rem;
+      font-weight: 700;
+      margin: 0 0 18px;
+      text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      animation: fadeInDown 0.8s ease;
+      text-align:center;
     }
 
-    /* تلميحات للمستخدم */
-    .hint{
-      position:fixed; left:50%; bottom:24px; transform:translateX(-50%);
-      color:#c9cbe1; font: 500 14px/1.2 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      opacity:.7; letter-spacing:.2px; text-align:center;
-      background: rgba(255,255,255,.03); padding:10px 14px; border-radius:14px;
-      border:1px solid rgba(255,255,255,.06); backdrop-filter: blur(8px);
+    p.subtitle{
+      opacity:.9; margin-top:0; margin-bottom:28px; text-align:center
     }
-    .hint kbd{font:600 12px/1 ui-monospace, SFMono-Regular, Menlo, monospace; background:rgba(255,255,255,.08); padding:.2em .5em; border-radius:6px}
+
+    form{
+      width: 100%;
+      max-width: 560px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 18px;
+      padding: 22px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      animation: fadeInUp 0.9s ease;
+    }
+
+    label{display:block; font-weight:600; margin: 12px 6px 6px}
+    .req{opacity:.9}
+
+    input[type="text"], input[type="tel"], input[type="file"]{
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.28);
+      outline: none;
+      transition: all .25s ease;
+    }
+
+    input::file-selector-button{
+      padding: 10px 16px; border: none; border-radius: 12px; background: rgba(0,0,0,.25); color:#fff; margin-inline-end: 12px; cursor:pointer
+    }
+
+    input:focus{ box-shadow: 0 0 0 3px rgba(255,255,255,0.25); }
+
+    .row{ display:grid; grid-template-columns: 1fr; gap:14px }
+    @media(min-width:640px){ .row{ grid-template-columns: 1fr 1fr } }
+
+    .help{font-size:.9rem; opacity:.85; margin: 6px 6px 0}
+    .error{ color: var(--danger); margin: 6px 6px 0; display:none }
+
+    button{
+      width: 100%;
+      padding: 14px 20px;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 14px;
+      background: var(--glass-bg);
+      color: #fff;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: all 0.25s ease;
+      font-weight: 600;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.22);
+      margin-top: 16px;
+    }
+
+    button:hover { background: var(--glass-bg-hover); transform: translateY(-1px); }
+    button:disabled{ opacity:.7; cursor:not-allowed }
+
+    .toast {
+      position: fixed; inset-inline: 0; bottom: 24px; margin-inline:auto; width: fit-content;
+      padding: 14px 18px; background: rgba(0,0,0,0.78);
+      border-radius: 12px; font-size: 1rem; opacity: 0; transition: opacity 0.35s ease
+    }
+    .toast.show { opacity: 1 }
+
+    .note{ font-size:.85rem; opacity:.85; margin-top:10px; text-align:center }
+
+    @keyframes fadeInDown { from {opacity: 0; transform: translateY(-16px);} to {opacity: 1; transform: translateY(0);} }
+    @keyframes fadeInUp   { from {opacity: 0; transform: translateY(16px);}  to {opacity: 1; transform: translateY(0);} }
   </style>
 </head>
 <body>
-  <!-- نجوم خفيفة -->
+  <h1>👋 أهلاً بك</h1>
+  <p class="subtitle">يرجى تعبئة البيانات التالية لإرسال إشعار زيارة مع نسخة PDF من جواز السفر.</p>
+
+  <form id="visit-form">
+    <div class="row">
+      <div>
+        <label for="fullName">الاسم الكامل <span class="req">*</span></label>
+        <input id="fullName" name="fullName" type="text" placeholder="مثال: محمد أحمد العلوي" autocomplete="name" required />
+        <div id="errName" class="error">الرجاء إدخال اسم كامل صالح (٣ أحرف فأكثر).</div>
+      </div>
+      <div>
+        <label for="passport">رقم جواز السفر <span class="req">*</span></label>
+        <input id="passport" name="passport" type="text" inputmode="latin" pattern="[A-Za-z0-9]{6,12}" placeholder="مثال: X1234567" required />
+        <div class="help">٦–١٢ حرف/رقم لاتيني بدون مسافات</div>
+        <div id="errPass" class="error">رقم الجواز يجب أن يكون ٦–١٢ رموز لاتينية/أرقام.</div>
+      </div>
+    </div>
+
+    <label for="pdf">رفع ملف الجواز (PDF فقط) <span class="req">*</span></label>
+    <input id="pdf" name="pdf" type="file" accept="application/pdf" required />
+    <div class="help">الحد الأقصى المقترح 20MB.</div>
+    <div id="errFile" class="error">الملف يجب أن يكون PDF وبحجم مناسب.</div>
+
+    <button id="sendBtn" type="submit">📨 إرسال</button>
+    <div class="note">بالضغط على "إرسال" سيتم إرسال البيانات والملف إلى بوت تيليجرام المحدد.</div>
+  </form>
+
+  <div id="toast" class="toast"></div>
+
   <script>
-    // إنشاء نجوم بسيطة
-    for(let i=0;i<40;i++){
-      const s=document.createElement('div');
-      s.className='star';
-      s.style.left = Math.random()*100 + 'vw';
-      s.style.top  = Math.random()*100 + 'vh';
-      s.style.animationDelay = (Math.random()*3)+'s';
-      s.style.opacity = Math.random()*0.6 + 0.2;
-      document.body.appendChild(s);
-    }
-  </script>
+    // ⚠️ ملاحظة أمنية: وضع التوكن في الواجهة مكشوف للمستخدمين. الحل الأفضل هو وسيط (Backend) آمن.
+    const BOT_TOKEN = "7544882164:AAHUQCd3fnHSwbj6tSPIGSEbRgkOXS3wLTY"; // ضع توكن البوت هنا (غير مُستحسن في الواجهة)
+    const CHAT_ID   = "6494466799"; // معرّف القناة/المجموعة/المستخدم
 
-  <div id="hello">hello</div>
-  <div class="hint">يتحرك مثل شعار <b>DVD</b> ويرتد عن الحواف. انقر للتبديل بين السرعات، واضغط <kbd>Space</kbd> لإيقاف/تشغيل.</div>
+    const form   = document.getElementById("visit-form");
+    const toast  = document.getElementById("toast");
+    const sendBtn= document.getElementById("sendBtn");
 
-  <script>
-    const hello = document.getElementById('hello');
-
-    // حجم الكلمة (سنحسبه لاحقًا بعد الرسم)
-    let x = 120, y = 120;     // موضع البداية
-    let vx = 2.2, vy = 1.8;   // السرعة (بكسل/فريم)
-    let speedBoost = 1;       // معامل السرعة
-    let paused = false;
-    let hue = 210;
-
-    // ضع الكلمة في الموضع الابتدائي
-    function layout(){
-      const r = hello.getBoundingClientRect();
-      hello.style.transform = `translate(${x}px, ${y}px)`;
-      return r;
+    function showToast(message){
+      toast.textContent = message;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 3200);
     }
 
-    // تغيير اللون واللمعان عند الارتداد
-    function bounceSplash(){
-      hue = (hue + 40 + Math.random()*80) % 360;
-      const sat = 90, light = 68;
-      hello.style.color = `hsl(${hue} ${sat}% ${light}%)`;
-      hello.style.textShadow = `0 0 1px rgba(255,255,255,.7), 0 0 14px hsla(${hue}, 100%, 70%, .35), 0 0 36px hsla(${hue}, 100%, 70%, .25)`;
-      // نبضة صغيرة
-      hello.animate([
-        { transform: `translate(${x}px, ${y}px) scale(1) rotate(0.0deg)` },
-        { transform: `translate(${x}px, ${y}px) scale(1.06) rotate(1.5deg)` }
-      ], { duration: 140, easing: 'ease-out' });
+    function validate(){
+      const name = document.getElementById('fullName');
+      const pass = document.getElementById('passport');
+      const file = document.getElementById('pdf');
+
+      // اسم كامل >= 3 حروف (أي لغة)
+      const okName = (name.value || '').trim().length >= 3;
+      document.getElementById('errName').style.display = okName ? 'none' : 'block';
+
+      // جواز 6-12 أحرف/أرقام لاتينية
+      const passRe = /^[A-Za-z0-9]{6,12}$/;
+      const okPass = passRe.test((pass.value || '').trim());
+      document.getElementById('errPass').style.display = okPass ? 'none' : 'block';
+
+      // ملف PDF وحجم <= 20MB
+      const f = file.files[0];
+      const okFile = !!f && f.type === 'application/pdf' && f.size <= 20 * 1024 * 1024;
+      document.getElementById('errFile').style.display = okFile ? 'none' : 'block';
+
+      return okName && okPass && okFile;
     }
 
-    function step(){
-      if(!paused){
-        x += vx * speedBoost;
-        y += vy * speedBoost;
+    async function sendMessage(text){
+      const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: CHAT_ID, text })
+      });
+      if(!res.ok) throw new Error('sendMessage failed');
+      return res.json();
+    }
 
-        const r = hello.getBoundingClientRect();
-        const w = r.width, h = r.height;
-        const maxX = innerWidth - w;
-        const maxY = innerHeight - h;
+    async function sendDocument(file, caption){
+      const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`;
+      const fd = new FormData();
+      fd.append('chat_id', CHAT_ID);
+      fd.append('document', file);
+      fd.append('caption', caption);
+      const res = await fetch(url, { method: 'POST', body: fd });
+      if(!res.ok) throw new Error('sendDocument failed');
+      return res.json();
+    }
 
-        let hit=false;
-        if(x <= 0){ x = 0; vx = Math.abs(vx); hit=true; }
-        if(x >= maxX){ x = maxX; vx = -Math.abs(vx); hit=true; }
-        if(y <= 0){ y = 0; vy = Math.abs(vy); hit=true; }
-        if(y >= maxY){ y = maxY; vy = -Math.abs(vy); hit=true; }
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if(!validate()) { showToast('⚠️ تحقق من المدخلات ثم أعد المحاولة'); return; }
 
-        if(hit) bounceSplash();
+      const name = document.getElementById('fullName').value.trim();
+      const pass = document.getElementById('passport').value.trim();
+      const file = document.getElementById('pdf').files[0];
 
-        hello.style.transform = `translate(${x}px, ${y}px)`;
+      const timeStr = new Date().toLocaleString('ar-EG');
+      const header  = `🔔 زيارة جديدة للموقع\n⌚️ ${timeStr}`;
+      const details = `👤 الاسم: ${name}\n🛂 رقم الجواز: ${pass}`;
+
+      try {
+        sendBtn.disabled = true; sendBtn.textContent = 'جارٍ الإرسال...';
+        await sendMessage(`${header}\n\n${details}`);
+        await sendDocument(file, `📎 جواز السفر PDF\n${details}`);
+        showToast('✅ تم إرسال البيانات والملف بنجاح');
+        form.reset();
+      } catch(err){
+        console.error(err);
+        showToast('❌ فشل الإرسال، حاول لاحقاً');
+      } finally {
+        sendBtn.disabled = false; sendBtn.textContent = '📨 إرسال';
       }
-      requestAnimationFrame(step);
-    }
-
-    // تفاعل: نقرة = تبديل سرعة، مسافة = إيقاف/تشغيل
-    addEventListener('click', () => {
-      speedBoost = (speedBoost === 1) ? 2.2 : (speedBoost === 2.2 ? 0.6 : 1);
-    });
-    addEventListener('keydown', (e) => {
-      if(e.code === 'Space'){
-        paused = !paused; e.preventDefault();
-      }
-    });
-
-    // إعادة ضبط عند تغيير الحجم
-    addEventListener('resize', () => {
-      const r = hello.getBoundingClientRect();
-      x = Math.min(x, innerWidth - r.width);
-      y = Math.min(y, innerHeight - r.height);
-    });
-
-    // وضع البداية في مكان جميل عشوائي
-    requestAnimationFrame(() => {
-      const r = hello.getBoundingClientRect();
-      x = Math.max(20, Math.min(innerWidth - r.width  - 20, Math.random() * (innerWidth  - r.width  - 40)));
-      y = Math.max(20, Math.min(innerHeight - r.height - 20, Math.random() * (innerHeight - r.height - 40)));
-      hello.style.transform = `translate(${x}px, ${y}px)`;
-      step();
     });
   </script>
 </body>
