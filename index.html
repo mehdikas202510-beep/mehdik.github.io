@@ -3,21 +3,51 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>حجز موعد</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Mehdik Booking | حجز المواعيد</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3103/3103446.png" />
 </head>
-<body>
-  <div class="container">
-    <h1>حجز موعد</h1>
-    <form id="bookingForm">
-      <label>اختر التاريخ:</label>
-      <input type="date" id="date" required />
-      <label>اختر الوقت:</label>
-      <input type="time" id="time" required />
-      <button type="submit">احجز الموعد</button>
+<body class="bg-gray-100 font-sans">
+  <!-- Header -->
+  <header class="bg-blue-600 text-white text-center py-6 shadow-md">
+    <h1 class="text-3xl font-bold">Mehdik Booking</h1>
+    <p class="text-sm mt-2">احجز موعدك بكل سهولة</p>
+  </header>
+
+  <!-- Booking Form -->
+  <main class="max-w-lg mx-auto bg-white mt-10 p-8 rounded-2xl shadow-lg">
+    <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">نموذج حجز موعد</h2>
+    <form id="bookingForm" class="space-y-5">
+      <div>
+        <label class="block text-gray-700 mb-1">الاسم الكامل</label>
+        <input type="text" id="name" required class="w-full border-gray-300 rounded-md focus:ring focus:ring-blue-300 p-2 border" placeholder="أدخل اسمك الكامل">
+      </div>
+      <div>
+        <label class="block text-gray-700 mb-1">البريد الإلكتروني</label>
+        <input type="email" id="email" required class="w-full border-gray-300 rounded-md focus:ring focus:ring-blue-300 p-2 border" placeholder="example@email.com">
+      </div>
+      <div>
+        <label class="block text-gray-700 mb-1">رقم الهاتف</label>
+        <input type="tel" id="phone" required class="w-full border-gray-300 rounded-md focus:ring focus:ring-blue-300 p-2 border" placeholder="05xxxxxxxx">
+      </div>
+      <div>
+        <label class="block text-gray-700 mb-1">تاريخ ووقت الموعد</label>
+        <input type="datetime-local" id="datetime" required class="w-full border-gray-300 rounded-md focus:ring focus:ring-blue-300 p-2 border">
+      </div>
+      <div>
+        <label class="block text-gray-700 mb-1">ملاحظات إضافية</label>
+        <textarea id="note" class="w-full border-gray-300 rounded-md focus:ring focus:ring-blue-300 p-2 border" rows="3" placeholder="أي تفاصيل إضافية"></textarea>
+      </div>
+
+      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition">احجز الآن</button>
     </form>
-    <p id="message"></p>
-  </div>
+    <p id="responseMsg" class="text-center text-green-600 font-semibold mt-4 hidden"></p>
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center text-gray-600 py-4 mt-10">
+    © 2025 Mehdik Booking — جميع الحقوق محفوظة
+  </footer>
 
   <script src="script.js"></script>
 </body>
