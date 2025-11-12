@@ -5,80 +5,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>New Visit</title>
   <style>
-    :root {
-      --glass-bg: rgba(255,255,255,0.12);
-      --glass-bg-hover: rgba(255,255,255,0.22);
-      --danger: #ff5252;
-      --ok: #22c55e;
-    }
-    * { box-sizing: border-box }
-    body {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, sans-serif;
-      background: linear-gradient(135deg, #007aff, #00c6ff);
-      margin: 0; color: #fff; padding: 20px;
-    }
-    h1 {
-      font-size: 2.4rem; font-weight: 700; margin: 0 0 18px;
-      text-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      animation: fadeInDown 0.8s ease; text-align: center;
-    }
-    form {
-      width: 100%; max-width: 560px; background: rgba(255,255,255,0.12);
-      border: 1px solid rgba(255,255,255,0.25); border-radius: 18px; padding: 22px;
-      backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-      animation: fadeInUp 0.9s ease; position: relative; overflow: hidden;
-    }
-    label { display: block; font-weight: 600; margin: 12px 6px 6px }
-    .req { opacity: .9 }
-    input[type="text"], input[type="tel"], input[type="file"] {
-      width: 100%; padding: 14px 16px; border-radius: 14px;
-      background: rgba(255,255,255,0.15); color: #fff;
-      border: 1px solid rgba(255,255,255,0.28);
-      outline: none; transition: all .25s ease;
-    }
-    input::file-selector-button {
-      padding: 10px 16px; border: none; border-radius: 12px;
-      background: rgba(0,0,0,.25); color: #fff; margin-inline-end: 12px; cursor: pointer;
-    }
-    input:focus { box-shadow: 0 0 0 3px rgba(255,255,255,0.25); }
-    .row { display: grid; grid-template-columns: 1fr; gap: 14px }
-    @media (min-width:640px){ .row { grid-template-columns: 1fr 1fr } }
-    .help { font-size: .9rem; opacity: .85; margin: 6px 6px 0 }
-    .error { color: var(--danger); margin: 6px 6px 0; display: none }
-    button {
-      width: 100%; padding: 14px 20px; font-size: 1.1rem; border: none; border-radius: 14px;
-      background: var(--glass-bg); color: #fff; cursor: pointer;
-      backdrop-filter: blur(10px); transition: all 0.25s ease; font-weight: 600;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.22); margin-top: 16px;
-    }
-    button:hover { background: var(--glass-bg-hover); transform: translateY(-1px); }
-    button:disabled { opacity: .7; cursor: not-allowed }
-    .toast {
-      position: fixed; inset-inline: 0; bottom: 24px; margin-inline: auto; width: fit-content;
-      padding: 14px 18px; background: rgba(0,0,0,0.78);
-      border-radius: 12px; font-size: 1rem; opacity: 0; transition: opacity 0.35s ease;
-    }
-    .toast.show { opacity: 1 }
-    .form-success {
-      box-shadow: 0 0 0 2px rgba(34,197,94,.8), 0 0 40px rgba(34,197,94,.5) inset;
-      animation: successPulse 1.2s ease;
-    }
-    @keyframes successPulse {
-      0% { box-shadow: 0 0 0 0 rgba(34,197,94,.0), 0 0 0 rgba(34,197,94,0) inset }
-      30% { box-shadow: 0 0 0 2px rgba(34,197,94,.8), 0 0 40px rgba(34,197,94,.35) inset }
-      100% { box-shadow: 0 0 0 2px rgba(34,197,94,.25), 0 0 12px rgba(34,197,94,.2) inset }
-    }
-    .checkmark { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; opacity: 0; transition: opacity .25s ease; }
-    .checkmark svg { width: 92px; height: 92px; filter: drop-shadow(0 6px 22px rgba(0,0,0,.35)); }
-    .checkmark.show { opacity: 1 }
-    #confettiCanvas { position: fixed; inset: 0; pointer-events: none; }
-    @keyframes fadeInDown { from {opacity: 0; transform: translateY(-16px);} to {opacity: 1; transform: translateY(0);} }
-    @keyframes fadeInUp { from {opacity: 0; transform: translateY(16px);} to {opacity: 1; transform: translateY(0);} }
+    :root{--glass-bg:rgba(255,255,255,0.12);--glass-bg-hover:rgba(255,255,255,0.22);--danger:#ff5252;--ok:#22c55e}
+    *{box-sizing:border-box}
+    body{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,sans-serif;background:linear-gradient(135deg,#007aff,#00c6ff);margin:0;color:#fff;padding:20px}
+    h1{font-size:2.4rem;font-weight:700;margin:0 0 18px;text-shadow:0 4px 10px rgba(0,0,0,.3);animation:fadeInDown .8s ease;text-align:center}
+    form{width:100%;max-width:560px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:18px;padding:22px;backdrop-filter:blur(10px);box-shadow:0 10px 30px rgba(0,0,0,.25);animation:fadeInUp .9s ease;position:relative;overflow:hidden}
+    label{display:block;font-weight:600;margin:12px 6px 6px}
+    .req{opacity:.9}
+    input[type=text],input[type=tel],input[type=file]{width:100%;padding:14px 16px;border-radius:14px;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.28);outline:none;transition:all .25s ease}
+    input::file-selector-button{padding:10px 16px;border:none;border-radius:12px;background:rgba(0,0,0,.25);color:#fff;margin-inline-end:12px;cursor:pointer}
+    input:focus{box-shadow:0 0 0 3px rgba(255,255,255,.25)}
+    .row{display:grid;grid-template-columns:1fr;gap:14px}
+    @media(min-width:640px){.row{grid-template-columns:1fr 1fr}}
+    .help{font-size:.9rem;opacity:.85;margin:6px 6px 0}
+    .error{color:var(--danger);margin:6px 6px 0;display:none}
+    button{width:100%;padding:14px 20px;font-size:1.1rem;border:none;border-radius:14px;background:var(--glass-bg);color:#fff;cursor:pointer;backdrop-filter:blur(10px);transition:all .25s ease;font-weight:600;box-shadow:0 6px 18px rgba(0,0,0,.22);margin-top:16px}
+    button:hover{background:var(--glass-bg-hover);transform:translateY(-1px)}
+    button:disabled{opacity:.7;cursor:not-allowed}
+    .toast{position:fixed;inset-inline:0;bottom:24px;margin-inline:auto;width:fit-content;padding:14px 18px;background:rgba(0,0,0,.78);border-radius:12px;font-size:1rem;opacity:0;transition:opacity .35s ease}
+    .toast.show{opacity:1}
+    .form-success{box-shadow:0 0 0 2px rgba(34,197,94,.8),0 0 40px rgba(34,197,94,.5) inset;animation:successPulse 1.2s ease}
+    @keyframes successPulse{0%{box-shadow:0 0 0 0 rgba(34,197,94,0),0 0 0 rgba(34,197,94,0) inset}30%{box-shadow:0 0 0 2px rgba(34,197,94,.8),0 0 40px rgba(34,197,94,.35) inset}100%{box-shadow:0 0 0 2px rgba(34,197,94,.25),0 0 12px rgba(34,197,94,.2) inset}}
+    .checkmark{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;opacity:0;transition:opacity .25s ease}
+    .checkmark svg{width:92px;height:92px;filter:drop-shadow(0 6px 22px rgba(0,0,0,.35))}
+    .checkmark.show{opacity:1}
+    #confettiCanvas{position:fixed;inset:0;pointer-events:none}
+    @keyframes fadeInDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes fadeInUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
   </style>
 </head>
 <body>
@@ -117,17 +70,13 @@
   <div id="toast" class="toast"></div>
 
   <script>
-    // ======== UI helpers ========
-    const form   = document.getElementById("visit-form");
-    const toast  = document.getElementById("toast");
-    const sendBtn= document.getElementById("sendBtn");
-    const check  = document.getElementById("checkmark");
+    // ===== UI helpers =====
+    const form = document.getElementById("visit-form");
+    const toast = document.getElementById("toast");
+    const sendBtn = document.getElementById("sendBtn");
+    const check = document.getElementById("checkmark");
 
-    function showToast(message) {
-      toast.textContent = message;
-      toast.classList.add("show");
-      setTimeout(() => toast.classList.remove("show"), 3200);
-    }
+    function showToast(message){ toast.textContent = message; toast.classList.add("show"); setTimeout(()=>toast.classList.remove("show"), 3200); }
 
     function validate() {
       const name = document.getElementById('fullName');
@@ -142,62 +91,32 @@
       document.getElementById('errPass').style.display = okPass ? 'none' : 'block';
 
       const f = file.files[0];
-      const okFile = !!f && ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'].includes(f.type) && f.size <= 20 * 1024 * 1024;
+      const okFile = !!f && ['application/pdf','image/jpeg','image/png','image/webp'].includes(f.type) && f.size <= 20 * 1024 * 1024;
       document.getElementById('errFile').style.display = okFile ? 'none' : 'block';
 
       return okName && okPass && okFile;
     }
 
-    // ======== Confetti & success FX ========
+    // ===== Success FX =====
     const confetti = (() => {
       const canvas = document.getElementById('confettiCanvas');
       const ctx = canvas.getContext('2d');
-      let W, H, pieces = [], running = false, raf;
-      function resize(){ W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
+      let W,H,pieces=[],running=false,raf;
+      function resize(){ W=canvas.width=innerWidth; H=canvas.height=innerHeight; }
       addEventListener('resize', resize); resize();
-      function spawn(n=140){
-        pieces = Array.from({length:n}, () => ({
-          x: Math.random()*W, y: -20 - Math.random()*H*0.25,
-          r: 4 + Math.random()*6, s: 1 + Math.random()*3,
-          a: Math.random()*Math.PI*2, v: 1 + Math.random()*2
-        }));
-      }
-      function draw(){
-        ctx.clearRect(0,0,W,H);
-        for(const p of pieces){
-          ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.a += 0.05);
-          ctx.fillStyle = `hsl(${(p.x/W)*360},100%,60%)`;
-          ctx.fillRect(-p.r/2, -p.r/2, p.r, p.r);
-          ctx.restore();
-          p.y += p.s; p.x += Math.sin(p.a)*p.v;
-        }
-        pieces = pieces.filter(p=>p.y < H+20);
-        if(pieces.length && running){ raf = requestAnimationFrame(draw); }
-        else { running = false; ctx.clearRect(0,0,W,H); }
-      }
-      function burst(){
-        spawn(); running = true; cancelAnimationFrame(raf); draw();
-        setTimeout(()=>{ running = false; }, 1800);
-      }
+      function spawn(n=140){ pieces = Array.from({length:n},()=>({x:Math.random()*W,y:-20-Math.random()*H*.25,r:4+Math.random()*6,s:1+Math.random()*3,a:Math.random()*Math.PI*2,v:1+Math.random()*2})) }
+      function draw(){ ctx.clearRect(0,0,W,H); for(const p of pieces){ ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.a+=.05); ctx.fillStyle=`hsl(${(p.x/W)*360},100%,60%)`; ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r); ctx.restore(); p.y+=p.s; p.x+=Math.sin(p.a)*p.v } pieces=pieces.filter(p=>p.y<H+20); if(pieces.length&&running){ raf=requestAnimationFrame(draw) } else { running=false; ctx.clearRect(0,0,W,H) } }
+      function burst(){ spawn(); running=true; cancelAnimationFrame(raf); draw(); setTimeout(()=>{running=false},1800) }
       return { burst };
     })();
 
-    function successFX(){
-      const card = form;
-      card.classList.add('form-success');
-      check.classList.add('show');
-      confetti.burst();
-      setTimeout(()=>{
-        card.classList.remove('form-success');
-        check.classList.remove('show');
-      }, 1800);
-    }
+    function successFX(){ const card=form; card.classList.add('form-success'); check.classList.add('show'); confetti.burst(); setTimeout(()=>{ card.classList.remove('form-success'); check.classList.remove('show'); },1800); }
 
-    // ======== Secure submit via Cloudflare Worker ========
-    const API_ENDPOINT = "https://tiny-dew-d26e.mehdikas202510.workers.dev/"; // ← رابط الـ Worker
+    // ===== Send to your Cloudflare Worker =====
+    const API_ENDPOINT = "https://tiny-dew-d26e.mehdikas202510.workers.dev/"; // ضع رابط Worker الخاص بك
 
-    async function sendToServer(formEl) {
-      const fd = new FormData(formEl); // يحمل: fullName, passport, pdf
+    async function sendToServer(formEl){
+      const fd = new FormData(formEl);
       const res = await fetch(API_ENDPOINT, { method: "POST", body: fd });
       if (!res.ok) throw new Error("Server error " + res.status);
       const data = await res.json();
@@ -209,21 +128,15 @@
       e.preventDefault();
       if (!validate()) { showToast('⚠️ Please check your inputs and try again.'); return; }
       try {
-        sendBtn.disabled = true;
-        sendBtn.textContent = 'Sending…';
+        sendBtn.disabled = true; sendBtn.textContent = 'Sending…';
         await sendToServer(form);
-        showToast('✅ Sent successfully.');
-        successFX();
-        form.reset();
+        showToast('✅ Sent successfully.'); successFX(); form.reset();
       } catch (err) {
-        console.error(err);
-        showToast('❌ Sending failed. Try again later.');
+        console.error(err); showToast('❌ Sending failed. Try again later.');
       } finally {
-        sendBtn.disabled = false;
-        sendBtn.textContent = 'Send';
+        sendBtn.disabled = false; sendBtn.textContent = 'Send';
       }
     });
   </script>
 </body>
 </html>
-
