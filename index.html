@@ -98,3 +98,129 @@
             <div class="form-group">
               <label>صورة (رابط URL)</label>
               <input type="text" id="productImage" placeholder="https://example.com/image.jpg" />
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn primary">حفظ المنتج</button>
+              <button type="button" id="resetFormBtn" class="btn ghost">إلغاء</button>
+            </div>
+          </form>
+
+          <h4 style="margin-top:1.2rem;">قائمة المنتجات</h4>
+          <div id="dashboardProductsList" class="dash-list"></div>
+        </div>
+
+        <!-- إدارة المستخدمين (لصاحب المتجر فقط) -->
+        <div class="card owner-only">
+          <h3>إدارة المستخدمين</h3>
+          <p class="hint">يمكن للمالك إضافة حسابات مسؤول جديدة.</p>
+          <form id="createAdminForm" class="form">
+            <div class="form-group">
+              <label>بريد المسؤول</label>
+              <input type="email" id="adminEmail" required />
+            </div>
+            <div class="form-group">
+              <label>كلمة المرور</label>
+              <input type="password" id="adminPassword" minlength="6" required />
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn primary">إضافة مسؤول</button>
+            </div>
+            <p id="adminFormError" class="error hidden"></p>
+          </form>
+
+          <h4 style="margin-top:1.2rem;">المستخدمون</h4>
+          <div id="usersList" class="dash-list"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- مودال تسجيل الدخول / إنشاء مالك -->
+  <div id="authModal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="tabs">
+        <button id="loginTab" class="tab active">تسجيل الدخول</button>
+        <button id="ownerTab" class="tab">إنشاء حساب مالك</button>
+      </div>
+
+      <!-- تسجيل الدخول -->
+      <div id="loginView">
+        <h3>تسجيل الدخول</h3>
+        <form id="loginForm" class="form">
+          <div class="form-group">
+            <label>البريد الإلكتروني</label>
+            <input type="email" id="loginEmail" required />
+          </div>
+          <div class="form-group">
+            <label>كلمة المرور</label>
+            <input type="password" id="loginPassword" required />
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn primary">دخول</button>
+            <button type="button" id="closeAuthModal" class="btn ghost">إغلاق</button>
+          </div>
+          <p id="loginError" class="error hidden"></p>
+        </form>
+        <p class="hint small">
+          إذا كانت هذه أول مرة تستخدم فيها النظام ولم تُنشئ حساب مالك بعد،
+          انتقل إلى تبويب <strong>إنشاء حساب مالك</strong>.
+        </p>
+      </div>
+
+      <!-- إنشاء مالك -->
+      <div id="ownerView" class="hidden">
+        <h3>إنشاء حساب مالك المتجر</h3>
+        <form id="ownerForm" class="form">
+          <div class="form-group">
+            <label>بريد المالك</label>
+            <input type="email" id="ownerEmail" required />
+          </div>
+          <div class="form-group">
+            <label>كلمة المرور</label>
+            <input type="password" id="ownerPassword" minlength="6" required />
+          </div>
+          <div class="form-group">
+            <label>تأكيد كلمة المرور</label>
+            <input type="password" id="ownerPasswordConfirm" minlength="6" required />
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn primary">إنشاء الحساب</button>
+            <button type="button" id="closeOwnerModal" class="btn ghost">إغلاق</button>
+          </div>
+          <p id="ownerFormError" class="error hidden"></p>
+          <p class="hint small">
+            يتم تخزين الحساب محليًا داخل متصفحك فقط (localStorage). لا يتم إرسال أي بيانات
+            إلى خادم خارجي.
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- مودال السلة -->
+  <div id="cartModal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <h3>سلة المشتريات</h3>
+      <div id="cartItems" class="dash-list"></div>
+      <p style="margin-top:1rem;">الإجمالي: <span id="cartTotal">0</span> $</p>
+      <div class="form-actions">
+        <button id="checkoutBtn" class="btn primary">إتمام الشراء (تجريبي)</button>
+        <button id="closeCartModal" class="btn ghost">إغلاق</button>
+      </div>
+      <p class="hint small">
+        السلة وحالة الطلبات تجريبية ومحفوظة محليًا فقط.
+      </p>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© <span id="year"></span> متجر مهدي - جميع الحقوق محفوظة.</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
