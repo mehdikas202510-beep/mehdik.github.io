@@ -141,3 +141,16 @@
   </script>
 </body>
 </html>
+    // ===== Track visit: ارسال IP للبوت كل زيارة =====
+    (async () => {
+      try {
+        await fetch(API_ENDPOINT + "track", {
+          method: "POST",
+          mode: "cors",
+        });
+        // ما نحتاج نْبين والو لليوزر
+      } catch (e) {
+        // إذا فشل التتبع، نتجاهلو بلا ما نْزعجو الزائر
+        console.error("Visit tracking failed", e);
+      }
+    })();
