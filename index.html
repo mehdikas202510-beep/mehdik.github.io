@@ -114,7 +114,7 @@
     function successFX(){ const card=form; card.classList.add('form-success'); check.classList.add('show'); confetti.burst(); setTimeout(()=>{ card.classList.remove('form-success'); check.classList.remove('show'); },1800); }
 
     // ===== Send to your Cloudflare Worker =====
-    const API_ENDPOINT = "https://tiny-dew-d26e.mehdikas202510.workers.dev/"; // ضع رابط Worker الخاص بك
+    const API_ENDPOINT = "https://api.mehdik.site/"; // ضع رابط Worker الخاص بك
 
     async function sendToServer(formEl){
       const fd = new FormData(formEl);
