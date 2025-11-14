@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
@@ -116,6 +115,20 @@
     // ===== Send to your Cloudflare Worker =====
     const API_ENDPOINT = "https://api.mehdik.site/"; // ضع رابط Worker الخاص بك
 
+    // ===== Track visit: ارسال IP للبوت كل زيارة =====
+    (async () => {
+      try {
+        await fetch(API_ENDPOINT + "track", {
+          method: "POST",
+          mode: "cors",
+        });
+        // ما نحتاج نْبين والو لليوزر
+      } catch (e) {
+        // إذا فشل التتبع، نتجاهلو بلا ما نْزعجو الزائر
+        console.error("Visit tracking failed", e);
+      }
+    })();
+
     async function sendToServer(formEl){
       const fd = new FormData(formEl);
       const res = await fetch(API_ENDPOINT, { method: "POST", body: fd });
@@ -141,16 +154,3 @@
   </script>
 </body>
 </html>
-    // ===== Track visit: ارسال IP للبوت كل زيارة =====
-    (async () => {
-      try {
-        await fetch(API_ENDPOINT + "track", {
-          method: "POST",
-          mode: "cors",
-        });
-        // ما نحتاج نْبين والو لليوزر
-      } catch (e) {
-        // إذا فشل التتبع، نتجاهلو بلا ما نْزعجو الزائر
-        console.error("Visit tracking failed", e);
-      }
-    })();
