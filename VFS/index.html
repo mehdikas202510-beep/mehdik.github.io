@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>VFS</title>
+</head>
+
+<body style="font-family:sans-serif;text-align:center">
+
+<h2>أدخل الكود</h2>
+
+<input id="code" placeholder="XXXXXX">
+<button onclick="check()">فتح</button>
+
+<hr>
+
+<iframe id="frame"
+style="width:90%;height:80vh;border:1px solid #ccc"></iframe>
+
+<script>
+async function check() {
+
+  const code = document.getElementById("code").value;
+
+  const res = await fetch(
+    "https://api.mehdik.site/verify?code=" + code
+  );
+
+  const data = await res.json();
+
+  if (!data.valid) {
+    alert("كود غير صحيح أو منتهي");
+    return;
+  }
+
+  document.getElementById("frame").src = data.link;
+}
+</script>
+
+</body>
+</html>
