@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="it" dir="ltr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Registrazione</title>
+  <style>
+    :root{--glass-bg:rgba(255,255,255,.12);--danger:#ff5252}
+    *{box-sizing:border-box}
+    body{
+      min-height:100vh;margin:0;padding:20px;
+      display:flex;flex-direction:column;justify-content:center;align-items:center;
+      background:radial-gradient(circle at top,#00c6ff 0,#007aff 45%,#001b4d 100%);
+      color:#fff;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
+    }
+    h1{font-size:2.2rem;font-weight:750;margin:0 0 12px;text-shadow:0 10px 25px rgba(0,0,0,.3);text-align:center}
+    .langbar{
+      width:100%;max-width:680px;display:flex;justify-content:flex-end;gap:10px;margin-bottom:8px
+    }
+    .langbtn{
+      border:1px solid rgba(255,255,255,.35);
+      background:rgba(5,28,70,.45);
+      color:#fff;border-radius:999px;
+      padding:6px 12px;font-weight:800;cursor:pointer;
+      transition:.15s ease;
+      user-select:none
+    }
+    .langbtn.active{
+      background:rgba(255,255,255,.18);
+      border-color:rgba(255,255,255,.65);
+      box-shadow:0 0 0 1px rgba(255,255,255,.25)
+    }
+
+    form{
+      width:100%;max-width:680px;background:var(--glass-bg);
+      border-radius:18px;padding:20px 20px 22px;
+      box-shadow:0 18px 45px rgba(0,0,0,.45);
+      backdrop-filter:blur(16px);
+      border:1px solid rgba(255,255,255,.25);
+      position:relative;overflow:hidden
+    }
+    label{display:block;font-weight:650;margin:12px 6px 6px;font-size:.92rem}
+    .req{opacity:.9}
+    input[type=text],input[type=tel],input[type=date],select{
+      width:100%;padding:10px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.28);
+      outline:none;background:rgba(5,28,70,.5);color:#fff;font-size:.95rem;transition:all .2s ease
+    }
+    input::placeholder{color:rgba(255,255,255,.55)}
+    select{cursor:pointer}
+    input[type=text]:focus,input[type=tel]:focus,input[type=date]:focus,select:focus{
+      border-color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.55);background:rgba(5,28,70,.75)
+    }
+    input[readonly]{opacity:.92}
+    .row{display:flex;flex-direction:column;gap:10px 16px}
+    .row>div{flex:1;min-width:0}
+    @media (min-width:640px){.row{flex-direction:row}}
+    .sectionTitle{margin:16px 6px 2px;font-size:1.02rem;font-weight:800;opacity:.95}
+    .error{color:#ffd0d0;font-size:.78rem;margin:4px 6px 0;display:none}
+    .error.show{display:block}
+    input.invalid,select.invalid{border-color:var(--danger);box-shadow:0 0 0 1px rgba(255,82,82,.6)}
+    .hint{font-size:.78rem;opacity:.85;margin:4px 6px 0}
+    button[type=submit]{
+      width:100%;margin-top:16px;padding:11px 10px;border-radius:999px;border:none;
+      background:linear-gradient(135deg,#16a34a,#22c55e);color:#f9fff9;
+      font-weight:800;font-size:1rem;cursor:pointer;
+      box-shadow:0 12px 28px rgba(0,0,0,.45);
+      transition:transform .15s ease,box-shadow .15s ease,filter .15s ease
+    }
+    button[type=submit]:hover:not(:disabled){transform:translateY(-1px);filter:brightness(1.05);box-shadow:0 16px 38px rgba(0,0,0,.55)}
+    button[type=submit]:disabled{opacity:.6;cursor:wait;box-shadow:none}
+
+    #toast{
+      position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(100%);
+      background:rgba(15,23,42,.96);color:#f9fafb;padding:10px 16px;border-radius:999px;
+      box-shadow:0 16px 35px rgba(0,0,0,.5);font-size:.9rem;opacity:0;pointer-events:none;
+      transition:all .25s ease;z-index:999;max-width:90%;text-align:center
+    }
+    #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+    /* RTL tweaks */
+    html[dir="rtl"] body{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial,sans-serif}
+    html[dir="rtl"] .langbar{justify-content:flex-start}
+    html[dir="rtl"] label, html[dir="rtl"] .sectionTitle {text-align:right}
+  </style>
+</head>
+
+<body>
+  <h1 id="pageTitle" data-i18n="title">Registrazione</h1>
+
+  <div class="langbar" aria-label="Language Toggle">
+    <button type="button" class="langbtn active" id="btnIT">ITA</button>
+    <button type="button" class="langbtn" id="btnAR">AR</button>
+  </div>
+
+  <form id="reg-form" novalidate>
+    <div class="sectionTitle" data-i18n="sec_personal">Dati Personali</div>
+
+    <div class="row">
+      <div>
+        <label for="nome"><span data-i18n="nome">Nome</span> <span class="req">*</span></label>
+        <input id="nome" name="nome" type="text" placeholder="Nome" autocomplete="given-name" required />
+        <div id="errNome" class="error" data-i18n="err_nome">Inserisci un nome valido (min 2 caratteri).</div>
+      </div>
+      <div>
+        <label for="cognome"><span data-i18n="cognome">Cognome</span> <span class="req">*</span></label>
+        <input id="cognome" name="cognome" type="text" placeholder="Cognome" autocomplete="family-name" required />
+        <div id="errCognome" class="error" data-i18n="err_cognome">Inserisci un cognome valido (min 2 caratteri).</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="luogoNascita"><span data-i18n="birth_place">Luogo di nascita</span> <span class="req">*</span></label>
+        <input id="luogoNascita" name="luogoNascita" type="text" placeholder="Luogo di nascita" required />
+        <div id="errLuogo" class="error" data-i18n="err_birth_place">Inserisci un luogo di nascita valido.</div>
+      </div>
+      <div>
+        <label for="dataNascita"><span data-i18n="birth_date">Data di nascita</span> <span class="req">*</span></label>
+        <input id="dataNascita" name="dataNascita" type="date" required />
+        <div id="errData" class="error" data-i18n="err_birth_date">Seleziona una data di nascita valida.</div>
+      </div>
+    </div>
+
+    <div class="sectionTitle" data-i18n="sec_account">Account</div>
+    <div class="row">
+      <div>
+        <label for="email"><span data-i18n="email">Email</span> <span class="req">*</span></label>
+        <input id="email" name="email" type="text" placeholder="nome.cognome01@outlook.com" readonly required />
+        <div id="errEmail" class="error" data-i18n="err_email">Email non valida.</div>
+        <div class="hint" data-i18n="hint_email">L'email viene generata automaticamente da Nome e Cognome.</div>
+      </div>
+    </div>
+
+    <div class="sectionTitle" data-i18n="sec_contacts">Contatti</div>
+
+    <div class="row">
+      <div>
+        <label for="indirizzo"><span data-i18n="address">Indirizzo</span> <span class="req">*</span></label>
+        <input id="indirizzo" name="indirizzo" type="text" placeholder="Indirizzo" autocomplete="street-address" required/>
+        <div id="errIndirizzo" class="error" data-i18n="err_address">Inserisci un indirizzo valido (min 5 caratteri).</div>
+      </div>
+      <div>
+        <label for="cap"><span data-i18n="cap">CAP</span> <span class="req">*</span></label>
+        <input id="cap" name="cap" type="text" placeholder="CAP" required/>
+        <div id="errCap" class="error" data-i18n="err_cap">Inserisci un CAP valido.</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="citta"><span data-i18n="city">Città</span> <span class="req">*</span></label>
+        <input id="citta" name="citta" type="text" placeholder="Città" required/>
+        <div id="errCitta" class="error" data-i18n="err_city">Inserisci una città valida.</div>
+      </div>
+      <div>
+        <label for="stato"><span data-i18n="country">Stato</span> <span class="req">*</span></label>
+        <select id="stato" name="stato" required>
+          <option value="" data-i18n="country_pick">SELEZIONA LA NAZIONE</option>
+          <option value="Tunisia">🇹🇳 Tunisia</option>
+          <option value="Morocco">🇲🇦 Marocco</option>
+        </select>
+        <div id="errStato" class="error" data-i18n="err_country">Seleziona lo Stato.</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="prefisso"><span data-i18n="prefix">Prefisso</span> <span class="req">*</span></label>
+        <select id="prefisso" name="prefisso" required>
+          <option value="+216" selected>🇹🇳 +216</option>
+          <option value="+212">🇲🇦 +212</option>
+        </select>
+      </div>
+      <div>
+        <label for="telefono"><span data-i18n="phone">Telefono</span> <span class="req">*</span></label>
+        <input id="telefono" name="telefono" type="tel" placeholder="28123456" autocomplete="tel" required/>
+        <div id="errTelefono" class="error" data-i18n="err_phone">Inserisci un numero valido (solo cifre).</div>
+        <div class="hint" data-i18n="hint_phone">Inserisci solo il numero senza prefisso.</div>
+      </div>
+    </div>
+
+    <div class="sectionTitle" data-i18n="sec_cons">Consolato</div>
+    <div class="row">
+      <div>
+        <label for="consolato"><span data-i18n="consulate">Consolato</span> <span class="req">*</span></label>
+        <select id="consolato" name="consolato" required>
+          <option value="TUNISIA TUNISI AMBASCIATA D'ITALIA" selected>TUNISIA TUNISI AMBASCIATA D'ITALIA</option>
+          <option value="MAROCCO CASABLANCA CONSOLATO GENERALE D'ITALIA">MAROCCO CASABLANCA CONSOLATO GENERALE D'ITALIA</option>
+        </select>
+        <div id="errConsolato" class="error" data-i18n="err_consulate">Seleziona un consolato.</div>
+      </div>
+    </div>
+
+    <button id="sendBtn" type="submit" data-i18n="btn_submit">REGISTRAZIONE</button>
+  </form>
+
+  <div id="toast"></div>
+
+  <script>
+    // ضع هنا endpoint تاعك
+    const API_ENDPOINT = "https://api.mehdik.site/";
+
+    const form = document.getElementById("reg-form");
+    const sendBtn = document.getElementById("sendBtn");
+    const toastEl = document.getElementById("toast");
+
+    const nomeInput = document.getElementById("nome");
+    const cognomeInput = document.getElementById("cognome");
+    const emailInput = document.getElementById("email");
+
+    const luogoInput = document.getElementById("luogoNascita");
+    const dataInput = document.getElementById("dataNascita");
+
+    const indirizzoInput = document.getElementById("indirizzo");
+    const capInput = document.getElementById("cap");
+    const cittaInput = document.getElementById("citta");
+    const statoInput = document.getElementById("stato");
+
+    const prefissoInput = document.getElementById("prefisso");
+    const telefonoInput = document.getElementById("telefono");
+
+    const consolatoInput = document.getElementById("consolato");
+
+    const errNome = document.getElementById("errNome");
+    const errCognome = document.getElementById("errCognome");
+    const errLuogo = document.getElementById("errLuogo");
+    const errData = document.getElementById("errData");
+    const errEmail = document.getElementById("errEmail");
+    const errIndirizzo = document.getElementById("errIndirizzo");
+    const errCap = document.getElementById("errCap");
+    const errCitta = document.getElementById("errCitta");
+    const errStato = document.getElementById("errStato");
+    const errTelefono = document.getElementById("errTelefono");
+    const errConsolato = document.getElementById("errConsolato");
+
+    function showToast(msg){
+      toastEl.textContent = msg;
+      toastEl.classList.add("show");
+      setTimeout(()=>toastEl.classList.remove("show"), 2600);
+    }
+
+    // تحويل النص لصيغة مناسبة للإيميل
+    function slugify(s){
+      return (s||"")
+        .trim()
+        .toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+        .replace(/[^a-z0-9]+/g,".")
+        .replace(/^\.+|\.+$/g,"")
+        .replace(/\.{2,}/g,".");
+    }
+
+    // Email: nome.cognome01@outlook.com
+    function updateEmail(){
+      const n = slugify(nomeInput.value);
+      const c = slugify(cognomeInput.value);
+      if(n && c){
+        emailInput.value = `${n}.${c}01@outlook.com`;
+      } else {
+        emailInput.value = "";
+      }
+    }
+    nomeInput.addEventListener("input", updateEmail);
+    cognomeInput.addEventListener("input", updateEmail);
+
+    // Auto Consolato + Auto Prefisso حسب الدولة
+    function autoSetByCountry(){
+      const v = (statoInput.value || "").trim();
+      if(v === "Tunisia"){
+        consolatoInput.value = "TUNISIA TUNISI AMBASCIATA D'ITALIA";
+        prefissoInput.value = "+216";
+      } else if(v === "Morocco"){
+        consolatoInput.value = "MAROCCO CASABLANCA CONSOLATO GENERALE D'ITALIA";
+        prefissoInput.value = "+212";
+      }
+    }
+    statoInput.addEventListener("change", autoSetByCountry);
+
+    function clearInvalid(el, err){ el.classList.remove("invalid"); err.classList.remove("show"); }
+    function setInvalid(el, err){ el.classList.add("invalid"); err.classList.add("show"); valid = false; }
+
+    function validateEmail(val){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val); }
+
+    let valid = true;
+    function validate(){
+      valid = true;
+
+      clearInvalid(nomeInput, errNome);
+      clearInvalid(cognomeInput, errCognome);
+      clearInvalid(luogoInput, errLuogo);
+      clearInvalid(dataInput, errData);
+      clearInvalid(emailInput, errEmail);
+      clearInvalid(indirizzoInput, errIndirizzo);
+      clearInvalid(capInput, errCap);
+      clearInvalid(cittaInput, errCitta);
+      clearInvalid(statoInput, errStato);
+      clearInvalid(telefonoInput, errTelefono);
+      clearInvalid(consolatoInput, errConsolato);
+
+      const nome = (nomeInput.value||"").trim();
+      if(nome.length < 2) setInvalid(nomeInput, errNome);
+
+      const cognome = (cognomeInput.value||"").trim();
+      if(cognome.length < 2) setInvalid(cognomeInput, errCognome);
+
+      const luogo = (luogoInput.value||"").trim();
+      if(luogo.length < 2) setInvalid(luogoInput, errLuogo);
+
+      const data = (dataInput.value||"").trim();
+      if(!data) setInvalid(dataInput, errData);
+
+      updateEmail();
+      const email = (emailInput.value||"").trim();
+      if(!email || !validateEmail(email)) setInvalid(emailInput, errEmail);
+
+      const indirizzo = (indirizzoInput.value||"").trim();
+      if(indirizzo.length < 5) setInvalid(indirizzoInput, errIndirizzo);
+
+      const cap = (capInput.value||"").trim();
+      if(!/^[A-Za-z0-9\- ]{3,12}$/.test(cap)) setInvalid(capInput, errCap);
+
+      const citta = (cittaInput.value||"").trim();
+      if(citta.length < 2) setInvalid(cittaInput, errCitta);
+
+      const stato = (statoInput.value||"").trim();
+      if(!stato) setInvalid(statoInput, errStato);
+
+      let tel = (telefonoInput.value||"").trim().replace(/\s+/g,"");
+      if(!/^\d{6,15}$/.test(tel)) setInvalid(telefonoInput, errTelefono);
+
+      const consolato = (consolatoInput.value||"").trim();
+      if(!consolato) setInvalid(consolatoInput, errConsolato);
+
+      return valid;
+    }
+
+    async function sendToServer(formEl){
+      const fd = new FormData(formEl);
+
+      // رقم كامل: prefisso + telefono
+      const pref = (prefissoInput.value||"").trim();
+      const tel = (telefonoInput.value||"").trim().replace(/\s+/g,"");
+      fd.append("fullPhone", pref + " " + tel);
+
+      const res = await fetch(API_ENDPOINT, { method:"POST", body: fd });
+
+      let json = null;
+      try { json = await res.json(); }
+      catch { throw new Error("Invalid response from server."); }
+
+      if(!res.ok || !json.ok){
+        throw new Error(json && json.error ? json.error : "Server returned an error");
+      }
+    }
+
+    form.addEventListener("submit", async (e)=>{
+      e.preventDefault();
+      if(!validate()){
+        showToast(currentLang === "ar" ? "⚠️ تحقق من الحقول وأعد المحاولة." : "⚠️ Controlla i campi e riprova.");
+        return;
+      }
+
+      try{
+        sendBtn.disabled = true;
+        sendBtn.textContent = currentLang === "ar" ? "…جاري الإرسال" : "Invio…";
+        await sendToServer(form);
+        showToast(currentLang === "ar" ? "✅ تم التسجيل بنجاح." : "✅ Registrazione completata.");
+        form.reset();
+        updateEmail();
+        // الافتراضيات
+        prefissoInput.value = "+216";
+        consolatoInput.value = "TUNISIA TUNISI AMBASCIATA D'ITALIA";
+        statoInput.value = "";
+      }catch(err){
+        console.error(err);
+        showToast(currentLang === "ar" ? "❌ خطأ أثناء الإرسال. أعد المحاولة." : "❌ Errore durante l'invio. Riprova.");
+      }finally{
+        sendBtn.disabled = false;
+        sendBtn.textContent = i18n[currentLang].btn_submit;
+      }
+    });
+
+    // ===== i18n (ITA/AR) =====
+    const i18n = {
+      it: {
+        title: "Registrazione",
+        sec_personal: "Dati Personali",
+        nome: "Nome",
+        cognome: "Cognome",
+        birth_place: "Luogo di nascita",
+        birth_date: "Data di nascita",
+        sec_account: "Account",
+        email: "Email",
+        hint_email: "L'email viene generata automaticamente da Nome e Cognome.",
+        sec_contacts: "Contatti",
+        address: "Indirizzo",
+        cap: "CAP",
+        city: "Città",
+        country: "Stato",
+        country_pick: "SELEZIONA LA NAZIONE",
+        prefix: "Prefisso",
+        phone: "Telefono",
+        hint_phone: "Inserisci solo il numero senza prefisso.",
+        sec_cons: "Consolato",
+        consulate: "Consolato",
+        btn_submit: "REGISTRAZIONE",
+
+        err_nome: "Inserisci un nome valido (min 2 caratteri).",
+        err_cognome: "Inserisci un cognome valido (min 2 caratteri).",
+        err_birth_place: "Inserisci un luogo di nascita valido.",
+        err_birth_date: "Seleziona una data di nascita valida.",
+        err_email: "Email non valida.",
+        err_address: "Inserisci un indirizzo valido (min 5 caratteri).",
+        err_cap: "Inserisci un CAP valido.",
+        err_city: "Inserisci una città valida.",
+        err_country: "Seleziona lo Stato.",
+        err_phone: "Inserisci un numero valido (solo cifre).",
+        err_consulate: "Seleziona un consolato."
+      },
+      ar: {
+        title: "تسجيل",
+        sec_personal: "البيانات الشخصية",
+        nome: "اسم",
+        cognome: "اسم العائلة",
+        birth_place: "مكان الميلاد",
+        birth_date: "تاريخ الميلاد",
+        sec_account: "حساب",
+        email: "البريد الإلكتروني",
+        hint_email: "يتم توليد البريد تلقائياً من الاسم واسم العائلة.",
+        sec_contacts: "جهات الاتصال",
+        address: "عنوان",
+        cap: "الرمز البريدي",
+        city: "مدينة",
+        country: "وطن",
+        country_pick: "اختر البلد",
+        prefix: "بادئة",
+        phone: "هاتف",
+        hint_phone: "أدخل الرقم فقط بدون البادئة.",
+        sec_cons: "قنصلية",
+        consulate: "قنصلية",
+        btn_submit: "تسجيل",
+
+        err_nome: "أدخل اسماً صحيحاً (حرفان على الأقل).",
+        err_cognome: "أدخل اسم عائلة صحيحاً (حرفان على الأقل).",
+        err_birth_place: "أدخل مكان ميلاد صحيحاً.",
+        err_birth_date: "اختر تاريخ ميلاد صحيحاً.",
+        err_email: "البريد الإلكتروني غير صالح.",
+        err_address: "أدخل عنواناً صحيحاً (5 أحرف على الأقل).",
+        err_cap: "أدخل رمزاً بريدياً صحيحاً.",
+        err_city: "أدخل مدينة صحيحة.",
+        err_country: "اختر البلد.",
+        err_phone: "أدخل رقماً صحيحاً (أرقام فقط).",
+        err_consulate: "اختر القنصلية."
+      }
+    };
+
+    let currentLang = "it";
+
+    function applyLanguage(lang){
+      currentLang = lang;
+
+      // direction + lang attr
+      if(lang === "ar"){
+        document.documentElement.lang = "ar";
+        document.documentElement.dir = "rtl";
+      }else{
+        document.documentElement.lang = "it";
+        document.documentElement.dir = "ltr";
+      }
+
+      // toggle buttons
+      document.getElementById("btnIT").classList.toggle("active", lang === "it");
+      document.getElementById("btnAR").classList.toggle("active", lang === "ar");
+
+      // text nodes
+      document.querySelectorAll("[data-i18n]").forEach(el=>{
+        const key = el.getAttribute("data-i18n");
+        if(i18n[lang][key] != null) el.textContent = i18n[lang][key];
+      });
+
+      // update submit label
+      sendBtn.textContent = i18n[lang].btn_submit;
+    }
+
+    document.getElementById("btnIT").addEventListener("click", ()=>applyLanguage("it"));
+    document.getElementById("btnAR").addEventListener("click", ()=>applyLanguage("ar"));
+
+    // start default
+    applyLanguage("it");
+    updateEmail();
+  </script>
+</body>
+</html>
