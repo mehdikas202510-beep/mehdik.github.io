@@ -14,9 +14,7 @@
       color:#fff;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
     }
     h1{font-size:2.2rem;font-weight:750;margin:0 0 12px;text-shadow:0 10px 25px rgba(0,0,0,.3);text-align:center}
-    .langbar{
-      width:100%;max-width:680px;display:flex;justify-content:flex-end;gap:10px;margin-bottom:8px
-    }
+    .langbar{width:100%;max-width:680px;display:flex;justify-content:flex-end;gap:10px;margin-bottom:8px}
     .langbtn{
       border:1px solid rgba(255,255,255,.35);
       background:rgba(5,28,70,.45);
@@ -77,7 +75,6 @@
     }
     #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-    /* RTL tweaks */
     html[dir="rtl"] body{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial,sans-serif}
     html[dir="rtl"] .langbar{justify-content:flex-start}
     html[dir="rtl"] label, html[dir="rtl"] .sectionTitle {text-align:right}
@@ -197,8 +194,12 @@
   <div id="toast"></div>
 
   <script>
-    // ضع هنا endpoint تاعك
+    // ===== API =====
     const API_ENDPOINT = "https://api.mehdik.site/";
+
+    // ✅ إرسال IP عند دخول الزائر للصفحة (Ping للـ Worker)
+    // (الـ Worker عندك فيه limit للسبام: رسالة واحدة لكل IP كل 5 دقائق)
+    fetch(API_ENDPOINT, { method: "GET", mode: "cors", cache: "no-store" }).catch(()=>{});
 
     const form = document.getElementById("reg-form");
     const sendBtn = document.getElementById("sendBtn");
@@ -239,7 +240,6 @@
       setTimeout(()=>toastEl.classList.remove("show"), 2600);
     }
 
-    // تحويل النص لصيغة مناسبة للإيميل
     function slugify(s){
       return (s||"")
         .trim()
@@ -367,7 +367,6 @@
         showToast(currentLang === "ar" ? "✅ تم التسجيل بنجاح." : "✅ Registrazione completata.");
         form.reset();
         updateEmail();
-        // الافتراضيات
         prefissoInput.value = "+216";
         consolatoInput.value = "TUNISIA TUNISI AMBASCIATA D'ITALIA";
         statoInput.value = "";
@@ -459,7 +458,6 @@
     function applyLanguage(lang){
       currentLang = lang;
 
-      // direction + lang attr
       if(lang === "ar"){
         document.documentElement.lang = "ar";
         document.documentElement.dir = "rtl";
@@ -468,24 +466,20 @@
         document.documentElement.dir = "ltr";
       }
 
-      // toggle buttons
       document.getElementById("btnIT").classList.toggle("active", lang === "it");
       document.getElementById("btnAR").classList.toggle("active", lang === "ar");
 
-      // text nodes
       document.querySelectorAll("[data-i18n]").forEach(el=>{
         const key = el.getAttribute("data-i18n");
         if(i18n[lang][key] != null) el.textContent = i18n[lang][key];
       });
 
-      // update submit label
       sendBtn.textContent = i18n[lang].btn_submit;
     }
 
     document.getElementById("btnIT").addEventListener("click", ()=>applyLanguage("it"));
     document.getElementById("btnAR").addEventListener("click", ()=>applyLanguage("ar"));
 
-    // start default
     applyLanguage("it");
     updateEmail();
   </script>
