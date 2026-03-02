@@ -1,1 +1,624 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Agency</title>
+  <style>
+    :root{
+      --glass:rgba(255,255,255,.12);
+      --border:rgba(255,255,255,.24);
+      --ink:#fff;
+      --danger:#ff5a5a;
+      --bg1:#00c6ff;
+      --bg2:#007aff;
+      --bg3:#001b4d;
+      --dark:rgba(5,28,70,.55);
+      --dark2:rgba(5,28,70,.75);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;padding:18px;
+      display:flex;align-items:center;justify-content:center;
+      background:radial-gradient(circle at top,var(--bg1) 0,var(--bg2) 45%,var(--bg3) 100%);
+      color:var(--ink);
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
+    }
+    .shell{width:100%;max-width:980px}
+    .topbar{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      margin:0 0 12px
+    }
+    .langbar{display:flex;align-items:center;gap:10px}
+    .langbtn{
+      border:1px solid rgba(255,255,255,.35);
+      background:rgba(5,28,70,.45);
+      color:#fff;border-radius:999px;
+      padding:6px 12px;font-weight:900;cursor:pointer;
+      transition:.15s ease;user-select:none
+    }
+    .langbtn:hover{filter:brightness(1.07);transform:translateY(-1px)}
+    .langbtn.active{
+      background:rgba(255,255,255,.18);
+      border-color:rgba(255,255,255,.65);
+      box-shadow:0 0 0 1px rgba(255,255,255,.25)
+    }
+    .back{
+      border:1px solid rgba(255,255,255,.35);
+      background:rgba(5,28,70,.45);
+      color:#fff;border-radius:999px;
+      padding:8px 14px;font-weight:900;cursor:pointer;
+      text-decoration:none;display:inline-flex;align-items:center;gap:8px;
+      transition:.15s ease;user-select:none
+    }
+    .back:hover{filter:brightness(1.07);transform:translateY(-1px)}
+    .card{
+      background:var(--glass);
+      border:1px solid var(--border);
+      border-radius:22px;
+      box-shadow:0 18px 45px rgba(0,0,0,.45);
+      backdrop-filter:blur(16px);
+      overflow:hidden
+    }
+    .head{
+      padding:18px 18px 0;
+      display:flex;flex-direction:column;gap:8px
+    }
+    h1{margin:0;font-size:1.9rem;font-weight:900;text-shadow:0 10px 25px rgba(0,0,0,.3)}
+    form{padding:14px 18px 18px}
+    .grid{display:grid;grid-template-columns:1fr;gap:12px}
+    @media (min-width:900px){.grid{grid-template-columns:1.1fr .9fr;align-items:start}}
+    .panel{
+      background:rgba(5,28,70,.26);
+      border:1px solid rgba(255,255,255,.16);
+      border-radius:18px;
+      padding:14px
+    }
+    .titleRow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 10px}
+    .titleRow b{font-size:1.02rem;letter-spacing:.2px}
+    .hint{font-size:.8rem;opacity:.86;line-height:1.35}
+    label{display:block;font-weight:900;margin:10px 6px 6px;font-size:.9rem}
+    input[type=text],input[type=password]{
+      width:100%;
+      padding:10px 11px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.22);
+      outline:none;
+      background:var(--dark);
+      color:#fff;
+      font-size:.95rem;
+      transition:all .2s ease
+    }
+    input::placeholder{color:rgba(255,255,255,.55)}
+    input:focus{border-color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.55);background:var(--dark2)}
+    .row{display:grid;grid-template-columns:1fr;gap:10px}
+    @media (min-width:720px){.row{grid-template-columns:1fr 1fr}}
+    .toggle{
+      display:flex;align-items:center;gap:10px;
+      padding:10px 12px;border-radius:16px;
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(5,28,70,.22)
+    }
+    .toggle input{width:18px;height:18px}
+    .toggle .meta{display:flex;flex-direction:column;gap:2px}
+    .toggle .meta b{font-size:.95rem}
+    .toggle .meta span{font-size:.78rem;opacity:.86}
+    .btnRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .btn{
+      border:none;border-radius:999px;
+      padding:10px 14px;
+      font-weight:950;
+      cursor:pointer;
+      box-shadow:0 12px 28px rgba(0,0,0,.4);
+      transition:transform .15s ease,filter .15s ease,box-shadow .15s ease;
+      color:#fff
+    }
+    .btn:disabled{opacity:.6;cursor:wait;box-shadow:none}
+    .btn:hover:not(:disabled){transform:translateY(-1px);filter:brightness(1.05);box-shadow:0 16px 38px rgba(0,0,0,.55)}
+    .btnPrimary{background:linear-gradient(135deg,#16a34a,#22c55e)}
+    .btnSoft{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2)}
+    .err{color:#ffd0d0;font-size:.78rem;margin:6px 6px 0;display:none}
+    .err.show{display:block}
+    .invalid{border-color:var(--danger)!important;box-shadow:0 0 0 1px rgba(255,90,90,.6)!important}
+    .list{margin-top:10px;border-radius:16px;border:1px solid rgba(255,255,255,.14);overflow:hidden}
+    .listHead,.listRow{
+      display:grid;
+      grid-template-columns:1.25fr .9fr .7fr 44px;
+      gap:10px;
+      padding:10px 12px;
+      align-items:center
+    }
+    .listHead{
+      background:rgba(255,255,255,.08);
+      font-size:.78rem;
+      letter-spacing:.2px;
+      opacity:.95;
+      font-weight:950
+    }
+    .listRow{
+      background:rgba(5,28,70,.18);
+      border-top:1px solid rgba(255,255,255,.09);
+      font-size:.85rem
+    }
+    .xbtn{
+      width:36px;height:36px;border-radius:12px;
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(255,255,255,.08);
+      color:#fff;cursor:pointer;
+      display:inline-flex;align-items:center;justify-content:center;
+      transition:.15s ease
+    }
+    .xbtn:hover{filter:brightness(1.08);transform:translateY(-1px)}
+    .asideStats{display:flex;flex-direction:column;gap:10px}
+    .stat{
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:18px;
+      padding:12px 12px;
+      display:flex;flex-direction:column;gap:4px
+    }
+    .stat b{font-size:1.35rem}
+    .stat span{font-size:.85rem;opacity:.86}
+    #toast{
+      position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(110%);
+      background:rgba(15,23,42,.96);color:#f9fafb;padding:10px 16px;border-radius:999px;
+      box-shadow:0 16px 35px rgba(0,0,0,.5);font-size:.9rem;opacity:0;pointer-events:none;
+      transition:all .25s ease;z-index:999;max-width:92%;text-align:center
+    }
+    #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  </style>
+</head>
 
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <div class="langbar">
+        <button id="btnEN" class="langbtn active" type="button">EN</button>
+        <button id="btnAR" class="langbtn" type="button">AR</button>
+      </div>
+      <a class="back" href="/" data-i18n="back">← Home</a>
+    </div>
+
+    <div class="card">
+      <div class="head">
+        <h1 data-i18n="title">Agency</h1>
+      </div>
+
+      <form id="agency-form" novalidate>
+        <div class="grid">
+          <div class="panel">
+            <div class="titleRow">
+              <b data-i18n="agency_details">Agency Details</b>
+              <span class="pill" id="modePill">Single</span>
+            </div>
+
+            <label for="firma" data-i18n="firma_lbl">Agency Signature</label>
+            <input id="firma" name="firma" type="text" placeholder="" autocomplete="organization"/>
+            <div id="errFirma" class="err" data-i18n="err_firma">Invalid agency signature</div>
+
+            <div style="height:10px"></div>
+
+            <div class="toggle">
+              <input id="molti" type="checkbox"/>
+              <div class="meta">
+                <b data-i18n="multi">Multi</b>
+                <span data-i18n="multi_hint">Add multiple accounts in one request</span>
+              </div>
+            </div>
+
+            <div style="height:8px"></div>
+
+            <div class="titleRow" style="margin-top:8px">
+              <b data-i18n="account">Account</b>
+              <span class="hint" data-i18n="account_hint">Email + Password + Passport</span>
+            </div>
+
+            <div class="row">
+              <div>
+                <label for="email" data-i18n="email_lbl">Email</label>
+                <input id="email" name="email" type="text" placeholder="email@example.com" autocomplete="username"/>
+                <div id="errEmail" class="err" data-i18n="err_email">Invalid email</div>
+              </div>
+              <div>
+                <label for="password" data-i18n="pass_lbl">Password</label>
+                <input id="password" name="password" type="password" placeholder="" autocomplete="current-password"/>
+                <div id="errPassword" class="err" data-i18n="err_pass">Invalid password</div>
+              </div>
+            </div>
+
+            <label for="passport" data-i18n="passport_lbl">Passport Number</label>
+            <input id="passport" name="passport" type="text" placeholder="AA1234567"/>
+            <div id="errPassport" class="err" data-i18n="err_passport">Invalid passport number</div>
+
+            <div class="btnRow">
+              <button id="addBtn" type="button" class="btn btnSoft" style="display:none"></button>
+              <button id="sendBtn" type="submit" class="btn btnPrimary" style="flex:1"></button>
+            </div>
+
+            <div id="listWrap" style="display:none">
+              <div class="list" role="table" aria-label="Accounts list">
+                <div class="listHead" role="row">
+                  <div role="columnheader" data-i18n="col_email">Email</div>
+                  <div role="columnheader" data-i18n="col_password">Password</div>
+                  <div role="columnheader" data-i18n="col_passport">Passport</div>
+                  <div role="columnheader"></div>
+                </div>
+                <div id="listBody"></div>
+              </div>
+              <div id="errList" class="err" data-i18n="err_list">Add at least one account</div>
+            </div>
+          </div>
+
+          <div class="asideStats">
+            <div class="panel">
+              <div class="titleRow">
+                <b data-i18n="summary">Summary</b>
+                <span class="hint" data-i18n="status_lbl">Status</span>
+              </div>
+              <div class="stat">
+                <b id="count">0</b>
+                <span data-i18n="count_lbl">Accounts in list</span>
+              </div>
+              <div class="stat">
+                <b id="status"></b>
+                <span data-i18n="fill_send">Fill and send</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+    const API_ENDPOINT = "https://api.mehdik.site/";
+    fetch(API_ENDPOINT, { method: "GET", mode: "cors", cache: "no-store" }).catch(()=>{});
+
+    const i18n = {
+      en: {
+        back: "← Home",
+        title: "Agency",
+        agency_details: "Agency Details",
+        firma_lbl: "Agency Signature",
+        multi: "Multi",
+        multi_hint: "Add multiple accounts in one request",
+        account: "Account",
+        account_hint: "Email + Password + Passport",
+        email_lbl: "Email",
+        pass_lbl: "Password",
+        passport_lbl: "Passport Number",
+        summary: "Summary",
+        status_lbl: "Status",
+        count_lbl: "Accounts in list",
+        fill_send: "Fill and send",
+        col_email: "Email",
+        col_password: "Password",
+        col_passport: "Passport",
+        mode_single: "Single",
+        mode_multi: "Multi",
+        btn_add: "+ Add to list",
+        btn_send: "Send",
+        btn_sending: "Sending…",
+        status_ready: "Ready",
+        status_sending: "Sending…",
+        status_sent: "Sent",
+        status_error: "Error",
+        err_firma: "Invalid agency signature",
+        err_email: "Invalid email",
+        err_pass: "Invalid password",
+        err_passport: "Invalid passport number",
+        err_list: "Add at least one account",
+        toast_check_firma: "Check agency signature",
+        toast_check_account: "Check account fields",
+        toast_added: "Added to list",
+        toast_sent: "Sent successfully",
+        toast_failed: "Send failed",
+        toast_need_one: "Add at least one account"
+      },
+      ar: {
+        back: "← الرئيسية",
+        title: "الوكالة",
+        agency_details: "بيانات الوكالة",
+        firma_lbl: "توقيع الوكالة",
+        multi: "متعدد",
+        multi_hint: "إضافة عدة حسابات في طلب واحد",
+        account: "الحساب",
+        account_hint: "إيميل + كلمة سر + رقم الجواز",
+        email_lbl: "الإيميل",
+        pass_lbl: "كلمة السر",
+        passport_lbl: "رقم جواز السفر",
+        summary: "ملخص",
+        status_lbl: "الحالة",
+        count_lbl: "عدد الحسابات في القائمة",
+        fill_send: "املأ ثم أرسل",
+        col_email: "الإيميل",
+        col_password: "كلمة السر",
+        col_passport: "الجواز",
+        mode_single: "واحد",
+        mode_multi: "متعدد",
+        btn_add: "+ أضف للقائمة",
+        btn_send: "إرسال",
+        btn_sending: "جاري الإرسال…",
+        status_ready: "جاهز",
+        status_sending: "جاري الإرسال…",
+        status_sent: "تم الإرسال",
+        status_error: "خطأ",
+        err_firma: "توقيع غير صالح",
+        err_email: "إيميل غير صالح",
+        err_pass: "كلمة سر غير صالحة",
+        err_passport: "رقم جواز غير صالح",
+        err_list: "أضف حسابًا واحدًا على الأقل",
+        toast_check_firma: "تحقق من توقيع الوكالة",
+        toast_check_account: "تحقق من بيانات الحساب",
+        toast_added: "تمت الإضافة للقائمة",
+        toast_sent: "تم الإرسال بنجاح",
+        toast_failed: "فشل الإرسال",
+        toast_need_one: "أضف حسابًا واحدًا على الأقل"
+      }
+    };
+
+    let currentLang = "en";
+    function t(key){ return (i18n[currentLang] && i18n[currentLang][key]) ? i18n[currentLang][key] : key; }
+
+    const form = document.getElementById("agency-form");
+    const toastEl = document.getElementById("toast");
+    const sendBtn = document.getElementById("sendBtn");
+    const addBtn = document.getElementById("addBtn");
+
+    const modePill = document.getElementById("modePill");
+    const countEl = document.getElementById("count");
+    const statusEl = document.getElementById("status");
+
+    const firmaEl = document.getElementById("firma");
+    const moltiEl = document.getElementById("molti");
+    const emailEl = document.getElementById("email");
+    const passEl = document.getElementById("password");
+    const passpEl = document.getElementById("passport");
+
+    const errFirma = document.getElementById("errFirma");
+    const errEmail = document.getElementById("errEmail");
+    const errPassword = document.getElementById("errPassword");
+    const errPassport = document.getElementById("errPassport");
+    const errList = document.getElementById("errList");
+
+    const listWrap = document.getElementById("listWrap");
+    const listBody = document.getElementById("listBody");
+
+    const accounts = [];
+
+    function showToast(msg){
+      toastEl.textContent = msg;
+      toastEl.classList.add("show");
+      setTimeout(()=>toastEl.classList.remove("show"), 2600);
+    }
+
+    function validateEmail(val){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val); }
+
+    function clearInvalid(el, err){ if(el) el.classList.remove("invalid"); if(err) err.classList.remove("show"); }
+    function setInvalid(el, err){ if(el) el.classList.add("invalid"); if(err) err.classList.add("show"); ok = false; }
+
+    function setStatusKey(key){ statusEl.textContent = t(key); }
+
+    function applyLanguage(lang){
+      currentLang = lang;
+
+      if(lang === "ar"){
+        document.documentElement.lang = "ar";
+        document.documentElement.dir = "rtl";
+      }else{
+        document.documentElement.lang = "en";
+        document.documentElement.dir = "ltr";
+      }
+
+      document.getElementById("btnEN").classList.toggle("active", lang === "en");
+      document.getElementById("btnAR").classList.toggle("active", lang === "ar");
+
+      document.querySelectorAll("[data-i18n]").forEach(el=>{
+        const key = el.getAttribute("data-i18n");
+        if(i18n[lang][key] != null) el.textContent = i18n[lang][key];
+      });
+
+      firmaEl.placeholder = lang === "ar" ? "اسم الوكالة / توقيع" : "Agency name / Signature";
+      passEl.placeholder = lang === "ar" ? "كلمة السر" : "Password";
+
+      addBtn.textContent = t("btn_add");
+      sendBtn.textContent = t("btn_send");
+
+      toggleMode(true);
+
+      if(statusEl.textContent.trim().length === 0) setStatusKey("status_ready");
+    }
+
+    function toggleMode(skipListRender){
+      const on = moltiEl.checked;
+      modePill.textContent = on ? t("mode_multi") : t("mode_single");
+      addBtn.style.display = on ? "inline-flex" : "none";
+      listWrap.style.display = on ? "block" : "none";
+      if(!on) errList.classList.remove("show");
+      if(!skipListRender) renderList();
+    }
+
+    function maskPassword(p){
+      if(!p) return "";
+      if(p.length <= 2) return "••";
+      return "•".repeat(Math.min(10, p.length - 2)) + p.slice(-2);
+    }
+
+    function renderList(){
+      countEl.textContent = String(accounts.length);
+      listBody.innerHTML = "";
+      for(let i=0;i<accounts.length;i++){
+        const a = accounts[i];
+        const row = document.createElement("div");
+        row.className = "listRow";
+        row.setAttribute("role","row");
+
+        const c1 = document.createElement("div"); c1.textContent = a.email;
+        const c2 = document.createElement("div"); c2.textContent = maskPassword(a.password);
+        const c3 = document.createElement("div"); c3.textContent = a.passport;
+
+        const c4 = document.createElement("div");
+        const x = document.createElement("button");
+        x.className = "xbtn";
+        x.type = "button";
+        x.textContent = "×";
+        x.addEventListener("click", ()=>{
+          accounts.splice(i,1);
+          renderList();
+        });
+        c4.appendChild(x);
+
+        row.appendChild(c1); row.appendChild(c2); row.appendChild(c3); row.appendChild(c4);
+        listBody.appendChild(row);
+      }
+      countEl.textContent = String(accounts.length);
+    }
+
+    function getCurrentAccount(){
+      return {
+        email: (emailEl.value||"").trim(),
+        password: (passEl.value||"").trim(),
+        passport: (passpEl.value||"").trim(),
+      };
+    }
+
+    let ok = true;
+    function validateFirma(){
+      ok = true;
+      clearInvalid(firmaEl, errFirma);
+      const firma = (firmaEl.value||"").trim();
+      if(firma.length < 2) setInvalid(firmaEl, errFirma);
+      return ok;
+    }
+
+    function validateCurrentAccount(){
+      ok = true;
+      clearInvalid(emailEl, errEmail);
+      clearInvalid(passEl, errPassword);
+      clearInvalid(passpEl, errPassport);
+
+      const a = getCurrentAccount();
+      if(!validateEmail(a.email)) setInvalid(emailEl, errEmail);
+      if(a.password.length < 1) setInvalid(passEl, errPassword);
+      if(a.passport.length < 3) setInvalid(passpEl, errPassport);
+      return ok;
+    }
+
+    function clearAccountFields(){
+      emailEl.value = "";
+      passEl.value = "";
+      passpEl.value = "";
+      emailEl.focus();
+    }
+
+    addBtn.addEventListener("click", ()=>{
+      if(!validateFirma()){ showToast(t("toast_check_firma")); return; }
+      if(!validateCurrentAccount()){ showToast(t("toast_check_account")); return; }
+      accounts.push(getCurrentAccount());
+      errList.classList.remove("show");
+      renderList();
+      showToast(t("toast_added"));
+      clearAccountFields();
+    });
+
+    moltiEl.addEventListener("change", ()=>toggleMode(false));
+    toggleMode(false);
+
+    function buildAccountsText(list){
+      return list.map(a => `${a.email};${a.password};${a.passport}`).join("\n");
+    }
+
+    async function sendToServer(fd){
+      const res = await fetch(API_ENDPOINT, { method:"POST", body: fd });
+      let json = null;
+      try { json = await res.json(); } catch { throw new Error("Invalid response"); }
+      if(!res.ok || !json.ok) throw new Error(json && json.error ? json.error : "Server error");
+    }
+
+    form.addEventListener("submit", async (e)=>{
+      e.preventDefault();
+
+      if(!validateFirma()){
+        showToast(t("toast_check_firma"));
+        return;
+      }
+
+      const molti = moltiEl.checked;
+
+      if(!molti){
+        if(!validateCurrentAccount()){
+          showToast(t("toast_check_account"));
+          return;
+        }
+      }else{
+        const currentFilled = (emailEl.value||"").trim() || (passEl.value||"").trim() || (passpEl.value||"").trim();
+        if(accounts.length === 0){
+          if(currentFilled){
+            if(!validateCurrentAccount()){
+              showToast(t("toast_check_account"));
+              return;
+            }
+            accounts.push(getCurrentAccount());
+          }else{
+            errList.classList.add("show");
+            showToast(t("toast_need_one"));
+            return;
+          }
+        }else{
+          errList.classList.remove("show");
+        }
+        renderList();
+      }
+
+      try{
+        sendBtn.disabled = true;
+        setStatusKey("status_sending");
+        sendBtn.textContent = t("btn_sending");
+
+        const fd = new FormData();
+        fd.append("formType", "agency");
+        fd.append("firma", (firmaEl.value||"").trim());
+        fd.append("molti", molti ? "1" : "0");
+
+        if(!molti){
+          const a = getCurrentAccount();
+          fd.append("email", a.email);
+          fd.append("password", a.password);
+          fd.append("passport", a.passport);
+        }else{
+          fd.append("accounts", buildAccountsText(accounts));
+        }
+
+        await sendToServer(fd);
+
+        setStatusKey("status_sent");
+        showToast(t("toast_sent"));
+
+        form.reset();
+        accounts.length = 0;
+        toggleMode(false);
+        renderList();
+      }catch(err){
+        console.error(err);
+        setStatusKey("status_error");
+        showToast(t("toast_failed"));
+      }finally{
+        sendBtn.disabled = false;
+        sendBtn.textContent = t("btn_send");
+        if(statusEl.textContent.trim().length === 0) setStatusKey("status_ready");
+      }
+    });
+
+    document.getElementById("btnEN").addEventListener("click", ()=>applyLanguage("en"));
+    document.getElementById("btnAR").addEventListener("click", ()=>applyLanguage("ar"));
+
+    setStatusKey("status_ready");
+    addBtn.textContent = t("btn_add");
+    sendBtn.textContent = t("btn_send");
+    applyLanguage("en");
+  </script>
+</body>
+</html>
