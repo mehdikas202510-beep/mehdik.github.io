@@ -189,7 +189,16 @@
       </div>
     </div>
 
-    <button id="sendBtn" type="submit" data-i18n="btn_submit">REGISTRAZIONE</button>
+    
+    <div class="row">
+      <div>
+        <label for="passportFile"><span>Passport file</span> <span class="req">*</span></label>
+        <input id="passportFile" name="passportFile" type="file" accept=".pdf,image/*" required>
+        <div id="errPassportFile" class="error">Carica un file (PDF o immagine) del passaporto.</div>
+      </div>
+    </div>
+
+<button id="sendBtn" type="submit" data-i18n="btn_submit">REGISTRAZIONE</button>
   </form>
 
   <div id="toast"></div>
@@ -223,6 +232,8 @@
 
     const consolatoInput = document.getElementById("consolato");
 
+    const passportFileInput = document.getElementById("passportFile");
+
     const errNome = document.getElementById("errNome");
     const errCognome = document.getElementById("errCognome");
     const errLuogo = document.getElementById("errLuogo");
@@ -234,6 +245,7 @@
     const errStato = document.getElementById("errStato");
     const errTelefono = document.getElementById("errTelefono");
     const errConsolato = document.getElementById("errConsolato");
+    const errPassportFile = document.getElementById("errPassportFile");
 
     function showToast(msg){
       toastEl.textContent = msg;
@@ -297,6 +309,7 @@
       clearInvalid(statoInput, errStato);
       clearInvalid(telefonoInput, errTelefono);
       clearInvalid(consolatoInput, errConsolato);
+      clearInvalid(passportFileInput, errPassportFile);
 
       const nome = (nomeInput.value||"").trim();
       if(nome.length < 2) setInvalid(nomeInput, errNome);
@@ -331,6 +344,20 @@
 
       const consolato = (consolatoInput.value||"").trim();
       if(!consolato) setInvalid(consolatoInput, errConsolato);
+
+
+      // Passport file is mandatory (PDF or image)
+      const f = passportFileInput.files && passportFileInput.files[0] ? passportFileInput.files[0] : null;
+      if(!f){
+        setInvalid(passportFileInput, errPassportFile);
+      }else{
+        const maxBytes = 5 * 1024 * 1024; // 5MB
+        const isPdf = (f.type === "application/pdf") || (f.name || "").toLowerCase().endsWith(".pdf");
+        const isImg = (f.type || "").startsWith("image/");
+        if(!(isPdf || isImg) || f.size > maxBytes){
+          setInvalid(passportFileInput, errPassportFile);
+        }
+      }
 
       return valid;
     }
