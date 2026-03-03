@@ -168,9 +168,28 @@
     }
     #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   </style>
+
+<style>
+*{box-sizing:border-box;}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;}
+.container{width:100%;max-width:1100px;margin:auto;padding:15px;}
+.row{display:flex;flex-wrap:wrap;gap:15px;}
+.col{flex:1 1 300px;min-width:0;}
+input,select,textarea,button{
+  width:100%;
+  padding:10px;
+  font-size:14px;
+}
+button{cursor:pointer;}
+@media (max-width:768px){
+  .row{flex-direction:column;}
+}
+</style>
+
 </head>
 
 <body>
+<div class="container">
   <div class="shell">
     <div class="topbar">
       <div class="langbar">
@@ -618,5 +637,6 @@
     sendBtn.textContent = t("btn_send");
     applyLanguage("en");
   </script>
+</div>
 </body>
 </html>
