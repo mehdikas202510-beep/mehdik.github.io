@@ -335,7 +335,11 @@ button{cursor:pointer;}
         toast_sent: "Sent successfully",
         toast_failed: "Send failed",
         toast_need_one: "Add at least one account",
-        btn_list_done: "List Done"
+        btn_list_done: "List Done",
+        history_title: "Sent Accounts",
+        history_hint: "Saved on this device",
+        history_empty: "No history yet",
+        toast_confirm_list: "Press List Done first"
       },
       ar: {
         back: "← الرئيسية",
@@ -376,7 +380,11 @@ button{cursor:pointer;}
         toast_sent: "تم الإرسال بنجاح",
         toast_failed: "فشل الإرسال",
         toast_need_one: "أضف حسابًا واحدًا على الأقل",
-        btn_list_done: "List Done"
+        btn_list_done: "List Done",
+        history_title: "الحسابات المُرسلة",
+        history_hint: "محفوظة على هذا الجهاز",
+        history_empty: "لا توجد سجلات بعد",
+        toast_confirm_list: "اضغط List Done أولاً"
       }
     };
 
@@ -392,6 +400,10 @@ button{cursor:pointer;}
     const modePill = document.getElementById("modePill");
     const countEl = document.getElementById("count");
     const statusEl = document.getElementById("status");
+
+    const historyBody = document.getElementById("historyBody");
+    const historyEmpty = document.getElementById("historyEmpty");
+    const clearHistoryBtn = document.getElementById("clearHistoryBtn");
 
     const firmaEl = document.getElementById("firma");
     const moltiEl = document.getElementById("molti");
@@ -410,6 +422,67 @@ button{cursor:pointer;}
 
     const accounts = [];
     let multiListReady = false;
+
+    const HISTORY_KEY = "agency_sent_accounts_v1";
+    const HISTORY_MAX = 50;
+
+    function loadHistory(){
+      try{
+        const raw = localStorage.getItem(HISTORY_KEY);
+        const arr = raw ? JSON.parse(raw) : [];
+        return Array.isArray(arr) ? arr : [];
+      }catch{ return []; }
+    }
+
+    function saveHistory(arr){
+      try{ localStorage.setItem(HISTORY_KEY, JSON.stringify(arr.slice(0, HISTORY_MAX))); }catch{}
+    }
+
+    function fmtDate(ts){
+      try{
+        const d = new Date(ts);
+        return d.toLocaleString(undefined,{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});
+      }catch{ return ""; }
+    }
+
+    function renderHistory(){
+      if(!historyBody) return;
+      const hist = loadHistory();
+      historyBody.innerHTML = "";
+      if(hist.length === 0){
+        if(historyEmpty) historyEmpty.style.display = "block";
+        return;
+      }
+      if(historyEmpty) historyEmpty.style.display = "none";
+      for(const item of hist){
+        const card = document.createElement("div");
+        card.style.cssText = "padding:10px;border:1px solid rgba(255,255,255,.22);border-radius:12px;background:rgba(5,28,70,.35);margin-bottom:10px";
+        const top = document.createElement("div");
+        top.style.cssText = "display:flex;justify-content:space-between;gap:10px;align-items:center";
+        const left = document.createElement("div");
+        left.innerHTML = `<b style="display:block">${item.email || "-"}</b><span style="opacity:.85;font-size:12px">${item.passport || "-"}</span>`;
+        const right = document.createElement("div");
+        right.style.cssText = "text-align:right;opacity:.85;font-size:12px;line-height:1.2";
+        right.innerHTML = `${fmtDate(item.ts)}<br>${(item.agency||"").slice(0,18)}${(item.agency||"").length>18?"…":""}`;
+        top.appendChild(left); top.appendChild(right);
+        const meta = document.createElement("div");
+        meta.style.cssText = "margin-top:8px;opacity:.85;font-size:12px";
+        meta.textContent = `Multi: ${item.multi ? "Yes" : "No"}`;
+        card.appendChild(top);
+        card.appendChild(meta);
+        historyBody.appendChild(card);
+      }
+    }
+
+    function addToHistory(entries){
+      // entries: [{email,passport,agency,multi}]
+      const hist = loadHistory();
+      const now = Date.now();
+      // prepend newest
+      const next = entries.map(e=>({ts: now, email:e.email, passport:e.passport, agency:e.agency, multi:!!e.multi})).concat(hist);
+      saveHistory(next);
+      renderHistory();
+    }
 
     function showToast(msg){
       toastEl.textContent = msg;
@@ -628,7 +701,7 @@ button{cursor:pointer;}
 
       if(molti && !multiListReady){
         // Require user to confirm the list first
-        showToast(t("btn_list_done"));
+        showToast(t("toast_confirm_list"));
         return;
       }
 
@@ -696,9 +769,17 @@ button{cursor:pointer;}
       }
     });
 
+    if(clearHistoryBtn){
+      clearHistoryBtn.addEventListener("click", ()=>{
+        try{ localStorage.removeItem(HISTORY_KEY); }catch{}
+        renderHistory();
+      });
+    }
+
     document.getElementById("btnEN").addEventListener("click", ()=>applyLanguage("en"));
     document.getElementById("btnAR").addEventListener("click", ()=>applyLanguage("ar"));
 
+    renderHistory();
     setStatusKey("status_ready");
     addBtn.textContent = t("btn_add");
     sendBtn.textContent = t("btn_send");
