@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>Agency</title>
   <style>
-:root{
+    :root{
       --glass:rgba(255,255,255,.12);
       --border:rgba(255,255,255,.24);
       --ink:#fff;
@@ -26,10 +26,7 @@
       font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
     }
     .shell{width:100%;max-width:980px}
-    .topbar{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;
-      margin:0 0 12px
-    }
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px}
     .langbar{display:flex;align-items:center;gap:10px}
     .langbtn{
       border:1px solid rgba(255,255,255,.35);
@@ -44,15 +41,6 @@
       border-color:rgba(255,255,255,.65);
       box-shadow:0 0 0 1px rgba(255,255,255,.25)
     }
-    .back{
-      border:1px solid rgba(255,255,255,.35);
-      background:rgba(5,28,70,.45);
-      color:#fff;border-radius:999px;
-      padding:8px 14px;font-weight:900;cursor:pointer;
-      text-decoration:none;display:inline-flex;align-items:center;gap:8px;
-      transition:.15s ease;user-select:none
-    }
-    .back:hover{filter:brightness(1.07);transform:translateY(-1px)}
     .card{
       background:var(--glass);
       border:1px solid var(--border);
@@ -61,10 +49,7 @@
       backdrop-filter:blur(16px);
       overflow:hidden
     }
-    .head{
-      padding:18px 18px 0;
-      display:flex;flex-direction:column;gap:8px
-    }
+    .head{padding:18px 18px 0;display:flex;flex-direction:column;gap:8px}
     h1{margin:0;font-size:1.9rem;font-weight:900;text-shadow:0 10px 25px rgba(0,0,0,.3)}
     form{padding:14px 18px 18px}
     .grid{display:grid;grid-template-columns:1fr;gap:12px}
@@ -77,6 +62,12 @@
     }
     .titleRow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 10px}
     .titleRow b{font-size:1.02rem;letter-spacing:.2px}
+    .pill{
+      border:1px solid rgba(255,255,255,.3);
+      padding:4px 10px;border-radius:999px;
+      background:rgba(255,255,255,.08);
+      font-size:.78rem;font-weight:900;opacity:.95;
+    }
     .hint{font-size:.8rem;opacity:.86;line-height:1.35}
     label{display:block;font-weight:900;margin:10px 6px 6px;font-size:.9rem}
     input[type=text],input[type=password]{
@@ -124,7 +115,7 @@
     .list{margin-top:10px;border-radius:16px;border:1px solid rgba(255,255,255,.14);overflow:hidden}
     .listHead,.listRow{
       display:grid;
-      grid-template-columns:1.25fr .9fr .7fr 44px;
+      grid-template-columns:1.25fr .9fr .7fr 140px;
       gap:10px;
       padding:10px 12px;
       align-items:center
@@ -167,7 +158,7 @@
       transition:all .25s ease;z-index:999;max-width:92%;text-align:center
     }
     #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-  
+
     .dupGlow{
       outline:2px solid rgba(255,90,90,.9);
       box-shadow:0 0 0 2px rgba(255,90,90,.25), 0 0 18px rgba(255,90,90,.55);
@@ -198,8 +189,6 @@
 </head>
 
 <body>
-
-<div class="container">
   <div class="shell">
     <div class="topbar">
       <div class="langbar">
@@ -222,7 +211,7 @@
             </div>
 
             <label for="firma" data-i18n="firma_lbl">Agency Signature</label>
-            <input id="firma" name="firma" type="text" placeholder="" autocomplete="organization"/>
+            <input id="firma" name="firma" type="text" autocomplete="organization"/>
             <div id="errFirma" class="err" data-i18n="err_firma">Invalid agency signature</div>
 
             <div style="height:10px"></div>
@@ -250,7 +239,7 @@
               </div>
               <div>
                 <label for="password" data-i18n="pass_lbl">Password</label>
-                <input id="password" name="password" type="password" placeholder="" autocomplete="current-password"/>
+                <input id="password" name="password" type="password" autocomplete="current-password"/>
                 <div id="errPassword" class="err" data-i18n="err_pass">Invalid password</div>
               </div>
             </div>
@@ -301,540 +290,544 @@
   </div>
 
   <div id="toast"></div>
+
   <script>
-  // ====== Config ======
-  const API_ENDPOINT = "https://api.mehdik.site/";
-  fetch(API_ENDPOINT, { method: "GET", mode: "cors", cache: "no-store" }).catch(()=>{});
+    const API_ENDPOINT = "https://api.mehdik.site/";
+    fetch(API_ENDPOINT, { method: "GET", mode: "cors", cache: "no-store" }).catch(()=>{});
 
-  // ====== i18n ======
-  const i18n = {
-    en: {
-      title: "Agency",
-      agency_details: "Agency Details",
-      firma_lbl: "Agency Signature",
-      multi: "Multi",
-      multi_hint: "Add multiple accounts in one request",
-      account: "Account",
-      account_hint: "Email + Password + Passport",
-      email_lbl: "Email",
-      pass_lbl: "Password",
-      passport_lbl: "Passport Number",
-      summary: "Summary",
-      status_lbl: "Status",
-      count_lbl: "Accounts in list",
-      fill_send: "Fill and send",
-      col_email: "Email",
-      col_password: "Password",
-      col_passport: "Passport",
-      mode_single: "Single",
-      mode_multi: "Multi",
-      btn_add: "+ Add to list",
-      btn_send: "Send",
-      btn_sending: "Sending…",
-      status_ready: "Ready",
-      status_sending: "Sending…",
-      status_sent: "Sent",
-      status_error: "Error",
-      err_firma: "Invalid agency signature",
-      err_email: "Invalid email",
-      err_pass: "Invalid password",
-      err_passport: "Invalid passport number",
-      err_list: "Add at least one account",
-      toast_check_firma: "Check agency signature",
-      toast_check_account: "Check account fields",
-      toast_added: "Added to list",
-      toast_sent: "Sent successfully",
-      toast_failed: "Send failed",
-      toast_need_one: "Add at least one account",
-      toast_dup: "Account already exists",
-      btn_delete: "Delete",
-      btn_edit: "Edit",
-      btn_list_done: "List Done"
-    },
-    ar: {
-      title: "الوكالة",
-      agency_details: "بيانات الوكالة",
-      firma_lbl: "توقيع الوكالة",
-      multi: "متعدد",
-      multi_hint: "إضافة عدة حسابات في طلب واحد",
-      account: "الحساب",
-      account_hint: "إيميل + كلمة سر + رقم الجواز",
-      email_lbl: "الإيميل",
-      pass_lbl: "كلمة السر",
-      passport_lbl: "رقم جواز السفر",
-      summary: "ملخص",
-      status_lbl: "الحالة",
-      count_lbl: "عدد الحسابات في القائمة",
-      fill_send: "املأ ثم أرسل",
-      col_email: "الإيميل",
-      col_password: "كلمة السر",
-      col_passport: "الجواز",
-      mode_single: "واحد",
-      mode_multi: "متعدد",
-      btn_add: "+ أضف للقائمة",
-      btn_send: "إرسال",
-      btn_sending: "جاري الإرسال…",
-      status_ready: "جاهز",
-      status_sending: "جاري الإرسال…",
-      status_sent: "تم الإرسال",
-      status_error: "خطأ",
-      err_firma: "توقيع غير صالح",
-      err_email: "إيميل غير صالح",
-      err_pass: "كلمة سر غير صالحة",
-      err_passport: "رقم جواز غير صالح",
-      err_list: "أضف حسابًا واحدًا على الأقل",
-      toast_check_firma: "تحقق من توقيع الوكالة",
-      toast_check_account: "تحقق من بيانات الحساب",
-      toast_added: "تمت الإضافة للقائمة",
-      toast_sent: "تم الإرسال بنجاح",
-      toast_failed: "فشل الإرسال",
-      toast_need_one: "أضف حسابًا واحدًا على الأقل",
-      toast_dup: "الحساب موجود مسبقًا",
-      btn_delete: "حذف",
-      btn_edit: "تعديل",
-      btn_list_done: "تمّ"
-    }
-  };
-
-  let currentLang = "en";
-  const t = (key) => (i18n[currentLang] && i18n[currentLang][key] != null) ? i18n[currentLang][key] : key;
-
-  // ====== Elements ======
-  const form = document.getElementById("agency-form");
-  const toastEl = document.getElementById("toast");
-
-  const sendBtn = document.getElementById("sendBtn");
-  const addBtn = document.getElementById("addBtn");
-  const listDoneBtn = document.getElementById("listDoneBtn");
-
-  const modePill = document.getElementById("modePill");
-  const countEl = document.getElementById("count");
-  const statusEl = document.getElementById("status");
-
-  const firmaEl = document.getElementById("firma");
-  const moltiEl = document.getElementById("molti");
-  const emailEl = document.getElementById("email");
-  const passEl = document.getElementById("password");
-  const passpEl = document.getElementById("passport");
-
-  const errFirma = document.getElementById("errFirma");
-  const errEmail = document.getElementById("errEmail");
-  const errPassword = document.getElementById("errPassword");
-  const errPassport = document.getElementById("errPassport");
-  const errList = document.getElementById("errList");
-
-  const listWrap = document.getElementById("listWrap");
-  const listBody = document.getElementById("listBody");
-
-  // ====== State ======
-  const accounts = [];
-  let multiListReady = false;
-  let dupIndex = -1;
-
-  // ====== UI helpers ======
-  function showToast(msg){
-    toastEl.textContent = msg;
-    toastEl.classList.add("show");
-    setTimeout(()=>toastEl.classList.remove("show"), 2600);
-  }
-
-  function setStatusKey(key){ statusEl.textContent = t(key); }
-
-  function validateEmail(val){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val); }
-
-  let ok = true;
-  function clearInvalid(el, err){ if(el) el.classList.remove("invalid"); if(err) err.classList.remove("show"); }
-  function setInvalid(el, err){ if(el) el.classList.add("invalid"); if(err) err.classList.add("show"); ok = false; }
-
-  function validateFirma(){
-    ok = true;
-    clearInvalid(firmaEl, errFirma);
-    const firma = (firmaEl.value||"").trim();
-    if(firma.length < 2) setInvalid(firmaEl, errFirma);
-    return ok;
-  }
-
-  function getCurrentAccount(){
-    return {
-      email: (emailEl.value||"").trim(),
-      password: (passEl.value||"").trim(),
-      passport: (passpEl.value||"").trim(),
+    const i18n = {
+      en: {
+        title: "Agency",
+        agency_details: "Agency Details",
+        firma_lbl: "Agency Signature",
+        multi: "Multi",
+        multi_hint: "Add multiple accounts in one request",
+        account: "Account",
+        account_hint: "Email + Password + Passport",
+        email_lbl: "Email",
+        pass_lbl: "Password",
+        passport_lbl: "Passport Number",
+        summary: "Summary",
+        status_lbl: "Status",
+        count_lbl: "Accounts in list",
+        fill_send: "Fill and send",
+        col_email: "Email",
+        col_password: "Password",
+        col_passport: "Passport",
+        mode_single: "Single",
+        mode_multi: "Multi",
+        btn_add: "+ Add to list",
+        btn_send: "Send",
+        btn_sending: "Sending…",
+        status_ready: "Ready",
+        status_sending: "Sending…",
+        status_sent: "Sent",
+        status_error: "Error",
+        err_firma: "Invalid agency signature",
+        err_email: "Invalid email",
+        err_pass: "Invalid password",
+        err_passport: "Invalid passport number",
+        err_list: "Add at least one account",
+        toast_check_firma: "Check agency signature",
+        toast_check_account: "Check account fields",
+        toast_added: "Added to list",
+        toast_sent: "Sent successfully",
+        toast_failed: "Send failed",
+        toast_need_one: "Add at least one account",
+        toast_dup: "Account already exists (saved before)",
+        btn_delete: "Delete",
+        btn_edit: "Edit",
+        btn_list_done: "List Done"
+      },
+      ar: {
+        title: "الوكالة",
+        agency_details: "بيانات الوكالة",
+        firma_lbl: "توقيع الوكالة",
+        multi: "متعدد",
+        multi_hint: "إضافة عدة حسابات في طلب واحد",
+        account: "الحساب",
+        account_hint: "إيميل + كلمة سر + رقم الجواز",
+        email_lbl: "الإيميل",
+        pass_lbl: "كلمة السر",
+        passport_lbl: "رقم جواز السفر",
+        summary: "ملخص",
+        status_lbl: "الحالة",
+        count_lbl: "عدد الحسابات في القائمة",
+        fill_send: "املأ ثم أرسل",
+        col_email: "الإيميل",
+        col_password: "كلمة السر",
+        col_passport: "الجواز",
+        mode_single: "واحد",
+        mode_multi: "متعدد",
+        btn_add: "+ أضف للقائمة",
+        btn_send: "إرسال",
+        btn_sending: "جاري الإرسال…",
+        status_ready: "جاهز",
+        status_sending: "جاري الإرسال…",
+        status_sent: "تم الإرسال",
+        status_error: "خطأ",
+        err_firma: "توقيع غير صالح",
+        err_email: "إيميل غير صالح",
+        err_pass: "كلمة سر غير صالحة",
+        err_passport: "رقم جواز غير صالح",
+        err_list: "أضف حسابًا واحدًا على الأقل",
+        toast_check_firma: "تحقق من توقيع الوكالة",
+        toast_check_account: "تحقق من بيانات الحساب",
+        toast_added: "تمت الإضافة للقائمة",
+        toast_sent: "تم الإرسال بنجاح",
+        toast_failed: "فشل الإرسال",
+        toast_need_one: "أضف حسابًا واحدًا على الأقل",
+        toast_dup: "الحساب موجود مسبقًا (محفوظ سابقًا)",
+        btn_delete: "حذف",
+        btn_edit: "تعديل",
+        btn_list_done: "تم"
+      }
     };
-  }
 
-  function validateCurrentAccount(){
-    ok = true;
-    clearInvalid(emailEl, errEmail);
-    clearInvalid(passEl, errPassword);
-    clearInvalid(passpEl, errPassport);
+    let currentLang = "en";
+    const t = (key) => (i18n[currentLang] && i18n[currentLang][key] != null) ? i18n[currentLang][key] : key;
 
-    const a = getCurrentAccount();
-    if(!validateEmail(a.email)) setInvalid(emailEl, errEmail);
-    if(a.password.length < 1) setInvalid(passEl, errPassword);
-    if(a.passport.length < 3) setInvalid(passpEl, errPassport);
-    return ok;
-  }
+    const form = document.getElementById("agency-form");
+    const toastEl = document.getElementById("toast");
+    const sendBtn = document.getElementById("sendBtn");
+    const addBtn = document.getElementById("addBtn");
+    const listDoneBtn = document.getElementById("listDoneBtn");
 
-  function clearAccountFields(){
-    emailEl.value = "";
-    passEl.value = "";
-    passpEl.value = "";
-    emailEl.focus();
-  }
+    const modePill = document.getElementById("modePill");
+    const countEl = document.getElementById("count");
+    const statusEl = document.getElementById("status");
 
-  function normalizeKey(a){
-    // SAME ACCOUNT = same Email (case-insensitive) + same Passport (case-insensitive)
-    // (Password can change, so user can edit it.)
-    return `${(a.email||"").trim().toLowerCase()}||${(a.passport||"").trim().toUpperCase()}`;
-  }
+    const firmaEl = document.getElementById("firma");
+    const moltiEl = document.getElementById("molti");
+    const emailEl = document.getElementById("email");
+    const passEl = document.getElementById("password");
+    const passpEl = document.getElementById("passport");
 
-  function findDuplicateIndex(a){
-    const k = normalizeKey(a);
-    for(let i=0;i<accounts.length;i++){
-      if(normalizeKey(accounts[i]) === k) return i;
+    const errFirma = document.getElementById("errFirma");
+    const errEmail = document.getElementById("errEmail");
+    const errPassword = document.getElementById("errPassword");
+    const errPassport = document.getElementById("errPassport");
+    const errList = document.getElementById("errList");
+
+    const listWrap = document.getElementById("listWrap");
+    const listBody = document.getElementById("listBody");
+
+    const accounts = [];
+    let multiListReady = false;
+    let dupIndex = -1;
+    let singleDupView = false;
+
+    function showToast(msg){
+      toastEl.textContent = msg;
+      toastEl.classList.add("show");
+      setTimeout(()=>toastEl.classList.remove("show"), 2600);
     }
-    return -1;
-  }
 
-  function maskPassword(p){
-    if(!p) return "";
-    if(p.length <= 2) return "••";
-    return "•".repeat(Math.min(10, p.length - 2)) + p.slice(-2);
-  }
+    function validateEmail(val){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val); }
 
-  function renderList(){
-    countEl.textContent = String(accounts.length);
-    listBody.innerHTML = "";
+    function clearInvalid(el, err){ if(el) el.classList.remove("invalid"); if(err) err.classList.remove("show"); }
+    function setInvalid(el, err){ if(el) el.classList.add("invalid"); if(err) err.classList.add("show"); ok = false; }
 
-    for(let i=0;i<accounts.length;i++){
-      const a = accounts[i];
+    function setStatusKey(key){ statusEl.textContent = t(key); }
 
-      const row = document.createElement("div");
-      row.className = "listRow";
-      row.setAttribute("role","row");
-      row.dataset.index = String(i);
+    function applyLanguage(lang){
+      currentLang = lang;
 
-      if(i === dupIndex) row.classList.add("dupGlow");
-
-      const c1 = document.createElement("div"); c1.textContent = a.email;
-      const c2 = document.createElement("div"); c2.textContent = maskPassword(a.password);
-      const c3 = document.createElement("div"); c3.textContent = a.passport;
-
-      const c4 = document.createElement("div");
-      const wrap = document.createElement("div");
-      wrap.className = "actionBtns";
-
-      if(i === dupIndex){
-        // Edit
-        const editBtn = document.createElement("button");
-        editBtn.type = "button";
-        editBtn.className = "miniBtn";
-        editBtn.textContent = t("btn_edit");
-        editBtn.addEventListener("click", ()=>{
-          emailEl.value = a.email || "";
-          passEl.value = a.password || "";
-          passpEl.value = a.passport || "";
-
-          accounts.splice(i, 1);
-
-          dupIndex = -1;
-          multiListReady = false;
-          toggleMode(true);
-          renderList();
-
-          emailEl.focus();
-        });
-
-        // Delete
-        const delBtn = document.createElement("button");
-        delBtn.type = "button";
-        delBtn.className = "miniBtn danger";
-        delBtn.textContent = t("btn_delete");
-        delBtn.addEventListener("click", ()=>{
-          accounts.splice(i, 1);
-          dupIndex = -1;
-          multiListReady = false;
-          toggleMode(true);
-          renderList();
-        });
-
-        wrap.appendChild(editBtn);
-        wrap.appendChild(delBtn);
+      if(lang === "ar"){
+        document.documentElement.lang = "ar";
+        document.documentElement.dir = "rtl";
       }else{
-        const x = document.createElement("button");
-        x.className = "xbtn";
-        x.type = "button";
-        x.textContent = "×";
-        x.addEventListener("click", ()=>{
-          accounts.splice(i, 1);
-          if(dupIndex === i) dupIndex = -1;
-          if(dupIndex > i) dupIndex--;
-          multiListReady = false;
-          toggleMode(true);
-          renderList();
-        });
-        wrap.appendChild(x);
+        document.documentElement.lang = "en";
+        document.documentElement.dir = "ltr";
       }
 
-      c4.appendChild(wrap);
-      row.appendChild(c1); row.appendChild(c2); row.appendChild(c3); row.appendChild(c4);
-      listBody.appendChild(row);
-    }
+      document.getElementById("btnEN").classList.toggle("active", lang === "en");
+      document.getElementById("btnAR").classList.toggle("active", lang === "ar");
 
-    countEl.textContent = String(accounts.length);
+      document.querySelectorAll("[data-i18n]").forEach(el=>{
+        const key = el.getAttribute("data-i18n");
+        if(i18n[lang][key] != null) el.textContent = i18n[lang][key];
+      });
 
-    if(dupIndex !== -1){
-      const el = listBody.querySelector(`[data-index="${dupIndex}"]`);
-      if(el) el.scrollIntoView({ behavior:"smooth", block:"nearest" });
-    }
-  }
+      firmaEl.placeholder = lang === "ar" ? "اسم الوكالة / توقيع" : "Agency name / Signature";
+      passEl.placeholder = lang === "ar" ? "كلمة السر" : "Password";
 
-  function toggleMode(skipListRender){
-    const on = moltiEl.checked;
-    modePill.textContent = on ? t("mode_multi") : t("mode_single");
+      addBtn.textContent = t("btn_add");
+      listDoneBtn.textContent = t("btn_list_done");
+      sendBtn.textContent = t("btn_send");
 
-    if(on){
-      addBtn.style.display = "inline-flex";
-      listWrap.style.display = "block";
-
-      if(!multiListReady){
-        sendBtn.style.display = "none";
-        listDoneBtn.style.display = "inline-flex";
-      }else{
-        sendBtn.style.display = "inline-flex";
-        listDoneBtn.style.display = "none";
-      }
-    }else{
-      multiListReady = false;
-      addBtn.style.display = "none";
-      listWrap.style.display = "none";
-      listDoneBtn.style.display = "none";
-      sendBtn.style.display = "inline-flex";
-      errList.classList.remove("show");
-    }
-
-    if(!skipListRender) renderList();
-  }
-
-  function applyLanguage(lang){
-    currentLang = lang;
-
-    if(lang === "ar"){
-      document.documentElement.lang = "ar";
-      document.documentElement.dir = "rtl";
-    }else{
-      document.documentElement.lang = "en";
-      document.documentElement.dir = "ltr";
-    }
-
-    document.getElementById("btnEN").classList.toggle("active", lang === "en");
-    document.getElementById("btnAR").classList.toggle("active", lang === "ar");
-
-    document.querySelectorAll("[data-i18n]").forEach(el=>{
-      const key = el.getAttribute("data-i18n");
-      if(i18n[lang] && i18n[lang][key] != null) el.textContent = i18n[lang][key];
-    });
-
-    firmaEl.placeholder = lang === "ar" ? "اسم الوكالة / توقيع" : "Agency name / Signature";
-    passEl.placeholder = lang === "ar" ? "كلمة السر" : "Password";
-
-    addBtn.textContent = t("btn_add");
-    listDoneBtn.textContent = t("btn_list_done");
-    sendBtn.textContent = t("btn_send");
-
-    toggleMode(true);
-
-    if(statusEl.textContent.trim().length === 0) setStatusKey("status_ready");
-  }
-
-  // ====== Multi list actions ======
-  addBtn.addEventListener("click", ()=>{
-    if(!validateFirma()){ showToast(t("toast_check_firma")); return; }
-    if(!validateCurrentAccount()){ showToast(t("toast_check_account")); return; }
-
-    const a = getCurrentAccount();
-    const di = findDuplicateIndex(a);
-
-    if(di !== -1){
-      dupIndex = di;
-      multiListReady = false;
       toggleMode(true);
-      renderList();
-      showToast(t("toast_dup"));
-      return;
+      if(statusEl.textContent.trim().length === 0) setStatusKey("status_ready");
     }
 
-    dupIndex = -1;
-    accounts.push(a);
-    errList.classList.remove("show");
-    multiListReady = false;
-    toggleMode(true);
-    renderList();
-    showToast(t("toast_added"));
-    clearAccountFields();
-  });
+    function toggleMode(skipListRender){
+      const on = moltiEl.checked;
+      modePill.textContent = on ? t("mode_multi") : t("mode_single");
 
-  listDoneBtn.addEventListener("click", ()=>{
-    const currentFilled =
-      (emailEl.value||"").trim() ||
-      (passEl.value||"").trim() ||
-      (passpEl.value||"").trim();
+      if(on) singleDupView = false;
 
-    if(currentFilled){
+      if(on){
+        addBtn.style.display = "inline-flex";
+        listWrap.style.display = "block";
+        if(!multiListReady){
+          sendBtn.style.display = "none";
+          listDoneBtn.style.display = "inline-flex";
+        }else{
+          sendBtn.style.display = "inline-flex";
+          listDoneBtn.style.display = "none";
+        }
+      }else{
+        multiListReady = false;
+        addBtn.style.display = "none";
+        listDoneBtn.style.display = "none";
+        listWrap.style.display = singleDupView ? "block" : "none";
+        sendBtn.style.display = "inline-flex";
+        errList.classList.remove("show");
+      }
+
+      if(!skipListRender) renderList();
+    }
+
+    function maskPassword(p){
+      if(!p) return "";
+      if(p.length <= 2) return "••";
+      return "•".repeat(Math.min(10, p.length - 2)) + p.slice(-2);
+    }
+
+    function renderList(){
+      countEl.textContent = String(accounts.length);
+      listBody.innerHTML = "";
+
+      for(let i=0;i<accounts.length;i++){
+        const a = accounts[i];
+
+        const row = document.createElement("div");
+        row.className = "listRow";
+        row.setAttribute("role","row");
+
+        if(i === dupIndex) row.classList.add("dupGlow");
+
+        const c1 = document.createElement("div"); c1.textContent = a.email;
+        const c2 = document.createElement("div"); c2.textContent = maskPassword(a.password);
+        const c3 = document.createElement("div"); c3.textContent = a.passport;
+
+        const c4 = document.createElement("div");
+        const wrap = document.createElement("div");
+        wrap.className = "actionBtns";
+
+        if(i === dupIndex){
+          const editBtn = document.createElement("button");
+          editBtn.type = "button";
+          editBtn.className = "miniBtn";
+          editBtn.textContent = t("btn_edit");
+          editBtn.addEventListener("click", ()=>{
+            emailEl.value = a.email || "";
+            passEl.value = a.password || "";
+            passpEl.value = a.passport || "";
+            accounts.splice(i,1);
+            dupIndex = -1;
+            multiListReady = false;
+            singleDupView = false;
+            toggleMode(true);
+            renderList();
+            emailEl.focus();
+          });
+
+          const delBtn = document.createElement("button");
+          delBtn.type = "button";
+          delBtn.className = "miniBtn danger";
+          delBtn.textContent = t("btn_delete");
+          delBtn.addEventListener("click", ()=>{
+            accounts.splice(i,1);
+            dupIndex = -1;
+            multiListReady = false;
+            if(!moltiEl.checked) singleDupView = false;
+            toggleMode(true);
+            renderList();
+          });
+
+          wrap.appendChild(editBtn);
+          wrap.appendChild(delBtn);
+        } else {
+          const x = document.createElement("button");
+          x.className = "xbtn";
+          x.type = "button";
+          x.textContent = "×";
+          x.addEventListener("click", ()=>{
+            accounts.splice(i,1);
+            dupIndex = -1;
+            multiListReady = false;
+            toggleMode(true);
+            renderList();
+          });
+          wrap.appendChild(x);
+        }
+
+        c4.appendChild(wrap);
+        row.appendChild(c1); row.appendChild(c2); row.appendChild(c3); row.appendChild(c4);
+        listBody.appendChild(row);
+      }
+
+      countEl.textContent = String(accounts.length);
+    }
+
+    function getCurrentAccount(){
+      return {
+        email: (emailEl.value||"").trim(),
+        password: (passEl.value||"").trim(),
+        passport: (passpEl.value||"").trim(),
+      };
+    }
+
+    let ok = true;
+    function validateFirma(){
+      ok = true;
+      clearInvalid(firmaEl, errFirma);
+      const firma = (firmaEl.value||"").trim();
+      if(firma.length < 2) setInvalid(firmaEl, errFirma);
+      return ok;
+    }
+
+    function validateCurrentAccount(){
+      ok = true;
+      clearInvalid(emailEl, errEmail);
+      clearInvalid(passEl, errPassword);
+      clearInvalid(passpEl, errPassport);
+
+      const a = getCurrentAccount();
+      if(!validateEmail(a.email)) setInvalid(emailEl, errEmail);
+      if(a.password.length < 1) setInvalid(passEl, errPassword);
+      if(a.passport.length < 3) setInvalid(passpEl, errPassport);
+      return ok;
+    }
+
+    function clearAccountFields(){
+      emailEl.value = "";
+      passEl.value = "";
+      passpEl.value = "";
+      emailEl.focus();
+    }
+
+    function buildAccountsText(list){
+      return list.map(a => `${a.email};${a.password};${a.passport}`).join("\n");
+    }
+
+    async function postForm(fd){
+      const res = await fetch(API_ENDPOINT, { method:"POST", body: fd });
+      let json = null;
+      try { json = await res.json(); } catch { throw new Error("Invalid response"); }
+      if(!res.ok) throw new Error(json && json.error ? json.error : "Server error");
+      return json;
+    }
+
+    function findDuplicateLocalIndex(a){
+      const key = `${(a.email||"").trim().toLowerCase()}||${(a.password||"").trim()}||${(a.passport||"").trim().toUpperCase()}`;
+      for(let i=0;i<accounts.length;i++){
+        const b = accounts[i];
+        const k2 = `${(b.email||"").trim().toLowerCase()}||${(b.password||"").trim()}||${(b.passport||"").trim().toUpperCase()}`;
+        if(k2 === key) return i;
+      }
+      return -1;
+    }
+
+    addBtn.addEventListener("click", ()=>{
       if(!validateFirma()){ showToast(t("toast_check_firma")); return; }
       if(!validateCurrentAccount()){ showToast(t("toast_check_account")); return; }
 
-      const a2 = getCurrentAccount();
-      const di2 = findDuplicateIndex(a2);
-
-      if(di2 !== -1){
-        dupIndex = di2;
+      const a = getCurrentAccount();
+      const di = findDuplicateLocalIndex(a);
+      if(di !== -1){
+        dupIndex = di;
         multiListReady = false;
-        toggleMode(true);
         renderList();
         showToast(t("toast_dup"));
         return;
       }
 
       dupIndex = -1;
-      accounts.push(a2);
+      accounts.push(a);
+      errList.classList.remove("show");
+      multiListReady = false;
+      renderList();
+      showToast(t("toast_added"));
       clearAccountFields();
-    }
-
-    if(accounts.length === 0){
-      errList.classList.add("show");
-      showToast(t("toast_need_one"));
-      return;
-    }
-
-    accounts.sort((a,b)=>{
-      const ae = (a.email||"").toLowerCase();
-      const be = (b.email||"").toLowerCase();
-      if(ae < be) return -1;
-      if(ae > be) return 1;
-      return (a.passport||"").localeCompare(b.passport||"");
     });
 
-    errList.classList.remove("show");
-    multiListReady = true;
-    dupIndex = -1;
-    renderList();
-
-    listDoneBtn.style.display = "none";
-    sendBtn.style.display = "inline-flex";
-  });
-
-  moltiEl.addEventListener("change", ()=>{
-    dupIndex = -1;
-    multiListReady = false;
-    toggleMode(false);
-  });
-
-  toggleMode(false);
-
-  // ====== Submit ======
-  function buildAccountsText(list){
-    return list.map(a => `${a.email};${a.password};${a.passport}`).join("\n");
-  }
-
-  async function sendToServer(fd){
-    const res = await fetch(API_ENDPOINT, { method:"POST", body: fd });
-    let json = null;
-    try { json = await res.json(); } catch { throw new Error("Invalid response"); }
-    if(!res.ok || !json.ok) throw new Error((json && json.error) ? json.error : "Server error");
-  }
-
-  form.addEventListener("submit", async (e)=>{
-    e.preventDefault();
-
-    if(!validateFirma()){ showToast(t("toast_check_firma")); return; }
-
-    const molti = moltiEl.checked;
-
-    if(molti && !multiListReady){
-      showToast(t("btn_list_done"));
-      return;
-    }
-
-    if(!molti){
-      if(!validateCurrentAccount()){ showToast(t("toast_check_account")); return; }
-    }else{
+    listDoneBtn.addEventListener("click", ()=>{
       const currentFilled = (emailEl.value||"").trim() || (passEl.value||"").trim() || (passpEl.value||"").trim();
 
+      if(currentFilled){
+        if(!validateFirma()){ showToast(t("toast_check_firma")); return; }
+        if(!validateCurrentAccount()){ showToast(t("toast_check_account")); return; }
+
+        const a2 = getCurrentAccount();
+        const di2 = findDuplicateLocalIndex(a2);
+        if(di2 !== -1){
+          dupIndex = di2;
+          multiListReady = false;
+          renderList();
+          showToast(t("toast_dup"));
+          return;
+        }
+
+        dupIndex = -1;
+        accounts.push(a2);
+        clearAccountFields();
+      }
+
       if(accounts.length === 0){
-        if(currentFilled){
-          if(!validateCurrentAccount()){ showToast(t("toast_check_account")); return; }
-          const a = getCurrentAccount();
-          const di = findDuplicateIndex(a);
-          if(di !== -1){
-            dupIndex = di;
-            multiListReady = false;
-            toggleMode(true);
-            renderList();
-            showToast(t("toast_dup"));
-            return;
-          }
-          accounts.push(a);
-          clearAccountFields();
-        }else{
+        errList.classList.add("show");
+        showToast(t("toast_need_one"));
+        return;
+      }
+
+      accounts.sort((a,b)=>{
+        const ae = (a.email||"").toLowerCase();
+        const be = (b.email||"").toLowerCase();
+        if(ae < be) return -1;
+        if(ae > be) return 1;
+        return (a.passport||"").localeCompare(b.passport||"");
+      });
+
+      errList.classList.remove("show");
+      multiListReady = true;
+      renderList();
+
+      listDoneBtn.style.display = "none";
+      sendBtn.style.display = "inline-flex";
+    });
+
+    moltiEl.addEventListener("change", ()=>{
+      dupIndex = -1;
+      multiListReady = false;
+      if(!moltiEl.checked){
+        accounts.length = 0;
+      }
+      toggleMode(false);
+      renderList();
+    });
+
+    async function checkDuplicatesOnServer(agency, isMulti, list){
+      const fd = new FormData();
+      fd.append("formType", "agency");
+      fd.append("action", "check");
+      fd.append("firma", agency);
+      fd.append("molti", isMulti ? "1" : "0");
+
+      if(isMulti){
+        fd.append("accounts", buildAccountsText(list));
+      }else{
+        const a = list[0] || {email:"",password:"",passport:""};
+        fd.append("email", a.email);
+        fd.append("password", a.password);
+        fd.append("passport", a.passport);
+      }
+
+      const json = await postForm(fd);
+      return Array.isArray(json.duplicates) ? json.duplicates : [];
+    }
+
+    form.addEventListener("submit", async (e)=>{
+      e.preventDefault();
+
+      if(!validateFirma()){
+        showToast(t("toast_check_firma"));
+        return;
+      }
+
+      const agency = (firmaEl.value||"").trim();
+      const isMulti = moltiEl.checked;
+
+      let listToSend = [];
+      if(!isMulti){
+        if(!validateCurrentAccount()){
+          showToast(t("toast_check_account"));
+          return;
+        }
+        listToSend = [getCurrentAccount()];
+      }else{
+        if(!multiListReady){
+          showToast(t("btn_list_done"));
+          return;
+        }
+        if(accounts.length === 0){
           errList.classList.add("show");
           showToast(t("toast_need_one"));
           return;
         }
-      }else{
-        errList.classList.remove("show");
-      }
-      dupIndex = -1;
-      renderList();
-    }
-
-    try{
-      sendBtn.disabled = true;
-      setStatusKey("status_sending");
-      sendBtn.textContent = t("btn_sending");
-
-      const fd = new FormData();
-      fd.append("formType", "agency");
-      fd.append("firma", (firmaEl.value||"").trim());
-      fd.append("molti", molti ? "1" : "0");
-
-      if(!molti){
-        const a = getCurrentAccount();
-        fd.append("email", a.email);
-        fd.append("password", a.password);
-        fd.append("passport", a.passport);
-      }else{
-        fd.append("accounts", buildAccountsText(accounts));
+        listToSend = [...accounts];
       }
 
-      await sendToServer(fd);
+      try{
+        sendBtn.disabled = true;
+        setStatusKey("status_sending");
+        sendBtn.textContent = t("btn_sending");
 
-      setStatusKey("status_sent");
-      showToast(t("toast_sent"));
+        const dup = await checkDuplicatesOnServer(agency, isMulti, listToSend);
 
-      form.reset();
-      accounts.length = 0;
-      multiListReady = false;
-      dupIndex = -1;
-      toggleMode(false);
-      renderList();
-    }catch(err){
-      console.error(err);
-      setStatusKey("status_error");
-      showToast(t("toast_failed"));
-    }finally{
-      sendBtn.disabled = false;
-      sendBtn.textContent = t("btn_send");
-      if(statusEl.textContent.trim().length === 0) setStatusKey("status_ready");
-    }
-  });
+        if(dup.length){
+          dupIndex = dup[0];
 
-  document.getElementById("btnEN").addEventListener("click", ()=>applyLanguage("en"));
-  document.getElementById("btnAR").addEventListener("click", ()=>applyLanguage("ar"));
+          if(!isMulti){
+            accounts.length = 0;
+            accounts.push(listToSend[0]);
+            singleDupView = true;
+            listWrap.style.display = "block";
+          }
 
-  setStatusKey("status_ready");
-  applyLanguage("en");
+          renderList();
+          showToast(t("toast_dup"));
+          setStatusKey("status_ready");
+          return;
+        }
+
+        const fd = new FormData();
+        fd.append("formType", "agency");
+        fd.append("action", "add");
+        fd.append("firma", agency);
+        fd.append("molti", isMulti ? "1" : "0");
+
+        if(!isMulti){
+          const a = listToSend[0];
+          fd.append("email", a.email);
+          fd.append("password", a.password);
+          fd.append("passport", a.passport);
+        }else{
+          fd.append("accounts", buildAccountsText(listToSend));
+        }
+
+        const json = await postForm(fd);
+        if(!json.ok) throw new Error(json.error || "Server error");
+
+        setStatusKey("status_sent");
+        showToast(t("toast_sent"));
+
+        form.reset();
+        accounts.length = 0;
+        dupIndex = -1;
+        multiListReady = false;
+        singleDupView = false;
+        toggleMode(false);
+        renderList();
+
+      }catch(err){
+        console.error(err);
+        setStatusKey("status_error");
+        showToast(t("toast_failed"));
+      }finally{
+        sendBtn.disabled = false;
+        sendBtn.textContent = t("btn_send");
+        if(statusEl.textContent.trim().length === 0) setStatusKey("status_ready");
+      }
+    });
+
+    document.getElementById("btnEN").addEventListener("click", ()=>applyLanguage("en"));
+    document.getElementById("btnAR").addEventListener("click", ()=>applyLanguage("ar"));
+
+    setStatusKey("status_ready");
+    applyLanguage("en");
+    toggleMode(false);
+    renderList();
   </script>
-</div>
 </body>
 </html>
