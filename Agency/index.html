@@ -251,7 +251,8 @@ button{cursor:pointer;}
 
             <div class="btnRow">
               <button id="addBtn" type="button" class="btn btnSoft" style="display:none"></button>
-              <button id="sendBtn" type="submit" class="btn btnPrimary" style="flex:1"></button>
+              <button id="listDoneBtn" type="button" class="btn btnSoft" style="display:none"></button>
+              <button id="sendBtn" type="submit" class="btn btnPrimary" style="flex:1;display:inline-flex;align-items:center;justify-content:center"></button>
             </div>
 
             <div id="listWrap" style="display:none">
@@ -333,7 +334,8 @@ button{cursor:pointer;}
         toast_added: "Added to list",
         toast_sent: "Sent successfully",
         toast_failed: "Send failed",
-        toast_need_one: "Add at least one account"
+        toast_need_one: "Add at least one account",
+        btn_list_done: "List Done"
       },
       ar: {
         back: "← الرئيسية",
@@ -373,7 +375,8 @@ button{cursor:pointer;}
         toast_added: "تمت الإضافة للقائمة",
         toast_sent: "تم الإرسال بنجاح",
         toast_failed: "فشل الإرسال",
-        toast_need_one: "أضف حسابًا واحدًا على الأقل"
+        toast_need_one: "أضف حسابًا واحدًا على الأقل",
+        btn_list_done: "List Done"
       }
     };
 
@@ -384,6 +387,7 @@ button{cursor:pointer;}
     const toastEl = document.getElementById("toast");
     const sendBtn = document.getElementById("sendBtn");
     const addBtn = document.getElementById("addBtn");
+    const listDoneBtn = document.getElementById("listDoneBtn");
 
     const modePill = document.getElementById("modePill");
     const countEl = document.getElementById("count");
@@ -405,6 +409,7 @@ button{cursor:pointer;}
     const listBody = document.getElementById("listBody");
 
     const accounts = [];
+    let multiListReady = false;
 
     function showToast(msg){
       toastEl.textContent = msg;
@@ -442,6 +447,7 @@ button{cursor:pointer;}
       passEl.placeholder = lang === "ar" ? "كلمة السر" : "Password";
 
       addBtn.textContent = t("btn_add");
+      listDoneBtn.textContent = t("btn_list_done");
       sendBtn.textContent = t("btn_send");
 
       toggleMode(true);
@@ -452,9 +458,27 @@ button{cursor:pointer;}
     function toggleMode(skipListRender){
       const on = moltiEl.checked;
       modePill.textContent = on ? t("mode_multi") : t("mode_single");
-      addBtn.style.display = on ? "inline-flex" : "none";
-      listWrap.style.display = on ? "block" : "none";
-      if(!on) errList.classList.remove("show");
+
+      // Multi: hide Send until user confirms the list
+      if(on){
+        addBtn.style.display = "inline-flex";
+        listWrap.style.display = "block";
+        if(!multiListReady){
+          sendBtn.style.display = "none";
+          listDoneBtn.style.display = "inline-flex";
+        }else{
+          sendBtn.style.display = "inline-flex";
+          listDoneBtn.style.display = "none";
+        }
+      }else{
+        multiListReady = false;
+        addBtn.style.display = "none";
+        listWrap.style.display = "none";
+        listDoneBtn.style.display = "none";
+        sendBtn.style.display = "inline-flex";
+        errList.classList.remove("show");
+      }
+
       if(!skipListRender) renderList();
     }
 
@@ -539,6 +563,43 @@ button{cursor:pointer;}
       renderList();
       showToast(t("toast_added"));
       clearAccountFields();
+    listDoneBtn.addEventListener("click", ()=>{
+      // If fields contain data, validate and push automatically
+      const currentFilled = (emailEl.value||"").trim() || 
+                            (passEl.value||"").trim() || 
+                            (passpEl.value||"").trim();
+
+      if(currentFilled){
+        if(!validateFirma()){ showToast(t("toast_check_firma")); return; }
+        if(!validateCurrentAccount()){ showToast(t("toast_check_account")); return; }
+        accounts.push(getCurrentAccount());
+        clearAccountFields();
+      }
+
+      if(accounts.length === 0){
+        errList.classList.add("show");
+        showToast(t("toast_need_one"));
+        return;
+      }
+
+      // Sort accounts alphabetically by email then passport
+      accounts.sort((a,b)=>{
+        const ae = (a.email||"").toLowerCase();
+        const be = (b.email||"").toLowerCase();
+        if(ae < be) return -1;
+        if(ae > be) return 1;
+        return (a.passport||"").localeCompare(b.passport||"");
+      });
+
+      errList.classList.remove("show");
+      multiListReady = true;
+      renderList();
+
+      // Swap buttons
+      listDoneBtn.style.display = "none";
+      sendBtn.style.display = "inline-flex";
+    });
+
     });
 
     moltiEl.addEventListener("change", ()=>toggleMode(false));
@@ -564,6 +625,12 @@ button{cursor:pointer;}
       }
 
       const molti = moltiEl.checked;
+
+      if(molti && !multiListReady){
+        // Require user to confirm the list first
+        showToast(t("btn_list_done"));
+        return;
+      }
 
       if(!molti){
         if(!validateCurrentAccount()){
