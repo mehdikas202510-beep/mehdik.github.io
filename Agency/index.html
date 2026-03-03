@@ -167,6 +167,34 @@
       transition:all .25s ease;z-index:999;max-width:92%;text-align:center
     }
     #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  
+    .dupGlow{
+      outline:2px solid rgba(255,90,90,.9);
+      box-shadow:0 0 0 2px rgba(255,90,90,.25), 0 0 18px rgba(255,90,90,.55);
+      border-radius:14px;
+      animation:dupPulse .9s ease-in-out infinite alternate;
+    }
+    @keyframes dupPulse{
+      from{filter:brightness(1); transform:translateY(0);}
+      to{filter:brightness(1.08); transform:translateY(-1px);}
+    }
+    .actionBtns{display:flex; gap:8px; justify-content:flex-end; align-items:center;}
+    .miniBtn{
+      border:1px solid rgba(255,255,255,.35);
+      background:rgba(5,28,70,.45);
+      color:#fff;
+      border-radius:10px;
+      padding:6px 10px;
+      font-weight:800;
+      cursor:pointer;
+      line-height:1;
+      white-space:nowrap;
+    }
+    .miniBtn.danger{
+      border-color:rgba(255,90,90,.75);
+      background:rgba(255,90,90,.18);
+    }
+    
   </style>
 
 <style>
@@ -184,7 +212,35 @@ button{cursor:pointer;}
 @media (max-width:768px){
   .row{flex-direction:column;}
 }
-</style>
+
+    .dupGlow{
+      outline:2px solid rgba(255,90,90,.9);
+      box-shadow:0 0 0 2px rgba(255,90,90,.25), 0 0 18px rgba(255,90,90,.55);
+      border-radius:14px;
+      animation:dupPulse .9s ease-in-out infinite alternate;
+    }
+    @keyframes dupPulse{
+      from{filter:brightness(1); transform:translateY(0);}
+      to{filter:brightness(1.08); transform:translateY(-1px);}
+    }
+    .actionBtns{display:flex; gap:8px; justify-content:flex-end; align-items:center;}
+    .miniBtn{
+      border:1px solid rgba(255,255,255,.35);
+      background:rgba(5,28,70,.45);
+      color:#fff;
+      border-radius:10px;
+      padding:6px 10px;
+      font-weight:800;
+      cursor:pointer;
+      line-height:1;
+      white-space:nowrap;
+    }
+    .miniBtn.danger{
+      border-color:rgba(255,90,90,.75);
+      background:rgba(255,90,90,.18);
+    }
+    
+  </style>
 
 </head>
 
@@ -335,6 +391,9 @@ button{cursor:pointer;}
         toast_sent: "Sent successfully",
         toast_failed: "Send failed",
         toast_need_one: "Add at least one account",
+        toast_dup: "Account already exists",
+        btn_delete: "Delete",
+        btn_edit: "Edit",
         btn_list_done: "List Done"
       },
       ar: {
@@ -376,6 +435,9 @@ button{cursor:pointer;}
         toast_sent: "تم الإرسال بنجاح",
         toast_failed: "فشل الإرسال",
         toast_need_one: "أضف حسابًا واحدًا على الأقل",
+        toast_dup: "الحساب موجود مسبقًا",
+        btn_delete: "حذف",
+        btn_edit: "تعديل",
         btn_list_done: "List Done"
       }
     };
@@ -410,6 +472,7 @@ button{cursor:pointer;}
 
     const accounts = [];
     let multiListReady = false;
+    let dupIndex = -1;
 
     function showToast(msg){
       toastEl.textContent = msg;
@@ -497,19 +560,75 @@ button{cursor:pointer;}
         row.className = "listRow";
         row.setAttribute("role","row");
 
+        // Highlight duplicate target row
+        if(i === dupIndex){
+          row.classList.add("dupGlow");
+        }
+
         const c1 = document.createElement("div"); c1.textContent = a.email;
         const c2 = document.createElement("div"); c2.textContent = maskPassword(a.password);
         const c3 = document.createElement("div"); c3.textContent = a.passport;
 
         const c4 = document.createElement("div");
-        const x = document.createElement("button");
-        x.className = "xbtn";
-        x.type = "button";
-        x.textContent = "×";
-        x.addEventListener("click", ()=>{
-          accounts.splice(i,1);
-          renderList();
-        });
+        const wrap = document.createElement("div");
+        wrap.className = "actionBtns";
+
+        if(i === dupIndex){
+          // Show Edit / Delete options
+          const editBtn = document.createElement("button");
+          editBtn.type = "button";
+          editBtn.className = "miniBtn";
+          editBtn.textContent = t("btn_edit");
+          editBtn.addEventListener("click", ()=>{
+            // Put data back in fields and remove from list
+            emailEl.value = a.email || "";
+            passEl.value = a.password || "";
+            passpEl.value = a.passport || "";
+            accounts.splice(i,1);
+            dupIndex = -1;
+            multiListReady = false;
+            toggleMode(true);
+            renderList();
+            emailEl.focus();
+          });
+
+          const delBtn = document.createElement("button");
+          delBtn.type = "button";
+          delBtn.className = "miniBtn danger";
+          delBtn.textContent = t("btn_delete");
+          delBtn.addEventListener("click", ()=>{
+            accounts.splice(i,1);
+            dupIndex = -1;
+            multiListReady = false;
+            toggleMode(true);
+            renderList();
+          });
+
+          wrap.appendChild(editBtn);
+          wrap.appendChild(delBtn);
+        } else {
+          // Default delete (×)
+          const x = document.createElement("button");
+          x.className = "xbtn";
+          x.type = "button";
+          x.textContent = "×";
+          x.addEventListener("click", ()=>{
+            accounts.splice(i,1);
+            dupIndex = -1;
+            multiListReady = false;
+            toggleMode(true);
+            renderList();
+          });
+          wrap.appendChild(x);
+        }
+
+        c4.appendChild(wrap);
+
+        row.appendChild(c1); row.appendChild(c2); row.appendChild(c3); row.appendChild(c4);
+        listBody.appendChild(row);
+      }
+      countEl.textContent = String(accounts.length);
+    });
         c4.appendChild(x);
 
         row.appendChild(c1); row.appendChild(c2); row.appendChild(c3); row.appendChild(c4);
@@ -524,7 +643,17 @@ button{cursor:pointer;}
         password: (passEl.value||"").trim(),
         passport: (passpEl.value||"").trim(),
       };
+    
+    function findDuplicateIndex(a){
+      const key = `${(a.email||"").trim().toLowerCase()}||${(a.password||"").trim()}||${(a.passport||"").trim().toUpperCase()}`;
+      for(let i=0;i<accounts.length;i++){
+        const b = accounts[i];
+        const k2 = `${(b.email||"").trim().toLowerCase()}||${(b.password||"").trim()}||${(b.passport||"").trim().toUpperCase()}`;
+        if(k2 === key) return i;
+      }
+      return -1;
     }
+}
 
     let ok = true;
     function validateFirma(){
@@ -558,8 +687,21 @@ button{cursor:pointer;}
     addBtn.addEventListener("click", ()=>{
       if(!validateFirma()){ showToast(t("toast_check_firma")); return; }
       if(!validateCurrentAccount()){ showToast(t("toast_check_account")); return; }
-      accounts.push(getCurrentAccount());
+      const a = getCurrentAccount();
+      const di = findDuplicateIndex(a);
+      if(di !== -1){
+        dupIndex = di;
+        multiListReady = false;
+        toggleMode(true);
+        renderList();
+        showToast(t("toast_dup"));
+        return;
+      }
+      dupIndex = -1;
+      accounts.push(a);
       errList.classList.remove("show");
+      multiListReady = false;
+      toggleMode(true);
       renderList();
       showToast(t("toast_added"));
       clearAccountFields();
@@ -572,7 +714,18 @@ button{cursor:pointer;}
       if(currentFilled){
         if(!validateFirma()){ showToast(t("toast_check_firma")); return; }
         if(!validateCurrentAccount()){ showToast(t("toast_check_account")); return; }
-        accounts.push(getCurrentAccount());
+        const a2 = getCurrentAccount();
+        const di2 = findDuplicateIndex(a2);
+        if(di2 !== -1){
+          dupIndex = di2;
+          multiListReady = false;
+          toggleMode(true);
+          renderList();
+          showToast(t("toast_dup"));
+          return;
+        }
+        dupIndex = -1;
+        accounts.push(a2);
         clearAccountFields();
       }
 
@@ -602,7 +755,7 @@ button{cursor:pointer;}
 
     });
 
-    moltiEl.addEventListener("change", ()=>toggleMode(false));
+    moltiEl.addEventListener("change", ()=>{ dupIndex = -1; multiListReady = false; toggleMode(false); });
     toggleMode(false);
 
     function buildAccountsText(list){
