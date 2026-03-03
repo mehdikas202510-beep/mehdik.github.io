@@ -167,7 +167,18 @@
       transition:all .25s ease;z-index:999;max-width:92%;text-align:center
     }
     #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-  </style>
+  
+    .asideStats{position:sticky;top:12px;align-self:start}
+    .sentList{border:1px solid rgba(255,255,255,.18);border-radius:14px;overflow:hidden}
+    .sentHead,.sentRow{display:grid;grid-template-columns:1.2fr .9fr .9fr;gap:10px;padding:10px 12px}
+    .sentHead{background:rgba(255,255,255,.10);font-weight:900}
+    .sentRow{background:rgba(0,0,0,.08);border-top:1px solid rgba(255,255,255,.10);font-size:13px}
+    .sentRow div{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    @media (max-width:900px){
+      .asideStats{position:static}
+    }
+
+</style>
 
 <style>
 *{box-sizing:border-box;}
@@ -284,6 +295,32 @@ button{cursor:pointer;}
                 <span data-i18n="fill_send">Fill and send</span>
               </div>
             </div>
+
+          <div class="panel" id="rightListMountPanel" style="margin-top:12px">
+            <div class="titleRow">
+              <b data-i18n="list_title">List</b>
+              <span class="hint" data-i18n="list_hint">Ordered accounts</span>
+            </div>
+            <div id="rightListMount"></div>
+          </div>
+
+          <div class="panel" id="sentPanel" style="margin-top:12px">
+            <div class="titleRow">
+              <b data-i18n="sent_title">Sent Accounts</b>
+              <span class="hint" data-i18n="sent_hint">Saved on this device</span>
+            </div>
+            <div class="sentList" role="table" aria-label="Sent accounts">
+              <div class="sentHead" role="row">
+                <div role="columnheader" data-i18n="col_sent_email">Email</div>
+                <div role="columnheader" data-i18n="col_sent_passport">Passport</div>
+                <div role="columnheader" data-i18n="col_sent_date">Date</div>
+              </div>
+              <div id="sentBody"></div>
+            </div>
+            <div class="btnRow" style="margin-top:10px">
+              <button id="clearSentBtn" type="button" class="btn btnSoft" style="width:100%"></button>
+            </div>
+          </div>
           </div>
         </div>
       </form>
@@ -335,11 +372,15 @@ button{cursor:pointer;}
         toast_sent: "Sent successfully",
         toast_failed: "Send failed",
         toast_need_one: "Add at least one account",
-        btn_list_done: "List Done",
-        history_title: "Sent Accounts",
-        history_hint: "Saved on this device",
-        history_empty: "No history yet",
-        toast_confirm_list: "Press List Done first"
+        btn_clear_sent: "Clear saved",
+        col_sent_date: "Date",
+        col_sent_passport: "Passport",
+        col_sent_email: "Email",
+        sent_hint: "Saved on this device",
+        sent_title: "Sent Accounts",
+        list_hint: "Ordered accounts",
+        list_title: "List",
+        btn_list_done: "List Done"
       },
       ar: {
         back: "← الرئيسية",
@@ -380,11 +421,15 @@ button{cursor:pointer;}
         toast_sent: "تم الإرسال بنجاح",
         toast_failed: "فشل الإرسال",
         toast_need_one: "أضف حسابًا واحدًا على الأقل",
-        btn_list_done: "List Done",
-        history_title: "الحسابات المُرسلة",
-        history_hint: "محفوظة على هذا الجهاز",
-        history_empty: "لا توجد سجلات بعد",
-        toast_confirm_list: "اضغط List Done أولاً"
+        btn_clear_sent: "مسح المحفوظ",
+        col_sent_date: "التاريخ",
+        col_sent_passport: "الجواز",
+        col_sent_email: "الإيميل",
+        sent_hint: "محفوظة على هذا الجهاز",
+        sent_title: "الحسابات المُرسلة",
+        list_hint: "حسابات مرتبة",
+        list_title: "القائمة",
+        btn_list_done: "List Done"
       }
     };
 
@@ -401,10 +446,6 @@ button{cursor:pointer;}
     const countEl = document.getElementById("count");
     const statusEl = document.getElementById("status");
 
-    const historyBody = document.getElementById("historyBody");
-    const historyEmpty = document.getElementById("historyEmpty");
-    const clearHistoryBtn = document.getElementById("clearHistoryBtn");
-
     const firmaEl = document.getElementById("firma");
     const moltiEl = document.getElementById("molti");
     const emailEl = document.getElementById("email");
@@ -419,69 +460,18 @@ button{cursor:pointer;}
 
     const listWrap = document.getElementById("listWrap");
     const listBody = document.getElementById("listBody");
+    const rightListMount = document.getElementById("rightListMount");
+    const sentBody = document.getElementById("sentBody");
+    const clearSentBtn = document.getElementById("clearSentBtn");
 
     const accounts = [];
     let multiListReady = false;
 
-    const HISTORY_KEY = "agency_sent_accounts_v1";
-    const HISTORY_MAX = 50;
-
-    function loadHistory(){
-      try{
-        const raw = localStorage.getItem(HISTORY_KEY);
-        const arr = raw ? JSON.parse(raw) : [];
-        return Array.isArray(arr) ? arr : [];
-      }catch{ return []; }
-    }
-
-    function saveHistory(arr){
-      try{ localStorage.setItem(HISTORY_KEY, JSON.stringify(arr.slice(0, HISTORY_MAX))); }catch{}
-    }
-
-    function fmtDate(ts){
-      try{
-        const d = new Date(ts);
-        return d.toLocaleString(undefined,{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});
-      }catch{ return ""; }
-    }
-
-    function renderHistory(){
-      if(!historyBody) return;
-      const hist = loadHistory();
-      historyBody.innerHTML = "";
-      if(hist.length === 0){
-        if(historyEmpty) historyEmpty.style.display = "block";
-        return;
-      }
-      if(historyEmpty) historyEmpty.style.display = "none";
-      for(const item of hist){
-        const card = document.createElement("div");
-        card.style.cssText = "padding:10px;border:1px solid rgba(255,255,255,.22);border-radius:12px;background:rgba(5,28,70,.35);margin-bottom:10px";
-        const top = document.createElement("div");
-        top.style.cssText = "display:flex;justify-content:space-between;gap:10px;align-items:center";
-        const left = document.createElement("div");
-        left.innerHTML = `<b style="display:block">${item.email || "-"}</b><span style="opacity:.85;font-size:12px">${item.passport || "-"}</span>`;
-        const right = document.createElement("div");
-        right.style.cssText = "text-align:right;opacity:.85;font-size:12px;line-height:1.2";
-        right.innerHTML = `${fmtDate(item.ts)}<br>${(item.agency||"").slice(0,18)}${(item.agency||"").length>18?"…":""}`;
-        top.appendChild(left); top.appendChild(right);
-        const meta = document.createElement("div");
-        meta.style.cssText = "margin-top:8px;opacity:.85;font-size:12px";
-        meta.textContent = `Multi: ${item.multi ? "Yes" : "No"}`;
-        card.appendChild(top);
-        card.appendChild(meta);
-        historyBody.appendChild(card);
-      }
-    }
-
-    function addToHistory(entries){
-      // entries: [{email,passport,agency,multi}]
-      const hist = loadHistory();
-      const now = Date.now();
-      // prepend newest
-      const next = entries.map(e=>({ts: now, email:e.email, passport:e.passport, agency:e.agency, multi:!!e.multi})).concat(hist);
-      saveHistory(next);
-      renderHistory();
+    // Mount the live "List" panel on the right
+    if(rightListMount && listWrap){
+      rightListMount.appendChild(listWrap);
+      // Always show the list container in the right panel when Multi is ON
+      listWrap.style.display = "none";
     }
 
     function showToast(msg){
@@ -489,6 +479,73 @@ button{cursor:pointer;}
       toastEl.classList.add("show");
       setTimeout(()=>toastEl.classList.remove("show"), 2600);
     }
+
+
+    const SENT_KEY = "agency_sent_accounts_v1";
+
+    function loadSent(){
+      try{
+        const raw = localStorage.getItem(SENT_KEY);
+        const arr = raw ? JSON.parse(raw) : [];
+        return Array.isArray(arr) ? arr : [];
+      }catch{ return []; }
+    }
+
+    function saveSentBatch(agency, list){
+      const now = new Date();
+      const stamp = now.toISOString();
+      const sent = loadSent();
+
+      for(const a of list){
+        const email = (a.email||"").trim();
+        const passport = (a.passport||"").trim();
+        if(!email && !passport) continue;
+
+        // de-dup by email+passport
+        const key = (email.toLowerCase() + "|" + passport.toLowerCase());
+        const exists = sent.some(x => (x.key === key));
+        if(exists) continue;
+
+        sent.unshift({
+          key,
+          email,
+          passport,
+          agency: (agency||"").trim(),
+          date: stamp
+        });
+      }
+
+      // keep last 200
+      const trimmed = sent.slice(0, 200);
+      localStorage.setItem(SENT_KEY, JSON.stringify(trimmed));
+    }
+
+    function formatDate(iso){
+      try{
+        const d = new Date(iso);
+        return d.toLocaleString(undefined, { year:"numeric", month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit" });
+      }catch{ return ""; }
+    }
+
+    function renderSent(){
+      if(!sentBody) return;
+      const sent = loadSent();
+      sentBody.innerHTML = "";
+
+      for(const item of sent){
+        const row = document.createElement("div");
+        row.className = "sentRow";
+        row.setAttribute("role","row");
+
+        const c1 = document.createElement("div"); c1.textContent = item.email || "";
+        const c2 = document.createElement("div"); c2.textContent = item.passport || "";
+        const c3 = document.createElement("div"); c3.textContent = formatDate(item.date);
+
+        row.appendChild(c1); row.appendChild(c2); row.appendChild(c3);
+        sentBody.appendChild(row);
+      }
+    }
+
 
     function validateEmail(val){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val); }
 
@@ -522,6 +579,8 @@ button{cursor:pointer;}
       addBtn.textContent = t("btn_add");
       listDoneBtn.textContent = t("btn_list_done");
       sendBtn.textContent = t("btn_send");
+      if(clearSentBtn) clearSentBtn.textContent = t("btn_clear_sent");
+      renderSent();
 
       toggleMode(true);
 
@@ -701,7 +760,7 @@ button{cursor:pointer;}
 
       if(molti && !multiListReady){
         // Require user to confirm the list first
-        showToast(t("toast_confirm_list"));
+        showToast(t("btn_list_done"));
         return;
       }
 
@@ -769,20 +828,21 @@ button{cursor:pointer;}
       }
     });
 
-    if(clearHistoryBtn){
-      clearHistoryBtn.addEventListener("click", ()=>{
-        try{ localStorage.removeItem(HISTORY_KEY); }catch{}
-        renderHistory();
+    if(clearSentBtn){
+      clearSentBtn.addEventListener("click", ()=>{
+        localStorage.removeItem(SENT_KEY);
+        renderSent();
+        showToast(currentLang==="ar" ? "تم المسح" : "Cleared");
       });
     }
 
     document.getElementById("btnEN").addEventListener("click", ()=>applyLanguage("en"));
     document.getElementById("btnAR").addEventListener("click", ()=>applyLanguage("ar"));
 
-    renderHistory();
     setStatusKey("status_ready");
     addBtn.textContent = t("btn_add");
     sendBtn.textContent = t("btn_send");
+    renderSent();
     applyLanguage("en");
   </script>
 </div>
