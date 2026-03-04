@@ -52,8 +52,15 @@
     .head{padding:18px 18px 0;display:flex;flex-direction:column;gap:8px}
     h1{margin:0;font-size:1.9rem;font-weight:900;text-shadow:0 10px 25px rgba(0,0,0,.3)}
     form{padding:14px 18px 18px}
-    .grid{display:grid;grid-template-columns:1fr;gap:12px}
-    @media (min-width:900px){.grid{grid-template-columns:1.1fr .9fr;align-items:start}}
+
+    /* ✅ التعديل المهم: خليها عمودين دائمًا */
+    .grid{
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:12px;
+      align-items:start
+    }
+
     .panel{
       background:rgba(5,28,70,.26);
       border:1px solid rgba(255,255,255,.16);
@@ -305,7 +312,8 @@
               </div>
 
               <div class="row" style="grid-template-columns:1fr;gap:10px;margin:8px 0 10px">
-                <input id="savedSearch" type="text" placeholder="Search…" style="width:100%"
+                <!-- ✅ fix: كان ناقص > -->
+                <input id="savedSearch" type="text" placeholder="Search…" style="width:100%"/>
                 <div class="listHead" role="row">
                   <div role="columnheader" data-i18n="col_email">Email</div>
                   <div role="columnheader" data-i18n="col_password">Password</div>
@@ -779,7 +787,6 @@
 
       updateCount();
     }
-
 
     // ---- Saved: password update modal + copy helpers ----
     let pwTarget = null;
