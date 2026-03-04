@@ -21,6 +21,11 @@
     body{
       margin:0;
       padding:clamp(12px, 2vw, 18px);
+      padding-left:max(clamp(12px, 2vw, 18px), env(safe-area-inset-left));
+      padding-right:max(clamp(12px, 2vw, 18px), env(safe-area-inset-right));
+      padding-top:max(clamp(12px, 2vw, 18px), env(safe-area-inset-top));
+      padding-bottom:max(clamp(12px, 2vw, 18px), env(safe-area-inset-bottom));
+      overflow-x:hidden;
       display:flex;
       align-items:center;
       justify-content:center;
@@ -30,6 +35,8 @@
     }
 
     .shell{width:100%;max-width:980px}
+    .card{width:100%;}
+    img,svg,canvas{max-width:100%;height:auto}
     .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px}
     .langbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 
@@ -124,6 +131,27 @@
     .row{display:grid;grid-template-columns:1fr;gap:10px}
     @media (min-width:720px){.row{grid-template-columns:1fr 1fr}}
 
+    /* ✅ Mobile ergonomics */
+    @media (max-width:560px){
+      input[type=text],input[type=password]{font-size:16px}
+      .btnRow .btn{flex:1}
+      .iconBtn{width:44px;height:44px}
+    
+      /* RTL labels */
+      [dir="rtl"] .listRow > div:nth-child(1)::before{content:"الإيميل: ";}
+      [dir="rtl"] .listRow > div:nth-child(2)::before{content:"كلمة السر: ";}
+      [dir="rtl"] .listRow > div:nth-child(3)::before{content:"الجواز: ";}
+}
+
+    /* ✅ Focus visibility */
+    :focus-visible{outline:2px solid rgba(255,255,255,.85);outline-offset:2px}
+
+    /* ✅ Reduced motion */
+    @media (prefers-reduced-motion:reduce){
+      *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+    }
+
+
     .toggle{
       display:flex;align-items:center;gap:10px;
       padding:10px 12px;border-radius:16px;
@@ -213,7 +241,9 @@
       user-select:none;
     }
     .iconBtn:hover{filter:brightness(1.07);transform:translateY(-1px)}
-    .firmaRow{display:flex;gap:10px;align-items:center}
+    .firmaRow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .firmaRow input{min-width:220px;flex:1 1 220px}
+    .firmaRow .iconBtn{flex:0 0 auto}
 
     .asideStats{display:flex;flex-direction:column;gap:10px}
 
