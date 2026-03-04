@@ -157,12 +157,13 @@
     .firmaRow{display:flex;gap:10px;align-items:center}
 
     .asideStats{display:flex;flex-direction:column;gap:10px}
-    /* compact summary */
-    .asideStats .panel{padding:12px}
-    .asideStats .titleRow{margin:0 0 8px}
-    .asideStats .stat{padding:10px 10px;border-radius:14px}
-    .asideStats .stat b{font-size:1.15rem}
-    .asideStats .stat span{font-size:.8rem}
+
+    /* Make the Summary panel more compact */
+    .summaryPanel{padding:10px}
+    .summaryPanel .titleRow{margin:0 0 8px}
+    .summaryPanel .stat{padding:9px 10px;border-radius:16px;gap:2px}
+    .summaryPanel .stat b{font-size:1.15rem;line-height:1.1}
+    .summaryPanel .stat span{font-size:.78rem}
     .stat{
       background:rgba(255,255,255,.08);
       border:1px solid rgba(255,255,255,.14);
@@ -326,7 +327,7 @@
           </div>
 
           <div class="asideStats">
-            <div class="panel">
+            <div class="panel summaryPanel">
               <div class="titleRow">
                 <b data-i18n="summary">Summary</b>
                 <span class="hint" data-i18n="status_lbl">Status</span>
