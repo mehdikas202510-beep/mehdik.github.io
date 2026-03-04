@@ -157,13 +157,6 @@
     .firmaRow{display:flex;gap:10px;align-items:center}
 
     .asideStats{display:flex;flex-direction:column;gap:10px}
-
-    /* Make the Summary panel more compact */
-    .summaryPanel{padding:10px}
-    .summaryPanel .titleRow{margin:0 0 8px}
-    .summaryPanel .stat{padding:9px 10px;border-radius:16px;gap:2px}
-    .summaryPanel .stat b{font-size:1.15rem;line-height:1.1}
-    .summaryPanel .stat span{font-size:.78rem}
     .stat{
       background:rgba(255,255,255,.08);
       border:1px solid rgba(255,255,255,.14);
@@ -311,7 +304,8 @@
                 <button id="backBtn" type="button" class="btn btnSoft" style="padding:8px 14px;border-radius:999px;box-shadow:none" data-i18n="back_btn">Back</button>
               </div>
 
-              <div class="list" role="table" aria-label="Saved accounts">
+              <div class="row" style="grid-template-columns:1fr;gap:10px;margin:8px 0 10px">
+                <input id="savedSearch" type="text" placeholder="Search…" style="width:100%"
                 <div class="listHead" role="row">
                   <div role="columnheader" data-i18n="col_email">Email</div>
                   <div role="columnheader" data-i18n="col_password">Password</div>
@@ -327,7 +321,7 @@
           </div>
 
           <div class="asideStats">
-            <div class="panel summaryPanel">
+            <div class="panel">
               <div class="titleRow">
                 <b data-i18n="summary">Summary</b>
                 <span class="hint" data-i18n="status_lbl">Status</span>
@@ -336,7 +330,7 @@
                 <b id="count">0</b>
                 <span data-i18n="count_lbl">Accounts</span>
               </div>
-              <div class="stat">
+              <div class="stat" id="statusStat">
                 <b id="status"></b>
                 <span data-i18n="fill_send">Fill and send</span>
               </div>
@@ -347,6 +341,39 @@
     </div>
   </div>
 
+  <!-- Password update modal -->
+  <div id="pwModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:998;align-items:center;justify-content:center;padding:18px">
+    <div class="panel" style="max-width:520px;width:100%;background:rgba(15,23,42,.92);border-color:rgba(255,255,255,.18);box-shadow:0 18px 45px rgba(0,0,0,.55)">
+      <div class="titleRow" style="margin:0 0 10px">
+        <b data-i18n="pw_title">Request password change</b>
+        <button id="pwClose" type="button" class="xbtn" aria-label="Close">×</button>
+      </div>
+      <div class="row" style="grid-template-columns:1fr;gap:10px">
+        <div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+            <label style="margin:0" data-i18n="email_lbl">Email</label>
+            <button id="copyEmailBtn" type="button" class="miniBtn" data-i18n="btn_copy">Copy</button>
+          </div>
+          <input id="pwEmail" type="text" readonly/>
+        </div>
+        <div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+            <label style="margin:0" data-i18n="passport_lbl">Passport Number</label>
+            <button id="copyPassportBtn" type="button" class="miniBtn" data-i18n="btn_copy">Copy</button>
+          </div>
+          <input id="pwPassport" type="text" readonly/>
+        </div>
+        <div>
+          <label for="pwNew" data-i18n="pw_new_lbl">New Password</label>
+          <input id="pwNew" type="text" placeholder="********"/>
+        </div>
+      </div>
+      <div class="btnRow" style="margin-top:12px">
+        <button id="pwSave" type="button" class="btn btnPrimary" style="flex:1" data-i18n="btn_save">Save</button>
+        <button id="pwCancel" type="button" class="btn btnSoft" data-i18n="btn_cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
   <div id="toast"></div>
 
   <script>
@@ -400,7 +427,17 @@
         back_btn: "Back",
         toast_loading: "Loading…",
         toast_saved_loaded: "Saved accounts loaded",
-        saved_empty: "No saved accounts for this agency."
+        saved_empty: "No saved accounts for this agency.",
+        saved_search_ph: "Search by email or passport…",
+        btn_req_pw: "Change password",
+        pw_title: "Request password change",
+        pw_new_lbl: "New Password",
+        btn_copy: "Copy",
+        btn_save: "Save",
+        btn_cancel: "Cancel",
+        toast_copied: "Copied",
+        toast_pw_updated: "Password updated",
+        toast_pw_failed: "Password update failed"
       },
       ar: {
         title: "الوكالة",
@@ -448,7 +485,17 @@
         back_btn: "رجوع",
         toast_loading: "جاري التحميل…",
         toast_saved_loaded: "تم تحميل الحسابات المحفوظة",
-        saved_empty: "لا توجد حسابات محفوظة لهذه الوكالة."
+        saved_empty: "لا توجد حسابات محفوظة لهذه الوكالة.",
+        saved_search_ph: "ابحث بالإيميل أو رقم الجواز…",
+        btn_req_pw: "طلب تعديل كلمة السر",
+        pw_title: "طلب تعديل كلمة السر",
+        pw_new_lbl: "كلمة السر الجديدة",
+        btn_copy: "نسخ",
+        btn_save: "حفظ",
+        btn_cancel: "إلغاء",
+        toast_copied: "تم النسخ",
+        toast_pw_updated: "تم تعديل كلمة السر",
+        toast_pw_failed: "فشل تعديل كلمة السر"
       }
     };
 
@@ -464,6 +511,7 @@
     const modePill = document.getElementById("modePill");
     const countEl = document.getElementById("count");
     const statusEl = document.getElementById("status");
+    const statusStat = document.getElementById("statusStat");
 
     const firmaEl = document.getElementById("firma");
     const searchAgencyBtn = document.getElementById("searchAgencyBtn");
@@ -473,6 +521,17 @@
     const savedWrap = document.getElementById("savedWrap");
     const savedBody = document.getElementById("savedBody");
     const savedEmpty = document.getElementById("savedEmpty");
+    const savedSearchEl = document.getElementById("savedSearch");
+
+    const pwModal = document.getElementById("pwModal");
+    const pwClose = document.getElementById("pwClose");
+    const pwCancel = document.getElementById("pwCancel");
+    const pwSave = document.getElementById("pwSave");
+    const pwEmail = document.getElementById("pwEmail");
+    const pwPassport = document.getElementById("pwPassport");
+    const pwNew = document.getElementById("pwNew");
+    const copyEmailBtn = document.getElementById("copyEmailBtn");
+    const copyPassportBtn = document.getElementById("copyPassportBtn");
 
     const moltiEl = document.getElementById("molti");
     const emailEl = document.getElementById("email");
@@ -535,6 +594,9 @@
       firmaEl.placeholder = lang === "ar" ? "اسم الوكالة / توقيع" : "Agency name / Signature";
       passEl.placeholder = lang === "ar" ? "كلمة السر" : "Password";
 
+      if(savedSearchEl) savedSearchEl.placeholder = t("saved_search_ph");
+      if(pwNew) pwNew.placeholder = lang === "ar" ? "كلمة السر الجديدة" : "New password";
+
       addBtn.textContent = t("btn_add");
       listDoneBtn.textContent = t("btn_list_done");
       sendBtn.textContent = t("btn_send");
@@ -550,10 +612,14 @@
         mainUI.style.display = "none";
         savedWrap.style.display = "block";
         modePill.style.display = "none";
+        if(statusStat) statusStat.style.display = "none";
+        statusEl.textContent = "";
       }else{
         mainUI.style.display = "block";
         savedWrap.style.display = "none";
         modePill.style.display = "inline-flex";
+        if(statusStat) statusStat.style.display = "flex";
+        if(statusEl.textContent.trim().length === 0) setStatusKey("status_ready");
       }
       updateCount();
     }
@@ -677,11 +743,16 @@
 
     function renderSaved(){
       savedBody.innerHTML = "";
-      savedEmpty.style.display = savedAccounts.length ? "none" : "block";
+      const q = ((savedSearchEl && savedSearchEl.value) || "").trim().toLowerCase();
+      const view = q ? savedAccounts.filter(a =>
+        ((a.email||"" ).toLowerCase().includes(q)) ||
+        ((a.passport||"" ).toLowerCase().includes(q))
+      ) : savedAccounts;
 
-      // no actions in saved list
-      for(let i=0;i<savedAccounts.length;i++){
-        const a = savedAccounts[i];
+      savedEmpty.style.display = view.length ? "none" : "block";
+
+      for(let i=0;i<view.length;i++){
+        const a = view[i];
         const row = document.createElement("div");
         row.className = "listRow";
         row.setAttribute("role","row");
@@ -689,13 +760,112 @@
         const c1 = document.createElement("div"); c1.textContent = a.email || "";
         const c2 = document.createElement("div"); c2.textContent = maskPassword(a.password || "");
         const c3 = document.createElement("div"); c3.textContent = a.passport || "";
-        const c4 = document.createElement("div"); // empty
+
+        const c4 = document.createElement("div");
+        const wrap = document.createElement("div");
+        wrap.className = "actionBtns";
+
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "miniBtn";
+        btn.textContent = t("btn_req_pw");
+        btn.addEventListener("click", ()=> openPwModal(a));
+        wrap.appendChild(btn);
+
+        c4.appendChild(wrap);
         row.appendChild(c1); row.appendChild(c2); row.appendChild(c3); row.appendChild(c4);
         savedBody.appendChild(row);
       }
 
       updateCount();
     }
+
+
+    // ---- Saved: password update modal + copy helpers ----
+    let pwTarget = null;
+
+    function openPwModal(acc){
+      if(!acc) return;
+      pwTarget = acc;
+      pwEmail.value = acc.email || "";
+      pwPassport.value = acc.passport || "";
+      pwNew.value = "";
+      pwModal.style.display = "flex";
+      pwNew.focus();
+    }
+
+    function closePwModal(){
+      pwTarget = null;
+      pwModal.style.display = "none";
+    }
+
+    async function copyText(txt){
+      try{
+        await navigator.clipboard.writeText(txt || "");
+        showToast(t("toast_copied"));
+      }catch(_){
+        const ta = document.createElement("textarea");
+        ta.value = txt || "";
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        try{ document.execCommand("copy"); showToast(t("toast_copied")); }catch(e){}
+        document.body.removeChild(ta);
+      }
+    }
+
+    async function updatePasswordOnServer(agency, email, passport, newPassword){
+      const fd = new FormData();
+      fd.append("formType","agency");
+      fd.append("action","update_password");
+      fd.append("firma", agency);
+      fd.append("email", email || "");
+      fd.append("passport", passport || "");
+      fd.append("newPassword", newPassword || "");
+      return await postForm(fd);
+    }
+
+    if(savedSearchEl){
+      savedSearchEl.addEventListener("input", ()=>{ if(inSavedView) renderSaved(); });
+    }
+
+    pwClose.addEventListener("click", closePwModal);
+    pwCancel.addEventListener("click", closePwModal);
+    pwModal.addEventListener("click", (e)=>{ if(e.target === pwModal) closePwModal(); });
+
+    copyEmailBtn.addEventListener("click", ()=> copyText(pwEmail.value));
+    copyPassportBtn.addEventListener("click", ()=> copyText(pwPassport.value));
+
+    pwSave.addEventListener("click", async ()=>{
+      if(!pwTarget) return;
+      if(!validateFirma()){ showToast(t("toast_check_firma")); return; }
+      const agency = (firmaEl.value||"").trim();
+      const newPass = (pwNew.value||"").trim();
+      if(newPass.length < 1){ showToast(t("err_pass")); return; }
+
+      try{
+        pwSave.disabled = true;
+        const r = await updatePasswordOnServer(agency, pwTarget.email, pwTarget.passport, newPass);
+        if(!r || !r.ok) throw new Error((r && r.error) || "Server error");
+
+        for(const a of savedAccounts){
+          if(((a.email||"").toLowerCase() === (pwTarget.email||"").toLowerCase()) &&
+             ((a.passport||"").toUpperCase() === (pwTarget.passport||"").toUpperCase())){
+            a.password = newPass;
+            break;
+          }
+        }
+        renderSaved();
+        closePwModal();
+        showToast(t("toast_pw_updated"));
+      }catch(err){
+        console.error(err);
+        showToast(t("toast_pw_failed"));
+      }finally{
+        pwSave.disabled = false;
+      }
+    });
 
     function getCurrentAccount(){
       return {
