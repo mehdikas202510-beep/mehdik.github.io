@@ -192,8 +192,6 @@
     }
     .statusOk{border-color:rgba(46,233,120,.55);background:rgba(46,233,120,.12)}
     .statusPending{border-color:rgba(255,186,60,.55);background:rgba(255,186,60,.12)}
-    .statusReady{border-color:rgba(77,163,255,.65);background:rgba(77,163,255,.12)}
-    .statusEmpty{border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.06);opacity:.85}
 
 @media (max-width:560px){
       .listHead{display:none}
@@ -894,15 +892,10 @@ mode_single: "واحد",
         const c3 = document.createElement("div"); c3.textContent = a.passport || "";
 
         const c4 = document.createElement("div");
-        const s = (a.status ?? "").toString().trim();
+        const s = (a.status || "Pending");
         const pill = document.createElement("span");
-        let cls = "statusEmpty";
-        let label = "";
-        if(s === "✅"){ cls = "statusOk"; label = "✅"; }
-        else if(s.toLowerCase() === "pending"){ cls = "statusPending"; label = "Pending"; }
-        else if(s.toLowerCase() === "ready"){ cls = "statusReady"; label = "ready"; }
-        pill.className = "statusPill " + cls;
-        pill.textContent = label;;
+        pill.className = "statusPill " + ((s === "✅") ? "statusOk" : "statusPending");
+        pill.textContent = (s === "✅") ? "✅" : "Pending";
         c4.appendChild(pill);
 
         const c5 = document.createElement("div");
