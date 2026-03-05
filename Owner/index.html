@@ -1,1 +1,375 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Owner Panel - Agency Accounts</title>
+  <style>
+    :root { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; }
+    body { margin: 0; background: #0b1020; color: #e8ecff; }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 18px; }
+    .card { background:#101a35; border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:16px; }
+    h1 { margin: 0 0 10px; font-size: 20px; }
+    .row { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+    .row > * { flex: 1 1 auto; }
+    input, select, button {
+      border-radius: 10px; border:1px solid rgba(255,255,255,.12);
+      background:#0d1530; color:#e8ecff; padding:10px 12px; outline:none;
+    }
+    button { cursor:pointer; font-weight:600; }
+    button.primary { background:#2a5bff; border-color:rgba(255,255,255,.12); }
+    button.danger { background:#ff2a5b; border-color:rgba(255,255,255,.12); }
+    button.ghost { background:transparent; }
+    button:disabled { opacity:.5; cursor:not-allowed; }
 
+    .muted { color:rgba(232,236,255,.7); font-size: 13px; }
+    .hr { height:1px; background:rgba(255,255,255,.08); margin:14px 0; }
+    .pill { padding:4px 10px; border-radius:999px; font-size:12px; border:1px solid rgba(255,255,255,.14); display:inline-flex; gap:6px; align-items:center;}
+    .ok { border-color: rgba(0,255,140,.35); background: rgba(0,255,140,.12); }
+    .pending { border-color: rgba(255,200,0,.35); background: rgba(255,200,0,.12); }
+
+    table { width:100%; border-collapse: collapse; overflow:hidden; border-radius: 12px; }
+    th, td { padding:10px; border-bottom:1px solid rgba(255,255,255,.08); vertical-align: middle; }
+    th { text-align:right; font-size: 13px; color: rgba(232,236,255,.8); background: rgba(255,255,255,.03); }
+    tr:hover td { background: rgba(255,255,255,.02); }
+    .actions { display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap; }
+    .grid2 { display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .grid3 { display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+    @media (max-width: 900px){ .grid3 { grid-template-columns:1fr; } .grid2{ grid-template-columns:1fr; } }
+
+    .modal-backdrop{
+      position:fixed; inset:0; background: rgba(0,0,0,.55);
+      display:none; align-items:center; justify-content:center; padding:18px;
+    }
+    .modal{ width:min(720px,100%); }
+    .toast { margin-top:10px; padding:10px 12px; border-radius: 10px; border:1px solid rgba(255,255,255,.12); }
+    .toast.ok { background: rgba(0,255,140,.12); border-color: rgba(0,255,140,.35); }
+    .toast.err { background: rgba(255,42,91,.12); border-color: rgba(255,42,91,.35); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card" id="loginCard">
+      <h1>لوحة Owner</h1>
+      <div class="muted">تسجيل الدخول لإدارة كل <b>agency_accounts</b> (تعديل/حذف/✅ Pending)</div>
+      <div class="hr"></div>
+      <div class="grid2">
+        <input id="user" placeholder="USER" autocomplete="username" />
+        <input id="pass" placeholder="PASSWORD" type="password" autocomplete="current-password" />
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button class="primary" id="btnLogin">تسجيل الدخول</button>
+        <button class="ghost" id="btnClear">مسح</button>
+      </div>
+      <div id="loginMsg"></div>
+    </div>
+
+    <div class="card" id="dashCard" style="display:none; margin-top:14px">
+      <div class="row">
+        <div>
+          <h1 style="margin:0">Dashboard</h1>
+          <div class="muted">اختر وكالة ثم عدّل الحسابات. ✅ = Verified</div>
+        </div>
+        <div style="text-align:left">
+          <button class="ghost" id="btnLogout">خروج</button>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="grid3">
+        <div>
+          <div class="muted">الوكالة</div>
+          <select id="agencySelect"></select>
+        </div>
+        <div>
+          <div class="muted">بحث داخل الوكالة (Email/Passport)</div>
+          <input id="search" placeholder="ابحث..." />
+        </div>
+        <div class="row" style="align-items:flex-end">
+          <button class="primary" id="btnRefresh">تحديث</button>
+          <button class="ghost" id="btnReloadAgencies">تحميل الوكالات</button>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="row" style="justify-content:space-between">
+        <div class="muted" id="stats"></div>
+        <div class="muted">ملاحظة: الحسابات ✅ ممنوع عليها تغيير كلمة السر من صفحة Agency</div>
+      </div>
+
+      <div style="margin-top:10px; overflow:auto">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:60px">#</th>
+              <th>Email</th>
+              <th>Password</th>
+              <th>Passport</th>
+              <th style="width:140px">Status</th>
+              <th style="width:290px">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+
+      <div id="dashMsg"></div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="card modal">
+      <h1 style="margin:0 0 6px">تعديل الحساب</h1>
+      <div class="muted">اترك الحقل فارغ إذا لا تريد تغييره.</div>
+      <div class="hr"></div>
+      <div class="grid3">
+        <input id="mEmail" placeholder="Email" />
+        <input id="mPass" placeholder="Password" />
+        <input id="mPassport" placeholder="Passport" />
+      </div>
+      <div class="row" style="margin-top:10px">
+        <div>
+          <span class="muted">Status:</span>
+          <select id="mStatus" style="width:220px">
+            <option value="pending">Pending</option>
+            <option value="verified">✅ Verified</option>
+          </select>
+        </div>
+        <div style="text-align:left">
+          <button class="primary" id="mSave">حفظ</button>
+          <button class="ghost" id="mCancel">إلغاء</button>
+        </div>
+      </div>
+      <div id="modalMsg"></div>
+    </div>
+  </div>
+
+<script>
+  const API = "https://api.mehdik.site/";
+  let OWNER_TOKEN = sessionStorage.getItem("OWNER_TOKEN") || "";
+  let agencies = [];
+  let accounts = [];
+  let currentAgency = "";
+  let editIndex = -1;
+
+  const $ = (id) => document.getElementById(id);
+
+  function toast(el, ok, msg){
+    el.innerHTML = `<div class="toast ${ok?'ok':'err'}">${msg}</div>`;
+    setTimeout(()=>{ el.innerHTML = ""; }, 4000);
+  }
+
+  async function postForm(data, useAuth = false){
+    const fd = new FormData();
+    Object.entries(data).forEach(([k,v]) => fd.append(k, v));
+    const headers = {};
+    if(useAuth && OWNER_TOKEN) headers["Authorization"] = "Bearer " + OWNER_TOKEN;
+    const res = await fetch(API, { method:"POST", body: fd, headers });
+    const json = await res.json().catch(()=> ({}));
+    return { res, json };
+  }
+
+  function showDash(show){
+    $("loginCard").style.display = show ? "none" : "block";
+    $("dashCard").style.display = show ? "block" : "none";
+  }
+
+  function maskPass(p){
+    const s = (p||"").toString();
+    if(!s) return "";
+    if(s.length <= 2) return "•".repeat(s.length);
+    return "•".repeat(s.length-2) + s.slice(-2);
+  }
+
+  function pill(status){
+    const s = (status||"pending").toLowerCase() === "verified" ? "verified" : "pending";
+    return s === "verified"
+      ? `<span class="pill ok">✅ Verified</span>`
+      : `<span class="pill pending">Pending</span>`;
+  }
+
+  function render(){
+    const q = ($("search").value || "").trim().toLowerCase();
+    const rows = [];
+    let filtered = accounts.map((a, i)=> ({...a, _i:i}));
+    if(q){
+      filtered = filtered.filter(x =>
+        (x.email||"").toLowerCase().includes(q) ||
+        (x.passport||"").toLowerCase().includes(q)
+      );
+    }
+
+    $("stats").textContent = `Agency: ${currentAgency || "-"} | Total: ${accounts.length} | Showing: ${filtered.length}`;
+
+    for(const x of filtered){
+      const i = x._i;
+      const st = (x.status||"pending").toLowerCase() === "verified" ? "verified" : "pending";
+      const toggleTo = st === "verified" ? "pending" : "verified";
+      rows.push(`
+        <tr>
+          <td>${i+1}</td>
+          <td>${x.email||""}</td>
+          <td>${maskPass(x.password||"")}</td>
+          <td>${x.passport||""}</td>
+          <td>${pill(st)}</td>
+          <td>
+            <div class="actions">
+              <button class="ghost" onclick="openEdit(${i})">Edit</button>
+              <button class="ghost" onclick="toggleStatus(${i}, '${toggleTo}')">${toggleTo === 'verified' ? '✅ Set Verified' : 'Set Pending'}</button>
+              <button class="danger" onclick="delAcc(${i})">Delete</button>
+            </div>
+          </td>
+        </tr>
+      `);
+    }
+    $("tbody").innerHTML = rows.join("") || `<tr><td colspan="6" class="muted">لا توجد بيانات</td></tr>`;
+  }
+
+  async function loadAgencies(){
+    const {res, json} = await postForm({ formType:"owner", action:"agencies" }, true);
+    if(!res.ok || !json.ok){
+      toast($("dashMsg"), false, json.error || "Failed to load agencies");
+      return;
+    }
+    agencies = json.agencies || [];
+    const sel = $("agencySelect");
+    sel.innerHTML = agencies.map(a => `<option value="${a}">${a}</option>`).join("") || `<option value="">(no agencies)</option>`;
+    currentAgency = sel.value || "";
+  }
+
+  async function loadAccounts(){
+    currentAgency = $("agencySelect").value || "";
+    if(!currentAgency){
+      accounts = [];
+      render();
+      return;
+    }
+    const {res, json} = await postForm({ formType:"owner", action:"list", agency: currentAgency }, true);
+    if(!res.ok || !json.ok){
+      toast($("dashMsg"), false, json.error || "Failed to load accounts");
+      return;
+    }
+    accounts = (json.accounts || []).map(a => ({
+      email: a.email || "",
+      password: a.password || "",
+      passport: a.passport || "",
+      status: (a.status || "pending")
+    }));
+    render();
+  }
+
+  // Login
+  $("btnLogin").onclick = async () => {
+    const user = $("user").value.trim();
+    const pass = $("pass").value.trim();
+    const {res, json} = await postForm({ formType:"owner", action:"login", user, pass }, false);
+    if(!res.ok || !json.ok){
+      toast($("loginMsg"), false, json.error || "Login failed");
+      return;
+    }
+    OWNER_TOKEN = json.token;
+    sessionStorage.setItem("OWNER_TOKEN", OWNER_TOKEN);
+
+    showDash(true);
+    await loadAgencies();
+    await loadAccounts();
+    toast($("dashMsg"), true, "تم تسجيل الدخول");
+  };
+
+  $("btnClear").onclick = ()=>{ $("user").value=""; $("pass").value=""; };
+  $("btnLogout").onclick = ()=>{
+    OWNER_TOKEN = "";
+    sessionStorage.removeItem("OWNER_TOKEN");
+    agencies = []; accounts = []; currentAgency = "";
+    showDash(false);
+  };
+
+  $("btnReloadAgencies").onclick = async ()=>{ await loadAgencies(); await loadAccounts(); };
+  $("btnRefresh").onclick = async ()=>{ await loadAccounts(); };
+  $("agencySelect").onchange = async ()=>{ await loadAccounts(); };
+  $("search").oninput = ()=> render();
+
+  // Modal
+  function openModal(on){
+    $("modalBackdrop").style.display = on ? "flex" : "none";
+    $("modalMsg").innerHTML = "";
+  }
+  window.openEdit = (i)=>{
+    editIndex = i;
+    const a = accounts[i] || {};
+    $("mEmail").value = "";
+    $("mPass").value = "";
+    $("mPassport").value = "";
+    $("mStatus").value = ((a.status||"pending").toLowerCase()==="verified") ? "verified" : "pending";
+    openModal(true);
+  };
+  $("mCancel").onclick = ()=> openModal(false);
+
+  $("mSave").onclick = async ()=>{
+    if(editIndex < 0) return;
+    const payload = {
+      formType:"owner",
+      action:"update",
+      agency: currentAgency,
+      index: String(editIndex),
+      email: $("mEmail").value.trim(),
+      password: $("mPass").value.trim(),
+      passport: $("mPassport").value.trim(),
+      status: $("mStatus").value
+    };
+    const {res, json} = await postForm(payload, true);
+    if(!res.ok || !json.ok){
+      toast($("modalMsg"), false, json.error || "Update failed");
+      return;
+    }
+    openModal(false);
+    await loadAccounts();
+    toast($("dashMsg"), true, "تم التعديل");
+  };
+
+  window.delAcc = async (i)=>{
+    if(!confirm("هل تريد حذف هذا الحساب؟")) return;
+    const {res, json} = await postForm({
+      formType:"owner",
+      action:"delete",
+      agency: currentAgency,
+      index: String(i)
+    }, true);
+    if(!res.ok || !json.ok){
+      toast($("dashMsg"), false, json.error || "Delete failed");
+      return;
+    }
+    await loadAccounts();
+    toast($("dashMsg"), true, "تم الحذف");
+  };
+
+  window.toggleStatus = async (i, status)=>{
+    const {res, json} = await postForm({
+      formType:"owner",
+      action:"set_status",
+      agency: currentAgency,
+      index: String(i),
+      status
+    }, true);
+    if(!res.ok || !json.ok){
+      toast($("dashMsg"), false, json.error || "Status failed");
+      return;
+    }
+    await loadAccounts();
+    toast($("dashMsg"), true, "تم تحديث الحالة");
+  };
+
+  // Auto-show dashboard إذا التوكن موجود
+  (async function init(){
+    if(OWNER_TOKEN){
+      showDash(true);
+      await loadAgencies();
+      await loadAccounts();
+    }
+  })();
+</script>
+</body>
+</html>
