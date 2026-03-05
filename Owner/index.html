@@ -1,1005 +1,1079 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
+<!doctype html>
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>Owner Console</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Owner Panel — Pro</title>
   <style>
     :root{
-      --radius:18px;
-      --radius2:14px;
-      --shadow: 0 18px 55px rgba(0,0,0,.25);
-      --blur: 18px;
-
-      --bg: #0b1220;
-      --bg2:#0f172a;
-      --card: rgba(255,255,255,.06);
-      --card2: rgba(255,255,255,.08);
-      --border: rgba(255,255,255,.12);
-      --text: #e5e7eb;
-      --muted: rgba(229,231,235,.72);
-
-      --field: rgba(255,255,255,.06);
-      --field2: rgba(255,255,255,.10);
-      --fieldBorder: rgba(255,255,255,.16);
-
-      --ok:#22c55e;
+      --bg:#0b1220;
+      --panel:#101a2e;
+      --panel2:#0e172a;
+      --text:#e8eefc;
+      --muted:#9fb0d0;
+      --border:rgba(255,255,255,.10);
+      --shadow: 0 12px 30px rgba(0,0,0,.35);
+      --brand:#7c5cff;
+      --good:#22c55e;
       --warn:#f59e0b;
-      --bad:#fb7185;
-      --info:#60a5fa;
-
-      --primary1:#7c3aed;
-      --primary2:#2563eb;
-
-      --ring: rgba(96,165,250,.38);
+      --bad:#ef4444;
+      --chip:#162342;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans Arabic", "Noto Sans", sans-serif;
+      --r: 18px;
     }
-
-    [data-theme="light"]{
-      --bg:#f7f8fc;
-      --bg2:#eef2ff;
-      --card: rgba(255,255,255,.76);
-      --card2: rgba(255,255,255,.86);
-      --border: rgba(15,23,42,.12);
-      --text: #0f172a;
-      --muted: rgba(15,23,42,.62);
-
-      --field: rgba(15,23,42,.04);
-      --field2: rgba(15,23,42,.06);
-      --fieldBorder: rgba(15,23,42,.14);
-
-      --shadow: 0 18px 55px rgba(2,6,23,.12);
-      --ring: rgba(37,99,235,.22);
-    }
-
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0;
-      padding: clamp(14px, 2vw, 22px);
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      color: var(--text);
+      font-family:var(--sans);
       background:
-        radial-gradient(1000px 500px at 15% 10%, rgba(124,58,237,.35), transparent 55%),
-        radial-gradient(900px 520px at 85% 15%, rgba(37,99,235,.35), transparent 55%),
-        linear-gradient(180deg, var(--bg), var(--bg2));
+        radial-gradient(1100px 600px at 10% 10%, rgba(124,92,255,.18), transparent 60%),
+        radial-gradient(900px 500px at 90% 10%, rgba(34,197,94,.12), transparent 55%),
+        linear-gradient(180deg, #050a14, var(--bg));
+      color:var(--text);
     }
-
-    .shell{max-width:1200px;margin:0 auto}
+    a{color:inherit}
+    .wrap{max-width:1200px;margin:0 auto;padding:24px}
+    .topbar{
+      display:flex;gap:12px;align-items:center;justify-content:space-between;
+      padding:14px 16px;border:1px solid var(--border);border-radius:calc(var(--r) + 6px);
+      background:linear-gradient(180deg, rgba(16,26,46,.92), rgba(16,26,46,.68));
+      box-shadow:var(--shadow);
+      position:sticky;top:14px;backdrop-filter: blur(10px); z-index: 5;
+    }
+    .brand{display:flex;align-items:center;gap:10px}
+    .logo{
+      width:38px;height:38px;border-radius:14px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.22), transparent 45%),
+                  linear-gradient(135deg, rgba(124,92,255,1), rgba(34,197,94,1));
+      box-shadow: 0 10px 20px rgba(124,92,255,.22);
+    }
+    .title{display:flex;flex-direction:column;gap:2px}
+    .title b{font-size:15px;letter-spacing:.2px}
+    .title span{font-size:12px;color:var(--muted)}
+    .actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .btn{
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      padding:10px 12px;border-radius:14px;
+      cursor:pointer;
+      transition: transform .06s ease, background .15s ease, border-color .15s ease;
+      font-weight:700;
+      display:inline-flex;gap:8px;align-items:center;
+    }
+    .btn:hover{background:rgba(255,255,255,.10)}
+    .btn:active{transform:translateY(1px)}
+    .btn.primary{
+      border-color: rgba(124,92,255,.55);
+      background: linear-gradient(180deg, rgba(124,92,255,.30), rgba(124,92,255,.18));
+    }
+    .btn.danger{
+      border-color: rgba(239,68,68,.55);
+      background: linear-gradient(180deg, rgba(239,68,68,.22), rgba(239,68,68,.10));
+    }
+    .btn.ghost{background:transparent}
+    .btn[disabled]{opacity:.5;cursor:not-allowed;transform:none}
+    .chip{
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(255,255,255,.06);
+      border:1px solid var(--border);
+      color:var(--muted);
+      display:inline-flex;gap:8px;align-items:center;
+    }
+    .grid{
+      display:grid;grid-template-columns: 340px 1fr;gap:18px;margin-top:18px;
+    }
+    @media (max-width: 980px){
+      .grid{grid-template-columns:1fr}
+      .topbar{position:static}
+    }
     .card{
-      border-radius: var(--radius);
-      background: linear-gradient(180deg, var(--card), var(--card2));
-      border: 1px solid var(--border);
+      border:1px solid var(--border);
+      border-radius:var(--r);
+      background: linear-gradient(180deg, rgba(16,26,46,.92), rgba(16,26,46,.60));
       box-shadow: var(--shadow);
-      backdrop-filter: blur(var(--blur));
       overflow:hidden;
     }
-
-    .topbar{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
-      padding:16px 18px;
-      border-bottom: 1px solid var(--border);
-      background: linear-gradient(90deg, rgba(124,58,237,.22), rgba(37,99,235,.18));
+    .card .hd{
+      padding:14px 16px;
+      border-bottom:1px solid var(--border);
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
     }
-
-    .brand{display:flex;align-items:center;gap:12px;flex-wrap:wrap;min-width: 260px;}
-    .mark{
-      width:42px;height:42px;border-radius: 14px;
-      display:grid;place-items:center;
-      background: linear-gradient(135deg, rgba(255,255,255,.22), rgba(255,255,255,.06));
-      border: 1px solid rgba(255,255,255,.18);
-      box-shadow: 0 12px 30px rgba(0,0,0,.16);
-      font-weight: 900;
-      letter-spacing: .5px;
-      user-select:none;
+    .card .hd h3{
+      margin:0;font-size:14px;letter-spacing:.2px
     }
-    [data-theme="light"] .mark{
-      border-color: rgba(15,23,42,.12);
-      box-shadow: 0 12px 28px rgba(2,6,23,.10);
-    }
-    .brand h1{margin:0;font-size:1.1rem;font-weight:900;letter-spacing:.2px}
-    .sub{margin-top:2px;font-size:.88rem;color:var(--muted)}
-
-    .rightbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-
-    .pill{
-      display:inline-flex;align-items:center;gap:10px;
-      padding:8px 12px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.18);
-      background: rgba(0,0,0,.12);
-      font-weight:800;
-      font-size:.82rem;
-      user-select:none;
-    }
-    [data-theme="light"] .pill{border-color: rgba(15,23,42,.12);background: rgba(255,255,255,.55);}
-    .dot{width:9px;height:9px;border-radius:50%;background: rgba(255,255,255,.35)}
-    .dot.ok{background: var(--ok)}
-    .dot.bad{background: var(--bad)}
-
-    .btn{
-      border:none;
-      border-radius:999px;
-      padding:10px 14px;
-      font-weight:900;
-      cursor:pointer;
-      display:inline-flex;align-items:center;gap:10px;
-      background: rgba(255,255,255,.10);
-      color: var(--text);
-      border: 1px solid rgba(255,255,255,.16);
-      box-shadow: 0 14px 32px rgba(0,0,0,.14);
-      transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
-      user-select:none;
-      height: 40px;
-    }
-    [data-theme="light"] .btn{border-color: rgba(15,23,42,.12);box-shadow: 0 14px 32px rgba(2,6,23,.10);background: rgba(255,255,255,.72);}
-    .btn:hover{transform: translateY(-1px);filter: brightness(1.03);box-shadow: 0 18px 44px rgba(0,0,0,.18)}
-    .btn:disabled{opacity:.6;cursor:wait;box-shadow:none;transform:none}
-    .btnPrimary{background: linear-gradient(135deg, var(--primary1), var(--primary2));border-color: rgba(255,255,255,.22);color:#fff;}
-    .btnDanger{background: rgba(251,113,133,.14);border-color: rgba(251,113,133,.55);}
-    .btnGhost{background: rgba(255,255,255,.08);}
-
-    .wrap{padding:18px}
-    .grid{display:grid;grid-template-columns: 1fr;gap:14px}
-    @media(min-width:1020px){ .grid{grid-template-columns: .95fr 1.05fr} }
-
-    .panel{border-radius: var(--radius);border: 1px solid var(--border);background: rgba(0,0,0,.10);padding: 14px;}
-    [data-theme="light"] .panel{background: rgba(255,255,255,.55)}
-
-    .panelHead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom: 12px;}
-    .panelTitle{display:flex;flex-direction:column;gap:4px;}
-    .panelTitle b{font-size:1rem}
-    .panelTitle span{font-size:.86rem;color:var(--muted);line-height:1.35}
-
-    .row2{display:grid;grid-template-columns: 1fr;gap:10px}
-    @media(min-width:620px){ .row2{grid-template-columns: 1fr 1fr} }
-
-    label{display:block;font-weight:900;font-size:.86rem;margin: 10px 4px 6px;color: var(--muted);letter-spacing:.2px;}
-
-    input, select{
+    .card .bd{padding:14px 16px}
+    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    label{font-size:12px;color:var(--muted);display:block;margin-bottom:7px}
+    .field{display:flex;flex-direction:column;gap:7px;flex:1;min-width:160px}
+    input, select, textarea{
       width:100%;
-      border-radius: 14px;
-      padding: 11px 12px;
-      border: 1px solid var(--fieldBorder);
-      background: var(--field);
-      color: var(--text);
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:14px;
       outline:none;
-      font-size: 15.5px;
-      transition: box-shadow .12s ease, background .12s ease, border-color .12s ease;
+      font-family:var(--sans);
     }
-    input:focus, select:focus{border-color: rgba(96,165,250,.55);background: var(--field2);box-shadow: 0 0 0 4px var(--ring);}
-    ::placeholder{color: rgba(229,231,235,.45)}
-    [data-theme="light"] ::placeholder{color: rgba(15,23,42,.38)}
-
-    .toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top: 10px;}
-
-    .stats{display:grid;grid-template-columns: 1fr;gap:10px;margin-top: 10px;}
-    @media(min-width:720px){ .stats{grid-template-columns: 1fr 1fr 1fr} }
-
-    .stat{border-radius: 16px;border: 1px solid var(--border);background: rgba(255,255,255,.05);padding: 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
-    [data-theme="light"] .stat{background: rgba(255,255,255,.72)}
-    .stat .k{font-size:.78rem;color:var(--muted);font-weight:900}
-    .stat b{font-size:1.05rem}
-    .badge{border-radius:999px;padding: 6px 10px;font-weight:900;font-size:.76rem;border: 1px solid var(--border);background: rgba(255,255,255,.06);color: var(--text);white-space:nowrap;}
-    .badge.ok{border-color: rgba(34,197,94,.45); background: rgba(34,197,94,.12)}
-    .badge.info{border-color: rgba(96,165,250,.45); background: rgba(96,165,250,.12)}
-
-    .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top: 12px;}
-    .chip{border-radius:999px;padding: 8px 12px;border: 1px solid var(--border);background: rgba(255,255,255,.06);font-weight:900;font-size:.82rem;cursor:pointer;user-select:none;transition: transform .12s ease, filter .12s ease, background .12s ease;}
-    .chip:hover{transform: translateY(-1px); filter: brightness(1.03)}
-    .chip.active{background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.26)}
-    [data-theme="light"] .chip.active{background: rgba(37,99,235,.10); border-color: rgba(37,99,235,.18)}
-
-    .table{margin-top: 12px;border-radius: var(--radius);border: 1px solid var(--border);overflow:hidden;background: rgba(255,255,255,.04);}
-    [data-theme="light"] .table{background: rgba(255,255,255,.78)}
-
-    .thead,.trow{display:grid;grid-template-columns: 1.35fr 1fr .9fr .7fr 250px;gap:10px;padding: 10px 12px;align-items:center;}
-    .thead{background: rgba(255,255,255,.08);font-size:.78rem;font-weight:900;color: var(--muted);letter-spacing:.2px;border-bottom: 1px solid var(--border);}
-    .trow{border-top: 1px solid var(--border);background: rgba(0,0,0,.06);font-size: .88rem;}
-    [data-theme="light"] .trow{background: rgba(255,255,255,.55)}
-    .trow:first-child{border-top:none}
-
-    .actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;align-items:center;}
-    .miniBtn{border-radius: 12px;padding: 8px 10px;font-weight:900;font-size:.82rem;border: 1px solid var(--border);background: rgba(255,255,255,.06);color: var(--text);cursor:pointer;transition: transform .12s ease, filter .12s ease;user-select:none;height: 36px;display:inline-flex;align-items:center;gap:8px;}
-    .miniBtn:hover{transform: translateY(-1px); filter: brightness(1.03)}
-    .miniBtn.ok{border-color: rgba(34,197,94,.55); background: rgba(34,197,94,.12)}
-    .miniBtn.danger{border-color: rgba(251,113,133,.65); background: rgba(251,113,133,.12)}
-    .miniBtn.neutral{border-color: rgba(96,165,250,.45); background: rgba(96,165,250,.10)}
-
-    .rowState{display:inline-flex;align-items:center;gap:8px;font-weight:900;font-size:.78rem;color: var(--muted);min-width: 96px; justify-content:flex-start;}
-    .spin{width: 14px;height: 14px;border-radius: 50%;border: 2px solid rgba(255,255,255,.18);border-top-color: rgba(96,165,250,.9);animation: spin 1s linear infinite;}
-    [data-theme="light"] .spin{border-color: rgba(15,23,42,.14);border-top-color: rgba(37,99,235,.9);}
-    @keyframes spin{to{transform: rotate(360deg)}}
-
-    .empty{margin-top: 10px;border-radius: var(--radius);border: 1px dashed rgba(255,255,255,.22);background: rgba(255,255,255,.04);padding: 12px;color: var(--muted);font-weight: 800;display:none;}
-    [data-theme="light"] .empty{border-color: rgba(15,23,42,.22);background: rgba(255,255,255,.72);}
-
-    .backdrop{position:fixed; inset:0;background: rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;padding: 14px;z-index: 1000;}
-    .modal{width: min(740px, 100%);border-radius: 22px;border: 1px solid var(--border);background: linear-gradient(180deg, rgba(15,23,42,.92), rgba(15,23,42,.78));box-shadow: 0 30px 90px rgba(0,0,0,.55);overflow:hidden;}
-    [data-theme="light"] .modal{background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.82));box-shadow: 0 30px 90px rgba(2,6,23,.18);}
-    .modalHead{padding: 14px 16px;border-bottom: 1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;}
-    .modalHead b{font-size: 1rem}
-    .modalBody{padding: 14px 16px}
-
-    #toast{position: fixed;left: 50%;bottom: 20px;transform: translateX(-50%) translateY(120%);opacity: 0;pointer-events: none;z-index: 1200;padding: 10px 16px;border-radius: 999px;border: 1px solid var(--border);background: rgba(15,23,42,.92);color: #f8fafc;box-shadow: 0 18px 55px rgba(0,0,0,.35);max-width: 92%;text-align:center;font-weight: 900;transition: all .22s ease;}
-    [data-theme="light"] #toast{background: rgba(255,255,255,.92);color: #0f172a;box-shadow: 0 18px 55px rgba(2,6,23,.18);}
-    #toast.show{opacity: 1; transform: translateX(-50%) translateY(0)}
-
-    @media(max-width:860px){
-      .thead{display:none}
-      .trow{grid-template-columns: 1fr; gap:10px; padding: 12px}
-      .actions{justify-content:flex-start}
-      .trow .cellLabel{display:block;font-size:.74rem;color:var(--muted);font-weight:900;margin-bottom:4px}
+    textarea{min-height:150px;resize:vertical}
+    input::placeholder, textarea::placeholder{color:rgba(159,176,208,.65)}
+    .muted{color:var(--muted);font-size:12px;line-height:1.6}
+    .kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .kpi{
+      border:1px solid var(--border);border-radius:16px;padding:12px;
+      background:rgba(255,255,255,.05);
     }
+    .kpi b{display:block;font-size:18px}
+    .kpi span{color:var(--muted);font-size:12px}
+    .tablewrap{overflow:auto;border-radius:14px;border:1px solid var(--border)}
+    table{border-collapse:separate;border-spacing:0;width:100%;min-width:780px}
+    thead th{
+      position:sticky;top:0;
+      background:rgba(12,20,36,.90);
+      backdrop-filter: blur(8px);
+      text-align:right;
+      font-size:12px;color:var(--muted);
+      padding:10px 12px;border-bottom:1px solid var(--border);
+      white-space:nowrap;
+    }
+    tbody td{
+      padding:11px 12px;border-bottom:1px solid rgba(255,255,255,.07);
+      font-size:13px;vertical-align:middle;
+      white-space:nowrap;
+    }
+    tbody tr:hover{background:rgba(255,255,255,.04)}
+    .mono{font-family:var(--mono);font-size:12px}
+    .status{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:6px 10px;border-radius:999px;font-weight:800;font-size:12px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.06);
+    }
+    .dot{width:8px;height:8px;border-radius:999px;background:var(--muted)}
+    .s-good .dot{background:var(--good)}
+    .s-warn .dot{background:var(--warn)}
+    .s-bad .dot{background:var(--bad)}
+    .s-neutral .dot{background:#93c5fd}
+    .pill{
+      padding:6px 10px;border-radius:999px;
+      background:rgba(255,255,255,.06);border:1px solid var(--border);
+      font-size:12px;color:var(--muted);
+      display:inline-flex;gap:8px;align-items:center;
+    }
+    .hr{height:1px;background:rgba(255,255,255,.08);margin:14px 0}
+    .toast{
+      position:fixed;inset:auto 18px 18px auto;
+      background:rgba(16,26,46,.92);
+      border:1px solid var(--border);border-radius:16px;
+      padding:12px 14px;box-shadow:var(--shadow);
+      max-width: 520px;display:none;z-index:20;
+    }
+    .toast.show{display:block}
+    .toast b{display:block;font-size:13px;margin-bottom:4px}
+    .toast span{font-size:12px;color:var(--muted);line-height:1.5}
+    .modal{
+      position:fixed;inset:0;display:none;align-items:center;justify-content:center;
+      background: rgba(0,0,0,.55); z-index: 30; padding: 18px;
+    }
+    .modal.show{display:flex}
+    .modal .box{
+      width:min(860px, 100%);
+      border:1px solid var(--border);
+      border-radius:22px;
+      background: linear-gradient(180deg, rgba(16,26,46,.96), rgba(16,26,46,.74));
+      box-shadow: 0 18px 50px rgba(0,0,0,.55);
+      overflow:hidden;
+    }
+    .modal .box .hd{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .modal .box .bd{padding:14px 16px}
+    .modal .box .ft{padding:14px 16px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-start;flex-wrap:wrap}
+    .hint{
+      font-family:var(--mono);
+      font-size:12px;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px dashed rgba(255,255,255,.16);
+      background:rgba(255,255,255,.04);
+      color:rgba(232,238,252,.88);
+      white-space:pre-wrap;
+    }
+    .list{
+      margin:0;padding:0;list-style:none;
+      display:flex;flex-direction:column;gap:8px;
+      max-height: 280px; overflow:auto;
+    }
+    .list li{
+      padding:10px 12px;border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.04);
+      border-radius:14px;
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+    }
+    .list small{color:var(--muted)}
+    .tag{
+      font-size:11px;border-radius:999px;padding:5px 9px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.06);
+      color:var(--muted);
+    }
+    .rtl-toggle{
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+      padding:8px 10px;border-radius:999px;
+      display:flex;gap:8px;align-items:center;
+    }
+    .rtl-toggle button{
+      border:0;background:transparent;color:var(--muted);
+      padding:6px 10px;border-radius:999px;cursor:pointer;font-weight:800;
+    }
+    .rtl-toggle button.active{color:var(--text);background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.10)}
+    .footnote{font-size:11px;color:rgba(159,176,208,.85);line-height:1.6}
   </style>
 </head>
 <body>
-  <div class="shell">
-    <div class="card">
-      <div class="topbar">
-        <div class="brand">
-          <div class="mark">OC</div>
-          <div>
-            <h1>Owner Console</h1>
-            <div class="sub">Agencies & accounts management</div>
-          </div>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div class="title">
+          <b id="t_app">Owner Panel — Pro</b>
+          <span id="t_sub">إدارة الوكالات والحسابات (KV) — تسجيل الدخول عبر Secrets</span>
         </div>
+      </div>
+      <div class="actions">
+        <div class="rtl-toggle" title="Language / اللغة">
+          <button id="langAR" class="active">AR</button>
+          <button id="langEN">EN</button>
+        </div>
+        <span class="chip" id="chipApi">API: <span class="mono" id="apiHost">…</span></span>
+        <span class="chip" id="chipAuth">Auth: <span id="authState">Guest</span></span>
+        <button class="btn ghost" id="btnPing">Ping</button>
+        <button class="btn danger" id="btnLogout" disabled>Logout</button>
+      </div>
+    </div>
 
-        <div class="rightbar">
-          <button class="btn btnGhost" id="themeBtn" type="button" aria-label="Toggle theme">🌓 Theme</button>
-          <span class="pill"><span class="dot" id="dot"></span><span id="pillText">Signed out</span></span>
+    <div class="grid">
+      <!-- Left column -->
+      <div class="card" id="cardAuth">
+        <div class="hd">
+          <h3 id="t_login">تسجيل الدخول</h3>
+          <span class="pill" id="pillStatus"><span class="dot" style="background:#93c5fd"></span><span id="pillText">غير متصل</span></span>
+        </div>
+        <div class="bd">
+          <div class="row">
+            <div class="field">
+              <label id="t_user">Owner User</label>
+              <input id="inUser" autocomplete="username" placeholder="مثال: admin" />
+            </div>
+            <div class="field">
+              <label id="t_pass">Owner Pass</label>
+              <input id="inPass" type="password" autocomplete="current-password" placeholder="••••••••" />
+            </div>
+          </div>
+          <div style="margin-top:12px" class="row">
+            <button class="btn primary" id="btnLogin">Login</button>
+            <span class="muted" id="t_loginHint">سيتم إرسال بيانات الدخول في Headers لكل طلب (X-Owner-User / X-Owner-Pass)</span>
+          </div>
+          <div class="hr"></div>
+          <div class="kpis">
+            <div class="kpi">
+              <b id="kpiAgencies">—</b>
+              <span id="t_kpiAg">عدد الوكالات</span>
+            </div>
+            <div class="kpi">
+              <b id="kpiAccounts">—</b>
+              <span id="t_kpiAcc">حسابات الوكالة المحددة</span>
+            </div>
+          </div>
+          <div class="hr"></div>
+          <div class="muted" id="t_priv">
+            ملاحظة: هذه الصفحة لا تُخزّن كلمة السر على السيرفر. لكنها ستُرسلها في كل طلب API. استخدمها فقط على جهاز موثوق.
+          </div>
         </div>
       </div>
 
-      <div class="wrap">
-        <div class="grid">
-          <div class="panel" id="loginPanel">
-            <div class="panelHead">
-              <div class="panelTitle">
-                <b>Sign in</b>
-                <span>Owner credentials are stored only in this browser session.</span>
-              </div>
+      <!-- Right column -->
+      <div class="card">
+        <div class="hd">
+          <h3 id="t_manage">إدارة البيانات</h3>
+          <div class="row">
+            <button class="btn" id="btnRefresh" disabled>Refresh</button>
+            <button class="btn primary" id="btnBulk" disabled>+ Bulk Paste</button>
+            <button class="btn" id="btnAddOne" disabled>+ Add One</button>
+          </div>
+        </div>
+        <div class="bd">
+          <div class="row">
+            <div class="field" style="min-width:240px">
+              <label id="t_agency">الوكالة</label>
+              <select id="selAgency" disabled></select>
             </div>
-
-            <div class="row2">
-              <div>
-                <label>Username</label>
-                <input id="ownerUser" type="text" autocomplete="username" placeholder="Owner" />
-              </div>
-              <div>
-                <label>Password</label>
-                <input id="ownerPass" type="password" autocomplete="current-password" placeholder="••••••••" />
-              </div>
+            <div class="field">
+              <label id="t_search">بحث</label>
+              <input id="inSearch" placeholder="email / passport / status..." disabled />
             </div>
-
-            <div class="toolbar">
-              <button class="btn btnPrimary" id="loginBtn" type="button" style="flex:1">Sign in</button>
-              <button class="btn btnDanger" id="logoutBtn" type="button" style="display:none">Sign out</button>
+            <div class="field" style="max-width:220px">
+              <label id="t_filter">تصفية الحالة</label>
+              <select id="selStatusFilter" disabled>
+                <option value="">(الكل)</option>
+                <option value="Pending">Pending</option>
+                <option value="Done">Done</option>
+                <option value="Rejected">Rejected</option>
+                <option value="In Progress">In Progress</option>
+              </select>
             </div>
           </div>
 
-          <div class="panel" id="dashPanel" style="display:none">
-            <div class="panelHead">
-              <div class="panelTitle">
-                <b>Dashboard</b>
-                <span>Edit any field — changes auto-save.</span>
-              </div>
-              <div class="toolbar" style="margin:0">
-                <button class="btn btnPrimary" id="addBtn" type="button">➕ New account</button>
-                <button class="btn" id="exportBtn" type="button">⬇️ Export JSON</button>
-                <button class="btn" id="refreshBtn" type="button">🔄 Refresh</button>
-              </div>
-            </div>
+          <div style="margin-top:12px" class="tablewrap">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:38px">#</th>
+                  <th>Email</th>
+                  <th>Password</th>
+                  <th>Passport</th>
+                  <th>Status</th>
+                  <th style="width:210px" id="t_actions">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="tbody">
+                <tr><td colspan="6" class="muted" style="padding:16px">—</td></tr>
+              </tbody>
+            </table>
+          </div>
 
-            <div class="row2">
-              <div>
-                <label>Agency</label>
-                <select id="agencySelect"></select>
-              </div>
-              <div>
-                <label>Quick search</label>
-                <input id="searchBox" type="text" placeholder="email / passport / status" />
-              </div>
-            </div>
-
-            <div class="stats">
-              <div class="stat">
-                <div>
-                  <div class="k">Total agencies</div>
-                  <b id="stAgencies">0</b>
-                </div>
-                <span class="badge info" id="stAgenciesBadge">—</span>
-              </div>
-
-              <div class="stat">
-                <div>
-                  <div class="k">Accounts (selected agency)</div>
-                  <b id="stAccounts">0</b>
-                </div>
-                <span class="badge" id="stAccountsBadge">—</span>
-              </div>
-
-              <div class="stat">
-                <div>
-                  <div class="k">✅ / Pending / Ready</div>
-                  <b id="stBreak">0 / 0 / 0</b>
-                </div>
-                <span class="badge ok">Status</span>
-              </div>
-            </div>
-
-            <div class="chips" id="chips">
-              <div class="chip active" data-filter="all">All</div>
-              <div class="chip" data-filter="✅">✅</div>
-              <div class="chip" data-filter="Pending">Pending</div>
-              <div class="chip" data-filter="Ready">Ready</div>
-            </div>
-
-            <div class="table" role="table" aria-label="Accounts">
-              <div class="thead" role="row">
-                <div role="columnheader">Email</div>
-                <div role="columnheader">Password</div>
-                <div role="columnheader">Passport</div>
-                <div role="columnheader">Status</div>
-                <div role="columnheader" style="text-align:right">Actions</div>
-              </div>
-              <div id="listBody"></div>
-            </div>
-
-            <div id="emptyBox" class="empty">No records match your filters.</div>
+          <div class="hr"></div>
+          <div class="footnote" id="t_note">
+            ⚠️ ملاحظة أمنية: من الأفضل عدم عرض كلمات السر كنص صريح. هذه اللوحة تُظهرها لأنها موجودة في التخزين (KV). يفضّل تعديل الـ API لاحقاً لإخفائها.
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="backdrop" id="backdrop" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true" aria-label="New account">
-      <div class="modalHead">
-        <b>New account</b>
-        <button class="miniBtn neutral" id="closeModal" type="button">✕ Close</button>
+  <!-- Toast -->
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <b id="toastTitle">—</b>
+    <span id="toastMsg">—</span>
+  </div>
+
+  <!-- Modal: Add / Edit One -->
+  <div class="modal" id="modalOne" aria-hidden="true">
+    <div class="box">
+      <div class="hd">
+        <div>
+          <b id="oneTitle">Account</b>
+          <div class="muted" id="oneSub">—</div>
+        </div>
+        <button class="btn ghost" onclick="UI.closeOne()">✕</button>
       </div>
-      <div class="modalBody">
-        <div class="row2">
-          <div>
-            <label>Agency</label>
-            <select id="addAgencySelect"></select>
-          </div>
-          <div>
-            <label>New agency name</label>
-            <input id="newAgencyName" type="text" placeholder="e.g. agency1" />
-          </div>
-        </div>
-
-        <div class="row2">
-          <div>
+      <div class="bd">
+        <div class="row">
+          <div class="field">
             <label>Email</label>
-            <input id="addEmail" type="text" placeholder="example@mail.com" />
+            <input id="oneEmail" placeholder="name@example.com" />
           </div>
-          <div>
+          <div class="field">
             <label>Password</label>
-            <input id="addPassword" type="text" placeholder="Password" />
+            <input id="onePass" placeholder="password" />
           </div>
         </div>
-
-        <div class="row2">
-          <div>
+        <div style="margin-top:10px" class="row">
+          <div class="field">
             <label>Passport</label>
-            <input id="addPassport" type="text" placeholder="AB123456" />
+            <input id="onePassport" placeholder="AA123456" />
           </div>
-          <div>
+          <div class="field">
             <label>Status</label>
-            <select id="addStatus">
+            <select id="oneStatus">
               <option value="Pending">Pending</option>
-              <option value="Ready">Ready</option>
-              <option value="✅">✅</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Done">Done</option>
+              <option value="Rejected">Rejected</option>
             </select>
           </div>
         </div>
-
-        <div class="toolbar">
-          <button class="btn btnPrimary" id="createBtn" type="button" style="flex:1">Create</button>
-          <button class="btn" id="resetBtn" type="button">Reset</button>
-        </div>
+        <div class="hr"></div>
+        <div class="muted" id="oneHelp">لإضافة حساب جديد: سيتم الإضافة عبر “Agency add” ثم (اختياري) ضبط الحالة عبر Owner edit.</div>
+      </div>
+      <div class="ft">
+        <button class="btn" onclick="UI.closeOne()">Cancel</button>
+        <button class="btn primary" id="btnSaveOne">Save</button>
       </div>
     </div>
   </div>
 
-  <div id="toast"></div>
+  <!-- Modal: Bulk Paste -->
+  <div class="modal" id="modalBulk" aria-hidden="true">
+    <div class="box">
+      <div class="hd">
+        <div>
+          <b id="bulkTitle">Bulk Paste</b>
+          <div class="muted" id="bulkSub">ألصق JSON Array من الحسابات، ثم Preview ثم Add</div>
+        </div>
+        <button class="btn ghost" onclick="UI.closeBulk()">✕</button>
+      </div>
+      <div class="bd">
+        <div class="row" style="align-items:flex-start">
+          <div class="field" style="flex:1.25">
+            <label id="t_json">JSON</label>
+            <textarea id="bulkText" class="mono" placeholder='[
+  {"email":"a@x.com","password":"123","passport":"AA1","status":"Pending"},
+  {"email":"b@x.com","password":"456","passport":"BB2","status":"Done"}
+]'></textarea>
+            <div class="muted" id="t_jsonHint">المدعوم: Array مباشرة أو Object فيه مفتاح <span class="mono">accounts</span>. إذا كان النص فيه أشياء زائدة، سنحاول استخراج أول <span class="mono">[ ... ]</span>.</div>
+          </div>
+          <div class="field" style="flex:0.75;min-width:260px">
+            <label id="t_preview">Preview</label>
+            <div class="hint" id="bulkStats">—</div>
+            <div class="hr"></div>
+            <ul class="list" id="bulkList"></ul>
+          </div>
+        </div>
+      </div>
+      <div class="ft">
+        <button class="btn" onclick="UI.closeBulk()">Cancel</button>
+        <button class="btn" id="btnParse">Preview</button>
+        <button class="btn primary" id="btnBulkAdd" disabled>Add accounts</button>
+      </div>
+    </div>
+  </div>
 
 <script>
-  const API = "https://api.mehdik.site/owner";
+(() => {
+  // =========================
+  // Config
+  // =========================
+  const API_BASE = "https://api.mehdik.site";
+  const API_ROOT = API_BASE + "/";           // for agency formType endpoints
+  const OWNER_BASE = API_BASE + "/owner";    // for owner endpoints
+  document.getElementById("apiHost").textContent = API_BASE;
 
-  const toastEl = document.getElementById("toast");
-  const dashPanel = document.getElementById("dashPanel");
-  const dot = document.getElementById("dot");
-  const pillText = document.getElementById("pillText");
-
-  const loginBtn = document.getElementById("loginBtn");
-  const logoutBtn = document.getElementById("logoutBtn");
-
-  const ownerUser = document.getElementById("ownerUser");
-  const ownerPass = document.getElementById("ownerPass");
-
-  const agencySelect = document.getElementById("agencySelect");
-  const listBody = document.getElementById("listBody");
-  const emptyBox = document.getElementById("emptyBox");
-  const searchBox = document.getElementById("searchBox");
-  const refreshBtn = document.getElementById("refreshBtn");
-  const addBtn = document.getElementById("addBtn");
-  const exportBtn = document.getElementById("exportBtn");
-  const themeBtn = document.getElementById("themeBtn");
-
-  const stAgencies = document.getElementById("stAgencies");
-  const stAccounts = document.getElementById("stAccounts");
-  const stBreak = document.getElementById("stBreak");
-  const stAgenciesBadge = document.getElementById("stAgenciesBadge");
-  const stAccountsBadge = document.getElementById("stAccountsBadge");
-
-  const chips = document.getElementById("chips");
-
-  const backdrop = document.getElementById("backdrop");
-  const closeModal = document.getElementById("closeModal");
-  const addAgencySelect = document.getElementById("addAgencySelect");
-  const newAgencyName = document.getElementById("newAgencyName");
-  const addEmail = document.getElementById("addEmail");
-  const addPassword = document.getElementById("addPassword");
-  const addPassport = document.getElementById("addPassport");
-  const addStatus = document.getElementById("addStatus");
-  const createBtn = document.getElementById("createBtn");
-  const resetBtn = document.getElementById("resetBtn");
-
-  let creds = null;
-  let agencies = [];
-  let accounts = [];
-  let statusFilter = "all";
-  const saveTimers = new Map();
-
-  function showToast(msg){
-    toastEl.textContent = msg;
-    toastEl.classList.add("show");
-    setTimeout(()=>toastEl.classList.remove("show"), 2300);
+  // =========================
+  // i18n (small, practical)
+  // =========================
+  const I18N = {
+    ar: {
+      app:"Owner Panel — Pro",
+      sub:"إدارة الوكالات والحسابات (KV) — تسجيل الدخول عبر Secrets",
+      login:"تسجيل الدخول",
+      manage:"إدارة البيانات",
+      agency:"الوكالة",
+      search:"بحث",
+      filter:"تصفية الحالة",
+      actions:"إجراءات",
+      kAg:"عدد الوكالات",
+      kAcc:"حسابات الوكالة المحددة",
+      loginHint:"سيتم إرسال بيانات الدخول في Headers لكل طلب (X-Owner-User / X-Owner-Pass)",
+      priv:"ملاحظة: هذه الصفحة لا تُخزّن كلمة السر على السيرفر. لكنها ستُرسلها في كل طلب API. استخدمها فقط على جهاز موثوق.",
+      note:"⚠️ ملاحظة أمنية: من الأفضل عدم عرض كلمات السر كنص صريح. هذه اللوحة تُظهرها لأنها موجودة في التخزين (KV). يفضّل تعديل الـ API لاحقاً لإخفائها.",
+      bulkTitle:"إضافة جماعية (Bulk Paste)",
+      bulkSub:"ألصق JSON Array من الحسابات، ثم Preview ثم Add",
+      json:"JSON",
+      preview:"Preview",
+    },
+    en: {
+      app:"Owner Panel — Pro",
+      sub:"Agencies & Accounts (KV) — Owner auth via Worker Secrets",
+      login:"Login",
+      manage:"Manage",
+      agency:"Agency",
+      search:"Search",
+      filter:"Status filter",
+      actions:"Actions",
+      kAg:"# Agencies",
+      kAcc:"Selected agency accounts",
+      loginHint:"Credentials are sent in Headers on each request (X-Owner-User / X-Owner-Pass).",
+      priv:"Note: this page does not store your password on the server, but it will be sent on every API request. Use only on a trusted device.",
+      note:"⚠️ Security note: ideally passwords should not be shown. This panel displays them because they exist in KV. Consider changing the API later to mask/remove them.",
+      bulkTitle:"Bulk Paste",
+      bulkSub:"Paste a JSON array of accounts, Preview, then Add",
+      json:"JSON",
+      preview:"Preview",
+    }
+  };
+  let LANG = "ar";
+  function setLang(lang){
+    LANG = lang;
+    const d = I18N[LANG] || I18N.ar;
+    document.documentElement.lang = LANG;
+    document.documentElement.dir = (LANG==="ar" ? "rtl" : "ltr");
+    document.getElementById("langAR").classList.toggle("active", LANG==="ar");
+    document.getElementById("langEN").classList.toggle("active", LANG==="en");
+    document.getElementById("t_app").textContent = d.app;
+    document.getElementById("t_sub").textContent = d.sub;
+    document.getElementById("t_login").textContent = d.login;
+    document.getElementById("t_manage").textContent = d.manage;
+    document.getElementById("t_agency").textContent = d.agency;
+    document.getElementById("t_search").textContent = d.search;
+    document.getElementById("t_filter").textContent = d.filter;
+    document.getElementById("t_actions").textContent = d.actions;
+    document.getElementById("t_kpiAg").textContent = d.kAg;
+    document.getElementById("t_kpiAcc").textContent = d.kAcc;
+    document.getElementById("t_loginHint").textContent = d.loginHint;
+    document.getElementById("t_priv").textContent = d.priv;
+    document.getElementById("t_note").textContent = d.note;
+    document.getElementById("bulkTitle").textContent = d.bulkTitle;
+    document.getElementById("bulkSub").textContent = d.bulkSub;
+    document.getElementById("t_json").textContent = d.json;
+    document.getElementById("t_preview").textContent = d.preview;
   }
+  document.getElementById("langAR").onclick = () => setLang("ar");
+  document.getElementById("langEN").onclick = () => setLang("en");
+  setLang("ar");
 
-  function setTheme(theme){
-    document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem("oc_theme", theme);
-    themeBtn.textContent = theme === "light" ? "🌞 Light" : "🌙 Dark";
+  // =========================
+  // State
+  // =========================
+  const S = {
+    ownerUser: "",
+    ownerPass: "",
+    agencies: [],
+    agencySelected: "",
+    accounts: [],
+    bulkParsed: [],
+  };
+
+  // =========================
+  // Helpers
+  // =========================
+  function toast(title, msg){
+    const t = document.getElementById("toast");
+    document.getElementById("toastTitle").textContent = title;
+    document.getElementById("toastMsg").textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toast._tm);
+    toast._tm = setTimeout(() => t.classList.remove("show"), 3600);
   }
-
-  function toggleTheme(){
-    const cur = document.documentElement.getAttribute("data-theme") || "dark";
-    setTheme(cur === "dark" ? "light" : "dark");
+  function setAuthState(isAuthed){
+    document.getElementById("authState").textContent = isAuthed ? "Owner" : "Guest";
+    document.getElementById("btnLogout").disabled = !isAuthed;
+    document.getElementById("btnRefresh").disabled = !isAuthed;
+    document.getElementById("btnBulk").disabled = !isAuthed;
+    document.getElementById("btnAddOne").disabled = !isAuthed;
+    document.getElementById("selAgency").disabled = !isAuthed;
+    document.getElementById("inSearch").disabled = !isAuthed;
+    document.getElementById("selStatusFilter").disabled = !isAuthed;
+    document.getElementById("pillText").textContent = isAuthed ? (LANG==="ar"?"متصل":"Connected") : (LANG==="ar"?"غير متصل":"Disconnected");
   }
-
-  function headers(){
+  function ownerHeaders(){
     return {
-      "Content-Type": "application/json",
-      "X-Owner-User": creds?.user || "",
-      "X-Owner-Pass": creds?.pass || ""
+      "X-Owner-User": S.ownerUser || "",
+      "X-Owner-Pass": S.ownerPass || "",
     };
   }
-
-  function setLoggedIn(on){
-    if(on){
-      pillText.textContent = "Signed in";
-      dot.classList.remove("bad");
-      dot.classList.add("ok");
-      loginBtn.style.display = "none";
-      logoutBtn.style.display = "inline-flex";
-      dashPanel.style.display = "block";
-    }else{
-      pillText.textContent = "Signed out";
-      dot.classList.remove("ok");
-      dot.classList.add("bad");
-      loginBtn.style.display = "inline-flex";
-      logoutBtn.style.display = "none";
-      dashPanel.style.display = "none";
-      agencies = [];
-      accounts = [];
-      agencySelect.innerHTML = "";
-      listBody.innerHTML = "";
-      searchBox.value = "";
-      statusFilter = "all";
-      setChipActive("all");
-      updateStats();
-      sessionStorage.removeItem("owner_creds");
+  function maskPassword(p){
+    const s = String(p || "");
+    if (!s) return "";
+    if (s.length <= 2) return "•".repeat(s.length);
+    return "•".repeat(Math.min(10, s.length-2)) + s.slice(-2);
+  }
+  function statusClass(st){
+    const s = String(st||"").trim().toLowerCase();
+    if (s === "done" || s === "approved" || s === "ok") return "s-good";
+    if (s.includes("progress") || s === "pending") return "s-warn";
+    if (s === "rejected" || s === "fail" || s === "failed") return "s-bad";
+    return "s-neutral";
+  }
+  function escapeHtml(x){ return String(x ?? "").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+  function norm(s){ return String(s||"").trim(); }
+  function normEmail(s){ return norm(s).toLowerCase(); }
+  function normPassport(s){ return norm(s).toUpperCase(); }
+  function uniqByKey(list, keyFn){
+    const out=[], seen=new Set();
+    for(const x of list){
+      const k = keyFn(x);
+      if(seen.has(k)) continue;
+      seen.add(k); out.push(x);
     }
+    return out;
   }
 
-  async function apiLogin(user, pass){
-    const r = await fetch(API + "/login", {
-      method: "POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({user, pass})
+  // =========================
+  // API calls
+  // =========================
+  async function apiPing(){
+    // Worker has /owner/ping
+    const r = await fetch(OWNER_BASE + "/ping", { headers: ownerHeaders() });
+    return r.json().catch(()=>({ok:false}));
+  }
+
+  async function ownerLogin(user, pass){
+    const r = await fetch(OWNER_BASE + "/login", {
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({ user, pass })
     });
-    const j = await r.json().catch(()=>null);
-    if(!r.ok || !j || !j.ok) throw new Error("Invalid login");
-    return true;
+    return r.json().catch(()=>({ok:false}));
   }
 
-  async function apiAgencies(){
-    const r = await fetch(API + "/agencies", { headers: headers() });
-    const j = await r.json().catch(()=>null);
-    if(!r.ok || !j?.ok) throw new Error(j?.error || "Failed");
-    return j.agencies || [];
+  async function ownerAgencies(){
+    const r = await fetch(OWNER_BASE + "/agencies", { headers: ownerHeaders() });
+    return r.json().catch(()=>({ok:false}));
   }
 
-  async function apiAccounts(agency){
-    const r = await fetch(API + "/accounts?agency=" + encodeURIComponent(agency), { headers: headers() });
-    const j = await r.json().catch(()=>null);
-    if(!r.ok || !j?.ok) throw new Error(j?.error || "Failed");
-    return j.accounts || [];
+  async function ownerAccounts(agency){
+    const url = OWNER_BASE + "/accounts?agency=" + encodeURIComponent(agency || "");
+    const r = await fetch(url, { headers: ownerHeaders() });
+    return r.json().catch(()=>({ok:false}));
   }
 
-  async function apiCreate(body){
-    const r = await fetch(API + "/account", { method:"POST", headers: headers(), body: JSON.stringify(body) });
-    const j = await r.json().catch(()=>null);
-    if(!r.ok || !j?.ok) throw new Error(j?.error || "Failed");
-    return true;
+  async function ownerEditAccount(payload){
+    const r = await fetch(OWNER_BASE + "/account", {
+      method:"PUT",
+      headers: { ...ownerHeaders(), "Content-Type":"application/json" },
+      body: JSON.stringify(payload)
+    });
+    return r.json().catch(()=>({ok:false}));
   }
 
-  async function apiUpdate(body){
-    const r = await fetch(API + "/account", { method:"PUT", headers: headers(), body: JSON.stringify(body) });
-    const j = await r.json().catch(()=>null);
-    if(!r.ok || !j?.ok) throw new Error(j?.error || "Failed");
-    return true;
+  async function ownerDeleteAccount(payload){
+    const r = await fetch(OWNER_BASE + "/account", {
+      method:"DELETE",
+      headers: { ...ownerHeaders(), "Content-Type":"application/json" },
+      body: JSON.stringify(payload)
+    });
+    return r.json().catch(()=>({ok:false}));
   }
 
-  async function apiDelete(body){
-    const r = await fetch(API + "/account", { method:"DELETE", headers: headers(), body: JSON.stringify(body) });
-    const j = await r.json().catch(()=>null);
-    if(!r.ok || !j?.ok) throw new Error(j?.error || "Failed");
-    return true;
+  async function agencyAddMulti(agency, accounts){
+    // Uses worker's public agency endpoint (formType=agency, action=add) with multi "accounts" text.
+    // Format per worker: "email;password;passport" lines. Status isn't supported here (status defaults to Pending).
+    const lines = accounts.map(a => `${norm(a.email)};${norm(a.password)};${norm(a.passport)}`).join("\n");
+    const fd = new FormData();
+    fd.set("formType","agency");
+    fd.set("action","add");
+    fd.set("firma", agency);
+    fd.set("molti","1");
+    fd.set("accounts", lines);
+    const r = await fetch(API_ROOT, { method:"POST", body: fd });
+    return r.json().catch(()=>({ok:false}));
   }
 
-  function normalizeStatus(v){
-    v = (v ?? "").toString().trim();
-    if(!v) return "Pending";
-    if(v === "✅") return "✅";
-    if(v.toLowerCase() === "ready") return "Ready";
-    return "Pending";
-  }
-
+  // =========================
+  // Render
+  // =========================
   function renderAgencies(){
-    agencySelect.innerHTML = "";
-    for(const a of agencies){
-      const opt = document.createElement("option");
-      opt.value = a.agency;
-      opt.textContent = `${a.agency} (${a.count})`;
-      agencySelect.appendChild(opt);
-    }
+    const sel = document.getElementById("selAgency");
+    sel.innerHTML = "";
+    const opt0 = document.createElement("option");
+    opt0.value = "";
+    opt0.textContent = LANG==="ar" ? "(اختر وكالة)" : "(Select an agency)";
+    sel.appendChild(opt0);
 
-    addAgencySelect.innerHTML = "";
-    const o0 = document.createElement("option");
-    o0.value = "__new__";
-    o0.textContent = "+ New agency…";
-    addAgencySelect.appendChild(o0);
-
-    for(const a of agencies){
-      const opt = document.createElement("option");
-      opt.value = a.agency;
-      opt.textContent = a.agency;
-      addAgencySelect.appendChild(opt);
+    for(const a of S.agencies){
+      const o = document.createElement("option");
+      o.value = a.agency;
+      o.textContent = `${a.agency} (${a.count})`;
+      sel.appendChild(o);
     }
+    document.getElementById("kpiAgencies").textContent = String(S.agencies.length || 0);
   }
 
-  function setChipActive(v){
-    for(const el of chips.querySelectorAll(".chip")){
-      el.classList.toggle("active", el.dataset.filter === v);
+  function applyFilters(list){
+    const q = norm(document.getElementById("inSearch").value).toLowerCase();
+    const st = document.getElementById("selStatusFilter").value;
+    let out = list.slice();
+    if(st){
+      out = out.filter(a => norm(a.status) === st);
     }
-  }
-
-  function matchQuery(a, q){
-    if(!q) return true;
-    q = q.toLowerCase();
-    return (String(a.email||"").toLowerCase().includes(q)) ||
-           (String(a.passport||"").toLowerCase().includes(q)) ||
-           (String(a.status||"").toLowerCase().includes(q));
-  }
-
-  function statusSelect(value){
-    const sel = document.createElement("select");
-    const opts = ["✅","Pending","Ready"];
-    for(const o of opts){
-      const op = document.createElement("option");
-      op.value = o;
-      op.textContent = o;
-      sel.appendChild(op);
-    }
-    sel.value = normalizeStatus(value);
-    return sel;
-  }
-
-  function updateStats(){
-    stAgencies.textContent = String(agencies.length);
-    stAgenciesBadge.textContent = agencies.length ? "OK" : "—";
-
-    const total = accounts.length;
-    stAccounts.textContent = String(total);
-    stAccountsBadge.textContent = agencySelect.value ? agencySelect.value : "—";
-
-    const cOk = accounts.filter(a => normalizeStatus(a.status) === "✅").length;
-    const cPend = accounts.filter(a => normalizeStatus(a.status) === "Pending").length;
-    const cReady = accounts.filter(a => normalizeStatus(a.status) === "Ready").length;
-    stBreak.textContent = `${cOk} / ${cPend} / ${cReady}`;
-  }
-
-  function cellWrap(label, node){
-    if(window.matchMedia("(max-width: 860px)").matches){
-      const wrap = document.createElement("div");
-      const l = document.createElement("span");
-      l.className = "cellLabel";
-      l.textContent = label;
-      wrap.appendChild(l);
-      wrap.appendChild(node);
-      return wrap;
-    }
-    return node;
-  }
-
-  function setRowState(el, state){
-    el.innerHTML = "";
-    if(state === "saving"){
-      const sp = document.createElement("span");
-      sp.className = "spin";
-      const tx = document.createElement("span");
-      tx.textContent = "Saving…";
-      el.appendChild(sp);
-      el.appendChild(tx);
-      return;
-    }
-    if(state === "saved"){
-      const tx = document.createElement("span");
-      tx.style.color = "var(--ok)";
-      tx.textContent = "Saved";
-      el.appendChild(tx);
-      return;
-    }
-    if(state === "error"){
-      const tx = document.createElement("span");
-      tx.style.color = "var(--bad)";
-      tx.textContent = "Failed";
-      el.appendChild(tx);
-      return;
-    }
-    const tx = document.createElement("span");
-    tx.textContent = "Auto-save";
-    el.appendChild(tx);
-  }
-
-  function scheduleAutoSave(key, fn, ms){
-    if(saveTimers.has(key)) clearTimeout(saveTimers.get(key));
-    saveTimers.set(key, setTimeout(()=>{
-      saveTimers.delete(key);
-      fn();
-    }, ms));
-  }
-
-  function renderList(){
-    listBody.innerHTML = "";
-
-    const q = (searchBox.value || "").trim();
-    let view = accounts.filter(a => matchQuery(a, q));
-    if(statusFilter !== "all"){
-      view = view.filter(a => normalizeStatus(a.status) === statusFilter);
-    }
-
-    emptyBox.style.display = view.length ? "none" : "block";
-
-    for(const acc of view){
-      const row = document.createElement("div");
-      row.className = "trow";
-      row.setAttribute("role","row");
-
-      const emailIn = document.createElement("input");
-      emailIn.value = acc.email || "";
-
-      const passIn = document.createElement("input");
-      passIn.value = acc.password || "";
-
-      const passpIn = document.createElement("input");
-      passpIn.value = acc.passport || "";
-
-      const stSel = statusSelect(acc.status);
-
-      const state = document.createElement("div");
-      state.className = "rowState";
-      setRowState(state, "idle");
-
-      const actions = document.createElement("div");
-      actions.className = "actions";
-
-      const saveBtn = document.createElement("button");
-      saveBtn.type = "button";
-      saveBtn.className = "miniBtn ok";
-      saveBtn.textContent = "Save now";
-
-      const delBtn = document.createElement("button");
-      delBtn.type = "button";
-      delBtn.className = "miniBtn danger";
-      delBtn.textContent = "Delete";
-
-      const rowKey = `${agencySelect.value}::${acc.email||""}::${acc.passport||""}`;
-
-      async function doSave(){
-        const agency = agencySelect.value;
-        const body = {
-          agency,
-          matchEmail: (acc.email||""),
-          matchPassport: (acc.passport||""),
-          email: emailIn.value.trim(),
-          password: passIn.value.trim(),
-          passport: passpIn.value.trim(),
-          status: stSel.value
-        };
-
-        if(!body.email || !body.password || !body.passport){
-          setRowState(state, "error");
-          return;
-        }
-
-        try{
-          setRowState(state, "saving");
-          saveBtn.disabled = true;
-          await apiUpdate(body);
-
-          acc.email = body.email;
-          acc.password = body.password;
-          acc.passport = body.passport;
-          acc.status = body.status;
-
-          updateStats();
-          setRowState(state, "saved");
-          showToast("Saved");
-          scheduleAutoSave("rerender:"+rowKey, ()=>renderList(), 450);
-        }catch(_){
-          setRowState(state, "error");
-          showToast("Save failed");
-        }finally{
-          saveBtn.disabled = false;
-          scheduleAutoSave("idle:"+rowKey, ()=>setRowState(state, "idle"), 2200);
-        }
-      }
-
-      function onEdit(){
-        setRowState(state, "saving");
-        scheduleAutoSave("autosave:"+rowKey, doSave, 900);
-      }
-
-      emailIn.addEventListener("input", onEdit);
-      passIn.addEventListener("input", onEdit);
-      passpIn.addEventListener("input", onEdit);
-      stSel.addEventListener("change", onEdit);
-
-      saveBtn.addEventListener("click", ()=> scheduleAutoSave("autosave:"+rowKey, doSave, 0));
-
-      delBtn.addEventListener("click", async ()=>{
-        const ok = confirm("Delete this account?");
-        if(!ok) return;
-        const agency = agencySelect.value;
-        const body = { agency, email: (acc.email||""), passport: (acc.passport||"") };
-        try{
-          delBtn.disabled = true;
-          await apiDelete(body);
-          accounts = accounts.filter(x => !((x.email||"")===acc.email && (x.passport||"")===acc.passport));
-          updateStats();
-          renderList();
-          showToast("Deleted");
-        }catch(_){
-          showToast("Delete failed");
-        }finally{
-          delBtn.disabled = false;
-        }
+    if(q){
+      out = out.filter(a => {
+        return (
+          String(a.email||"").toLowerCase().includes(q) ||
+          String(a.passport||"").toLowerCase().includes(q) ||
+          String(a.status||"").toLowerCase().includes(q)
+        );
       });
-
-      actions.appendChild(state);
-      actions.appendChild(saveBtn);
-      actions.appendChild(delBtn);
-
-      row.appendChild(cellWrap("Email", emailIn));
-      row.appendChild(cellWrap("Password", passIn));
-      row.appendChild(cellWrap("Passport", passpIn));
-      row.appendChild(cellWrap("Status", stSel));
-      row.appendChild(actions);
-
-      listBody.appendChild(row);
     }
+    return out;
   }
 
-  async function refreshAll(keepAgency=true){
-    agencies = await apiAgencies();
-    renderAgencies();
-    const prev = agencySelect.value;
+  function renderAccounts(){
+    const tb = document.getElementById("tbody");
+    const filtered = applyFilters(S.accounts);
+    document.getElementById("kpiAccounts").textContent = String(filtered.length || 0);
 
-    if(agencies.length){
-      if(keepAgency && prev && agencies.some(a => a.agency === prev)) agencySelect.value = prev;
-      else agencySelect.value = agencies[0].agency;
-
-      accounts = await apiAccounts(agencySelect.value);
-      accounts = accounts.map(a => ({...a, status: normalizeStatus(a.status)}));
-    }else{
-      accounts = [];
+    if(!S.agencySelected){
+      tb.innerHTML = `<tr><td colspan="6" class="muted" style="padding:16px">${LANG==="ar"?"اختر وكالة أولاً":"Select an agency first"}</td></tr>`;
+      return;
     }
-    updateStats();
-    renderList();
-  }
-
-  function openModal(){
-    backdrop.style.display = "flex";
-    backdrop.setAttribute("aria-hidden","false");
-    addAgencySelect.value = agencySelect.value ? agencySelect.value : "__new__";
-    newAgencyName.value = "";
-    addEmail.value = "";
-    addPassword.value = "";
-    addPassport.value = "";
-    addStatus.value = "Pending";
-    newAgencyName.disabled = addAgencySelect.value !== "__new__";
-    setTimeout(()=>addEmail.focus(), 50);
-  }
-
-  function closeModalFn(){
-    backdrop.style.display = "none";
-    backdrop.setAttribute("aria-hidden","true");
-  }
-
-  function resolveAgencyForCreate(){
-    const sel = addAgencySelect.value;
-    if(sel === "__new__") return (newAgencyName.value || "").trim();
-    return sel;
-  }
-
-  async function createAccount(){
-    const agency = resolveAgencyForCreate();
-    const email = (addEmail.value || "").trim();
-    const password = (addPassword.value || "").trim();
-    const passport = (addPassport.value || "").trim();
-    const status = normalizeStatus(addStatus.value);
-
-    if(!agency){ showToast("Enter agency name"); return; }
-    if(!email || !password || !passport){ showToast("Complete all fields"); return; }
-
-    try{
-      createBtn.disabled = true;
-      await apiCreate({ agency, email, password, passport, status });
-      showToast("Created");
-      closeModalFn();
-
-      await refreshAll(false);
-      agencySelect.value = agency;
-      accounts = await apiAccounts(agency);
-      accounts = accounts.map(a => ({...a, status: normalizeStatus(a.status)}));
-      updateStats();
-      renderList();
-    }catch(e){
-      const msg = (e && e.message) ? e.message : "Failed";
-      showToast(msg === "Account already exists" ? "Already exists" : "Create failed");
-    }finally{
-      createBtn.disabled = false;
+    if(filtered.length === 0){
+      tb.innerHTML = `<tr><td colspan="6" class="muted" style="padding:16px">${LANG==="ar"?"لا توجد بيانات":"No data"}</td></tr>`;
+      return;
     }
+
+    tb.innerHTML = filtered.map((a, i) => {
+      const st = escapeHtml(a.status || "Pending");
+      const cls = statusClass(a.status);
+      return `
+        <tr>
+          <td class="mono">${i+1}</td>
+          <td class="mono">${escapeHtml(a.email||"")}</td>
+          <td class="mono" title="${escapeHtml(a.password||"")}">${escapeHtml(maskPassword(a.password||""))}</td>
+          <td class="mono">${escapeHtml(a.passport||"")}</td>
+          <td>
+            <span class="status ${cls}"><span class="dot"></span>${st}</span>
+          </td>
+          <td>
+            <div class="row" style="justify-content:flex-start">
+              <button class="btn" onclick="UI.openEdit('${encodeURIComponent(a.email||"")}', '${encodeURIComponent(a.passport||"")}')">${LANG==="ar"?"تعديل":"Edit"}</button>
+              <button class="btn danger" onclick="UI.del('${encodeURIComponent(a.email||"")}', '${encodeURIComponent(a.passport||"")}')">${LANG==="ar"?"حذف":"Delete"}</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join("");
   }
 
-  function exportJSON(){
-    const agency = agencySelect.value || "";
-    const payload = { exportedAt: new Date().toISOString(), agency, accounts };
-    const blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = `agency_${agency || "all"}_accounts.json`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(()=>URL.revokeObjectURL(a.href), 1500);
-  }
-
-  themeBtn.addEventListener("click", toggleTheme);
-
-  loginBtn.addEventListener("click", async ()=>{
-    const user = (ownerUser.value || "").trim();
-    const pass = (ownerPass.value || "").trim();
-    if(!user || !pass){ showToast("Enter username & password"); return; }
-
-    try{
-      loginBtn.disabled = true;
-      await apiLogin(user, pass);
-      creds = { user, pass };
-      sessionStorage.setItem("owner_creds", JSON.stringify(creds));
-      setLoggedIn(true);
-      showToast("Signed in");
-      await refreshAll(false);
-    }catch(_){
-      creds = null;
-      setLoggedIn(false);
-      showToast("Invalid credentials");
-    }finally{
-      loginBtn.disabled = false;
-    }
-  });
-
-  logoutBtn.addEventListener("click", ()=>{
-    creds = null;
-    setLoggedIn(false);
-    showToast("Signed out");
-  });
-
-  refreshBtn.addEventListener("click", async ()=>{
-    try{
-      refreshBtn.disabled = true;
-      showToast("Refreshing…");
-      await refreshAll(true);
-      showToast("Updated");
-    }catch(_){
-      showToast("Refresh failed");
-    }finally{
-      refreshBtn.disabled = false;
-    }
-  });
-
-  agencySelect.addEventListener("change", async ()=>{
-    try{
-      showToast("Loading…");
-      accounts = await apiAccounts(agencySelect.value);
-      accounts = accounts.map(a => ({...a, status: normalizeStatus(a.status)}));
-      updateStats();
-      renderList();
-      showToast("Loaded");
-    }catch(_){
-      showToast("Load failed");
-    }
-  });
-
-  searchBox.addEventListener("input", ()=> renderList());
-
-  chips.addEventListener("click", (ev)=>{
-    const chip = ev.target.closest(".chip");
-    if(!chip) return;
-    statusFilter = chip.dataset.filter;
-    setChipActive(statusFilter);
-    renderList();
-  });
-
-  addBtn.addEventListener("click", openModal);
-  exportBtn.addEventListener("click", exportJSON);
-
-  closeModal.addEventListener("click", closeModalFn);
-  backdrop.addEventListener("click", (e)=>{ if(e.target === backdrop) closeModalFn(); });
-
-  resetBtn.addEventListener("click", ()=>{
-    newAgencyName.value = "";
-    addEmail.value = "";
-    addPassword.value = "";
-    addPassport.value = "";
-    addStatus.value = "Pending";
-    addEmail.focus();
-  });
-
-  createBtn.addEventListener("click", createAccount);
-
-  addAgencySelect.addEventListener("change", ()=>{
-    const isNew = addAgencySelect.value === "__new__";
-    newAgencyName.disabled = !isNew;
-    if(isNew) newAgencyName.focus();
-  });
-
-  (function boot(){
-    const savedTheme = localStorage.getItem("oc_theme") || "dark";
-    setTheme(savedTheme);
-
-    setLoggedIn(false);
-    ownerUser.value = "Owner";
-
-    try{
-      const s = sessionStorage.getItem("owner_creds");
-      if(!s) return;
-      const c = JSON.parse(s);
-      if(c?.user && c?.pass){
-        creds = { user: String(c.user), pass: String(c.pass) };
-        ownerUser.value = creds.user;
-        ownerPass.value = creds.pass;
-        setLoggedIn(true);
-        refreshAll(false).catch(()=> setLoggedIn(false));
+  // =========================
+  // UI actions
+  // =========================
+  const UI = window.UI = {
+    async login(){
+      const u = norm(document.getElementById("inUser").value);
+      const p = norm(document.getElementById("inPass").value);
+      if(!u || !p) return toast("Login", LANG==="ar"?"أدخل user و pass":"Enter user & pass");
+      toast("Login", LANG==="ar"?"جارٍ التحقق...":"Checking...");
+      const res = await ownerLogin(u,p);
+      if(!res || !res.ok){
+        setAuthState(false);
+        return toast("Login", (res && res.error) ? res.error : (LANG==="ar"?"فشل تسجيل الدخول":"Login failed"));
       }
-    }catch(_){ }
-  })();
+      S.ownerUser = u; S.ownerPass = p;
+      setAuthState(true);
+      await UI.refreshAll();
+      toast("Login", LANG==="ar"?"تم تسجيل الدخول":"Logged in");
+    },
+
+    logout(){
+      S.ownerUser=""; S.ownerPass="";
+      S.agencies=[]; S.accounts=[]; S.agencySelected="";
+      setAuthState(false);
+      renderAgencies();
+      renderAccounts();
+      document.getElementById("kpiAgencies").textContent = "—";
+      document.getElementById("kpiAccounts").textContent = "—";
+      toast("Logout", LANG==="ar"?"تم تسجيل الخروج":"Logged out");
+    },
+
+    async refreshAll(){
+      // agencies
+      const a = await ownerAgencies();
+      if(!a || !a.ok){
+        return toast("Agencies", (a && a.error) ? a.error : (LANG==="ar"?"تعذر جلب الوكالات":"Failed to load agencies"));
+      }
+      S.agencies = Array.isArray(a.agencies) ? a.agencies : [];
+      renderAgencies();
+      // keep selection if exists
+      const sel = document.getElementById("selAgency");
+      if(S.agencySelected){
+        sel.value = S.agencySelected;
+      }
+      if(sel.value){
+        await UI.loadAgency(sel.value);
+      }else{
+        S.accounts = [];
+        renderAccounts();
+      }
+    },
+
+    async loadAgency(agency){
+      S.agencySelected = agency;
+      const res = await ownerAccounts(agency);
+      if(!res || !res.ok){
+        S.accounts = [];
+        renderAccounts();
+        return toast("Accounts", (res && res.error) ? res.error : (LANG==="ar"?"تعذر جلب الحسابات":"Failed to load accounts"));
+      }
+      S.accounts = Array.isArray(res.accounts) ? res.accounts : [];
+      renderAccounts();
+      toast("Agency", `${LANG==="ar"?"تم التحميل":"Loaded"}: ${agency} (${S.accounts.length})`);
+    },
+
+    openBulk(){
+      if(!S.agencySelected){
+        return toast("Bulk", LANG==="ar"?"اختر وكالة أولاً":"Select an agency first");
+      }
+      document.getElementById("bulkText").value = "";
+      document.getElementById("bulkStats").textContent = "—";
+      document.getElementById("bulkList").innerHTML = "";
+      document.getElementById("btnBulkAdd").disabled = true;
+      S.bulkParsed = [];
+      document.getElementById("modalBulk").classList.add("show");
+    },
+    closeBulk(){
+      document.getElementById("modalBulk").classList.remove("show");
+    },
+
+    openAddOne(){
+      if(!S.agencySelected){
+        return toast("Add", LANG==="ar"?"اختر وكالة أولاً":"Select an agency first");
+      }
+      UI._oneMode = "add";
+      document.getElementById("oneTitle").textContent = LANG==="ar"?"إضافة حساب":"Add account";
+      document.getElementById("oneSub").textContent = `${LANG==="ar"?"الوكالة":"Agency"}: ${S.agencySelected}`;
+      document.getElementById("oneEmail").value = "";
+      document.getElementById("onePass").value = "";
+      document.getElementById("onePassport").value = "";
+      document.getElementById("oneStatus").value = "Pending";
+      document.getElementById("btnSaveOne").onclick = UI.saveOne;
+      document.getElementById("modalOne").classList.add("show");
+    },
+    closeOne(){
+      document.getElementById("modalOne").classList.remove("show");
+    },
+
+    openEdit(emailEnc, passportEnc){
+      const email = decodeURIComponent(emailEnc||"");
+      const passport = decodeURIComponent(passportEnc||"");
+      const found = S.accounts.find(a => normEmail(a.email)===normEmail(email) && normPassport(a.passport)===normPassport(passport));
+      if(!found) return toast("Edit", LANG==="ar"?"لم يتم العثور على الحساب":"Account not found");
+      UI._oneMode = "edit";
+      UI._match = { email: found.email, passport: found.passport };
+      document.getElementById("oneTitle").textContent = LANG==="ar"?"تعديل حساب":"Edit account";
+      document.getElementById("oneSub").textContent = `${LANG==="ar"?"الوكالة":"Agency"}: ${S.agencySelected}`;
+      document.getElementById("oneEmail").value = found.email || "";
+      document.getElementById("onePass").value = found.password || "";
+      document.getElementById("onePassport").value = found.passport || "";
+      document.getElementById("oneStatus").value = found.status || "Pending";
+      document.getElementById("btnSaveOne").onclick = UI.saveOne;
+      document.getElementById("modalOne").classList.add("show");
+    },
+
+    async saveOne(){
+      if(!S.agencySelected) return;
+      const email = norm(document.getElementById("oneEmail").value);
+      const password = norm(document.getElementById("onePass").value);
+      const passport = norm(document.getElementById("onePassport").value);
+      const status = document.getElementById("oneStatus").value || "Pending";
+      if(!email || !passport){
+        return toast("Save", LANG==="ar"?"Email و Passport ضروريان":"Email and Passport are required");
+      }
+
+      if(UI._oneMode === "add"){
+        // Add via Agency multi (even for one account), then optional status update via Owner edit if status != Pending
+        toast("Add", LANG==="ar"?"جارٍ الإضافة...":"Adding...");
+        const addRes = await agencyAddMulti(S.agencySelected, [{email,password,passport}]);
+        if(!addRes || !addRes.ok){
+          return toast("Add", (addRes && addRes.error) ? addRes.error : (LANG==="ar"?"فشل الإضافة":"Add failed"));
+        }
+        if(status && status !== "Pending"){
+          await ownerEditAccount({
+            agency: S.agencySelected,
+            matchEmail: email,
+            matchPassport: passport,
+            email, password, passport, status
+          }).catch(()=>{});
+        }
+        UI.closeOne();
+        await UI.loadAgency(S.agencySelected);
+        return toast("Add", LANG==="ar"?"تمت الإضافة":"Added");
+      }
+
+      // Edit via Owner
+      const match = UI._match || { email, passport };
+      toast("Edit", LANG==="ar"?"جارٍ الحفظ...":"Saving...");
+      const res = await ownerEditAccount({
+        agency: S.agencySelected,
+        matchEmail: match.email,
+        matchPassport: match.passport,
+        email, password, passport, status
+      });
+      if(!res || !res.ok){
+        return toast("Edit", (res && res.error) ? res.error : (LANG==="ar"?"فشل الحفظ":"Save failed"));
+      }
+      UI.closeOne();
+      await UI.loadAgency(S.agencySelected);
+      toast("Edit", LANG==="ar"?"تم الحفظ":"Saved");
+    },
+
+    async del(emailEnc, passportEnc){
+      if(!S.agencySelected) return;
+      const email = decodeURIComponent(emailEnc||"");
+      const passport = decodeURIComponent(passportEnc||"");
+      const ok = confirm((LANG==="ar"?"تأكيد الحذف؟\n\n":"Confirm delete?\n\n") + email + " / " + passport);
+      if(!ok) return;
+      toast("Delete", LANG==="ar"?"جارٍ الحذف...":"Deleting...");
+      const res = await ownerDeleteAccount({ agency: S.agencySelected, email, passport });
+      if(!res || !res.ok){
+        return toast("Delete", (res && res.error) ? res.error : (LANG==="ar"?"فشل الحذف":"Delete failed"));
+      }
+      await UI.loadAgency(S.agencySelected);
+      toast("Delete", LANG==="ar"?"تم الحذف":"Deleted");
+    },
+
+    // ---------- Bulk parsing ----------
+    parseBulk(){
+      const raw = document.getElementById("bulkText").value || "";
+      const stats = document.getElementById("bulkStats");
+      const listEl = document.getElementById("bulkList");
+      listEl.innerHTML = "";
+      document.getElementById("btnBulkAdd").disabled = true;
+      S.bulkParsed = [];
+
+      const tryParse = (txt) => {
+        try { return JSON.parse(txt); } catch(_){ return null; }
+      };
+
+      let obj = tryParse(raw);
+      if(obj == null){
+        // Try to extract first JSON array
+        const m = raw.match(/\[[\s\S]*\]/);
+        if(m) obj = tryParse(m[0]);
+      }
+
+      let arr = null;
+      if(Array.isArray(obj)) arr = obj;
+      else if(obj && Array.isArray(obj.accounts)) arr = obj.accounts;
+      else if(obj && Array.isArray(obj.data)) arr = obj.data;
+
+      if(!arr){
+        stats.textContent = LANG==="ar"
+          ? "❌ لم نتمكن من قراءة JSON.\n• ألصق Array مثل: [ {...}, {...} ]\n• أو Object فيه accounts."
+          : "❌ Could not parse JSON.\n• Paste an array like: [ {...}, {...} ]\n• Or an object with accounts.";
+        return;
+      }
+
+      // Normalize, validate
+      const cleaned = [];
+      const errors = [];
+      for(let i=0;i<arr.length;i++){
+        const a = arr[i] || {};
+        const email = norm(a.email);
+        const password = norm(a.password);
+        const passport = norm(a.passport);
+        const status = norm(a.status) || "";
+        const rowErr = [];
+        if(!email) rowErr.push("email");
+        if(!passport) rowErr.push("passport");
+        // password can be empty but discouraged
+        cleaned.push({ email, password, passport, status });
+        if(rowErr.length) errors.push({ i, fields: rowErr, item: cleaned[cleaned.length-1] });
+      }
+
+      // De-dup by email+passport (owner uses those as identity typically)
+      const dedup = uniqByKey(cleaned, x => (normEmail(x.email)+"||"+normPassport(x.passport)));
+
+      const okCount = dedup.length - errors.length;
+      stats.textContent =
+        (LANG==="ar"
+          ? `✅ Parsed: ${dedup.length}\n⚠️ Missing fields: ${errors.length}\n• Agency: ${S.agencySelected}\n\nملاحظة: الإضافة تتم عبر Agency add (status الافتراضي Pending)، ثم سنطبّق status من JSON (إن وُجد) عبر Owner edit.`
+          : `✅ Parsed: ${dedup.length}\n⚠️ Missing fields: ${errors.length}\n• Agency: ${S.agencySelected}\n\nNote: add is done via Agency add (default status Pending), then we apply JSON status (if any) via Owner edit.`
+        );
+
+      // Render list preview
+      const maxShow = 40;
+      const show = dedup.slice(0, maxShow);
+      for(let i=0;i<show.length;i++){
+        const a = show[i];
+        const miss = [];
+        if(!a.email) miss.push("email");
+        if(!a.passport) miss.push("passport");
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <div style="display:flex;flex-direction:column;gap:4px;min-width:0">
+            <div class="mono" style="overflow:hidden;text-overflow:ellipsis">${escapeHtml(a.email || "(no email)")}</div>
+            <small class="mono">${escapeHtml(a.passport || "(no passport)")}${a.status? " — " + escapeHtml(a.status): ""}</small>
+          </div>
+          ${miss.length ? `<span class="tag">missing: ${escapeHtml(miss.join(","))}</span>` : `<span class="tag">ok</span>`}
+        `;
+        listEl.appendChild(li);
+      }
+      if(dedup.length > maxShow){
+        const li = document.createElement("li");
+        li.innerHTML = `<div class="muted">${LANG==="ar"?"... المزيد":"... more"}</div><span class="tag">+${dedup.length-maxShow}</span>`;
+        listEl.appendChild(li);
+      }
+
+      // Enable add if at least one valid row (email+passport)
+      const valid = dedup.filter(a => a.email && a.passport);
+      S.bulkParsed = valid;
+      document.getElementById("btnBulkAdd").disabled = valid.length === 0;
+      if(valid.length === 0){
+        toast("Bulk", LANG==="ar"?"لا يوجد عناصر صالحة للإضافة (email+passport)":"No valid items to add (email+passport)");
+      }
+    },
+
+    async bulkAdd(){
+      if(!S.agencySelected) return;
+      const items = S.bulkParsed || [];
+      if(items.length === 0) return;
+      const btn = document.getElementById("btnBulkAdd");
+      btn.disabled = true;
+      toast("Bulk", (LANG==="ar"?`جارٍ إضافة ${items.length} حساب...`:`Adding ${items.length} accounts...`));
+
+      // Step 1: add all via agency multi (status ignored here)
+      const addRes = await agencyAddMulti(S.agencySelected, items);
+      if(!addRes || !addRes.ok){
+        btn.disabled = false;
+        return toast("Bulk", (addRes && addRes.error) ? addRes.error : (LANG==="ar"?"فشل الإضافة":"Add failed"));
+      }
+
+      // Step 2: apply statuses for rows that have a non-empty status and not "Pending"
+      const needStatus = items.filter(a => a.status && a.status !== "Pending");
+      let applied = 0;
+      for(const a of needStatus){
+        // Best-effort: update status using Owner API. If account not found yet, continue.
+        const res = await ownerEditAccount({
+          agency: S.agencySelected,
+          matchEmail: a.email,
+          matchPassport: a.passport,
+          email: a.email,
+          password: a.password,
+          passport: a.passport,
+          status: a.status
+        }).catch(()=>null);
+        if(res && res.ok) applied++;
+      }
+
+      UI.closeBulk();
+      await UI.loadAgency(S.agencySelected);
+      toast("Bulk", (LANG==="ar" ? `تمت الإضافة: ${items.length}\nتم تطبيق الحالة: ${applied}` : `Added: ${items.length}\nStatus applied: ${applied}`));
+    }
+  };
+
+  // =========================
+  // Wire up events
+  // =========================
+  document.getElementById("btnLogin").onclick = UI.login;
+  document.getElementById("btnLogout").onclick = UI.logout;
+
+  document.getElementById("btnPing").onclick = async () => {
+    const res = await apiPing().catch(()=>({ok:false}));
+    if(res && res.ok) toast("Ping", "OK");
+    else toast("Ping", (res && res.error) ? res.error : "Failed");
+  };
+
+  document.getElementById("btnRefresh").onclick = UI.refreshAll;
+  document.getElementById("btnBulk").onclick = UI.openBulk;
+  document.getElementById("btnAddOne").onclick = UI.openAddOne;
+  document.getElementById("btnParse").onclick = UI.parseBulk;
+  document.getElementById("btnBulkAdd").onclick = UI.bulkAdd;
+
+  document.getElementById("selAgency").addEventListener("change", async (e) => {
+    const v = e.target.value || "";
+    if(!v){ S.agencySelected=""; S.accounts=[]; renderAccounts(); return; }
+    await UI.loadAgency(v);
+  });
+
+  document.getElementById("inSearch").addEventListener("input", () => renderAccounts());
+  document.getElementById("selStatusFilter").addEventListener("change", () => renderAccounts());
+
+  // Enter to login
+  document.getElementById("inPass").addEventListener("keydown", (e) => {
+    if(e.key === "Enter") UI.login();
+  });
+
+  // Init
+  setAuthState(false);
+  renderAgencies();
+  renderAccounts();
+})();
 </script>
 </body>
 </html>
