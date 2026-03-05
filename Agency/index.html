@@ -328,7 +328,26 @@
       .langbtn{padding:6px 10px}
     }
 
-  </style>
+  
+/* === Scrollable Saved Accounts list === */
+#savedBody{
+  max-height: 420px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 14px;
+  background: rgba(255,255,255,.04);
+}
+#savedBody .listRow{ border-bottom: 1px solid rgba(255,255,255,.06); }
+#savedBody .listRow:last-child{ border-bottom: 0; }
+#savedBody::-webkit-scrollbar{ width: 10px; }
+#savedBody::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.18); border-radius: 999px; }
+#savedBody::-webkit-scrollbar-track{ background: transparent; }
+@media (max-width:520px){
+  #savedBody{ max-height: 60vh; }
+}
+
+</style>
 </head>
 
 <body>
