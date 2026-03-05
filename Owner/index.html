@@ -3,407 +3,345 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Owner Dashboard - agency_accounts</title>
+  <title>Owner Panel - Agencies</title>
   <style>
-    :root { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; }
-    body { margin: 0; background: #0b1020; color: #eef2ff; }
-    header { padding: 16px 18px; border-bottom: 1px solid rgba(255,255,255,.08); display:flex; gap:12px; align-items:center; justify-content:space-between; }
-    .brand { font-weight: 800; letter-spacing: .3px; }
-    .wrap { max-width: 1200px; margin: 0 auto; padding: 18px; }
-    .card { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.09); border-radius: 16px; padding: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
-    .row { display:flex; gap:10px; flex-wrap:wrap; align-items:end; }
-    label { display:block; font-size: 12px; opacity: .85; margin-bottom: 6px; }
-    input, select, button {
-      border-radius: 12px; border: 1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06); color: #eef2ff;
-      padding: 10px 12px; outline: none;
-    }
-    input::placeholder { color: rgba(238,242,255,.55); }
-    button { cursor:pointer; font-weight:700; }
-    button.primary { background: rgba(99,102,241,.25); border-color: rgba(99,102,241,.55); }
-    button.danger { background: rgba(239,68,68,.18); border-color: rgba(239,68,68,.45); }
-    button.ghost { background: transparent; }
-    .muted { opacity:.8; font-size: 12px; }
-    .grid { display:grid; gap: 12px; grid-template-columns: 1fr; }
-    @media (min-width: 920px){ .grid { grid-template-columns: 380px 1fr; } }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,.08); vertical-align: top; }
-    th { text-align: right; font-size: 12px; opacity:.85; white-space: nowrap; }
-    td { font-size: 13px; }
-    .pill { padding: 4px 10px; border-radius: 999px; display:inline-flex; gap:6px; align-items:center; border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.06); }
-    .ok { border-color: rgba(34,197,94,.4); background: rgba(34,197,94,.12); }
-    .pending { border-color: rgba(245,158,11,.4); background: rgba(245,158,11,.12); }
-    .topbar { display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:space-between; margin-bottom: 10px; }
-    .right { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
-    .hidden { display:none !important; }
-    .err { color: #fecaca; }
-    .okmsg { color: #bbf7d0; }
-    .small { font-size: 12px; opacity:.85; }
+    :root{--b:#0b1220;--c:#111a2e;--t:#eaf0ff;--m:#9fb0d9;--a:#5b8cff;--ok:#22c55e;--warn:#f59e0b;--danger:#ef4444;}
+    *{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    body{margin:0;background:linear-gradient(120deg,var(--b),#060a14);color:var(--t)}
+    .wrap{max-width:1100px;margin:0 auto;padding:22px}
+    .card{background:rgba(17,26,46,.85);border:1px solid rgba(255,255,255,.08);border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+    .row{display:flex;gap:14px;flex-wrap:wrap}
+    .p{padding:18px}
+    h1{margin:0 0 10px;font-size:22px}
+    h2{margin:0 0 12px;font-size:18px;color:var(--m)}
+    label{display:block;margin:10px 0 6px;color:var(--m);font-size:13px}
+    input,select,button{width:100%;padding:12px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.18);color:var(--t);outline:none}
+    input:focus,select:focus{border-color:rgba(91,140,255,.7)}
+    button{cursor:pointer;background:linear-gradient(135deg,var(--a),#3a6bff);border:none;font-weight:700}
+    button.ghost{background:transparent;border:1px solid rgba(255,255,255,.18)}
+    button.danger{background:linear-gradient(135deg,var(--danger),#b91c1c)}
+    button.small{padding:9px 10px;border-radius:10px;font-size:12px}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+    .muted{color:var(--m);font-size:13px}
+    .tag{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.12);font-size:12px}
+    .tag.ok{border-color:rgba(34,197,94,.35);color:#bbf7d0}
+    .tag.pending{border-color:rgba(245,158,11,.35);color:#fde68a}
+    table{width:100%;border-collapse:separate;border-spacing:0 10px}
+    th{font-size:12px;color:var(--m);text-align:right;padding:0 10px}
+    td{padding:12px 10px;background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.08)}
+    tr td:first-child{border-radius:12px 0 0 12px}
+    tr td:last-child{border-radius:0 12px 12px 0}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    @media(max-width:900px){.grid2{grid-template-columns:1fr}}
+    .modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.55);padding:18px}
+    .modal .box{width:min(560px,100%);background:rgba(17,26,46,.95);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:16px}
+    .modal.open{display:grid}
+    .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap}
+    .hint{font-size:12px;color:var(--m);margin-top:8px}
   </style>
 </head>
 <body>
-  <header>
-    <div class="brand">Owner Panel</div>
-    <div class="right">
-      <span id="sessionInfo" class="muted"></span>
-      <button id="logoutBtn" class="ghost">Logout</button>
+<div class="wrap">
+  <div class="topbar">
+    <div>
+      <h1>لوحة Owner لإدارة الوكالات</h1>
+      <div class="muted">إدارة كاملة: عرض / تعديل / حذف / حالة ✅ أو Pending</div>
     </div>
-  </header>
-
-  <div class="wrap">
-    <div class="grid">
-      <!-- Login card -->
-      <div class="card" id="loginCard">
-        <h3 style="margin:0 0 10px 0;">تسجيل دخول</h3>
-        <div class="row">
-          <div style="flex:1; min-width:160px;">
-            <label>USER</label>
-            <input id="user" placeholder="Owner" value="Owner" />
-          </div>
-          <div style="flex:1; min-width:160px;">
-            <label>كلمة السر</label>
-            <input id="pass" type="password" placeholder="Admin26" />
-          </div>
-          <button id="loginBtn" class="primary">Login</button>
-        </div>
-        <div id="loginMsg" class="small" style="margin-top:10px;"></div>
-        <p class="muted" style="margin-top:10px;">
-          يتم التحقق داخل Worker عبر Secrets. Token الجلسة صالح 12 ساعة.
-        </p>
-      </div>
-
-      <!-- Main card -->
-      <div class="card hidden" id="mainCard">
-        <div class="topbar">
-          <div class="right">
-            <div>
-              <label>بحث عام (agency/email/passport)</label>
-              <input id="globalSearch" placeholder="ابحث..." style="min-width:260px;" />
-            </div>
-            <div>
-              <label>اختر وكالة</label>
-              <select id="agencySelect" style="min-width:240px;"></select>
-            </div>
-            <button id="refreshBtn" class="primary">Refresh</button>
-          </div>
-          <div class="right">
-            <button id="deleteAgencyBtn" class="danger">Delete Agency</button>
-          </div>
-        </div>
-
-        <div id="statusMsg" class="small"></div>
-
-        <div class="row" style="margin-top:8px;">
-          <div class="pill ok"><span>✅</span><span>Approved</span></div>
-          <div class="pill pending"><span>⏳</span><span>Pending</span></div>
-          <span class="muted">غيّر Status من هنا ليظهر في Saved Accounts.</span>
-        </div>
-
-        <table>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Email</th>
-              <th>Password</th>
-              <th>Passport</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="rows"></tbody>
-        </table>
-
-        <div class="muted" style="margin-top:10px;">
-          ملاحظة: التعديل يتم على نفس KV keys: <code>agency_accounts:&lt;firma&gt;</code>
-        </div>
-      </div>
+    <div class="row" style="gap:10px">
+      <button id="btnLogout" class="ghost small" style="display:none;width:auto">تسجيل خروج</button>
     </div>
   </div>
 
+  <!-- Login -->
+  <div id="loginCard" class="card p" style="max-width:520px;margin:0 auto">
+    <h2>تسجيل الدخول</h2>
+    <label>USER</label>
+    <input id="user" value="Owner" autocomplete="username" />
+    <label>PASSWORD</label>
+    <input id="pass" type="password" value="Admin26" autocomplete="current-password" />
+    <div class="hint">التحقق يتم داخل Worker عبر Secrets (OWNER_USER / OWNER_PASS).</div>
+    <div style="height:10px"></div>
+    <button id="btnLogin">دخول</button>
+    <div id="loginMsg" class="hint"></div>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="dash" style="display:none">
+    <div class="grid2" style="margin-top:16px">
+      <div class="card p">
+        <div class="row" style="align-items:center;justify-content:space-between">
+          <h2 style="margin:0">الوكالات</h2>
+          <button id="btnRefresh" class="ghost small" style="width:auto">تحديث</button>
+        </div>
+        <label>بحث عن وكالة</label>
+        <input id="agencySearch" placeholder="مثال: mehdik أو اسم الوكالة..." />
+        <div style="height:10px"></div>
+        <div id="agencyList"></div>
+      </div>
+
+      <div class="card p">
+        <h2 id="selectedTitle">اختر وكالة لعرض الحسابات</h2>
+        <div class="row" style="gap:10px;align-items:center">
+          <input id="accountSearch" placeholder="بحث داخل الحسابات (email / passport)" style="flex:1" />
+          <button id="btnReloadAgency" class="ghost small" style="width:auto" disabled>Reload</button>
+        </div>
+        <div style="height:10px"></div>
+        <div id="accountsWrap" class="muted">لا يوجد بيانات بعد.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal edit -->
+<div id="modal" class="modal">
+  <div class="box">
+    <h2 style="margin:0 0 10px">تعديل الحساب</h2>
+    <div class="grid2">
+      <div>
+        <label>Email</label>
+        <input id="mEmail" />
+      </div>
+      <div>
+        <label>Passport</label>
+        <input id="mPassport" />
+      </div>
+      <div>
+        <label>Password</label>
+        <input id="mPassword" />
+      </div>
+      <div>
+        <label>Status</label>
+        <select id="mStatus">
+          <option value="Pending">Pending</option>
+          <option value="✅">✅</option>
+        </select>
+      </div>
+    </div>
+    <div class="actions">
+      <button id="mCancel" class="ghost" style="width:auto">إلغاء</button>
+      <button id="mSave" style="width:auto">حفظ</button>
+    </div>
+    <div id="mMsg" class="hint"></div>
+  </div>
+</div>
+
 <script>
-  const API = "https://api.mehdik.site";
-  const LS_TOKEN = "OWNER_TOKEN";
-
-  const el = (id) => document.getElementById(id);
-
-  const loginCard = el("loginCard");
-  const mainCard = el("mainCard");
-
-  const loginBtn = el("loginBtn");
-  const logoutBtn = el("logoutBtn");
-  const refreshBtn = el("refreshBtn");
-  const deleteAgencyBtn = el("deleteAgencyBtn");
-
-  const loginMsg = el("loginMsg");
-  const statusMsg = el("statusMsg");
-
-  const agencySelect = el("agencySelect");
-  const globalSearch = el("globalSearch");
-  const rows = el("rows");
-  const sessionInfo = el("sessionInfo");
+  const API = "https://api.mehdik.site"; // نفس دومين API عندك
+  const tokenKey = "owner_token_v1";
 
   let agencies = [];
   let currentAgency = "";
   let currentAccounts = [];
+  let editIndex = -1;
 
-  function setMsg(target, text, ok=true){
-    target.className = "small " + (ok ? "okmsg" : "err");
-    target.textContent = text;
+  const el = (id) => document.getElementById(id);
+
+  function setLoggedIn(isIn){
+    el("loginCard").style.display = isIn ? "none" : "block";
+    el("dash").style.display = isIn ? "block" : "none";
+    el("btnLogout").style.display = isIn ? "inline-block" : "none";
   }
 
-  function getToken(){ return localStorage.getItem(LS_TOKEN) || ""; }
-
-  function authHeaders(){
-    const t = getToken();
-    return t ? { "Authorization": "Bearer " + t } : {};
+  function badge(status){
+    const s = (status === "✅") ? "✅" : "Pending";
+    const cls = (s === "✅") ? "ok" : "pending";
+    return `<span class="tag ${cls}">${s}</span>`;
   }
 
-  async function api(path, opts={}){
+  async function api(path, method="GET", body=null){
+    const token = localStorage.getItem(tokenKey) || "";
+    const headers = { "Content-Type":"application/json" };
+    if (token) headers["Authorization"] = "Bearer " + token;
+
     const res = await fetch(API + path, {
-      ...opts,
-      headers: {
-        "Content-Type": "application/json",
-        ...(opts.headers || {}),
-        ...authHeaders(),
-      }
+      method,
+      headers,
+      body: body ? JSON.stringify(body) : null
     });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(data?.error || ("HTTP " + res.status));
+
+    const data = await res.json().catch(()=>({ok:false,error:"Bad JSON"}));
+    if (!res.ok) throw new Error(data.error || ("HTTP " + res.status));
     return data;
   }
 
-  function mask(p){
-    p = String(p || "");
-    if (p.length <= 2) return "••";
-    return "•".repeat(Math.max(2, p.length - 2)) + p.slice(-2);
-  }
-
-  function statusBadge(s){
-    return s === "approved"
-      ? `<span class="pill ok">✅ Approved</span>`
-      : `<span class="pill pending">⏳ Pending</span>`;
-  }
-
-  function renderTable(filterText=""){
-    const f = (filterText || "").trim().toLowerCase();
-
-    const filtered = currentAccounts
-      .map((a, idx) => ({...a, _idx: idx}))
-      .filter(x => {
-        if (!f) return true;
-        const hay = [
-          currentAgency,
-          x.email || "",
-          x.passport || "",
-          x.password || "",
-          x.status || ""
-        ].join(" ").toLowerCase();
-        return hay.includes(f);
-      });
-
-    rows.innerHTML = filtered.map(x => {
-      const s = x.status === "approved" ? "approved" : "pending";
-
-      return `
-        <tr data-idx="${x._idx}">
-          <td>${x._idx}</td>
-          <td><input value="${escapeHtml(x.email || "")}" data-k="email" style="width: 220px;" /></td>
-          <td><input value="${escapeHtml(x.password || "")}" data-k="password" style="width: 170px;" /></td>
-          <td><input value="${escapeHtml(x.passport || "")}" data-k="passport" style="width: 160px;" /></td>
-          <td>
-            <select data-k="status">
-              <option value="pending" ${s==="pending" ? "selected":""}>Pending</option>
-              <option value="approved" ${s==="approved" ? "selected":""}>✅ Approved</option>
-            </select>
-            <div class="small" style="margin-top:6px;">${statusBadge(s)}</div>
-          </td>
-          <td style="white-space:nowrap;">
-            <button class="primary" data-act="save">Save</button>
-            <button class="danger" data-act="delete">Delete</button>
-          </td>
-        </tr>
-      `;
-    }).join("");
-
-    if (!filtered.length) {
-      rows.innerHTML = `<tr><td colspan="6" class="muted">لا توجد نتائج.</td></tr>`;
+  async function login(){
+    el("loginMsg").textContent = "";
+    try{
+      const user = el("user").value.trim();
+      const pass = el("pass").value;
+      const data = await api("/owner/login","POST",{user,pass});
+      localStorage.setItem(tokenKey, data.token);
+      setLoggedIn(true);
+      await loadOverview();
+    }catch(e){
+      el("loginMsg").textContent = "فشل الدخول: " + e.message;
     }
   }
 
-  function escapeHtml(str){
-    return String(str).replace(/[&<>"']/g, m => ({
-      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-    }[m]));
-  }
-
-  async function loadAgencies(){
-    const data = await api("/owner/agencies", { method: "GET" });
+  async function loadOverview(){
+    el("agencyList").innerHTML = `<div class="muted">جاري التحميل...</div>`;
+    const data = await api("/owner/overview","GET");
     agencies = data.agencies || [];
-    agencySelect.innerHTML = agencies.map(a => `<option value="${escapeHtml(a)}">${escapeHtml(a)}</option>`).join("");
-    if (!agencies.length){
-      agencySelect.innerHTML = `<option value="">(No agencies)</option>`;
-    }
-    currentAgency = agencySelect.value || agencies[0] || "";
+    renderAgencies();
   }
 
-  async function loadAccounts(agency){
-    if (!agency) {
-      currentAccounts = [];
-      renderTable(globalSearch.value);
+  function renderAgencies(){
+    const q = el("agencySearch").value.trim().toLowerCase();
+    const list = agencies.filter(a => !q || a.agency.includes(q));
+    if (!list.length){
+      el("agencyList").innerHTML = `<div class="muted">لا توجد وكالات مطابقة.</div>`;
       return;
     }
-    const data = await api("/owner/accounts?agency=" + encodeURIComponent(agency), { method: "GET" });
-    currentAccounts = Array.isArray(data.accounts) ? data.accounts : [];
-    renderTable(globalSearch.value);
+    el("agencyList").innerHTML = list.map(a => `
+      <div class="card p" style="margin:10px 0;background:rgba(0,0,0,.12)">
+        <div class="row" style="justify-content:space-between;align-items:center">
+          <div>
+            <div style="font-weight:800">${a.agency}</div>
+            <div class="muted">الحسابات: ${a.count} | Pending: ${a.pending} | ✅: ${a.approved}</div>
+          </div>
+          <button class="small" style="width:auto" onclick="selectAgency('${a.agency}')">فتح</button>
+        </div>
+      </div>
+    `).join("");
   }
 
-  async function refreshAll(){
-    setMsg(statusMsg, "Loading...", true);
-    await loadAgencies();
-    currentAgency = agencySelect.value || currentAgency;
-    await loadAccounts(currentAgency);
-    setMsg(statusMsg, `Loaded ${currentAccounts.length} accounts from "${currentAgency}".`, true);
+  window.selectAgency = async function(name){
+    currentAgency = name;
+    el("selectedTitle").textContent = "Accounts — " + name;
+    el("btnReloadAgency").disabled = false;
+    el("accountsWrap").innerHTML = `<div class="muted">جاري التحميل...</div>`;
+    await loadAgency(name);
   }
 
-  function showLoggedInUI(){
-    loginCard.classList.add("hidden");
-    mainCard.classList.remove("hidden");
-    sessionInfo.textContent = "Logged in";
+  async function loadAgency(name){
+    const data = await api("/owner/agency?name="+encodeURIComponent(name),"GET");
+    currentAccounts = data.accounts || [];
+    renderAccounts();
   }
 
-  function showLoggedOutUI(){
-    loginCard.classList.remove("hidden");
-    mainCard.classList.add("hidden");
-    sessionInfo.textContent = "";
-  }
-
-  // أحداث
-  loginBtn.addEventListener("click", async () => {
-    loginMsg.textContent = "";
-    const user = el("user").value.trim();
-    const pass = el("pass").value;
-
-    try {
-      const res = await fetch(API + "/owner/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user, pass })
+  function renderAccounts(){
+    const q = el("accountSearch").value.trim().toLowerCase();
+    const rows = currentAccounts
+      .map((a,i)=>({a,i}))
+      .filter(({a})=>{
+        if (!q) return true;
+        return (a.email||"").toLowerCase().includes(q) || (a.passport||"").toLowerCase().includes(q);
       });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data?.error || "Login failed");
 
-      localStorage.setItem(LS_TOKEN, data.token);
-      setMsg(loginMsg, "تم تسجيل الدخول ✅", true);
-      showLoggedInUI();
-      await refreshAll();
-    } catch (e){
-      setMsg(loginMsg, "خطأ: " + e.message, false);
-    }
-  });
-
-  logoutBtn.addEventListener("click", () => {
-    localStorage.removeItem(LS_TOKEN);
-    showLoggedOutUI();
-    setMsg(loginMsg, "تم تسجيل الخروج.", true);
-  });
-
-  refreshBtn.addEventListener("click", async () => {
-    try { await refreshAll(); }
-    catch(e){ setMsg(statusMsg, "Error: " + e.message, false); }
-  });
-
-  agencySelect.addEventListener("change", async () => {
-    currentAgency = agencySelect.value;
-    try {
-      await loadAccounts(currentAgency);
-      setMsg(statusMsg, `Loaded ${currentAccounts.length} accounts from "${currentAgency}".`, true);
-    } catch (e){
-      setMsg(statusMsg, "Error: " + e.message, false);
-    }
-  });
-
-  globalSearch.addEventListener("input", () => {
-    renderTable(globalSearch.value);
-  });
-
-  rows.addEventListener("click", async (ev) => {
-    const btn = ev.target.closest("button");
-    if (!btn) return;
-
-    const tr = ev.target.closest("tr");
-    if (!tr) return;
-
-    const idx = Number(tr.getAttribute("data-idx"));
-    const act = btn.getAttribute("data-act");
-
-    if (!Number.isInteger(idx) || idx < 0) return;
-
-    if (act === "save") {
-      const inputs = tr.querySelectorAll("input, select");
-      const payload = { agency: currentAgency, index: idx };
-      inputs.forEach(i => payload[i.getAttribute("data-k")] = i.value);
-
-      try {
-        await api("/owner/account/update", {
-          method: "POST",
-          body: JSON.stringify(payload)
-        });
-        // تحديث local state
-        currentAccounts[idx] = { ...currentAccounts[idx], ...payload };
-        setMsg(statusMsg, "Saved ✅", true);
-        renderTable(globalSearch.value);
-      } catch (e){
-        setMsg(statusMsg, "Error: " + e.message, false);
-      }
+    if (!rows.length){
+      el("accountsWrap").innerHTML = `<div class="muted">لا توجد نتائج.</div>`;
+      return;
     }
 
-    if (act === "delete") {
-      if (!confirm("تأكيد حذف هذا الحساب؟")) return;
-      try {
-        await api("/owner/account/delete", {
-          method: "POST",
-          body: JSON.stringify({ agency: currentAgency, index: idx })
-        });
-        setMsg(statusMsg, "Deleted ✅", true);
-        await loadAccounts(currentAgency);
-      } catch (e){
-        setMsg(statusMsg, "Error: " + e.message, false);
-      }
-    }
-  });
+    el("accountsWrap").innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Email</th>
+            <th>Passport</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.map(({a,i})=>`
+            <tr>
+              <td>${i+1}</td>
+              <td>${escapeHtml(a.email||"")}</td>
+              <td>${escapeHtml(a.passport||"")}</td>
+              <td>${badge(a.status)}</td>
+              <td>
+                <div class="row" style="gap:8px">
+                  <button class="ghost small" style="width:auto" onclick="openEdit(${i})">Edit</button>
+                  <button class="ghost small" style="width:auto" onclick="toggleStatus(${i})">Toggle</button>
+                  <button class="danger small" style="width:auto" onclick="del(${i})">Delete</button>
+                </div>
+              </td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+      <div class="hint">* كلمة السر لا نعرضها هنا، لكنها قابلة للتعديل داخل Edit.</div>
+    `;
+  }
 
-  deleteAgencyBtn.addEventListener("click", async () => {
-    if (!currentAgency) return;
-    if (!confirm(`تأكيد حذف الوكالة بالكامل؟\nAgency: ${currentAgency}`)) return;
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
 
-    try {
-      await api("/owner/agency/delete", {
-        method: "POST",
-        body: JSON.stringify({ agency: currentAgency })
+  window.openEdit = function(i){
+    editIndex = i;
+    const a = currentAccounts[i];
+    el("mEmail").value = a.email || "";
+    el("mPassport").value = a.passport || "";
+    el("mPassword").value = a.password || "";
+    el("mStatus").value = (a.status === "✅") ? "✅" : "Pending";
+    el("mMsg").textContent = "";
+    el("modal").classList.add("open");
+  }
+
+  async function saveEdit(){
+    el("mMsg").textContent = "";
+    try{
+      const account = {
+        email: el("mEmail").value.trim(),
+        passport: el("mPassport").value.trim().toUpperCase(),
+        password: el("mPassword").value.trim(),
+        status: el("mStatus").value
+      };
+      const data = await api("/owner/account/update","POST",{
+        agency: currentAgency,
+        index: editIndex,
+        account
       });
-      setMsg(statusMsg, "Agency deleted ✅", true);
-      await refreshAll();
-    } catch (e){
-      setMsg(statusMsg, "Error: " + e.message, false);
+      currentAccounts[editIndex] = data.account;
+      el("modal").classList.remove("open");
+      renderAccounts();
+      await loadOverview(); // refresh counters
+    }catch(e){
+      el("mMsg").textContent = "فشل الحفظ: " + e.message;
     }
-  });
+  }
 
-  // Auto boot
-  (async function boot(){
-    const t = getToken();
-    if (t) {
-      showLoggedInUI();
-      try {
-        await refreshAll();
-      } catch (e){
-        // session انتهت أو token خطأ
-        localStorage.removeItem(LS_TOKEN);
-        showLoggedOutUI();
-        setMsg(loginMsg, "انتهت الجلسة. سجّل الدخول من جديد.", false);
-      }
-    } else {
-      showLoggedOutUI();
-    }
+  window.toggleStatus = async function(i){
+    const cur = (currentAccounts[i].status === "✅") ? "✅" : "Pending";
+    const next = (cur === "✅") ? "Pending" : "✅";
+    await api("/owner/account/status","POST",{ agency: currentAgency, index: i, status: next });
+    currentAccounts[i].status = next;
+    renderAccounts();
+    await loadOverview();
+  }
+
+  window.del = async function(i){
+    if (!confirm("تأكيد حذف هذا الحساب؟")) return;
+    await api("/owner/account/delete","POST",{ agency: currentAgency, index: i });
+    currentAccounts.splice(i,1);
+    renderAccounts();
+    await loadOverview();
+  }
+
+  // events
+  el("btnLogin").addEventListener("click", login);
+  el("btnLogout").addEventListener("click", ()=>{
+    localStorage.removeItem(tokenKey);
+    setLoggedIn(false);
+  });
+  el("btnRefresh").addEventListener("click", loadOverview);
+  el("btnReloadAgency").addEventListener("click", ()=> loadAgency(currentAgency));
+  el("agencySearch").addEventListener("input", renderAgencies);
+  el("accountSearch").addEventListener("input", renderAccounts);
+
+  el("mCancel").addEventListener("click", ()=> el("modal").classList.remove("open"));
+  el("mSave").addEventListener("click", saveEdit);
+
+  // init
+  (async ()=>{
+    const t = localStorage.getItem(tokenKey);
+    if (!t){ setLoggedIn(false); return; }
+    setLoggedIn(true);
+    try{ await loadOverview(); }
+    catch{ localStorage.removeItem(tokenKey); setLoggedIn(false); }
   })();
 </script>
 </body>
