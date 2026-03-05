@@ -193,6 +193,29 @@
       }
     }
 
+
+    /* ✅ Saved Accounts (with Status column) */
+    #savedWrap .listHead, #savedWrap .listRow{
+      grid-template-columns:1.15fr .85fr .7fr .55fr 170px;
+    }
+    @media (max-width:560px){
+      #savedWrap .listHead{display:none}
+      #savedWrap .listRow{
+        grid-template-columns:1fr;
+        gap:8px;
+        padding:12px;
+      }
+      #savedWrap .listRow > div:nth-child(1)::before{content:"Email: ";opacity:.8;font-weight:900}
+      #savedWrap .listRow > div:nth-child(2)::before{content:"Password: ";opacity:.8;font-weight:900}
+      #savedWrap .listRow > div:nth-child(3)::before{content:"Passport: ";opacity:.8;font-weight:900}
+      #savedWrap .listRow > div:nth-child(4)::before{content:"Status: ";opacity:.8;font-weight:900}
+      #savedWrap .listRow > div:nth-child(5){
+        display:flex;
+        justify-content:flex-end;
+        padding-top:6px;
+      }
+    }
+
     .xbtn{
       width:36px;height:36px;border-radius:12px;
       border:1px solid rgba(255,255,255,.18);
@@ -405,6 +428,7 @@
                   <div role="columnheader" data-i18n="col_email">Email</div>
                   <div role="columnheader" data-i18n="col_password">Password</div>
                   <div role="columnheader" data-i18n="col_passport">Passport</div>
+                  <div role="columnheader" data-i18n="col_status">Status</div>
                   <div role="columnheader"></div>
                 </div>
                 <div id="savedBody"></div>
@@ -494,6 +518,10 @@
         col_email: "Email",
         col_password: "Password",
         col_passport: "Passport",
+        col_status: "Status",
+        status_done: "✅",
+        status_pending: "Pending",
+        status_ready_state: "Ready",
         mode_single: "Single",
         mode_multi: "Multi",
         btn_add: "+ Add to list",
@@ -552,6 +580,10 @@
         col_email: "الإيميل",
         col_password: "كلمة السر",
         col_passport: "الجواز",
+        col_status: "الحالة",
+        status_done: "✅",
+        status_pending: "Pending",
+        status_ready_state: "Ready",
         mode_single: "واحد",
         mode_multi: "متعدد",
         btn_add: "+ أضف للقائمة",
@@ -841,7 +873,8 @@
       const q = ((savedSearchEl && savedSearchEl.value) || "").trim().toLowerCase();
       const view = q ? savedAccounts.filter(a =>
         ((a.email||"" ).toLowerCase().includes(q)) ||
-        ((a.passport||"" ).toLowerCase().includes(q))
+        ((a.passport||"" ).toLowerCase().includes(q)) ||
+        ((String(a.status||"").toLowerCase()).includes(q))
       ) : savedAccounts;
 
       savedEmpty.style.display = view.length ? "none" : "block";
@@ -855,8 +888,9 @@
         const c1 = document.createElement("div"); c1.textContent = a.email || "";
         const c2 = document.createElement("div"); c2.textContent = maskPassword(a.password || "");
         const c3 = document.createElement("div"); c3.textContent = a.passport || "";
+        const c4 = document.createElement("div"); c4.textContent = (a.status != null && String(a.status).trim() !== "") ? String(a.status) : t("status_pending");
 
-        const c4 = document.createElement("div");
+        const c5 = document.createElement("div");
         const wrap = document.createElement("div");
         wrap.className = "actionBtns";
 
@@ -867,8 +901,8 @@
         btn.addEventListener("click", ()=> openPwModal(a));
         wrap.appendChild(btn);
 
-        c4.appendChild(wrap);
-        row.appendChild(c1); row.appendChild(c2); row.appendChild(c3); row.appendChild(c4);
+        c5.appendChild(wrap);
+        row.appendChild(c1); row.appendChild(c2); row.appendChild(c3); row.appendChild(c4); row.appendChild(c5);
         savedBody.appendChild(row);
       }
 
