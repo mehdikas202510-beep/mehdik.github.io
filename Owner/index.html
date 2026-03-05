@@ -12,7 +12,7 @@
     *{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
     body{margin:0;background:linear-gradient(180deg,#0b0f17,#070a10);color:var(--text)}
     a{color:var(--accent);text-decoration:none}
-    .wrap{max-width:1250px;margin:0 auto;padding:18px}
+    .wrap{max-width:1280px;margin:0 auto;padding:18px}
     .topbar{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:14px}
     .brand{display:flex;gap:10px;align-items:center}
     .dot{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 18px rgba(77,163,255,.6)}
@@ -24,7 +24,7 @@
       border-radius:12px;border:1px solid rgba(34,48,74,.9);
       background:#0c1322;color:var(--text);padding:10px 12px;outline:none
     }
-    textarea{min-height:150px;width:100%;resize:vertical;line-height:1.35}
+    textarea{min-height:110px;resize:vertical}
     input::placeholder,textarea::placeholder{color:rgba(142,160,194,.75)}
     button{cursor:pointer}
     button.primary{background:linear-gradient(180deg,#2b8cff,#1d63f0);border-color:rgba(77,163,255,.6)}
@@ -35,19 +35,21 @@
     .title{font-size:16px;font-weight:800;margin:0 0 10px}
     .divider{height:1px;background:rgba(34,48,74,.8);margin:10px 0}
     .pill{padding:4px 10px;border-radius:999px;border:1px solid rgba(34,48,74,.8);font-size:12px;color:var(--muted)}
+    .pill.good{border-color:rgba(37,194,110,.55);color:#c8ffe0}
+    .pill.pending{border-color:rgba(255,176,32,.55);color:#ffe2b0}
+    .pill.ready{border-color:rgba(77,163,255,.65);color:#cfe3ff}
+    .pill.empty{border-color:rgba(255,255,255,.18);color:rgba(232,238,252,.7)}
     table{width:100%;border-collapse:collapse}
     th,td{padding:10px;border-bottom:1px solid rgba(34,48,74,.8);vertical-align:middle}
-    th{color:#cfe1ff;font-weight:750;text-align:right;font-size:13px}
+    th{color:#cfe1ff;font-weight:800;text-align:right;font-size:13px}
     td{font-size:13px}
     .actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
     .toast{position:fixed;bottom:18px;left:18px;right:18px;display:flex;justify-content:center;pointer-events:none}
-    .toast > div{pointer-events:auto;max-width:900px;width:100%;background:rgba(18,26,41,.96);
+    .toast > div{pointer-events:auto;max-width:920px;width:100%;background:rgba(18,26,41,.96);
       border:1px solid rgba(34,48,74,.9);border-radius:14px;padding:12px 14px;display:flex;justify-content:space-between;gap:10px}
     .hide{display:none !important}
-    .kbd{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas; background:rgba(34,48,74,.55); padding:2px 6px;border-radius:8px;border:1px solid rgba(34,48,74,.8)}
-    .hint{font-size:12px;color:rgba(142,160,194,.9)}
-    .split{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    @media (max-width: 980px){ .split{grid-template-columns:1fr} }
+    .kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas; background:rgba(34,48,74,.55); padding:2px 6px;border-radius:8px;border:1px solid rgba(34,48,74,.8)}
+    .small{font-size:12px}
   </style>
 </head>
 <body>
@@ -57,7 +59,7 @@
         <div class="dot"></div>
         <div>
           <div style="font-weight:900">Owner Dashboard</div>
-          <div class="muted">إدارة agency_accounts (تعديل / حذف / Status: فارغ أو Pending أو Ready أو ✅)</div>
+          <div class="muted">إدارة agency_accounts (تعديل / حذف / Status: ✅ / Pending / ready / فارغ)</div>
         </div>
       </div>
       <div class="row">
@@ -69,7 +71,7 @@
     <!-- LOGIN -->
     <div id="loginCard" class="card">
       <div class="title">تسجيل الدخول</div>
-      <div class="muted">التحقق داخل Worker عبر Secrets: <span class="kbd">OWNER_USER</span> و <span class="kbd">OWNER_PASS</span></div>
+      <div class="muted">التحقق يتم داخل Worker عبر Secrets: <span class="kbd">OWNER_USER</span> و <span class="kbd">OWNER_PASS</span></div>
       <div class="divider"></div>
       <div class="row">
         <input id="user" placeholder="USER" value="Owner" />
@@ -90,9 +92,26 @@
         <div class="divider"></div>
         <input id="agencySearch" placeholder="بحث عن Agency..." />
         <div style="height:10px"></div>
-        <select id="agencySelect" size="14" style="width:100%;min-height:340px"></select>
+        <select id="agencySelect" size="14" style="width:100%;min-height:320px"></select>
         <div class="divider"></div>
-        <div class="muted">اختر وكالة لعرض الحسابات.</div>
+
+        <div class="title" style="margin:0 0 8px">Add Accounts</div>
+        <div class="muted small">
+          صيغة الإدخال (سطر لكل حساب): <span class="kbd">email;password;passport</span>
+          أو <span class="kbd">email;password;passport;status</span> (status = ✅ أو Pending أو ready أو فارغ)
+        </div>
+        <div style="height:8px"></div>
+        <textarea id="addBox" placeholder="example@mail.com;pass123;AA123456;ready"></textarea>
+        <div class="row">
+          <select id="defaultStatus" title="Default status">
+            <option value="">(فارغ)</option>
+            <option value="Pending">Pending</option>
+            <option value="ready">ready</option>
+            <option value="✅">✅</option>
+          </select>
+          <button id="addBtn" class="good">Add</button>
+        </div>
+        <div class="muted small" style="margin-top:6px">سيتم تجاهل الحسابات المكررة (نفس email+password+passport).</div>
       </div>
 
       <div class="card">
@@ -116,45 +135,16 @@
                 <th style="min-width:220px">Email</th>
                 <th style="min-width:160px">Passport</th>
                 <th style="min-width:140px">Password</th>
-                <th style="min-width:150px">Status</th>
-                <th style="min-width:280px;text-align:left">Actions</th>
+                <th style="min-width:140px">Status</th>
+                <th style="min-width:260px;text-align:left">Actions</th>
               </tr>
             </thead>
             <tbody id="tbody"></tbody>
           </table>
         </div>
 
-        <div class="divider"></div>
-
-        <div class="title" style="margin:0 0 6px">Bulk Add (JSON)</div>
-        <div class="hint">الصق JSON بالشكل: <span class="kbd">[{ "email":"", "password":"", "passport":"", "status":"" }, ...]</span></div>
-        <div style="height:8px"></div>
-        <div class="split">
-          <textarea id="bulkJson" placeholder='[
-  {"email":"a@x.com","password":"123","passport":"AA111","status":""},
-  {"email":"b@x.com","password":"456","passport":"BB222","status":"Ready"}
-]'></textarea>
-
-          <div>
-            <div class="muted" style="margin-bottom:8px">إعدادات الإضافة</div>
-            <label class="row" style="justify-content:space-between">
-              <span class="muted">Status افتراضي</span>
-              <select id="bulkDefaultStatus">
-                <option value="">(فارغ)</option>
-                <option value="Pending">Pending</option>
-                <option value="Ready">Ready</option>
-                <option value="✅">✅</option>
-              </select>
-            </label>
-            <div style="height:10px"></div>
-            <button id="bulkAddBtn" class="primary" style="width:100%">Add Bulk</button>
-            <div style="height:10px"></div>
-            <div class="muted">سيتم الدمج بدون تكرار (email+password+passport).</div>
-          </div>
-        </div>
-
         <div class="muted" style="margin-top:10px">
-          Status المسموح: (فارغ) / Pending / Ready / ✅
+          Status values: <span class="pill empty">(فارغ)</span> <span class="pill pending">Pending</span> <span class="pill ready">ready</span> <span class="pill good">✅</span>
         </div>
       </div>
     </div>
@@ -256,7 +246,6 @@
   async function loadAgencies(){
     const data = await api("/owner/agencies", { method:"GET" });
     agencies = data.agencies || [];
-    agencies.sort((a,b)=>a.localeCompare(b));
     renderAgencies(agencies);
   }
 
@@ -278,8 +267,56 @@
     await loadAccounts();
   });
 
+  // ===== ADD ACCOUNTS =====
+  function parseLines(txt){
+    const out = [];
+    const lines = (txt||"").split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+    for(const line of lines){
+      const parts = line.split(";").map(s => s.trim());
+      const email = parts[0] || "";
+      const password = parts[1] || "";
+      const passport = parts[2] || "";
+      const status = parts[3] ?? "";
+      if(email || password || passport) out.push({ email, password, passport, status });
+    }
+    return out;
+  }
+
+  $("addBtn").onclick = async () => {
+    if(!currentAgency){
+      toast("اختر Agency أولاً");
+      return;
+    }
+    const list = parseLines($("addBox").value);
+    if(list.length === 0){
+      toast("أدخل حساب واحد على الأقل");
+      return;
+    }
+    const defStatus = $("defaultStatus").value;
+    for(const a of list){
+      if((a.status ?? "").trim() === "") a.status = defStatus; // apply default
+    }
+    try{
+      const res = await api("/owner/accounts/add", {
+        method:"POST",
+        body: JSON.stringify({ agency: currentAgency, accounts: list })
+      });
+      $("addBox").value = "";
+      toast(`✅ Added: ${res.added} | Skipped: ${res.skipped}`);
+      await loadAccounts();
+    }catch(e){
+      toast("❌ " + e.message);
+    }
+  };
+
   // ===== ACCOUNTS =====
-  const STATUS_OPTIONS = ["", "Pending", "Ready", "✅"];
+  function pillHtml(s){
+    const v = (s ?? "").toString().trim();
+    if(v === "✅") return '<span class="pill good">✅</span>';
+    if(v.toLowerCase() === "pending") return '<span class="pill pending">Pending</span>';
+    if(v.toLowerCase() === "ready") return '<span class="pill ready">ready</span>';
+    return '<span class="pill empty">(فارغ)</span>';
+  }
 
   function renderAccounts(){
     const q = $("accSearch").value.trim().toLowerCase();
@@ -293,7 +330,6 @@
 
     for(const a of rows){
       const tr = document.createElement("tr");
-
       const email = a.email || "";
       const passport = a.passport || "";
       const password = a.password || "";
@@ -305,15 +341,19 @@
         <td><input data-k="password" value="${escapeHtml(password)}" style="width:100%"></td>
         <td>
           <select data-k="status" style="width:100%">
-            ${STATUS_OPTIONS.map(s => `<option value="${escapeHtml(s)}" ${s===status?'selected':''}>${s || "(فارغ)"}</option>`).join("")}
+            <option value="" ${status===""?"selected":""}>(فارغ)</option>
+            <option value="Pending" ${status.toLowerCase()==="pending"?"selected":""}>Pending</option>
+            <option value="ready" ${status.toLowerCase()==="ready"?"selected":""}>ready</option>
+            <option value="✅" ${status==="✅"?"selected":""}>✅</option>
           </select>
+          <div style="margin-top:6px">${pillHtml(status)}</div>
         </td>
         <td style="text-align:left">
           <div class="actions">
             <button class="primary" data-action="save">Save</button>
             <button class="danger" data-action="delete">Delete</button>
           </div>
-          <div class="muted" style="margin-top:6px">Match: <span class="kbd">${escapeHtml(email.toLowerCase())}</span> + <span class="kbd">${escapeHtml(passport.toUpperCase())}</span></div>
+          <div class="muted small" style="margin-top:6px">Match: <span class="kbd">${escapeHtml(email.toLowerCase())}</span> + <span class="kbd">${escapeHtml(passport.toUpperCase())}</span></div>
         </td>
       `;
 
@@ -329,8 +369,9 @@
             match: { email: email, passport: passport },
             update: { email: newEmail, passport: newPassport, password: newPassword, status: newStatus }
           };
-          await api("/owner/account", { method:"PATCH", body: JSON.stringify(body) });
+          const res = await api("/owner/account", { method:"PATCH", body: JSON.stringify(body) });
 
+          Object.assign(a, res.account);
           toast("✅ تم الحفظ");
           await loadAccounts();
         }catch(e){
@@ -357,12 +398,7 @@
   async function loadAccounts(){
     if(!currentAgency) return;
     const data = await api("/owner/accounts?agency="+encodeURIComponent(currentAgency), { method:"GET" });
-    accounts = (data.accounts || []).map(a => ({
-      email: a.email || "",
-      passport: a.passport || "",
-      password: a.password || "",
-      status: (a.status ?? "").toString()
-    }));
+    accounts = data.accounts || [];
     renderAccounts();
   }
 
@@ -372,40 +408,10 @@
 
   $("accSearch").addEventListener("input", renderAccounts);
 
-  // ===== BULK ADD =====
-  $("bulkAddBtn").onclick = async () => {
-    if(!currentAgency) return toast("اختر Agency أولاً");
-    try{
-      const txt = $("bulkJson").value.trim();
-      if(!txt) return toast("الصق JSON أولاً");
-      let arr = JSON.parse(txt);
-      if(!Array.isArray(arr)) throw new Error("JSON يجب أن يكون Array");
-      const def = $("bulkDefaultStatus").value;
-
-      arr = arr.map(x => ({
-        email: (x?.email || "").toString().trim(),
-        password: (x?.password || "").toString().trim(),
-        passport: (x?.passport || "").toString().trim(),
-        status: (x?.status ?? "").toString().trim() || def
-      }));
-
-      const res = await api("/owner/accounts/add", {
-        method: "POST",
-        body: JSON.stringify({ agency: currentAgency, accounts: arr })
-      });
-
-      toast(`✅ تمت الإضافة. Added: ${res.added} | Skipped: ${res.skipped}`);
-      await loadAccounts();
-    }catch(e){
-      toast("❌ " + e.message);
-    }
-  };
-
-  // ===== misc =====
   function escapeHtml(s){
     return String(s)
       .replaceAll("&","&amp;").replaceAll("<","&lt;")
-      .replaceAll(">","&gt;").replaceAll('"',"quot;")
+      .replaceAll(">","&gt;").replaceAll('"',"&quot;")
       .replaceAll("'","&#039;");
   }
 
