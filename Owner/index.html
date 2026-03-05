@@ -1,1 +1,542 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Owner Panel - Agency Accounts</title>
+  <style>
+    :root{
+      --glass:rgba(255,255,255,.10);
+      --border:rgba(255,255,255,.22);
+      --ink:#fff;
+      --bg1:#00c6ff;
+      --bg2:#007aff;
+      --bg3:#001b4d;
+      --dark:rgba(5,28,70,.55);
+      --dark2:rgba(5,28,70,.78);
+      --ok:#22c55e;
+      --warn:#f59e0b;
+      --danger:#ff5a5a;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      padding:clamp(12px, 2vw, 18px);
+      background:radial-gradient(circle at top,var(--bg1) 0,var(--bg2) 45%,var(--bg3) 100%);
+      color:var(--ink);
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    }
+    .shell{max-width:1100px;margin:0 auto}
+    .card{
+      background:var(--glass);
+      border:1px solid var(--border);
+      border-radius:22px;
+      box-shadow:0 18px 45px rgba(0,0,0,.45);
+      backdrop-filter:blur(16px);
+      overflow:hidden
+    }
+    .head{
+      padding:16px 18px;
+      display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+      border-bottom:1px solid rgba(255,255,255,.10);
+    }
+    .head h1{margin:0;font-size:1.25rem;font-weight:950}
+    .head .meta{opacity:.9;font-size:.9rem}
+    .wrap{padding:16px 18px}
+    .grid{display:grid;grid-template-columns:1fr;gap:12px}
+    @media(min-width:980px){.grid{grid-template-columns:.9fr 1.1fr}}
+    .panel{
+      background:rgba(5,28,70,.22);
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:18px;
+      padding:14px;
+    }
+    label{display:block;font-weight:950;margin:10px 4px 6px;font-size:.9rem}
+    input,select{
+      width:100%;
+      padding:10px 11px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.22);
+      outline:none;
+      background:var(--dark);
+      color:#fff;
+      font-size:16px;
+    }
+    input:focus,select:focus{border-color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.55);background:var(--dark2)}
+    .btnRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .btn{
+      border:none;border-radius:999px;
+      padding:10px 14px;
+      font-weight:950;
+      cursor:pointer;
+      box-shadow:0 12px 28px rgba(0,0,0,.4);
+      transition:transform .15s ease,filter .15s ease,box-shadow .15s ease;
+      color:#fff;
+    }
+    .btn:hover{transform:translateY(-1px);filter:brightness(1.05);box-shadow:0 16px 38px rgba(0,0,0,.55)}
+    .btn:disabled{opacity:.6;cursor:wait;box-shadow:none}
+    .btnPrimary{background:linear-gradient(135deg,#16a34a,#22c55e)}
+    .btnSoft{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.20)}
+    .btnDanger{background:rgba(255,90,90,.18);border:1px solid rgba(255,90,90,.75)}
+    .pill{
+      border:1px solid rgba(255,255,255,.3);
+      padding:4px 10px;border-radius:999px;
+      background:rgba(255,255,255,.08);
+      font-size:.78rem;font-weight:950;opacity:.95;
+    }
+    .hint{font-size:.82rem;opacity:.86;line-height:1.35}
+    .row2{display:grid;grid-template-columns:1fr;gap:10px}
+    @media(min-width:620px){.row2{grid-template-columns:1fr 1fr}}
 
+    /* Table */
+    .list{margin-top:10px;border-radius:16px;border:1px solid rgba(255,255,255,.14);overflow:hidden}
+    .listHead,.listRow{
+      display:grid;
+      grid-template-columns:1.05fr .85fr .7fr .55fr 210px;
+      gap:10px;
+      padding:10px 12px;
+      align-items:center
+    }
+    .listHead{
+      background:rgba(255,255,255,.08);
+      font-size:.78rem;
+      opacity:.95;
+      font-weight:950
+    }
+    .listRow{
+      background:rgba(5,28,70,.18);
+      border-top:1px solid rgba(255,255,255,.09);
+      font-size:.85rem
+    }
+    .actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+    .miniBtn{
+      border:1px solid rgba(255,255,255,.35);
+      background:rgba(5,28,70,.45);
+      color:#fff;
+      border-radius:10px;
+      padding:6px 10px;
+      font-weight:900;
+      cursor:pointer;
+      line-height:1;
+      white-space:nowrap;
+    }
+    .miniBtn.danger{border-color:rgba(255,90,90,.75);background:rgba(255,90,90,.18)}
+    .miniBtn.ok{border-color:rgba(34,197,94,.6);background:rgba(34,197,94,.18)}
+    .tag{
+      display:inline-flex;align-items:center;justify-content:center;
+      border-radius:999px;
+      padding:4px 10px;
+      border:1px solid rgba(255,255,255,.25);
+      background:rgba(255,255,255,.06);
+      font-weight:950;font-size:.78rem;
+    }
+    #toast{
+      position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(110%);
+      background:rgba(15,23,42,.96);color:#f9fafb;padding:10px 16px;border-radius:999px;
+      box-shadow:0 16px 35px rgba(0,0,0,.5);font-size:.9rem;opacity:0;pointer-events:none;
+      transition:all .25s ease;z-index:999;max-width:92%;text-align:center
+    }
+    #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    @media(max-width:720px){
+      .listHead{display:none}
+      .listRow{
+        grid-template-columns:1fr;
+        gap:8px;
+        padding:12px;
+      }
+      .listRow > div:nth-child(1)::before{content:"Email: ";opacity:.8;font-weight:900}
+      .listRow > div:nth-child(2)::before{content:"Password: ";opacity:.8;font-weight:900}
+      .listRow > div:nth-child(3)::before{content:"Passport: ";opacity:.8;font-weight:900}
+      .listRow > div:nth-child(4)::before{content:"Status: ";opacity:.8;font-weight:900}
+      .listRow > div:nth-child(5){display:flex;justify-content:flex-end;padding-top:6px}
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="card">
+      <div class="head">
+        <div>
+          <h1>لوحة Owner — إدارة agency_accounts</h1>
+          <div class="meta">تسجيل الدخول يتم التحقق منه داخل Cloudflare Worker عبر Secrets (OWNER_USER / OWNER_PASS)</div>
+        </div>
+        <span class="pill" id="sessionPill">غير مسجّل</span>
+      </div>
+
+      <div class="wrap">
+        <div class="grid">
+          <!-- Login -->
+          <div class="panel" id="loginPanel">
+            <div class="hint">ادخل بيانات Owner. بعد الدخول سيتم فتح لوحة التحكم بكل الوكالات والحسابات.</div>
+
+            <div class="row2">
+              <div>
+                <label>USER</label>
+                <input id="ownerUser" type="text" value="Owner" autocomplete="username"/>
+              </div>
+              <div>
+                <label>PASS</label>
+                <input id="ownerPass" type="password" value="" autocomplete="current-password"/>
+              </div>
+            </div>
+
+            <div class="btnRow">
+              <button class="btn btnPrimary" id="loginBtn" type="button" style="flex:1">تسجيل الدخول</button>
+              <button class="btn btnSoft" id="logoutBtn" type="button" style="display:none">خروج</button>
+            </div>
+
+            <div class="hint" style="margin-top:10px">
+              ملاحظة: هذه الصفحة لا تحفظ كلمة السر على السيرفر. يتم إرسالها في Headers (X-Owner-User / X-Owner-Pass) لكل طلب API.
+            </div>
+          </div>
+
+          <!-- Dashboard -->
+          <div class="panel" id="dashPanel" style="display:none">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+              <b style="font-size:1.02rem">الوكالات + الحسابات</b>
+              <span class="tag" id="countsTag">0 وكالة • 0 حساب</span>
+            </div>
+
+            <div style="height:10px"></div>
+
+            <label>اختر الوكالة</label>
+            <select id="agencySelect"></select>
+
+            <div class="row2">
+              <div>
+                <label>بحث</label>
+                <input id="searchBox" type="text" placeholder="email / passport / status"/>
+              </div>
+              <div>
+                <label>تحديث</label>
+                <button class="btn btnSoft" id="refreshBtn" type="button" style="width:100%">تحديث البيانات</button>
+              </div>
+            </div>
+
+            <div class="list" role="table" aria-label="Accounts">
+              <div class="listHead" role="row">
+                <div role="columnheader">Email</div>
+                <div role="columnheader">Password</div>
+                <div role="columnheader">Passport</div>
+                <div role="columnheader">Status</div>
+                <div role="columnheader"></div>
+              </div>
+              <div id="listBody"></div>
+            </div>
+
+            <div id="emptyBox" class="hint" style="display:none;margin-top:10px;border:1px dashed rgba(255,255,255,.22);border-radius:14px;padding:12px;background:rgba(5,28,70,.14)">
+              لا توجد حسابات لهذه الوكالة.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+<script>
+  const API = "https://api.mehdik.site/owner";
+  const toastEl = document.getElementById("toast");
+
+  const loginPanel = document.getElementById("loginPanel");
+  const dashPanel = document.getElementById("dashPanel");
+  const sessionPill = document.getElementById("sessionPill");
+  const loginBtn = document.getElementById("loginBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  const ownerUser = document.getElementById("ownerUser");
+  const ownerPass = document.getElementById("ownerPass");
+
+  const agencySelect = document.getElementById("agencySelect");
+  const listBody = document.getElementById("listBody");
+  const emptyBox = document.getElementById("emptyBox");
+  const countsTag = document.getElementById("countsTag");
+  const searchBox = document.getElementById("searchBox");
+  const refreshBtn = document.getElementById("refreshBtn");
+
+  let creds = null;
+  let agencies = [];
+  let accounts = [];
+
+  function showToast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    setTimeout(()=>toastEl.classList.remove("show"), 2500);
+  }
+
+  function headers(){
+    return {
+      "Content-Type": "application/json",
+      "X-Owner-User": creds?.user || "",
+      "X-Owner-Pass": creds?.pass || "",
+    };
+  }
+
+  function setLoggedIn(on){
+    if(on){
+      sessionPill.textContent = "مُسجّل";
+      loginBtn.style.display = "none";
+      logoutBtn.style.display = "inline-flex";
+      dashPanel.style.display = "block";
+    }else{
+      sessionPill.textContent = "غير مسجّل";
+      loginBtn.style.display = "inline-flex";
+      logoutBtn.style.display = "none";
+      dashPanel.style.display = "none";
+      agencies = [];
+      accounts = [];
+      agencySelect.innerHTML = "";
+      listBody.innerHTML = "";
+      countsTag.textContent = "0 وكالة • 0 حساب";
+    }
+  }
+
+  async function apiLogin(user, pass){
+    const r = await fetch(API + "/login", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({user, pass}),
+    });
+    const j = await r.json().catch(()=>null);
+    if(!r.ok || !j || !j.ok) throw new Error("Invalid login");
+    return true;
+  }
+
+  async function apiAgencies(){
+    const r = await fetch(API + "/agencies", { headers: headers() });
+    const j = await r.json().catch(()=>null);
+    if(!r.ok || !j?.ok) throw new Error(j?.error || "Failed");
+    return j.agencies || [];
+  }
+
+  async function apiAccounts(agency){
+    const r = await fetch(API + "/accounts?agency=" + encodeURIComponent(agency), { headers: headers() });
+    const j = await r.json().catch(()=>null);
+    if(!r.ok || !j?.ok) throw new Error(j?.error || "Failed");
+    return j.accounts || [];
+  }
+
+  async function apiUpdate(body){
+    const r = await fetch(API + "/account", { method:"PUT", headers: headers(), body: JSON.stringify(body) });
+    const j = await r.json().catch(()=>null);
+    if(!r.ok || !j?.ok) throw new Error(j?.error || "Failed");
+    return true;
+  }
+
+  async function apiDelete(body){
+    const r = await fetch(API + "/account", { method:"DELETE", headers: headers(), body: JSON.stringify(body) });
+    const j = await r.json().catch(()=>null);
+    if(!r.ok || !j?.ok) throw new Error(j?.error || "Failed");
+    return true;
+  }
+
+  function renderAgencies(){
+    agencySelect.innerHTML = "";
+    for(const a of agencies){
+      const opt = document.createElement("option");
+      opt.value = a.agency;
+      opt.textContent = `${a.agency} — (${a.count})`;
+      agencySelect.appendChild(opt);
+    }
+  }
+
+  function statusSelect(value){
+    const sel = document.createElement("select");
+    sel.style.padding = "8px 10px";
+    sel.style.borderRadius = "12px";
+    sel.style.background = "rgba(5,28,70,.55)";
+    sel.style.border = "1px solid rgba(255,255,255,.22)";
+    sel.style.color = "#fff";
+    const options = ["✅", "Pending", "Ready"];
+    for(const o of options){
+      const op = document.createElement("option");
+      op.value = o;
+      op.textContent = o;
+      sel.appendChild(op);
+    }
+    sel.value = (value && String(value).trim() !== "") ? String(value) : "Pending";
+    return sel;
+  }
+
+  function matchQuery(a, q){
+    if(!q) return true;
+    q = q.toLowerCase();
+    return (String(a.email||"").toLowerCase().includes(q)) ||
+           (String(a.passport||"").toLowerCase().includes(q)) ||
+           (String(a.status||"").toLowerCase().includes(q));
+  }
+
+  function renderList(){
+    listBody.innerHTML = "";
+    const q = (searchBox.value || "").trim();
+    const view = accounts.filter(a => matchQuery(a, q));
+    emptyBox.style.display = view.length ? "none" : "block";
+
+    for(const acc of view){
+      const row = document.createElement("div");
+      row.className = "listRow";
+      row.setAttribute("role","row");
+
+      const c1 = document.createElement("div");
+      const c2 = document.createElement("div");
+      const c3 = document.createElement("div");
+      const c4 = document.createElement("div");
+      const c5 = document.createElement("div");
+
+      // editable fields
+      const emailIn = document.createElement("input");
+      emailIn.value = acc.email || "";
+      emailIn.style.padding = "8px 10px";
+
+      const passIn = document.createElement("input");
+      passIn.value = acc.password || "";
+      passIn.style.padding = "8px 10px";
+
+      const passpIn = document.createElement("input");
+      passpIn.value = acc.passport || "";
+      passpIn.style.padding = "8px 10px";
+
+      const stSel = statusSelect(acc.status);
+
+      c1.appendChild(emailIn);
+      c2.appendChild(passIn);
+      c3.appendChild(passpIn);
+      c4.appendChild(stSel);
+
+      const actions = document.createElement("div");
+      actions.className = "actions";
+
+      const saveBtn = document.createElement("button");
+      saveBtn.type = "button";
+      saveBtn.className = "miniBtn ok";
+      saveBtn.textContent = "حفظ";
+
+      const delBtn = document.createElement("button");
+      delBtn.type = "button";
+      delBtn.className = "miniBtn danger";
+      delBtn.textContent = "حذف";
+
+      saveBtn.addEventListener("click", async ()=>{
+        const agency = agencySelect.value;
+        const body = {
+          agency,
+          matchEmail: (acc.email||""),
+          matchPassport: (acc.passport||""),
+          email: emailIn.value.trim(),
+          password: passIn.value.trim(),
+          passport: passpIn.value.trim(),
+          status: stSel.value,
+        };
+        try{
+          saveBtn.disabled = true;
+          await apiUpdate(body);
+          // update local
+          acc.email = body.email;
+          acc.password = body.password;
+          acc.passport = body.passport;
+          acc.status = body.status;
+          showToast("تم الحفظ");
+        }catch(e){
+          console.error(e);
+          showToast("فشل الحفظ");
+        }finally{
+          saveBtn.disabled = false;
+        }
+      });
+
+      delBtn.addEventListener("click", async ()=>{
+        if(!confirm("حذف هذا الحساب؟")) return;
+        const agency = agencySelect.value;
+        const body = { agency, email: (acc.email||""), passport: (acc.passport||"") };
+        try{
+          delBtn.disabled = true;
+          await apiDelete(body);
+          accounts = accounts.filter(x => !((x.email||"")===acc.email && (x.passport||"")===acc.passport));
+          renderList();
+          showToast("تم الحذف");
+        }catch(e){
+          console.error(e);
+          showToast("فشل الحذف");
+        }finally{
+          delBtn.disabled = false;
+        }
+      });
+
+      actions.appendChild(saveBtn);
+      actions.appendChild(delBtn);
+      c5.appendChild(actions);
+
+      row.appendChild(c1); row.appendChild(c2); row.appendChild(c3); row.appendChild(c4); row.appendChild(c5);
+      listBody.appendChild(row);
+    }
+  }
+
+  async function refreshAll(){
+    showToast("جاري التحديث…");
+    agencies = await apiAgencies();
+    renderAgencies();
+    countsTag.textContent = `${agencies.length} وكالة • ${agencies.reduce((s,a)=>s+(a.count||0),0)} حساب`;
+    if(agencies.length){
+      agencySelect.value = agencies[0].agency;
+      accounts = await apiAccounts(agencySelect.value);
+      renderList();
+    }else{
+      accounts = [];
+      renderList();
+    }
+  }
+
+  loginBtn.addEventListener("click", async ()=>{
+    const user = (ownerUser.value || "").trim();
+    const pass = (ownerPass.value || "").trim();
+    if(!user || !pass){ showToast("أدخل USER و PASS"); return; }
+
+    try{
+      loginBtn.disabled = true;
+      await apiLogin(user, pass);
+      creds = { user, pass };
+      setLoggedIn(true);
+      await refreshAll();
+      showToast("تم تسجيل الدخول");
+    }catch(e){
+      console.error(e);
+      creds = null;
+      setLoggedIn(false);
+      showToast("بيانات دخول غير صحيحة");
+    }finally{
+      loginBtn.disabled = false;
+    }
+  });
+
+  logoutBtn.addEventListener("click", ()=>{
+    creds = null;
+    setLoggedIn(false);
+    showToast("تم تسجيل الخروج");
+  });
+
+  agencySelect.addEventListener("change", async ()=>{
+    try{
+      const a = agencySelect.value;
+      accounts = await apiAccounts(a);
+      renderList();
+      showToast("تم التحميل");
+    }catch(e){
+      console.error(e);
+      showToast("فشل التحميل");
+    }
+  });
+
+  searchBox.addEventListener("input", ()=> renderList());
+  refreshBtn.addEventListener("click", async ()=>{
+    try{ refreshBtn.disabled = true; await refreshAll(); }
+    catch(e){ console.error(e); showToast("فشل التحديث"); }
+    finally{ refreshBtn.disabled = false; }
+  });
+
+  // Default state
+  setLoggedIn(false);
+</script>
+</body>
+</html>
