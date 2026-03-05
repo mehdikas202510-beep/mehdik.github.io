@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Owner Panel - Agency Accounts</title>
+  <title>Owner Panel — إدارة agency_accounts</title>
   <style>
     :root{
       --glass:rgba(255,255,255,.10);
       --border:rgba(255,255,255,.22);
       --ink:#fff;
+      --muted:rgba(255,255,255,.78);
       --bg1:#00c6ff;
       --bg2:#007aff;
       --bg3:#001b4d;
@@ -17,6 +18,7 @@
       --ok:#22c55e;
       --warn:#f59e0b;
       --danger:#ff5a5a;
+      --info:#60a5fa;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -27,7 +29,8 @@
       color:var(--ink);
       font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     }
-    .shell{max-width:1100px;margin:0 auto}
+    a{color:inherit}
+    .shell{max-width:1200px;margin:0 auto}
     .card{
       background:var(--glass);
       border:1px solid var(--border);
@@ -41,19 +44,40 @@
       display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
       border-bottom:1px solid rgba(255,255,255,.10);
     }
+    .titleBox{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+    .logo{
+      width:40px;height:40px;border-radius:14px;
+      background:linear-gradient(135deg, rgba(255,255,255,.22), rgba(255,255,255,.06));
+      border:1px solid rgba(255,255,255,.18);
+      display:flex;align-items:center;justify-content:center;
+      box-shadow:0 12px 26px rgba(0,0,0,.35);
+      font-weight:950
+    }
     .head h1{margin:0;font-size:1.25rem;font-weight:950}
-    .head .meta{opacity:.9;font-size:.9rem}
+    .meta{opacity:.9;font-size:.9rem;color:var(--muted)}
+    .pill{
+      border:1px solid rgba(255,255,255,.3);
+      padding:6px 12px;border-radius:999px;
+      background:rgba(255,255,255,.08);
+      font-size:.78rem;font-weight:950;opacity:.95;
+      display:inline-flex;align-items:center;gap:8px
+    }
+    .dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.35)}
+    .dot.ok{background:var(--ok)}
+
     .wrap{padding:16px 18px}
     .grid{display:grid;grid-template-columns:1fr;gap:12px}
-    @media(min-width:980px){.grid{grid-template-columns:.9fr 1.1fr}}
+    @media(min-width:1020px){.grid{grid-template-columns:.95fr 1.05fr}}
+
     .panel{
       background:rgba(5,28,70,.22);
       border:1px solid rgba(255,255,255,.14);
       border-radius:18px;
       padding:14px;
     }
+
     label{display:block;font-weight:950;margin:10px 4px 6px;font-size:.9rem}
-    input,select{
+    input,select,textarea{
       width:100%;
       padding:10px 11px;
       border-radius:12px;
@@ -63,7 +87,9 @@
       color:#fff;
       font-size:16px;
     }
-    input:focus,select:focus{border-color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.55);background:var(--dark2)}
+    textarea{min-height:90px;resize:vertical}
+    input:focus,select:focus,textarea:focus{border-color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.55);background:var(--dark2)}
+
     .btnRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
     .btn{
       border:none;border-radius:999px;
@@ -73,42 +99,62 @@
       box-shadow:0 12px 28px rgba(0,0,0,.4);
       transition:transform .15s ease,filter .15s ease,box-shadow .15s ease;
       color:#fff;
+      display:inline-flex;align-items:center;gap:8px
     }
     .btn:hover{transform:translateY(-1px);filter:brightness(1.05);box-shadow:0 16px 38px rgba(0,0,0,.55)}
     .btn:disabled{opacity:.6;cursor:wait;box-shadow:none}
     .btnPrimary{background:linear-gradient(135deg,#16a34a,#22c55e)}
     .btnSoft{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.20)}
     .btnDanger{background:rgba(255,90,90,.18);border:1px solid rgba(255,90,90,.75)}
-    .pill{
-      border:1px solid rgba(255,255,255,.3);
-      padding:4px 10px;border-radius:999px;
-      background:rgba(255,255,255,.08);
-      font-size:.78rem;font-weight:950;opacity:.95;
-    }
-    .hint{font-size:.82rem;opacity:.86;line-height:1.35}
+    .btnInfo{background:rgba(96,165,250,.18);border:1px solid rgba(96,165,250,.75)}
+
     .row2{display:grid;grid-template-columns:1fr;gap:10px}
     @media(min-width:620px){.row2{grid-template-columns:1fr 1fr}}
 
+    .cards{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px}
+    @media(min-width:620px){.cards{grid-template-columns:1fr 1fr 1fr}}
+
+    .stat{
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(5,28,70,.18);
+      padding:12px;
+      display:flex;align-items:center;justify-content:space-between;gap:10px
+    }
+    .stat b{font-size:1.05rem}
+    .stat .k{opacity:.9;font-weight:950;font-size:.8rem}
+    .badge{padding:4px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.06);font-weight:950;font-size:.78rem}
+    .badge.ok{border-color:rgba(34,197,94,.6);background:rgba(34,197,94,.16)}
+    .badge.warn{border-color:rgba(245,158,11,.6);background:rgba(245,158,11,.16)}
+    .badge.info{border-color:rgba(96,165,250,.6);background:rgba(96,165,250,.16)}
+
+    .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .chip{
+      border-radius:999px;
+      padding:7px 12px;
+      border:1px solid rgba(255,255,255,.22);
+      background:rgba(255,255,255,.06);
+      font-weight:950;
+      font-size:.82rem;
+      cursor:pointer;
+      user-select:none;
+      transition:filter .15s ease, transform .15s ease;
+    }
+    .chip:hover{filter:brightness(1.05);transform:translateY(-1px)}
+    .chip.active{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.45)}
+
     /* Table */
-    .list{margin-top:10px;border-radius:16px;border:1px solid rgba(255,255,255,.14);overflow:hidden}
+    .list{margin-top:12px;border-radius:16px;border:1px solid rgba(255,255,255,.14);overflow:hidden}
     .listHead,.listRow{
       display:grid;
-      grid-template-columns:1.05fr .85fr .7fr .55fr 210px;
+      grid-template-columns:1.1fr .9fr .75fr .55fr 230px;
       gap:10px;
       padding:10px 12px;
       align-items:center
     }
-    .listHead{
-      background:rgba(255,255,255,.08);
-      font-size:.78rem;
-      opacity:.95;
-      font-weight:950
-    }
-    .listRow{
-      background:rgba(5,28,70,.18);
-      border-top:1px solid rgba(255,255,255,.09);
-      font-size:.85rem
-    }
+    .listHead{background:rgba(255,255,255,.08);font-size:.78rem;opacity:.95;font-weight:950}
+    .listRow{background:rgba(5,28,70,.18);border-top:1px solid rgba(255,255,255,.09);font-size:.85rem}
+
     .actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
     .miniBtn{
       border:1px solid rgba(255,255,255,.35);
@@ -123,28 +169,42 @@
     }
     .miniBtn.danger{border-color:rgba(255,90,90,.75);background:rgba(255,90,90,.18)}
     .miniBtn.ok{border-color:rgba(34,197,94,.6);background:rgba(34,197,94,.18)}
-    .tag{
-      display:inline-flex;align-items:center;justify-content:center;
-      border-radius:999px;
-      padding:4px 10px;
-      border:1px solid rgba(255,255,255,.25);
-      background:rgba(255,255,255,.06);
-      font-weight:950;font-size:.78rem;
+
+    .hint{font-size:.82rem;opacity:.86;line-height:1.35;color:var(--muted)}
+
+    /* Modal */
+    .backdrop{
+      position:fixed;inset:0;
+      background:rgba(0,0,0,.55);
+      display:none;align-items:center;justify-content:center;
+      padding:14px;
+      z-index:999
     }
+    .modal{
+      width:min(720px, 100%);
+      border-radius:20px;
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(15,23,42,.92);
+      box-shadow:0 22px 60px rgba(0,0,0,.65);
+      overflow:hidden
+    }
+    .modalHead{padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.10);display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .modalHead b{font-size:1rem}
+    .modalBody{padding:14px 16px}
+
+    /* Toast */
     #toast{
       position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(110%);
       background:rgba(15,23,42,.96);color:#f9fafb;padding:10px 16px;border-radius:999px;
       box-shadow:0 16px 35px rgba(0,0,0,.5);font-size:.9rem;opacity:0;pointer-events:none;
-      transition:all .25s ease;z-index:999;max-width:92%;text-align:center
+      transition:all .25s ease;z-index:1200;max-width:92%;text-align:center
     }
     #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-    @media(max-width:720px){
+
+    /* Mobile */
+    @media(max-width:780px){
       .listHead{display:none}
-      .listRow{
-        grid-template-columns:1fr;
-        gap:8px;
-        padding:12px;
-      }
+      .listRow{grid-template-columns:1fr;gap:8px;padding:12px}
       .listRow > div:nth-child(1)::before{content:"Email: ";opacity:.8;font-weight:900}
       .listRow > div:nth-child(2)::before{content:"Password: ";opacity:.8;font-weight:900}
       .listRow > div:nth-child(3)::before{content:"Passport: ";opacity:.8;font-weight:900}
@@ -157,18 +217,21 @@
   <div class="shell">
     <div class="card">
       <div class="head">
-        <div>
-          <h1>لوحة Owner — إدارة agency_accounts</h1>
-          <div class="meta">تسجيل الدخول يتم التحقق منه داخل Cloudflare Worker عبر Secrets (OWNER_USER / OWNER_PASS)</div>
+        <div class="titleBox">
+          <div class="logo">OP</div>
+          <div>
+            <h1>Owner Panel</h1>
+            <div class="meta">إدارة كاملة للحسابات: إضافة / تعديل / حذف / Status (✅ / Pending / Ready) — التحقق داخل Worker عبر Secrets</div>
+          </div>
         </div>
-        <span class="pill" id="sessionPill">غير مسجّل</span>
+        <span class="pill" id="sessionPill"><span class="dot" id="dot"></span><span id="pillText">غير مسجّل</span></span>
       </div>
 
       <div class="wrap">
         <div class="grid">
           <!-- Login -->
           <div class="panel" id="loginPanel">
-            <div class="hint">ادخل بيانات Owner. بعد الدخول سيتم فتح لوحة التحكم بكل الوكالات والحسابات.</div>
+            <div class="hint">ادخل بيانات Owner. بعد الدخول سيتم تحميل الوكالات والحسابات.</div>
 
             <div class="row2">
               <div>
@@ -187,31 +250,46 @@
             </div>
 
             <div class="hint" style="margin-top:10px">
-              ملاحظة: هذه الصفحة لا تحفظ كلمة السر على السيرفر. يتم إرسالها في Headers (X-Owner-User / X-Owner-Pass) لكل طلب API.
+              يتم إرسال بيانات الدخول في Headers: <b>X-Owner-User</b> و <b>X-Owner-Pass</b> (لا يتم حفظها في السيرفر).
             </div>
           </div>
 
           <!-- Dashboard -->
           <div class="panel" id="dashPanel" style="display:none">
             <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
-              <b style="font-size:1.02rem">الوكالات + الحسابات</b>
-              <span class="tag" id="countsTag">0 وكالة • 0 حساب</span>
+              <div>
+                <b style="font-size:1.05rem">لوحة التحكم</b>
+                <div class="hint">اختر وكالة، ثم تحكم بالحسابات. يمكنك إضافة حساب جديد من زر “إضافة حساب”.</div>
+              </div>
+              <div class="btnRow" style="margin:0">
+                <button class="btn btnInfo" id="addBtn" type="button">➕ إضافة حساب</button>
+                <button class="btn btnSoft" id="exportBtn" type="button">⬇️ تصدير JSON</button>
+                <button class="btn btnSoft" id="refreshBtn" type="button">🔄 تحديث</button>
+              </div>
             </div>
 
-            <div style="height:10px"></div>
-
-            <label>اختر الوكالة</label>
-            <select id="agencySelect"></select>
-
-            <div class="row2">
+            <div class="row2" style="margin-top:10px">
               <div>
-                <label>بحث</label>
+                <label>الوكالة</label>
+                <select id="agencySelect"></select>
+              </div>
+              <div>
+                <label>بحث سريع</label>
                 <input id="searchBox" type="text" placeholder="email / passport / status"/>
               </div>
-              <div>
-                <label>تحديث</label>
-                <button class="btn btnSoft" id="refreshBtn" type="button" style="width:100%">تحديث البيانات</button>
-              </div>
+            </div>
+
+            <div class="cards">
+              <div class="stat"><div><div class="k">إجمالي الوكالات</div><b id="stAgencies">0</b></div><span class="badge info" id="stAgenciesBadge">—</span></div>
+              <div class="stat"><div><div class="k">حسابات هذه الوكالة</div><b id="stAccounts">0</b></div><span class="badge" id="stAccountsBadge">—</span></div>
+              <div class="stat"><div><div class="k">✅ / Pending / Ready</div><b id="stBreak">0 / 0 / 0</b></div><span class="badge ok" id="stBreakBadge">Status</span></div>
+            </div>
+
+            <div class="chips" id="chips">
+              <div class="chip active" data-filter="all">الكل</div>
+              <div class="chip" data-filter="✅">✅</div>
+              <div class="chip" data-filter="Pending">Pending</div>
+              <div class="chip" data-filter="Ready">Ready</div>
             </div>
 
             <div class="list" role="table" aria-label="Accounts">
@@ -226,10 +304,66 @@
             </div>
 
             <div id="emptyBox" class="hint" style="display:none;margin-top:10px;border:1px dashed rgba(255,255,255,.22);border-radius:14px;padding:12px;background:rgba(5,28,70,.14)">
-              لا توجد حسابات لهذه الوكالة.
+              لا توجد حسابات مطابقة للفلتر/البحث.
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add modal -->
+  <div class="backdrop" id="backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Add Account">
+      <div class="modalHead">
+        <b>إضافة حساب جديد</b>
+        <button class="miniBtn" id="closeModal" type="button">✕</button>
+      </div>
+      <div class="modalBody">
+        <div class="row2">
+          <div>
+            <label>اختيار وكالة</label>
+            <select id="addAgencySelect"></select>
+            <div class="hint" style="margin-top:6px">لإنشاء وكالة جديدة: اختر “+ وكالة جديدة…”</div>
+          </div>
+          <div>
+            <label>اسم الوكالة الجديدة (اختياري)</label>
+            <input id="newAgencyName" type="text" placeholder="مثال: agency1"/>
+          </div>
+        </div>
+
+        <div class="row2">
+          <div>
+            <label>Email</label>
+            <input id="addEmail" type="text" placeholder="example@mail.com"/>
+          </div>
+          <div>
+            <label>Password</label>
+            <input id="addPassword" type="text" placeholder="Password"/>
+          </div>
+        </div>
+
+        <div class="row2">
+          <div>
+            <label>Passport</label>
+            <input id="addPassport" type="text" placeholder="AB123456"/>
+          </div>
+          <div>
+            <label>Status</label>
+            <select id="addStatus">
+              <option value="Pending">Pending</option>
+              <option value="Ready">Ready</option>
+              <option value="✅">✅</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="btnRow">
+          <button class="btn btnPrimary" id="createBtn" type="button" style="flex:1">حفظ الحساب</button>
+          <button class="btn btnSoft" id="resetBtn" type="button">تفريغ</button>
+        </div>
+
+        <div class="hint" style="margin-top:10px">لن يتم إضافة حساب مكرر بنفس (Email + Passport) داخل نفس الوكالة.</div>
       </div>
     </div>
   </div>
@@ -238,11 +372,13 @@
 
 <script>
   const API = "https://api.mehdik.site/owner";
-  const toastEl = document.getElementById("toast");
 
+  const toastEl = document.getElementById("toast");
   const loginPanel = document.getElementById("loginPanel");
   const dashPanel = document.getElementById("dashPanel");
   const sessionPill = document.getElementById("sessionPill");
+  const dot = document.getElementById("dot");
+  const pillText = document.getElementById("pillText");
   const loginBtn = document.getElementById("loginBtn");
   const logoutBtn = document.getElementById("logoutBtn");
 
@@ -252,18 +388,40 @@
   const agencySelect = document.getElementById("agencySelect");
   const listBody = document.getElementById("listBody");
   const emptyBox = document.getElementById("emptyBox");
-  const countsTag = document.getElementById("countsTag");
   const searchBox = document.getElementById("searchBox");
   const refreshBtn = document.getElementById("refreshBtn");
+  const addBtn = document.getElementById("addBtn");
+  const exportBtn = document.getElementById("exportBtn");
+
+  const stAgencies = document.getElementById("stAgencies");
+  const stAccounts = document.getElementById("stAccounts");
+  const stBreak = document.getElementById("stBreak");
+  const stAgenciesBadge = document.getElementById("stAgenciesBadge");
+  const stAccountsBadge = document.getElementById("stAccountsBadge");
+
+  const chips = document.getElementById("chips");
+
+  // Modal
+  const backdrop = document.getElementById("backdrop");
+  const closeModal = document.getElementById("closeModal");
+  const addAgencySelect = document.getElementById("addAgencySelect");
+  const newAgencyName = document.getElementById("newAgencyName");
+  const addEmail = document.getElementById("addEmail");
+  const addPassword = document.getElementById("addPassword");
+  const addPassport = document.getElementById("addPassport");
+  const addStatus = document.getElementById("addStatus");
+  const createBtn = document.getElementById("createBtn");
+  const resetBtn = document.getElementById("resetBtn");
 
   let creds = null;
   let agencies = [];
   let accounts = [];
+  let statusFilter = "all";
 
   function showToast(msg){
     toastEl.textContent = msg;
     toastEl.classList.add("show");
-    setTimeout(()=>toastEl.classList.remove("show"), 2500);
+    setTimeout(()=>toastEl.classList.remove("show"), 2600);
   }
 
   function headers(){
@@ -276,20 +434,25 @@
 
   function setLoggedIn(on){
     if(on){
-      sessionPill.textContent = "مُسجّل";
+      pillText.textContent = "مُسجّل";
+      dot.classList.add("ok");
       loginBtn.style.display = "none";
       logoutBtn.style.display = "inline-flex";
       dashPanel.style.display = "block";
     }else{
-      sessionPill.textContent = "غير مسجّل";
+      pillText.textContent = "غير مسجّل";
+      dot.classList.remove("ok");
       loginBtn.style.display = "inline-flex";
       logoutBtn.style.display = "none";
       dashPanel.style.display = "none";
-      agencies = [];
-      accounts = [];
+      agencies = []; accounts = [];
       agencySelect.innerHTML = "";
       listBody.innerHTML = "";
-      countsTag.textContent = "0 وكالة • 0 حساب";
+      searchBox.value = "";
+      statusFilter = "all";
+      setChipActive("all");
+      updateStats();
+      sessionStorage.removeItem("owner_creds");
     }
   }
 
@@ -318,6 +481,13 @@
     return j.accounts || [];
   }
 
+  async function apiCreate(body){
+    const r = await fetch(API + "/account", { method:"POST", headers: headers(), body: JSON.stringify(body) });
+    const j = await r.json().catch(()=>null);
+    if(!r.ok || !j?.ok) throw new Error(j?.error || "Failed");
+    return true;
+  }
+
   async function apiUpdate(body){
     const r = await fetch(API + "/account", { method:"PUT", headers: headers(), body: JSON.stringify(body) });
     const j = await r.json().catch(()=>null);
@@ -332,6 +502,14 @@
     return true;
   }
 
+  function normalizeStatus(v){
+    v = (v ?? "").toString().trim();
+    if(!v) return "Pending";
+    if(v === "✅") return "✅";
+    if(v.toLowerCase() === "ready") return "Ready";
+    return "Pending";
+  }
+
   function renderAgencies(){
     agencySelect.innerHTML = "";
     for(const a of agencies){
@@ -340,6 +518,33 @@
       opt.textContent = `${a.agency} — (${a.count})`;
       agencySelect.appendChild(opt);
     }
+
+    // Modal agencies dropdown
+    addAgencySelect.innerHTML = "";
+    const o0 = document.createElement("option");
+    o0.value = "__new__";
+    o0.textContent = "+ وكالة جديدة…";
+    addAgencySelect.appendChild(o0);
+    for(const a of agencies){
+      const opt = document.createElement("option");
+      opt.value = a.agency;
+      opt.textContent = a.agency;
+      addAgencySelect.appendChild(opt);
+    }
+  }
+
+  function setChipActive(v){
+    for(const el of chips.querySelectorAll('.chip')){
+      el.classList.toggle('active', el.dataset.filter === v);
+    }
+  }
+
+  function matchQuery(a, q){
+    if(!q) return true;
+    q = q.toLowerCase();
+    return (String(a.email||"").toLowerCase().includes(q)) ||
+           (String(a.passport||"").toLowerCase().includes(q)) ||
+           (String(a.status||"").toLowerCase().includes(q));
   }
 
   function statusSelect(value){
@@ -356,22 +561,33 @@
       op.textContent = o;
       sel.appendChild(op);
     }
-    sel.value = (value && String(value).trim() !== "") ? String(value) : "Pending";
+    sel.value = normalizeStatus(value);
     return sel;
   }
 
-  function matchQuery(a, q){
-    if(!q) return true;
-    q = q.toLowerCase();
-    return (String(a.email||"").toLowerCase().includes(q)) ||
-           (String(a.passport||"").toLowerCase().includes(q)) ||
-           (String(a.status||"").toLowerCase().includes(q));
+  function updateStats(){
+    stAgencies.textContent = String(agencies.length);
+    stAgenciesBadge.textContent = agencies.length ? "OK" : "—";
+
+    const total = accounts.length;
+    stAccounts.textContent = String(total);
+    stAccountsBadge.textContent = agencySelect.value ? agencySelect.value : "—";
+
+    const cOk = accounts.filter(a => normalizeStatus(a.status) === "✅").length;
+    const cPend = accounts.filter(a => normalizeStatus(a.status) === "Pending").length;
+    const cReady = accounts.filter(a => normalizeStatus(a.status) === "Ready").length;
+    stBreak.textContent = `${cOk} / ${cPend} / ${cReady}`;
   }
 
   function renderList(){
     listBody.innerHTML = "";
+
     const q = (searchBox.value || "").trim();
-    const view = accounts.filter(a => matchQuery(a, q));
+    let view = accounts.filter(a => matchQuery(a, q));
+    if(statusFilter !== "all"){
+      view = view.filter(a => normalizeStatus(a.status) === statusFilter);
+    }
+
     emptyBox.style.display = view.length ? "none" : "block";
 
     for(const acc of view){
@@ -385,7 +601,6 @@
       const c4 = document.createElement("div");
       const c5 = document.createElement("div");
 
-      // editable fields
       const emailIn = document.createElement("input");
       emailIn.value = acc.email || "";
       emailIn.style.padding = "8px 10px";
@@ -432,11 +647,12 @@
         try{
           saveBtn.disabled = true;
           await apiUpdate(body);
-          // update local
           acc.email = body.email;
           acc.password = body.password;
           acc.passport = body.passport;
           acc.status = body.status;
+          updateStats();
+          renderList();
           showToast("تم الحفظ");
         }catch(e){
           console.error(e);
@@ -454,6 +670,7 @@
           delBtn.disabled = true;
           await apiDelete(body);
           accounts = accounts.filter(x => !((x.email||"")===acc.email && (x.passport||"")===acc.passport));
+          updateStats();
           renderList();
           showToast("تم الحذف");
         }catch(e){
@@ -473,21 +690,103 @@
     }
   }
 
-  async function refreshAll(){
-    showToast("جاري التحديث…");
+  async function refreshAll(keepAgency=true){
     agencies = await apiAgencies();
     renderAgencies();
-    countsTag.textContent = `${agencies.length} وكالة • ${agencies.reduce((s,a)=>s+(a.count||0),0)} حساب`;
+    const prev = agencySelect.value;
+
     if(agencies.length){
-      agencySelect.value = agencies[0].agency;
+      if(keepAgency && prev && agencies.some(a => a.agency === prev)) agencySelect.value = prev;
+      else agencySelect.value = agencies[0].agency;
+
       accounts = await apiAccounts(agencySelect.value);
-      renderList();
+      accounts = accounts.map(a => ({...a, status: normalizeStatus(a.status)}));
     }else{
       accounts = [];
+    }
+    updateStats();
+    renderList();
+  }
+
+  function openModal(){
+    backdrop.style.display = "flex";
+    backdrop.setAttribute("aria-hidden","false");
+    // default: current agency
+    if(agencySelect.value) addAgencySelect.value = agencySelect.value;
+    else addAgencySelect.value = "__new__";
+    newAgencyName.value = "";
+    addEmail.value = "";
+    addPassword.value = "";
+    addPassport.value = "";
+    addStatus.value = "Pending";
+    setTimeout(()=>addEmail.focus(), 50);
+  }
+
+  function closeModalFn(){
+    backdrop.style.display = "none";
+    backdrop.setAttribute("aria-hidden","true");
+  }
+
+  function resolveAgencyForCreate(){
+    const sel = addAgencySelect.value;
+    if(sel === "__new__"){
+      const n = (newAgencyName.value || "").trim();
+      return n;
+    }
+    return sel;
+  }
+
+  async function createAccount(){
+    const agency = resolveAgencyForCreate();
+    const email = (addEmail.value || "").trim();
+    const password = (addPassword.value || "").trim();
+    const passport = (addPassport.value || "").trim();
+    const status = normalizeStatus(addStatus.value);
+
+    if(!agency){ showToast("أدخل اسم الوكالة"); return; }
+    if(!email || !password || !passport){ showToast("أكمل Email / Password / Passport"); return; }
+
+    try{
+      createBtn.disabled = true;
+      await apiCreate({ agency, email, password, passport, status });
+      showToast("تمت الإضافة");
+      closeModalFn();
+
+      // Refresh and jump to the selected/new agency
+      await refreshAll(false);
+      agencySelect.value = agency;
+      accounts = await apiAccounts(agency);
+      accounts = accounts.map(a => ({...a, status: normalizeStatus(a.status)}));
+      updateStats();
       renderList();
+
+    }catch(e){
+      console.error(e);
+      const msg = (e && e.message) ? e.message : "فشل الإضافة";
+      showToast(msg === "Account already exists" ? "الحساب موجود مسبقاً" : "فشل الإضافة");
+    }finally{
+      createBtn.disabled = false;
     }
   }
 
+  function exportJSON(){
+    const agency = agencySelect.value || "";
+    const payload = {
+      exportedAt: new Date().toISOString(),
+      agency,
+      accounts,
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `agency_${agency || 'all'}_accounts.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
+  }
+
+  // Events
   loginBtn.addEventListener("click", async ()=>{
     const user = (ownerUser.value || "").trim();
     const pass = (ownerPass.value || "").trim();
@@ -497,9 +796,10 @@
       loginBtn.disabled = true;
       await apiLogin(user, pass);
       creds = { user, pass };
+      sessionStorage.setItem("owner_creds", JSON.stringify(creds));
       setLoggedIn(true);
-      await refreshAll();
       showToast("تم تسجيل الدخول");
+      await refreshAll(false);
     }catch(e){
       console.error(e);
       creds = null;
@@ -516,10 +816,26 @@
     showToast("تم تسجيل الخروج");
   });
 
+  refreshBtn.addEventListener("click", async ()=>{
+    try{
+      refreshBtn.disabled = true;
+      showToast("جاري التحديث…");
+      await refreshAll(true);
+      showToast("تم التحديث");
+    }catch(e){
+      console.error(e);
+      showToast("فشل التحديث");
+    }finally{
+      refreshBtn.disabled = false;
+    }
+  });
+
   agencySelect.addEventListener("change", async ()=>{
     try{
-      const a = agencySelect.value;
-      accounts = await apiAccounts(a);
+      showToast("جاري التحميل…");
+      accounts = await apiAccounts(agencySelect.value);
+      accounts = accounts.map(a => ({...a, status: normalizeStatus(a.status)}));
+      updateStats();
       renderList();
       showToast("تم التحميل");
     }catch(e){
@@ -529,14 +845,54 @@
   });
 
   searchBox.addEventListener("input", ()=> renderList());
-  refreshBtn.addEventListener("click", async ()=>{
-    try{ refreshBtn.disabled = true; await refreshAll(); }
-    catch(e){ console.error(e); showToast("فشل التحديث"); }
-    finally{ refreshBtn.disabled = false; }
+
+  chips.addEventListener("click", (ev)=>{
+    const chip = ev.target.closest('.chip');
+    if(!chip) return;
+    statusFilter = chip.dataset.filter;
+    setChipActive(statusFilter);
+    renderList();
   });
 
-  // Default state
-  setLoggedIn(false);
+  addBtn.addEventListener("click", ()=> openModal());
+  exportBtn.addEventListener("click", ()=> exportJSON());
+
+  closeModal.addEventListener("click", ()=> closeModalFn());
+  backdrop.addEventListener("click", (e)=>{ if(e.target === backdrop) closeModalFn(); });
+
+  resetBtn.addEventListener("click", ()=>{
+    newAgencyName.value = "";
+    addEmail.value = "";
+    addPassword.value = "";
+    addPassport.value = "";
+    addStatus.value = "Pending";
+    addEmail.focus();
+  });
+
+  createBtn.addEventListener("click", ()=> createAccount());
+
+  addAgencySelect.addEventListener("change", ()=>{
+    const isNew = addAgencySelect.value === "__new__";
+    newAgencyName.disabled = !isNew;
+    if(isNew) newAgencyName.focus();
+  });
+
+  // Restore session
+  (function boot(){
+    setLoggedIn(false);
+    try{
+      const s = sessionStorage.getItem("owner_creds");
+      if(!s) return;
+      const c = JSON.parse(s);
+      if(c?.user && c?.pass){
+        creds = { user: String(c.user), pass: String(c.pass) };
+        ownerUser.value = creds.user;
+        ownerPass.value = creds.pass;
+        setLoggedIn(true);
+        refreshAll(false).catch(()=> setLoggedIn(false));
+      }
+    }catch(_){/* ignore */}
+  })();
 </script>
 </body>
 </html>
