@@ -3,371 +3,355 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Owner Panel - Agency Accounts</title>
+  <title>Owner Dashboard</title>
   <style>
-    :root { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; }
-    body { margin: 0; background: #0b1020; color: #e8ecff; }
-    .wrap { max-width: 1200px; margin: 0 auto; padding: 18px; }
-    .card { background:#101a35; border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:16px; }
-    h1 { margin: 0 0 10px; font-size: 20px; }
-    .row { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
-    .row > * { flex: 1 1 auto; }
-    input, select, button {
-      border-radius: 10px; border:1px solid rgba(255,255,255,.12);
-      background:#0d1530; color:#e8ecff; padding:10px 12px; outline:none;
-    }
-    button { cursor:pointer; font-weight:600; }
-    button.primary { background:#2a5bff; border-color:rgba(255,255,255,.12); }
-    button.danger { background:#ff2a5b; border-color:rgba(255,255,255,.12); }
-    button.ghost { background:transparent; }
-    button:disabled { opacity:.5; cursor:not-allowed; }
-
-    .muted { color:rgba(232,236,255,.7); font-size: 13px; }
-    .hr { height:1px; background:rgba(255,255,255,.08); margin:14px 0; }
-    .pill { padding:4px 10px; border-radius:999px; font-size:12px; border:1px solid rgba(255,255,255,.14); display:inline-flex; gap:6px; align-items:center;}
-    .ok { border-color: rgba(0,255,140,.35); background: rgba(0,255,140,.12); }
-    .pending { border-color: rgba(255,200,0,.35); background: rgba(255,200,0,.12); }
-
+    body { font-family: system-ui, Arial; margin: 0; background: #0b1020; color: #e7e9ee; }
+    header { padding: 16px 20px; background: #0f1730; border-bottom: 1px solid #1c2a55; display:flex; gap:12px; align-items:center; justify-content:space-between; }
+    .wrap { padding: 18px; max-width: 1200px; margin: 0 auto; }
+    .card { background: #0f1730; border: 1px solid #1c2a55; border-radius: 14px; padding: 14px; margin: 12px 0; }
+    input, select, button { padding: 10px 12px; border-radius: 10px; border: 1px solid #263669; background: #0b1020; color:#e7e9ee; }
+    button { cursor:pointer; }
+    button.primary { background:#1b3a8a; border-color:#1b3a8a; }
+    button.danger { background:#8a1b1b; border-color:#8a1b1b; }
+    button.ghost { background: transparent; }
+    .row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .grid { display:grid; grid-template-columns: 1fr; gap: 12px; }
+    @media (min-width: 900px){ .grid { grid-template-columns: 1fr 1fr; } }
     table { width:100%; border-collapse: collapse; overflow:hidden; border-radius: 12px; }
-    th, td { padding:10px; border-bottom:1px solid rgba(255,255,255,.08); vertical-align: middle; }
-    th { text-align:right; font-size: 13px; color: rgba(232,236,255,.8); background: rgba(255,255,255,.03); }
-    tr:hover td { background: rgba(255,255,255,.02); }
-    .actions { display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap; }
-    .grid2 { display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .grid3 { display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-    @media (max-width: 900px){ .grid3 { grid-template-columns:1fr; } .grid2{ grid-template-columns:1fr; } }
-
-    .modal-backdrop{
-      position:fixed; inset:0; background: rgba(0,0,0,.55);
-      display:none; align-items:center; justify-content:center; padding:18px;
-    }
-    .modal{ width:min(720px,100%); }
-    .toast { margin-top:10px; padding:10px 12px; border-radius: 10px; border:1px solid rgba(255,255,255,.12); }
-    .toast.ok { background: rgba(0,255,140,.12); border-color: rgba(0,255,140,.35); }
-    .toast.err { background: rgba(255,42,91,.12); border-color: rgba(255,42,91,.35); }
+    th, td { border-bottom: 1px solid #1c2a55; padding: 10px; text-align:right; vertical-align: top; }
+    th { background:#0b1020; position: sticky; top:0; }
+    .badge { padding: 4px 10px; border-radius: 999px; border:1px solid #263669; display:inline-block; }
+    .ok { border-color:#2f7a3a; }
+    .pending { border-color:#a67c1a; }
+    .muted { opacity: .8; font-size: 12px; }
+    .sep { height:1px; background:#1c2a55; margin:12px 0; }
+    .hidden { display:none; }
+    .right { margin-inline-start:auto; }
+    .small { font-size: 13px; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card" id="loginCard">
-      <h1>لوحة Owner</h1>
-      <div class="muted">تسجيل الدخول لإدارة كل <b>agency_accounts</b> (تعديل/حذف/✅ Pending)</div>
-      <div class="hr"></div>
-      <div class="grid2">
-        <input id="user" placeholder="USER" autocomplete="username" />
-        <input id="pass" placeholder="PASSWORD" type="password" autocomplete="current-password" />
-      </div>
-      <div class="row" style="margin-top:10px">
-        <button class="primary" id="btnLogin">تسجيل الدخول</button>
-        <button class="ghost" id="btnClear">مسح</button>
-      </div>
-      <div id="loginMsg"></div>
+<header>
+  <div class="row">
+    <strong>لوحة Owner</strong>
+    <span class="muted">إدارة جميع agency_accounts</span>
+  </div>
+  <div class="row">
+    <button class="ghost" id="btnLogout">Logout</button>
+    <button class="primary" id="btnRefresh">Refresh</button>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- LOGIN -->
+  <div class="card" id="loginCard">
+    <h3 style="margin-top:0">تسجيل الدخول</h3>
+    <div class="row">
+      <input id="user" placeholder="USER" value="Owner" />
+      <input id="pass" placeholder="Password" type="password" value="Admin26" />
+      <button class="primary" id="btnLogin">Login</button>
     </div>
-
-    <div class="card" id="dashCard" style="display:none; margin-top:14px">
-      <div class="row">
-        <div>
-          <h1 style="margin:0">Dashboard</h1>
-          <div class="muted">اختر وكالة ثم عدّل الحسابات. ✅ = Verified</div>
-        </div>
-        <div style="text-align:left">
-          <button class="ghost" id="btnLogout">خروج</button>
-        </div>
-      </div>
-
-      <div class="hr"></div>
-
-      <div class="grid3">
-        <div>
-          <div class="muted">الوكالة</div>
-          <select id="agencySelect"></select>
-        </div>
-        <div>
-          <div class="muted">بحث داخل الوكالة (Email/Passport)</div>
-          <input id="search" placeholder="ابحث..." />
-        </div>
-        <div class="row" style="align-items:flex-end">
-          <button class="primary" id="btnRefresh">تحديث</button>
-          <button class="ghost" id="btnReloadAgencies">تحميل الوكالات</button>
-        </div>
-      </div>
-
-      <div class="hr"></div>
-
-      <div class="row" style="justify-content:space-between">
-        <div class="muted" id="stats"></div>
-        <div class="muted">ملاحظة: الحسابات ✅ ممنوع عليها تغيير كلمة السر من صفحة Agency</div>
-      </div>
-
-      <div style="margin-top:10px; overflow:auto">
-        <table>
-          <thead>
-            <tr>
-              <th style="width:60px">#</th>
-              <th>Email</th>
-              <th>Password</th>
-              <th>Passport</th>
-              <th style="width:140px">Status</th>
-              <th style="width:290px">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="tbody"></tbody>
-        </table>
-      </div>
-
-      <div id="dashMsg"></div>
-    </div>
+    <div class="muted" id="loginMsg" style="margin-top:10px"></div>
   </div>
 
-  <!-- Modal -->
-  <div class="modal-backdrop" id="modalBackdrop">
-    <div class="card modal">
-      <h1 style="margin:0 0 6px">تعديل الحساب</h1>
-      <div class="muted">اترك الحقل فارغ إذا لا تريد تغييره.</div>
-      <div class="hr"></div>
-      <div class="grid3">
-        <input id="mEmail" placeholder="Email" />
-        <input id="mPass" placeholder="Password" />
-        <input id="mPassport" placeholder="Passport" />
-      </div>
-      <div class="row" style="margin-top:10px">
-        <div>
-          <span class="muted">Status:</span>
-          <select id="mStatus" style="width:220px">
-            <option value="pending">Pending</option>
-            <option value="verified">✅ Verified</option>
-          </select>
-        </div>
-        <div style="text-align:left">
-          <button class="primary" id="mSave">حفظ</button>
-          <button class="ghost" id="mCancel">إلغاء</button>
-        </div>
-      </div>
-      <div id="modalMsg"></div>
+  <!-- DASH -->
+  <div class="card hidden" id="dashCard">
+    <div class="row">
+      <input id="search" placeholder="بحث: وكالة / Email / Passport" style="min-width:280px; flex:1" />
+      <select id="statusFilter">
+        <option value="">كل الحالات</option>
+        <option value="✅">✅ فقط</option>
+        <option value="Pending">Pending فقط</option>
+      </select>
+      <span class="right muted small" id="counts"></span>
     </div>
+
+    <div class="sep"></div>
+
+    <div id="content"></div>
   </div>
+
+</div>
 
 <script>
-  const API = "https://api.mehdik.site/";
-  let OWNER_TOKEN = sessionStorage.getItem("OWNER_TOKEN") || "";
-  let agencies = [];
-  let accounts = [];
-  let currentAgency = "";
-  let editIndex = -1;
+  const API = "https://api.mehdik.site"; // worker domain
+  const LS_TOKEN = "OWNER_TOKEN_V1";
 
   const $ = (id) => document.getElementById(id);
 
-  function toast(el, ok, msg){
-    el.innerHTML = `<div class="toast ${ok?'ok':'err'}">${msg}</div>`;
-    setTimeout(()=>{ el.innerHTML = ""; }, 4000);
+  function setMsg(el, txt) { el.textContent = txt || ""; }
+  function badge(status) {
+    const cls = status === "✅" ? "ok" : "pending";
+    return `<span class="badge ${cls}">${status}</span>`;
   }
 
-  async function postForm(data, useAuth = false){
-    const fd = new FormData();
-    Object.entries(data).forEach(([k,v]) => fd.append(k, v));
-    const headers = {};
-    if(useAuth && OWNER_TOKEN) headers["Authorization"] = "Bearer " + OWNER_TOKEN;
-    const res = await fetch(API, { method:"POST", body: fd, headers });
-    const json = await res.json().catch(()=> ({}));
-    return { res, json };
+  function getToken() { return localStorage.getItem(LS_TOKEN) || ""; }
+  function setToken(t) { localStorage.setItem(LS_TOKEN, t); }
+  function clearToken() { localStorage.removeItem(LS_TOKEN); }
+
+  async function apiFetch(path, opts = {}) {
+    const headers = opts.headers || {};
+    const token = getToken();
+    if (token) headers["Authorization"] = "Bearer " + token;
+    return fetch(API + path, { ...opts, headers });
   }
 
-  function showDash(show){
-    $("loginCard").style.display = show ? "none" : "block";
-    $("dashCard").style.display = show ? "block" : "none";
-  }
-
-  function maskPass(p){
-    const s = (p||"").toString();
-    if(!s) return "";
-    if(s.length <= 2) return "•".repeat(s.length);
-    return "•".repeat(s.length-2) + s.slice(-2);
-  }
-
-  function pill(status){
-    const s = (status||"pending").toLowerCase() === "verified" ? "verified" : "pending";
-    return s === "verified"
-      ? `<span class="pill ok">✅ Verified</span>`
-      : `<span class="pill pending">Pending</span>`;
-  }
-
-  function render(){
-    const q = ($("search").value || "").trim().toLowerCase();
-    const rows = [];
-    let filtered = accounts.map((a, i)=> ({...a, _i:i}));
-    if(q){
-      filtered = filtered.filter(x =>
-        (x.email||"").toLowerCase().includes(q) ||
-        (x.passport||"").toLowerCase().includes(q)
-      );
-    }
-
-    $("stats").textContent = `Agency: ${currentAgency || "-"} | Total: ${accounts.length} | Showing: ${filtered.length}`;
-
-    for(const x of filtered){
-      const i = x._i;
-      const st = (x.status||"pending").toLowerCase() === "verified" ? "verified" : "pending";
-      const toggleTo = st === "verified" ? "pending" : "verified";
-      rows.push(`
-        <tr>
-          <td>${i+1}</td>
-          <td>${x.email||""}</td>
-          <td>${maskPass(x.password||"")}</td>
-          <td>${x.passport||""}</td>
-          <td>${pill(st)}</td>
-          <td>
-            <div class="actions">
-              <button class="ghost" onclick="openEdit(${i})">Edit</button>
-              <button class="ghost" onclick="toggleStatus(${i}, '${toggleTo}')">${toggleTo === 'verified' ? '✅ Set Verified' : 'Set Pending'}</button>
-              <button class="danger" onclick="delAcc(${i})">Delete</button>
-            </div>
-          </td>
-        </tr>
-      `);
-    }
-    $("tbody").innerHTML = rows.join("") || `<tr><td colspan="6" class="muted">لا توجد بيانات</td></tr>`;
-  }
-
-  async function loadAgencies(){
-    const {res, json} = await postForm({ formType:"owner", action:"agencies" }, true);
-    if(!res.ok || !json.ok){
-      toast($("dashMsg"), false, json.error || "Failed to load agencies");
-      return;
-    }
-    agencies = json.agencies || [];
-    const sel = $("agencySelect");
-    sel.innerHTML = agencies.map(a => `<option value="${a}">${a}</option>`).join("") || `<option value="">(no agencies)</option>`;
-    currentAgency = sel.value || "";
-  }
-
-  async function loadAccounts(){
-    currentAgency = $("agencySelect").value || "";
-    if(!currentAgency){
-      accounts = [];
-      render();
-      return;
-    }
-    const {res, json} = await postForm({ formType:"owner", action:"list", agency: currentAgency }, true);
-    if(!res.ok || !json.ok){
-      toast($("dashMsg"), false, json.error || "Failed to load accounts");
-      return;
-    }
-    accounts = (json.accounts || []).map(a => ({
-      email: a.email || "",
-      password: a.password || "",
-      passport: a.passport || "",
-      status: (a.status || "pending")
-    }));
-    render();
-  }
-
-  // Login
-  $("btnLogin").onclick = async () => {
+  async function login() {
+    setMsg($("loginMsg"), "...");
     const user = $("user").value.trim();
     const pass = $("pass").value.trim();
-    const {res, json} = await postForm({ formType:"owner", action:"login", user, pass }, false);
-    if(!res.ok || !json.ok){
-      toast($("loginMsg"), false, json.error || "Login failed");
+
+    const res = await fetch(API + "/owner/auth", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ user, pass })
+    });
+
+    const data = await res.json().catch(()=> ({}));
+    if (!res.ok || !data.ok) {
+      setMsg($("loginMsg"), data.error || "Login failed");
       return;
     }
-    OWNER_TOKEN = json.token;
-    sessionStorage.setItem("OWNER_TOKEN", OWNER_TOKEN);
-
-    showDash(true);
-    await loadAgencies();
-    await loadAccounts();
-    toast($("dashMsg"), true, "تم تسجيل الدخول");
-  };
-
-  $("btnClear").onclick = ()=>{ $("user").value=""; $("pass").value=""; };
-  $("btnLogout").onclick = ()=>{
-    OWNER_TOKEN = "";
-    sessionStorage.removeItem("OWNER_TOKEN");
-    agencies = []; accounts = []; currentAgency = "";
-    showDash(false);
-  };
-
-  $("btnReloadAgencies").onclick = async ()=>{ await loadAgencies(); await loadAccounts(); };
-  $("btnRefresh").onclick = async ()=>{ await loadAccounts(); };
-  $("agencySelect").onchange = async ()=>{ await loadAccounts(); };
-  $("search").oninput = ()=> render();
-
-  // Modal
-  function openModal(on){
-    $("modalBackdrop").style.display = on ? "flex" : "none";
-    $("modalMsg").innerHTML = "";
+    setToken(data.token);
+    setMsg($("loginMsg"), "تم تسجيل الدخول ✅");
+    $("loginCard").classList.add("hidden");
+    $("dashCard").classList.remove("hidden");
+    await refresh();
   }
-  window.openEdit = (i)=>{
-    editIndex = i;
-    const a = accounts[i] || {};
-    $("mEmail").value = "";
-    $("mPass").value = "";
-    $("mPassport").value = "";
-    $("mStatus").value = ((a.status||"pending").toLowerCase()==="verified") ? "verified" : "pending";
-    openModal(true);
-  };
-  $("mCancel").onclick = ()=> openModal(false);
 
-  $("mSave").onclick = async ()=>{
-    if(editIndex < 0) return;
-    const payload = {
-      formType:"owner",
-      action:"update",
-      agency: currentAgency,
-      index: String(editIndex),
-      email: $("mEmail").value.trim(),
-      password: $("mPass").value.trim(),
-      passport: $("mPassport").value.trim(),
-      status: $("mStatus").value
-    };
-    const {res, json} = await postForm(payload, true);
-    if(!res.ok || !json.ok){
-      toast($("modalMsg"), false, json.error || "Update failed");
+  function logout() {
+    clearToken();
+    $("dashCard").classList.add("hidden");
+    $("loginCard").classList.remove("hidden");
+    setMsg($("loginMsg"), "");
+  }
+
+  function flatten(agencies) {
+    // return array of rows: {agency,email,passport,password,status,createdAt,updatedAt}
+    const rows = [];
+    for (const ag of agencies) {
+      for (const a of (ag.accounts || [])) {
+        rows.push({
+          agency: ag.agency,
+          email: a.email || "",
+          passport: a.passport || "",
+          password: a.password || "",
+          status: a.status === "✅" ? "✅" : "Pending",
+          createdAt: a.createdAt || "",
+          updatedAt: a.updatedAt || ""
+        });
+      }
+    }
+    return rows;
+  }
+
+  function matches(row, q) {
+    if (!q) return true;
+    q = q.toLowerCase();
+    return (row.agency || "").toLowerCase().includes(q)
+        || (row.email || "").toLowerCase().includes(q)
+        || (row.passport || "").toLowerCase().includes(q);
+  }
+
+  function render(agencies) {
+    const q = $("search").value.trim();
+    const st = $("statusFilter").value;
+
+    const rows = flatten(agencies).filter(r => matches(r, q) && (!st || r.status === st));
+
+    $("counts").textContent = `Results: ${rows.length}`;
+
+    // group by agency
+    const by = new Map();
+    for (const r of rows) {
+      if (!by.has(r.agency)) by.set(r.agency, []);
+      by.get(r.agency).push(r);
+    }
+
+    let html = "";
+    for (const [agency, list] of Array.from(by.entries()).sort((a,b)=>a[0].localeCompare(b[0]))) {
+      html += `<div class="card">
+        <div class="row">
+          <strong class="mono">${agency}</strong>
+          <span class="muted right">Accounts: ${list.length}</span>
+        </div>
+        <div style="overflow:auto; margin-top:10px">
+          <table>
+            <thead>
+              <tr>
+                <th>Status</th>
+                <th>Email</th>
+                <th>Password</th>
+                <th>Passport</th>
+                <th class="small">Updated</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${list.map(r => `
+                <tr data-ag="${encodeURIComponent(r.agency)}" data-email="${encodeURIComponent(r.email)}" data-passport="${encodeURIComponent(r.passport)}">
+                  <td>${badge(r.status)}</td>
+                  <td><input value="${escapeHtml(r.email)}" class="inpEmail" style="min-width:220px" /></td>
+                  <td><input value="${escapeHtml(r.password)}" class="inpPass" style="min-width:180px" /></td>
+                  <td><input value="${escapeHtml(r.passport)}" class="inpPassport" style="min-width:160px" /></td>
+                  <td class="muted small">${escapeHtml(r.updatedAt || r.createdAt || "")}</td>
+                  <td>
+                    <div class="row" style="gap:8px">
+                      <select class="selStatus">
+                        <option value="✅" ${r.status==="✅"?"selected":""}>✅</option>
+                        <option value="Pending" ${r.status==="Pending"?"selected":""}>Pending</option>
+                      </select>
+                      <button class="primary btnSave">Save</button>
+                      <button class="danger btnDel">Delete</button>
+                    </div>
+                  </td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
+      </div>`;
+    }
+
+    $("content").innerHTML = html || `<div class="muted">لا توجد نتائج</div>`;
+
+    // bind
+    document.querySelectorAll(".btnSave").forEach(btn => {
+      btn.addEventListener("click", onSave);
+    });
+    document.querySelectorAll(".btnDel").forEach(btn => {
+      btn.addEventListener("click", onDelete);
+    });
+    document.querySelectorAll(".selStatus").forEach(sel => {
+      sel.addEventListener("change", onStatus);
+    });
+  }
+
+  function escapeHtml(s) {
+    return String(s || "").replace(/[&<>"']/g, c => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    }[c]));
+  }
+
+  let cache = { agencies: [] };
+
+  async function refresh() {
+    $("btnRefresh").disabled = true;
+    try {
+      const res = await apiFetch("/owner/all", { method: "GET" });
+      const data = await res.json().catch(()=> ({}));
+      if (!res.ok || !data.ok) {
+        if ((data.error || "").includes("expired")) logout();
+        alert(data.error || "Failed");
+        return;
+      }
+      cache.agencies = data.agencies || [];
+      // counts
+      const totalAg = cache.agencies.length;
+      const totalAcc = flatten(cache.agencies).length;
+      $("counts").textContent = `Agencies: ${totalAg} | Accounts: ${totalAcc}`;
+      render(cache.agencies);
+    } finally {
+      $("btnRefresh").disabled = false;
+    }
+  }
+
+  async function onSave(e) {
+    const tr = e.target.closest("tr");
+    const agency = decodeURIComponent(tr.getAttribute("data-ag"));
+    const emailOld = decodeURIComponent(tr.getAttribute("data-email"));
+    const passportOld = decodeURIComponent(tr.getAttribute("data-passport"));
+
+    const newEmail = tr.querySelector(".inpEmail").value.trim();
+    const newPassword = tr.querySelector(".inpPass").value;
+    const newPassport = tr.querySelector(".inpPassport").value.trim();
+
+    e.target.disabled = true;
+    try {
+      const res = await apiFetch("/owner/account/update", {
+        method: "POST",
+        headers: { "Content-Type":"application/json" },
+        body: JSON.stringify({
+          agency,
+          email: emailOld,
+          passport: passportOld,
+          newEmail,
+          newPassword,
+          newPassport
+        })
+      });
+      const data = await res.json().catch(()=> ({}));
+      if (!res.ok || !data.ok) {
+        alert(data.error || "Update failed");
+        return;
+      }
+      await refresh();
+    } finally {
+      e.target.disabled = false;
+    }
+  }
+
+  async function onDelete(e) {
+    if (!confirm("تأكيد الحذف؟")) return;
+
+    const tr = e.target.closest("tr");
+    const agency = decodeURIComponent(tr.getAttribute("data-ag"));
+    const email = decodeURIComponent(tr.getAttribute("data-email"));
+    const passport = decodeURIComponent(tr.getAttribute("data-passport"));
+
+    e.target.disabled = true;
+    try {
+      const res = await apiFetch("/owner/account/delete", {
+        method: "POST",
+        headers: { "Content-Type":"application/json" },
+        body: JSON.stringify({ agency, email, passport })
+      });
+      const data = await res.json().catch(()=> ({}));
+      if (!res.ok || !data.ok) {
+        alert(data.error || "Delete failed");
+        return;
+      }
+      await refresh();
+    } finally {
+      e.target.disabled = false;
+    }
+  }
+
+  async function onStatus(e) {
+    const tr = e.target.closest("tr");
+    const agency = decodeURIComponent(tr.getAttribute("data-ag"));
+    const email = decodeURIComponent(tr.getAttribute("data-email"));
+    const passport = decodeURIComponent(tr.getAttribute("data-passport"));
+    const status = e.target.value;
+
+    const res = await apiFetch("/owner/account/set_status", {
+      method: "POST",
+      headers: { "Content-Type":"application/json" },
+      body: JSON.stringify({ agency, email, passport, status })
+    });
+    const data = await res.json().catch(()=> ({}));
+    if (!res.ok || !data.ok) {
+      alert(data.error || "Status update failed");
       return;
     }
-    openModal(false);
-    await loadAccounts();
-    toast($("dashMsg"), true, "تم التعديل");
-  };
+    // لا نعمل refresh كامل لتخفيف الضغط، لكن الأفضل لضمان تزامن:
+    await refresh();
+  }
 
-  window.delAcc = async (i)=>{
-    if(!confirm("هل تريد حذف هذا الحساب؟")) return;
-    const {res, json} = await postForm({
-      formType:"owner",
-      action:"delete",
-      agency: currentAgency,
-      index: String(i)
-    }, true);
-    if(!res.ok || !json.ok){
-      toast($("dashMsg"), false, json.error || "Delete failed");
-      return;
-    }
-    await loadAccounts();
-    toast($("dashMsg"), true, "تم الحذف");
-  };
+  $("btnLogin").addEventListener("click", login);
+  $("btnLogout").addEventListener("click", logout);
+  $("btnRefresh").addEventListener("click", refresh);
+  $("search").addEventListener("input", () => render(cache.agencies));
+  $("statusFilter").addEventListener("change", () => render(cache.agencies));
 
-  window.toggleStatus = async (i, status)=>{
-    const {res, json} = await postForm({
-      formType:"owner",
-      action:"set_status",
-      agency: currentAgency,
-      index: String(i),
-      status
-    }, true);
-    if(!res.ok || !json.ok){
-      toast($("dashMsg"), false, json.error || "Status failed");
-      return;
-    }
-    await loadAccounts();
-    toast($("dashMsg"), true, "تم تحديث الحالة");
-  };
-
-  // Auto-show dashboard إذا التوكن موجود
-  (async function init(){
-    if(OWNER_TOKEN){
-      showDash(true);
-      await loadAgencies();
-      await loadAccounts();
+  // auto session
+  (async () => {
+    if (getToken()) {
+      $("loginCard").classList.add("hidden");
+      $("dashCard").classList.remove("hidden");
+      await refresh();
     }
   })();
 </script>
