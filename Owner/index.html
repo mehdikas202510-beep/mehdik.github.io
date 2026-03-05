@@ -3,1077 +3,952 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Owner Panel — Pro</title>
+  <title>Owner Console</title>
   <style>
     :root{
-      --bg:#0b1220;
-      --panel:#101a2e;
-      --panel2:#0e172a;
-      --text:#e8eefc;
-      --muted:#9fb0d0;
-      --border:rgba(255,255,255,.10);
-      --shadow: 0 12px 30px rgba(0,0,0,.35);
-      --brand:#7c5cff;
-      --good:#22c55e;
-      --warn:#f59e0b;
-      --bad:#ef4444;
-      --chip:#162342;
+      --bg:#0b1020;
+      --panel:#111a33;
+      --panel2:#0e1630;
+      --text:#e8eeff;
+      --muted:#a7b3d6;
+      --line:#23305a;
+      --accent:#6aa7ff;
+      --good:#3ddc97;
+      --warn:#ffcc66;
+      --bad:#ff6b6b;
+      --shadow: 0 12px 40px rgba(0,0,0,.35);
+      --radius:18px;
+      --radius2:14px;
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans Arabic", "Noto Sans", sans-serif;
-      --r: 18px;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
     }
     *{box-sizing:border-box}
-    html,body{height:100%}
     body{
       margin:0;
       font-family:var(--sans);
       background:
-        radial-gradient(1100px 600px at 10% 10%, rgba(124,92,255,.18), transparent 60%),
-        radial-gradient(900px 500px at 90% 10%, rgba(34,197,94,.12), transparent 55%),
-        linear-gradient(180deg, #050a14, var(--bg));
+        radial-gradient(900px 500px at 80% 10%, rgba(106,167,255,.18), transparent 55%),
+        radial-gradient(700px 400px at 10% 20%, rgba(61,220,151,.12), transparent 60%),
+        linear-gradient(180deg, var(--bg), #060a16);
       color:var(--text);
+      min-height:100vh;
     }
-    a{color:inherit}
-    .wrap{max-width:1200px;margin:0 auto;padding:24px}
-    .topbar{
-      display:flex;gap:12px;align-items:center;justify-content:space-between;
-      padding:14px 16px;border:1px solid var(--border);border-radius:calc(var(--r) + 6px);
-      background:linear-gradient(180deg, rgba(16,26,46,.92), rgba(16,26,46,.68));
-      box-shadow:var(--shadow);
-      position:sticky;top:14px;backdrop-filter: blur(10px); z-index: 5;
-    }
-    .brand{display:flex;align-items:center;gap:10px}
-    .logo{
-      width:38px;height:38px;border-radius:14px;
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.22), transparent 45%),
-                  linear-gradient(135deg, rgba(124,92,255,1), rgba(34,197,94,1));
-      box-shadow: 0 10px 20px rgba(124,92,255,.22);
-    }
-    .title{display:flex;flex-direction:column;gap:2px}
-    .title b{font-size:15px;letter-spacing:.2px}
-    .title span{font-size:12px;color:var(--muted)}
-    .actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-    .btn{
-      border:1px solid var(--border);
-      background:rgba(255,255,255,.06);
-      color:var(--text);
-      padding:10px 12px;border-radius:14px;
-      cursor:pointer;
-      transition: transform .06s ease, background .15s ease, border-color .15s ease;
-      font-weight:700;
-      display:inline-flex;gap:8px;align-items:center;
-    }
-    .btn:hover{background:rgba(255,255,255,.10)}
-    .btn:active{transform:translateY(1px)}
-    .btn.primary{
-      border-color: rgba(124,92,255,.55);
-      background: linear-gradient(180deg, rgba(124,92,255,.30), rgba(124,92,255,.18));
-    }
-    .btn.danger{
-      border-color: rgba(239,68,68,.55);
-      background: linear-gradient(180deg, rgba(239,68,68,.22), rgba(239,68,68,.10));
-    }
-    .btn.ghost{background:transparent}
-    .btn[disabled]{opacity:.5;cursor:not-allowed;transform:none}
-    .chip{
-      font-size:12px;
-      padding:6px 10px;
-      border-radius:999px;
-      background:rgba(255,255,255,.06);
-      border:1px solid var(--border);
-      color:var(--muted);
-      display:inline-flex;gap:8px;align-items:center;
-    }
-    .grid{
-      display:grid;grid-template-columns: 340px 1fr;gap:18px;margin-top:18px;
-    }
-    @media (max-width: 980px){
-      .grid{grid-template-columns:1fr}
-      .topbar{position:static}
+    a{color:var(--accent); text-decoration:none}
+    .app{
+      display:grid;
+      grid-template-columns: 320px 1fr;
+      gap:18px;
+      padding:18px;
+      min-height:100vh;
     }
     .card{
-      border:1px solid var(--border);
-      border-radius:var(--r);
-      background: linear-gradient(180deg, rgba(16,26,46,.92), rgba(16,26,46,.60));
-      box-shadow: var(--shadow);
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+    .sidebar{
+      padding:16px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      position:sticky;
+      top:18px;
+      height:calc(100vh - 36px);
       overflow:hidden;
     }
-    .card .hd{
-      padding:14px 16px;
-      border-bottom:1px solid var(--border);
-      display:flex;align-items:center;justify-content:space-between;gap:12px;
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:12px 12px;
+      border-radius:14px;
+      background:rgba(106,167,255,.08);
+      border:1px solid rgba(106,167,255,.18);
     }
-    .card .hd h3{
-      margin:0;font-size:14px;letter-spacing:.2px
+    .logo{
+      width:40px;height:40px;border-radius:14px;
+      background:conic-gradient(from 210deg, rgba(106,167,255,1), rgba(61,220,151,1), rgba(255,204,102,1), rgba(106,167,255,1));
+      box-shadow:0 12px 30px rgba(106,167,255,.22);
     }
-    .card .bd{padding:14px 16px}
-    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-    label{font-size:12px;color:var(--muted);display:block;margin-bottom:7px}
-    .field{display:flex;flex-direction:column;gap:7px;flex:1;min-width:160px}
+    .brand h1{margin:0;font-size:16px;letter-spacing:.2px}
+    .brand p{margin:2px 0 0 0;color:var(--muted);font-size:12px}
+    .sectionTitle{
+      margin:0;
+      font-size:12px;
+      color:var(--muted);
+      letter-spacing:.6px;
+      text-transform:uppercase;
+    }
+    .loginBox{
+      padding:14px;
+      border-radius:var(--radius2);
+      background:rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.06);
+    }
+    .row{display:flex; gap:10px; align-items:center}
+    .row > *{flex:1}
+    label{display:block; font-size:12px; color:var(--muted); margin:10px 0 6px}
     input, select, textarea{
       width:100%;
-      border:1px solid var(--border);
-      background:rgba(255,255,255,.06);
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(5,8,18,.55);
       color:var(--text);
-      padding:10px 12px;
-      border-radius:14px;
       outline:none;
-      font-family:var(--sans);
     }
-    textarea{min-height:150px;resize:vertical}
-    input::placeholder, textarea::placeholder{color:rgba(159,176,208,.65)}
-    .muted{color:var(--muted);font-size:12px;line-height:1.6}
-    .kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .kpi{
-      border:1px solid var(--border);border-radius:16px;padding:12px;
-      background:rgba(255,255,255,.05);
+    input:focus, textarea:focus, select:focus{border-color:rgba(106,167,255,.55)}
+    textarea{min-height:150px; font-family:var(--mono); direction:ltr}
+    .btn{
+      padding:11px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(106,167,255,.16);
+      color:var(--text);
+      cursor:pointer;
+      font-weight:600;
+      transition:.15s;
+      user-select:none;
     }
-    .kpi b{display:block;font-size:18px}
-    .kpi span{color:var(--muted);font-size:12px}
-    .tablewrap{overflow:auto;border-radius:14px;border:1px solid var(--border)}
-    table{border-collapse:separate;border-spacing:0;width:100%;min-width:780px}
-    thead th{
-      position:sticky;top:0;
-      background:rgba(12,20,36,.90);
-      backdrop-filter: blur(8px);
-      text-align:right;
-      font-size:12px;color:var(--muted);
-      padding:10px 12px;border-bottom:1px solid var(--border);
+    .btn:hover{transform:translateY(-1px); background:rgba(106,167,255,.22)}
+    .btn.secondary{background:rgba(255,255,255,.06)}
+    .btn.good{background:rgba(61,220,151,.18)}
+    .btn.bad{background:rgba(255,107,107,.16)}
+    .btn.warn{background:rgba(255,204,102,.16)}
+    .btn:disabled{opacity:.5; cursor:not-allowed; transform:none}
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.16);
+      color:var(--muted);
+      font-size:12px;
       white-space:nowrap;
-    }
-    tbody td{
-      padding:11px 12px;border-bottom:1px solid rgba(255,255,255,.07);
-      font-size:13px;vertical-align:middle;
-      white-space:nowrap;
-    }
-    tbody tr:hover{background:rgba(255,255,255,.04)}
-    .mono{font-family:var(--mono);font-size:12px}
-    .status{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:6px 10px;border-radius:999px;font-weight:800;font-size:12px;
-      border:1px solid var(--border);
-      background:rgba(255,255,255,.06);
     }
     .dot{width:8px;height:8px;border-radius:999px;background:var(--muted)}
-    .s-good .dot{background:var(--good)}
-    .s-warn .dot{background:var(--warn)}
-    .s-bad .dot{background:var(--bad)}
-    .s-neutral .dot{background:#93c5fd}
-    .pill{
-      padding:6px 10px;border-radius:999px;
-      background:rgba(255,255,255,.06);border:1px solid var(--border);
-      font-size:12px;color:var(--muted);
-      display:inline-flex;gap:8px;align-items:center;
+    .dot.good{background:var(--good)}
+    .dot.bad{background:var(--bad)}
+    .dot.warn{background:var(--warn)}
+    .agencyList{
+      overflow:auto;
+      padding-right:4px;
+      flex:1;
     }
-    .hr{height:1px;background:rgba(255,255,255,.08);margin:14px 0}
-    .toast{
-      position:fixed;inset:auto 18px 18px auto;
-      background:rgba(16,26,46,.92);
-      border:1px solid var(--border);border-radius:16px;
-      padding:12px 14px;box-shadow:var(--shadow);
-      max-width: 520px;display:none;z-index:20;
+    .agencyItem{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.06);
+      background:rgba(0,0,0,.14);
+      margin-bottom:10px;
+      cursor:pointer;
+      transition:.12s;
     }
-    .toast.show{display:block}
-    .toast b{display:block;font-size:13px;margin-bottom:4px}
-    .toast span{font-size:12px;color:var(--muted);line-height:1.5}
-    .modal{
-      position:fixed;inset:0;display:none;align-items:center;justify-content:center;
-      background: rgba(0,0,0,.55); z-index: 30; padding: 18px;
+    .agencyItem:hover{border-color:rgba(106,167,255,.35)}
+    .agencyItem.active{
+      border-color:rgba(106,167,255,.55);
+      background:rgba(106,167,255,.10);
     }
-    .modal.show{display:flex}
-    .modal .box{
-      width:min(860px, 100%);
-      border:1px solid var(--border);
-      border-radius:22px;
-      background: linear-gradient(180deg, rgba(16,26,46,.96), rgba(16,26,46,.74));
-      box-shadow: 0 18px 50px rgba(0,0,0,.55);
+    .agencyName{font-weight:700; font-size:13px}
+    .agencyMeta{color:var(--muted); font-size:12px}
+    .main{
+      padding:16px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
       overflow:hidden;
     }
-    .modal .box .hd{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
-    .modal .box .bd{padding:14px 16px}
-    .modal .box .ft{padding:14px 16px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-start;flex-wrap:wrap}
-    .hint{
-      font-family:var(--mono);
+    .topbar{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .topbar .left{display:flex; gap:10px; align-items:center; flex-wrap:wrap; flex:1}
+    .topbar .right{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+    .bigTitle{
+      margin:0;
+      font-size:18px;
+      letter-spacing:.2px;
+    }
+    .hint{color:var(--muted); font-size:12px; margin:0}
+    .tableWrap{
+      overflow:auto;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.06);
+      background:rgba(0,0,0,.12);
+      flex:1;
+    }
+    table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      min-width:980px;
+    }
+    thead th{
+      position:sticky; top:0;
+      background:rgba(12,18,40,.92);
+      backdrop-filter: blur(8px);
+      border-bottom:1px solid rgba(255,255,255,.08);
+      text-align:right;
+      padding:12px 12px;
       font-size:12px;
-      padding:10px 12px;
+      color:var(--muted);
+      letter-spacing:.4px;
+    }
+    tbody td{
+      border-bottom:1px solid rgba(255,255,255,.06);
+      padding:12px 12px;
+      font-size:13px;
+      vertical-align:top;
+    }
+    tbody tr:hover td{background:rgba(106,167,255,.06)}
+    .mono{font-family:var(--mono); direction:ltr; text-align:left}
+    .status{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.16);
+      font-size:12px;
+    }
+    .status.good{border-color:rgba(61,220,151,.35)}
+    .status.warn{border-color:rgba(255,204,102,.35)}
+    .status.bad{border-color:rgba(255,107,107,.35)}
+    .actions{display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap}
+    .toast{
+      position:fixed;
+      bottom:18px;
+      left:18px;
+      right:18px;
+      display:flex;
+      justify-content:center;
+      pointer-events:none;
+      z-index:9999;
+    }
+    .toast .msg{
+      pointer-events:auto;
+      max-width:900px;
+      width:100%;
+      padding:12px 14px;
       border-radius:14px;
-      border:1px dashed rgba(255,255,255,.16);
-      background:rgba(255,255,255,.04);
-      color:rgba(232,238,252,.88);
-      white-space:pre-wrap;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.55);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow);
+      color:var(--text);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
     }
-    .list{
-      margin:0;padding:0;list-style:none;
-      display:flex;flex-direction:column;gap:8px;
-      max-height: 280px; overflow:auto;
-    }
-    .list li{
-      padding:10px 12px;border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.04);
-      border-radius:14px;
-      display:flex;align-items:center;justify-content:space-between;gap:10px;
-    }
-    .list small{color:var(--muted)}
-    .tag{
-      font-size:11px;border-radius:999px;padding:5px 9px;
+    .kbd{
+      font-family:var(--mono);
+      padding:2px 8px;
+      border-radius:8px;
       border:1px solid rgba(255,255,255,.12);
       background:rgba(255,255,255,.06);
       color:var(--muted);
+      font-size:12px;
     }
-    .rtl-toggle{
-      border:1px solid var(--border);
-      background:rgba(255,255,255,.05);
-      padding:8px 10px;border-radius:999px;
-      display:flex;gap:8px;align-items:center;
+    dialog{
+      border:none;
+      border-radius:18px;
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      color:var(--text);
+      width:min(980px, 92vw);
+      box-shadow:var(--shadow);
+      padding:0;
     }
-    .rtl-toggle button{
-      border:0;background:transparent;color:var(--muted);
-      padding:6px 10px;border-radius:999px;cursor:pointer;font-weight:800;
+    dialog::backdrop{background:rgba(0,0,0,.55)}
+    .modalHead{
+      padding:14px 16px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
     }
-    .rtl-toggle button.active{color:var(--text);background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.10)}
-    .footnote{font-size:11px;color:rgba(159,176,208,.85);line-height:1.6}
+    .modalHead h3{margin:0; font-size:14px}
+    .modalBody{padding:14px 16px}
+    .modalFoot{
+      padding:14px 16px;
+      border-top:1px solid rgba(255,255,255,.08);
+      display:flex;
+      justify-content:flex-start;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .grid2{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+    @media (max-width: 980px){
+      .app{grid-template-columns:1fr; }
+      .sidebar{position:relative; height:auto}
+      table{min-width:860px}
+      .grid2{grid-template-columns:1fr}
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="topbar">
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="card sidebar">
       <div class="brand">
-        <div class="logo" aria-hidden="true"></div>
-        <div class="title">
-          <b id="t_app">Owner Panel — Pro</b>
-          <span id="t_sub">إدارة الوكالات والحسابات (KV) — تسجيل الدخول عبر Secrets</span>
-        </div>
-      </div>
-      <div class="actions">
-        <div class="rtl-toggle" title="Language / اللغة">
-          <button id="langAR" class="active">AR</button>
-          <button id="langEN">EN</button>
-        </div>
-        <span class="chip" id="chipApi">API: <span class="mono" id="apiHost">…</span></span>
-        <span class="chip" id="chipAuth">Auth: <span id="authState">Guest</span></span>
-        <button class="btn ghost" id="btnPing">Ping</button>
-        <button class="btn danger" id="btnLogout" disabled>Logout</button>
-      </div>
-    </div>
-
-    <div class="grid">
-      <!-- Left column -->
-      <div class="card" id="cardAuth">
-        <div class="hd">
-          <h3 id="t_login">تسجيل الدخول</h3>
-          <span class="pill" id="pillStatus"><span class="dot" style="background:#93c5fd"></span><span id="pillText">غير متصل</span></span>
-        </div>
-        <div class="bd">
-          <div class="row">
-            <div class="field">
-              <label id="t_user">Owner User</label>
-              <input id="inUser" autocomplete="username" placeholder="مثال: admin" />
-            </div>
-            <div class="field">
-              <label id="t_pass">Owner Pass</label>
-              <input id="inPass" type="password" autocomplete="current-password" placeholder="••••••••" />
-            </div>
-          </div>
-          <div style="margin-top:12px" class="row">
-            <button class="btn primary" id="btnLogin">Login</button>
-            <span class="muted" id="t_loginHint">سيتم إرسال بيانات الدخول في Headers لكل طلب (X-Owner-User / X-Owner-Pass)</span>
-          </div>
-          <div class="hr"></div>
-          <div class="kpis">
-            <div class="kpi">
-              <b id="kpiAgencies">—</b>
-              <span id="t_kpiAg">عدد الوكالات</span>
-            </div>
-            <div class="kpi">
-              <b id="kpiAccounts">—</b>
-              <span id="t_kpiAcc">حسابات الوكالة المحددة</span>
-            </div>
-          </div>
-          <div class="hr"></div>
-          <div class="muted" id="t_priv">
-            ملاحظة: هذه الصفحة لا تُخزّن كلمة السر على السيرفر. لكنها ستُرسلها في كل طلب API. استخدمها فقط على جهاز موثوق.
-          </div>
+        <div class="logo"></div>
+        <div>
+          <h1>Owner Console</h1>
+          <p>إدارة الوكالات والحسابات بشكل متقدم</p>
         </div>
       </div>
 
-      <!-- Right column -->
-      <div class="card">
-        <div class="hd">
-          <h3 id="t_manage">إدارة البيانات</h3>
-          <div class="row">
-            <button class="btn" id="btnRefresh" disabled>Refresh</button>
-            <button class="btn primary" id="btnBulk" disabled>+ Bulk Paste</button>
-            <button class="btn" id="btnAddOne" disabled>+ Add One</button>
-          </div>
+      <div class="loginBox">
+        <p class="sectionTitle">تسجيل الدخول</p>
+        <label>Owner User</label>
+        <input id="ownerUser" placeholder="مثال: admin" autocomplete="username" />
+        <label>Owner Password</label>
+        <input id="ownerPass" placeholder="••••••••" type="password" autocomplete="current-password" />
+        <div class="row" style="margin-top:10px">
+          <button class="btn good" id="btnLogin">Login</button>
+          <button class="btn secondary" id="btnLogout" disabled>Logout</button>
         </div>
-        <div class="bd">
-          <div class="row">
-            <div class="field" style="min-width:240px">
-              <label id="t_agency">الوكالة</label>
-              <select id="selAgency" disabled></select>
-            </div>
-            <div class="field">
-              <label id="t_search">بحث</label>
-              <input id="inSearch" placeholder="email / passport / status..." disabled />
-            </div>
-            <div class="field" style="max-width:220px">
-              <label id="t_filter">تصفية الحالة</label>
-              <select id="selStatusFilter" disabled>
-                <option value="">(الكل)</option>
-                <option value="Pending">Pending</option>
-                <option value="Done">Done</option>
-                <option value="Rejected">Rejected</option>
-                <option value="In Progress">In Progress</option>
-              </select>
-            </div>
-          </div>
-
-          <div style="margin-top:12px" class="tablewrap">
-            <table>
-              <thead>
-                <tr>
-                  <th style="width:38px">#</th>
-                  <th>Email</th>
-                  <th>Password</th>
-                  <th>Passport</th>
-                  <th>Status</th>
-                  <th style="width:210px" id="t_actions">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="tbody">
-                <tr><td colspan="6" class="muted" style="padding:16px">—</td></tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div class="hr"></div>
-          <div class="footnote" id="t_note">
-            ⚠️ ملاحظة أمنية: من الأفضل عدم عرض كلمات السر كنص صريح. هذه اللوحة تُظهرها لأنها موجودة في التخزين (KV). يفضّل تعديل الـ API لاحقاً لإخفائها.
-          </div>
+        <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap">
+          <span class="pill" id="authPill"><span class="dot bad" id="authDot"></span><span id="authText">غير مسجل</span></span>
+          <span class="pill"><span class="dot" style="background:var(--accent)"></span><span id="apiInfo">API: -</span></span>
         </div>
       </div>
-    </div>
+
+      <p class="sectionTitle">الوكالات</p>
+      <input id="agencyFilter" placeholder="بحث عن وكالة..." />
+
+      <div class="agencyList" id="agencyList"></div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap">
+        <button class="btn secondary" id="btnRefreshAgencies" disabled>Refresh</button>
+        <button class="btn warn" id="btnExportAgencyJson" disabled>Export JSON</button>
+      </div>
+      <p class="hint" style="margin-top:4px">
+        تلميح: استخدم <span class="kbd">Ctrl</span> + <span class="kbd">F</span> للبحث داخل الجدول.
+      </p>
+    </aside>
+
+    <!-- Main -->
+    <main class="card main">
+      <div class="topbar">
+        <div class="left">
+          <div>
+            <h2 class="bigTitle" id="mainTitle">اختر وكالة لعرض الحسابات</h2>
+            <p class="hint" id="mainHint">بعد تسجيل الدخول، اختر وكالة من القائمة.</p>
+          </div>
+        </div>
+        <div class="right">
+          <input id="searchBox" placeholder="بحث داخل الحسابات (Email/Passport/Status)..." style="min-width:300px" disabled />
+          <button class="btn secondary" id="btnOpenImport" disabled>Import JSON</button>
+          <button class="btn secondary" id="btnAddSingle" disabled>+ Add Account</button>
+          <button class="btn" id="btnReloadAccounts" disabled>Reload</button>
+        </div>
+      </div>
+
+      <div class="tableWrap" id="tableWrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:42px">#</th>
+              <th>Email</th>
+              <th>Passport</th>
+              <th>Password</th>
+              <th>Status</th>
+              <th style="width:260px; text-align:left">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <tr><td colspan="6" style="color:var(--muted); padding:18px">لا توجد بيانات بعد.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
   </div>
+
+  <!-- Edit modal -->
+  <dialog id="editModal">
+    <div class="modalHead">
+      <h3>تعديل حساب</h3>
+      <button class="btn secondary" onclick="document.getElementById('editModal').close()">إغلاق</button>
+    </div>
+    <div class="modalBody">
+      <div class="grid2">
+        <div>
+          <label>Email (new)</label>
+          <input id="editEmail" />
+        </div>
+        <div>
+          <label>Passport (new)</label>
+          <input id="editPassport" />
+        </div>
+        <div>
+          <label>Password (new)</label>
+          <input id="editPassword" />
+        </div>
+        <div>
+          <label>Status</label>
+          <select id="editStatus">
+            <option value="Pending">Pending</option>
+            <option value="Done">Done</option>
+            <option value="Rejected">Rejected</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="pill" style="margin-top:12px">
+        <span class="dot" style="background:var(--warn)"></span>
+        <span id="editMatchInfo" class="mono">match: -</span>
+      </div>
+    </div>
+    <div class="modalFoot">
+      <button class="btn good" id="btnSaveEdit">Save</button>
+      <button class="btn bad" id="btnDeleteAccount">Delete</button>
+      <button class="btn secondary" onclick="document.getElementById('editModal').close()">Cancel</button>
+    </div>
+  </dialog>
+
+  <!-- Import JSON modal -->
+  <dialog id="importModal">
+    <div class="modalHead">
+      <h3>Import JSON (لصق JSON)</h3>
+      <button class="btn secondary" onclick="document.getElementById('importModal').close()">إغلاق</button>
+    </div>
+    <div class="modalBody">
+      <p class="hint" style="margin-top:0">
+        الصيغة المطلوبة:
+      </p>
+      <pre class="pill mono" style="white-space:pre-wrap; line-height:1.5">
+[
+  {"email":"a@b.com","password":"123","passport":"AB123","status":"Pending"},
+  {"email":"x@y.com","password":"***","passport":"CD999"}
+]
+      </pre>
+      <label>Paste JSON</label>
+      <textarea id="importJson" placeholder='[{"email":"...","password":"...","passport":"..."}]'></textarea>
+      <div class="row" style="margin-top:10px">
+        <button class="btn secondary" id="btnValidateJson">Validate</button>
+        <span class="pill" id="importStats"><span class="dot"></span><span>—</span></span>
+      </div>
+      <p class="hint">ملاحظة: سيتم تجاهل العناصر الناقصة أو غير الصحيحة، وسيتم الإبلاغ بعدد المضاف/المتجاهل.</p>
+    </div>
+    <div class="modalFoot">
+      <button class="btn good" id="btnDoImport">Import</button>
+      <button class="btn secondary" onclick="document.getElementById('importModal').close()">Cancel</button>
+    </div>
+  </dialog>
+
+  <!-- Add single modal -->
+  <dialog id="addModal">
+    <div class="modalHead">
+      <h3>Add Account</h3>
+      <button class="btn secondary" onclick="document.getElementById('addModal').close()">إغلاق</button>
+    </div>
+    <div class="modalBody">
+      <div class="grid2">
+        <div>
+          <label>Email</label>
+          <input id="addEmail" />
+        </div>
+        <div>
+          <label>Passport</label>
+          <input id="addPassport" />
+        </div>
+        <div>
+          <label>Password</label>
+          <input id="addPassword" />
+        </div>
+        <div>
+          <label>Status</label>
+          <select id="addStatus">
+            <option value="Pending">Pending</option>
+            <option value="Done">Done</option>
+            <option value="Rejected">Rejected</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modalFoot">
+      <button class="btn good" id="btnDoAdd">Add</button>
+      <button class="btn secondary" onclick="document.getElementById('addModal').close()">Cancel</button>
+    </div>
+  </dialog>
 
   <!-- Toast -->
-  <div class="toast" id="toast" role="status" aria-live="polite">
-    <b id="toastTitle">—</b>
-    <span id="toastMsg">—</span>
-  </div>
-
-  <!-- Modal: Add / Edit One -->
-  <div class="modal" id="modalOne" aria-hidden="true">
-    <div class="box">
-      <div class="hd">
-        <div>
-          <b id="oneTitle">Account</b>
-          <div class="muted" id="oneSub">—</div>
-        </div>
-        <button class="btn ghost" onclick="UI.closeOne()">✕</button>
-      </div>
-      <div class="bd">
-        <div class="row">
-          <div class="field">
-            <label>Email</label>
-            <input id="oneEmail" placeholder="name@example.com" />
-          </div>
-          <div class="field">
-            <label>Password</label>
-            <input id="onePass" placeholder="password" />
-          </div>
-        </div>
-        <div style="margin-top:10px" class="row">
-          <div class="field">
-            <label>Passport</label>
-            <input id="onePassport" placeholder="AA123456" />
-          </div>
-          <div class="field">
-            <label>Status</label>
-            <select id="oneStatus">
-              <option value="Pending">Pending</option>
-              <option value="In Progress">In Progress</option>
-              <option value="Done">Done</option>
-              <option value="Rejected">Rejected</option>
-            </select>
-          </div>
-        </div>
-        <div class="hr"></div>
-        <div class="muted" id="oneHelp">لإضافة حساب جديد: سيتم الإضافة عبر “Agency add” ثم (اختياري) ضبط الحالة عبر Owner edit.</div>
-      </div>
-      <div class="ft">
-        <button class="btn" onclick="UI.closeOne()">Cancel</button>
-        <button class="btn primary" id="btnSaveOne">Save</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal: Bulk Paste -->
-  <div class="modal" id="modalBulk" aria-hidden="true">
-    <div class="box">
-      <div class="hd">
-        <div>
-          <b id="bulkTitle">Bulk Paste</b>
-          <div class="muted" id="bulkSub">ألصق JSON Array من الحسابات، ثم Preview ثم Add</div>
-        </div>
-        <button class="btn ghost" onclick="UI.closeBulk()">✕</button>
-      </div>
-      <div class="bd">
-        <div class="row" style="align-items:flex-start">
-          <div class="field" style="flex:1.25">
-            <label id="t_json">JSON</label>
-            <textarea id="bulkText" class="mono" placeholder='[
-  {"email":"a@x.com","password":"123","passport":"AA1","status":"Pending"},
-  {"email":"b@x.com","password":"456","passport":"BB2","status":"Done"}
-]'></textarea>
-            <div class="muted" id="t_jsonHint">المدعوم: Array مباشرة أو Object فيه مفتاح <span class="mono">accounts</span>. إذا كان النص فيه أشياء زائدة، سنحاول استخراج أول <span class="mono">[ ... ]</span>.</div>
-          </div>
-          <div class="field" style="flex:0.75;min-width:260px">
-            <label id="t_preview">Preview</label>
-            <div class="hint" id="bulkStats">—</div>
-            <div class="hr"></div>
-            <ul class="list" id="bulkList"></ul>
-          </div>
-        </div>
-      </div>
-      <div class="ft">
-        <button class="btn" onclick="UI.closeBulk()">Cancel</button>
-        <button class="btn" id="btnParse">Preview</button>
-        <button class="btn primary" id="btnBulkAdd" disabled>Add accounts</button>
-      </div>
+  <div class="toast" id="toast" style="display:none">
+    <div class="msg">
+      <div id="toastText">—</div>
+      <button class="btn secondary" onclick="hideToast()">OK</button>
     </div>
   </div>
 
 <script>
-(() => {
-  // =========================
-  // Config
-  // =========================
-  const API_BASE = "https://api.mehdik.site";
-  const API_ROOT = API_BASE + "/";           // for agency formType endpoints
-  const OWNER_BASE = API_BASE + "/owner";    // for owner endpoints
-  document.getElementById("apiHost").textContent = API_BASE;
+  // ========= CONFIG =========
+  const API_BASE = "https://api.mehdik.site"; // <-- غيّرها إذا لزم
+  document.getElementById('apiInfo').textContent = "API: " + API_BASE;
 
-  // =========================
-  // i18n (small, practical)
-  // =========================
-  const I18N = {
-    ar: {
-      app:"Owner Panel — Pro",
-      sub:"إدارة الوكالات والحسابات (KV) — تسجيل الدخول عبر Secrets",
-      login:"تسجيل الدخول",
-      manage:"إدارة البيانات",
-      agency:"الوكالة",
-      search:"بحث",
-      filter:"تصفية الحالة",
-      actions:"إجراءات",
-      kAg:"عدد الوكالات",
-      kAcc:"حسابات الوكالة المحددة",
-      loginHint:"سيتم إرسال بيانات الدخول في Headers لكل طلب (X-Owner-User / X-Owner-Pass)",
-      priv:"ملاحظة: هذه الصفحة لا تُخزّن كلمة السر على السيرفر. لكنها ستُرسلها في كل طلب API. استخدمها فقط على جهاز موثوق.",
-      note:"⚠️ ملاحظة أمنية: من الأفضل عدم عرض كلمات السر كنص صريح. هذه اللوحة تُظهرها لأنها موجودة في التخزين (KV). يفضّل تعديل الـ API لاحقاً لإخفائها.",
-      bulkTitle:"إضافة جماعية (Bulk Paste)",
-      bulkSub:"ألصق JSON Array من الحسابات، ثم Preview ثم Add",
-      json:"JSON",
-      preview:"Preview",
-    },
-    en: {
-      app:"Owner Panel — Pro",
-      sub:"Agencies & Accounts (KV) — Owner auth via Worker Secrets",
-      login:"Login",
-      manage:"Manage",
-      agency:"Agency",
-      search:"Search",
-      filter:"Status filter",
-      actions:"Actions",
-      kAg:"# Agencies",
-      kAcc:"Selected agency accounts",
-      loginHint:"Credentials are sent in Headers on each request (X-Owner-User / X-Owner-Pass).",
-      priv:"Note: this page does not store your password on the server, but it will be sent on every API request. Use only on a trusted device.",
-      note:"⚠️ Security note: ideally passwords should not be shown. This panel displays them because they exist in KV. Consider changing the API later to mask/remove them.",
-      bulkTitle:"Bulk Paste",
-      bulkSub:"Paste a JSON array of accounts, Preview, then Add",
-      json:"JSON",
-      preview:"Preview",
-    }
-  };
-  let LANG = "ar";
-  function setLang(lang){
-    LANG = lang;
-    const d = I18N[LANG] || I18N.ar;
-    document.documentElement.lang = LANG;
-    document.documentElement.dir = (LANG==="ar" ? "rtl" : "ltr");
-    document.getElementById("langAR").classList.toggle("active", LANG==="ar");
-    document.getElementById("langEN").classList.toggle("active", LANG==="en");
-    document.getElementById("t_app").textContent = d.app;
-    document.getElementById("t_sub").textContent = d.sub;
-    document.getElementById("t_login").textContent = d.login;
-    document.getElementById("t_manage").textContent = d.manage;
-    document.getElementById("t_agency").textContent = d.agency;
-    document.getElementById("t_search").textContent = d.search;
-    document.getElementById("t_filter").textContent = d.filter;
-    document.getElementById("t_actions").textContent = d.actions;
-    document.getElementById("t_kpiAg").textContent = d.kAg;
-    document.getElementById("t_kpiAcc").textContent = d.kAcc;
-    document.getElementById("t_loginHint").textContent = d.loginHint;
-    document.getElementById("t_priv").textContent = d.priv;
-    document.getElementById("t_note").textContent = d.note;
-    document.getElementById("bulkTitle").textContent = d.bulkTitle;
-    document.getElementById("bulkSub").textContent = d.bulkSub;
-    document.getElementById("t_json").textContent = d.json;
-    document.getElementById("t_preview").textContent = d.preview;
-  }
-  document.getElementById("langAR").onclick = () => setLang("ar");
-  document.getElementById("langEN").onclick = () => setLang("en");
-  setLang("ar");
+  // ========= STATE =========
+  let ownerUser = "";
+  let ownerPass = "";
+  let authed = false;
 
-  // =========================
-  // State
-  // =========================
-  const S = {
-    ownerUser: "",
-    ownerPass: "",
-    agencies: [],
-    agencySelected: "",
-    accounts: [],
-    bulkParsed: [],
-  };
+  let agencies = [];  // [{agency,count}]
+  let selectedAgency = "";
+  let accounts = [];  // raw accounts for selected agency
+  let filteredAccounts = [];
 
-  // =========================
-  // Helpers
-  // =========================
-  function toast(title, msg){
-    const t = document.getElementById("toast");
-    document.getElementById("toastTitle").textContent = title;
-    document.getElementById("toastMsg").textContent = msg;
-    t.classList.add("show");
-    clearTimeout(toast._tm);
-    toast._tm = setTimeout(() => t.classList.remove("show"), 3600);
+  let currentEditMatch = null; // {email, passport}
+
+  // ========= HELPERS =========
+  const $ = (id) => document.getElementById(id);
+
+  function setAuthUI(ok){
+    authed = ok;
+    $('authDot').className = 'dot ' + (ok ? 'good' : 'bad');
+    $('authText').textContent = ok ? 'مسجل' : 'غير مسجل';
+    $('btnLogin').disabled = ok;
+    $('btnLogout').disabled = !ok;
+    $('btnRefreshAgencies').disabled = !ok;
+    $('agencyFilter').disabled = !ok;
+    $('searchBox').disabled = !ok || !selectedAgency;
+    $('btnOpenImport').disabled = !ok || !selectedAgency;
+    $('btnReloadAccounts').disabled = !ok || !selectedAgency;
+    $('btnAddSingle').disabled = !ok || !selectedAgency;
+    $('btnExportAgencyJson').disabled = !ok || !selectedAgency;
   }
-  function setAuthState(isAuthed){
-    document.getElementById("authState").textContent = isAuthed ? "Owner" : "Guest";
-    document.getElementById("btnLogout").disabled = !isAuthed;
-    document.getElementById("btnRefresh").disabled = !isAuthed;
-    document.getElementById("btnBulk").disabled = !isAuthed;
-    document.getElementById("btnAddOne").disabled = !isAuthed;
-    document.getElementById("selAgency").disabled = !isAuthed;
-    document.getElementById("inSearch").disabled = !isAuthed;
-    document.getElementById("selStatusFilter").disabled = !isAuthed;
-    document.getElementById("pillText").textContent = isAuthed ? (LANG==="ar"?"متصل":"Connected") : (LANG==="ar"?"غير متصل":"Disconnected");
+
+  function toast(msg){
+    $('toastText').textContent = msg;
+    $('toast').style.display = 'flex';
   }
+  function hideToast(){
+    $('toast').style.display = 'none';
+  }
+
   function ownerHeaders(){
     return {
-      "X-Owner-User": S.ownerUser || "",
-      "X-Owner-Pass": S.ownerPass || "",
+      "X-Owner-User": ownerUser,
+      "X-Owner-Pass": ownerPass
     };
   }
+
+  function safeStatusClass(s){
+    const v = (s||"").toLowerCase();
+    if(v.includes('done')) return 'good';
+    if(v.includes('reject') || v.includes('fail')) return 'bad';
+    return 'warn';
+  }
+
   function maskPassword(p){
-    const s = String(p || "");
-    if (!s) return "";
-    if (s.length <= 2) return "•".repeat(s.length);
-    return "•".repeat(Math.min(10, s.length-2)) + s.slice(-2);
-  }
-  function statusClass(st){
-    const s = String(st||"").trim().toLowerCase();
-    if (s === "done" || s === "approved" || s === "ok") return "s-good";
-    if (s.includes("progress") || s === "pending") return "s-warn";
-    if (s === "rejected" || s === "fail" || s === "failed") return "s-bad";
-    return "s-neutral";
-  }
-  function escapeHtml(x){ return String(x ?? "").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
-  function norm(s){ return String(s||"").trim(); }
-  function normEmail(s){ return norm(s).toLowerCase(); }
-  function normPassport(s){ return norm(s).toUpperCase(); }
-  function uniqByKey(list, keyFn){
-    const out=[], seen=new Set();
-    for(const x of list){
-      const k = keyFn(x);
-      if(seen.has(k)) continue;
-      seen.add(k); out.push(x);
-    }
-    return out;
+    if(!p) return '';
+    const s = String(p);
+    if(s.length <= 2) return '••';
+    return '•'.repeat(Math.min(8, s.length-2)) + s.slice(-2);
   }
 
-  // =========================
-  // API calls
-  // =========================
-  async function apiPing(){
-    // Worker has /owner/ping
-    const r = await fetch(OWNER_BASE + "/ping", { headers: ownerHeaders() });
-    return r.json().catch(()=>({ok:false}));
-  }
+  function normalizeEmail(v){ return String(v||'').trim().toLowerCase(); }
+  function normalizePassport(v){ return String(v||'').trim().toUpperCase(); }
 
-  async function ownerLogin(user, pass){
-    const r = await fetch(OWNER_BASE + "/login", {
-      method:"POST",
-      headers:{ "Content-Type":"application/json" },
-      body: JSON.stringify({ user, pass })
+  // ========= API =========
+  async function api(path, opts={}){
+    const url = API_BASE + path;
+    const res = await fetch(url, {
+      ...opts,
+      headers: {
+        "Content-Type": "application/json",
+        ...(opts.headers || {})
+      }
     });
-    return r.json().catch(()=>({ok:false}));
-  }
-
-  async function ownerAgencies(){
-    const r = await fetch(OWNER_BASE + "/agencies", { headers: ownerHeaders() });
-    return r.json().catch(()=>({ok:false}));
-  }
-
-  async function ownerAccounts(agency){
-    const url = OWNER_BASE + "/accounts?agency=" + encodeURIComponent(agency || "");
-    const r = await fetch(url, { headers: ownerHeaders() });
-    return r.json().catch(()=>({ok:false}));
-  }
-
-  async function ownerEditAccount(payload){
-    const r = await fetch(OWNER_BASE + "/account", {
-      method:"PUT",
-      headers: { ...ownerHeaders(), "Content-Type":"application/json" },
-      body: JSON.stringify(payload)
-    });
-    return r.json().catch(()=>({ok:false}));
-  }
-
-  async function ownerDeleteAccount(payload){
-    const r = await fetch(OWNER_BASE + "/account", {
-      method:"DELETE",
-      headers: { ...ownerHeaders(), "Content-Type":"application/json" },
-      body: JSON.stringify(payload)
-    });
-    return r.json().catch(()=>({ok:false}));
-  }
-
-  async function agencyAddMulti(agency, accounts){
-    // Uses worker's public agency endpoint (formType=agency, action=add) with multi "accounts" text.
-    // Format per worker: "email;password;passport" lines. Status isn't supported here (status defaults to Pending).
-    const lines = accounts.map(a => `${norm(a.email)};${norm(a.password)};${norm(a.passport)}`).join("\n");
-    const fd = new FormData();
-    fd.set("formType","agency");
-    fd.set("action","add");
-    fd.set("firma", agency);
-    fd.set("molti","1");
-    fd.set("accounts", lines);
-    const r = await fetch(API_ROOT, { method:"POST", body: fd });
-    return r.json().catch(()=>({ok:false}));
-  }
-
-  // =========================
-  // Render
-  // =========================
-  function renderAgencies(){
-    const sel = document.getElementById("selAgency");
-    sel.innerHTML = "";
-    const opt0 = document.createElement("option");
-    opt0.value = "";
-    opt0.textContent = LANG==="ar" ? "(اختر وكالة)" : "(Select an agency)";
-    sel.appendChild(opt0);
-
-    for(const a of S.agencies){
-      const o = document.createElement("option");
-      o.value = a.agency;
-      o.textContent = `${a.agency} (${a.count})`;
-      sel.appendChild(o);
+    const text = await res.text();
+    let data = null;
+    try{ data = text ? JSON.parse(text) : null; }catch(e){ data = { raw: text }; }
+    if(!res.ok){
+      const msg = (data && (data.error || data.message)) ? (data.error || data.message) : ("HTTP " + res.status);
+      throw new Error(msg);
     }
-    document.getElementById("kpiAgencies").textContent = String(S.agencies.length || 0);
+    return data;
   }
 
-  function applyFilters(list){
-    const q = norm(document.getElementById("inSearch").value).toLowerCase();
-    const st = document.getElementById("selStatusFilter").value;
-    let out = list.slice();
-    if(st){
-      out = out.filter(a => norm(a.status) === st);
-    }
-    if(q){
-      out = out.filter(a => {
-        return (
-          String(a.email||"").toLowerCase().includes(q) ||
-          String(a.passport||"").toLowerCase().includes(q) ||
-          String(a.status||"").toLowerCase().includes(q)
-        );
+  async function login(){
+    ownerUser = $('ownerUser').value.trim();
+    ownerPass = $('ownerPass').value.trim();
+    if(!ownerUser || !ownerPass) return toast("أدخل user و password");
+
+    try{
+      await api("/owner/login", {
+        method:"POST",
+        body: JSON.stringify({ user: ownerUser, pass: ownerPass })
       });
+      setAuthUI(true);
+      toast("تم تسجيل الدخول ✅");
+      await loadAgencies();
+    }catch(err){
+      setAuthUI(false);
+      toast("فشل تسجيل الدخول: " + err.message);
     }
-    return out;
   }
 
-  function renderAccounts(){
-    const tb = document.getElementById("tbody");
-    const filtered = applyFilters(S.accounts);
-    document.getElementById("kpiAccounts").textContent = String(filtered.length || 0);
-
-    if(!S.agencySelected){
-      tb.innerHTML = `<tr><td colspan="6" class="muted" style="padding:16px">${LANG==="ar"?"اختر وكالة أولاً":"Select an agency first"}</td></tr>`;
-      return;
-    }
-    if(filtered.length === 0){
-      tb.innerHTML = `<tr><td colspan="6" class="muted" style="padding:16px">${LANG==="ar"?"لا توجد بيانات":"No data"}</td></tr>`;
-      return;
-    }
-
-    tb.innerHTML = filtered.map((a, i) => {
-      const st = escapeHtml(a.status || "Pending");
-      const cls = statusClass(a.status);
-      return `
-        <tr>
-          <td class="mono">${i+1}</td>
-          <td class="mono">${escapeHtml(a.email||"")}</td>
-          <td class="mono" title="${escapeHtml(a.password||"")}">${escapeHtml(maskPassword(a.password||""))}</td>
-          <td class="mono">${escapeHtml(a.passport||"")}</td>
-          <td>
-            <span class="status ${cls}"><span class="dot"></span>${st}</span>
-          </td>
-          <td>
-            <div class="row" style="justify-content:flex-start">
-              <button class="btn" onclick="UI.openEdit('${encodeURIComponent(a.email||"")}', '${encodeURIComponent(a.passport||"")}')">${LANG==="ar"?"تعديل":"Edit"}</button>
-              <button class="btn danger" onclick="UI.del('${encodeURIComponent(a.email||"")}', '${encodeURIComponent(a.passport||"")}')">${LANG==="ar"?"حذف":"Delete"}</button>
-            </div>
-          </td>
-        </tr>
-      `;
-    }).join("");
+  function logout(){
+    ownerUser = ""; ownerPass = "";
+    $('ownerUser').value = "";
+    $('ownerPass').value = "";
+    selectedAgency = "";
+    accounts = [];
+    agencies = [];
+    renderAgencies();
+    renderTable([]);
+    $('mainTitle').textContent = "اختر وكالة لعرض الحسابات";
+    $('mainHint').textContent = "بعد تسجيل الدخول، اختر وكالة من القائمة.";
+    setAuthUI(false);
+    toast("تم تسجيل الخروج");
   }
 
-  // =========================
-  // UI actions
-  // =========================
-  const UI = window.UI = {
-    async login(){
-      const u = norm(document.getElementById("inUser").value);
-      const p = norm(document.getElementById("inPass").value);
-      if(!u || !p) return toast("Login", LANG==="ar"?"أدخل user و pass":"Enter user & pass");
-      toast("Login", LANG==="ar"?"جارٍ التحقق...":"Checking...");
-      const res = await ownerLogin(u,p);
-      if(!res || !res.ok){
-        setAuthState(false);
-        return toast("Login", (res && res.error) ? res.error : (LANG==="ar"?"فشل تسجيل الدخول":"Login failed"));
-      }
-      S.ownerUser = u; S.ownerPass = p;
-      setAuthState(true);
-      await UI.refreshAll();
-      toast("Login", LANG==="ar"?"تم تسجيل الدخول":"Logged in");
-    },
-
-    logout(){
-      S.ownerUser=""; S.ownerPass="";
-      S.agencies=[]; S.accounts=[]; S.agencySelected="";
-      setAuthState(false);
+  async function loadAgencies(){
+    try{
+      const data = await api("/owner/agencies", { method:"GET", headers: ownerHeaders() });
+      agencies = Array.isArray(data.agencies) ? data.agencies : [];
       renderAgencies();
-      renderAccounts();
-      document.getElementById("kpiAgencies").textContent = "—";
-      document.getElementById("kpiAccounts").textContent = "—";
-      toast("Logout", LANG==="ar"?"تم تسجيل الخروج":"Logged out");
-    },
-
-    async refreshAll(){
-      // agencies
-      const a = await ownerAgencies();
-      if(!a || !a.ok){
-        return toast("Agencies", (a && a.error) ? a.error : (LANG==="ar"?"تعذر جلب الوكالات":"Failed to load agencies"));
-      }
-      S.agencies = Array.isArray(a.agencies) ? a.agencies : [];
-      renderAgencies();
-      // keep selection if exists
-      const sel = document.getElementById("selAgency");
-      if(S.agencySelected){
-        sel.value = S.agencySelected;
-      }
-      if(sel.value){
-        await UI.loadAgency(sel.value);
-      }else{
-        S.accounts = [];
-        renderAccounts();
-      }
-    },
-
-    async loadAgency(agency){
-      S.agencySelected = agency;
-      const res = await ownerAccounts(agency);
-      if(!res || !res.ok){
-        S.accounts = [];
-        renderAccounts();
-        return toast("Accounts", (res && res.error) ? res.error : (LANG==="ar"?"تعذر جلب الحسابات":"Failed to load accounts"));
-      }
-      S.accounts = Array.isArray(res.accounts) ? res.accounts : [];
-      renderAccounts();
-      toast("Agency", `${LANG==="ar"?"تم التحميل":"Loaded"}: ${agency} (${S.accounts.length})`);
-    },
-
-    openBulk(){
-      if(!S.agencySelected){
-        return toast("Bulk", LANG==="ar"?"اختر وكالة أولاً":"Select an agency first");
-      }
-      document.getElementById("bulkText").value = "";
-      document.getElementById("bulkStats").textContent = "—";
-      document.getElementById("bulkList").innerHTML = "";
-      document.getElementById("btnBulkAdd").disabled = true;
-      S.bulkParsed = [];
-      document.getElementById("modalBulk").classList.add("show");
-    },
-    closeBulk(){
-      document.getElementById("modalBulk").classList.remove("show");
-    },
-
-    openAddOne(){
-      if(!S.agencySelected){
-        return toast("Add", LANG==="ar"?"اختر وكالة أولاً":"Select an agency first");
-      }
-      UI._oneMode = "add";
-      document.getElementById("oneTitle").textContent = LANG==="ar"?"إضافة حساب":"Add account";
-      document.getElementById("oneSub").textContent = `${LANG==="ar"?"الوكالة":"Agency"}: ${S.agencySelected}`;
-      document.getElementById("oneEmail").value = "";
-      document.getElementById("onePass").value = "";
-      document.getElementById("onePassport").value = "";
-      document.getElementById("oneStatus").value = "Pending";
-      document.getElementById("btnSaveOne").onclick = UI.saveOne;
-      document.getElementById("modalOne").classList.add("show");
-    },
-    closeOne(){
-      document.getElementById("modalOne").classList.remove("show");
-    },
-
-    openEdit(emailEnc, passportEnc){
-      const email = decodeURIComponent(emailEnc||"");
-      const passport = decodeURIComponent(passportEnc||"");
-      const found = S.accounts.find(a => normEmail(a.email)===normEmail(email) && normPassport(a.passport)===normPassport(passport));
-      if(!found) return toast("Edit", LANG==="ar"?"لم يتم العثور على الحساب":"Account not found");
-      UI._oneMode = "edit";
-      UI._match = { email: found.email, passport: found.passport };
-      document.getElementById("oneTitle").textContent = LANG==="ar"?"تعديل حساب":"Edit account";
-      document.getElementById("oneSub").textContent = `${LANG==="ar"?"الوكالة":"Agency"}: ${S.agencySelected}`;
-      document.getElementById("oneEmail").value = found.email || "";
-      document.getElementById("onePass").value = found.password || "";
-      document.getElementById("onePassport").value = found.passport || "";
-      document.getElementById("oneStatus").value = found.status || "Pending";
-      document.getElementById("btnSaveOne").onclick = UI.saveOne;
-      document.getElementById("modalOne").classList.add("show");
-    },
-
-    async saveOne(){
-      if(!S.agencySelected) return;
-      const email = norm(document.getElementById("oneEmail").value);
-      const password = norm(document.getElementById("onePass").value);
-      const passport = norm(document.getElementById("onePassport").value);
-      const status = document.getElementById("oneStatus").value || "Pending";
-      if(!email || !passport){
-        return toast("Save", LANG==="ar"?"Email و Passport ضروريان":"Email and Passport are required");
-      }
-
-      if(UI._oneMode === "add"){
-        // Add via Agency multi (even for one account), then optional status update via Owner edit if status != Pending
-        toast("Add", LANG==="ar"?"جارٍ الإضافة...":"Adding...");
-        const addRes = await agencyAddMulti(S.agencySelected, [{email,password,passport}]);
-        if(!addRes || !addRes.ok){
-          return toast("Add", (addRes && addRes.error) ? addRes.error : (LANG==="ar"?"فشل الإضافة":"Add failed"));
+      if(selectedAgency){
+        const still = agencies.find(a => a.agency === selectedAgency);
+        if(!still){
+          selectedAgency = "";
+          renderTable([]);
         }
-        if(status && status !== "Pending"){
-          await ownerEditAccount({
-            agency: S.agencySelected,
-            matchEmail: email,
-            matchPassport: passport,
-            email, password, passport, status
-          }).catch(()=>{});
-        }
-        UI.closeOne();
-        await UI.loadAgency(S.agencySelected);
-        return toast("Add", LANG==="ar"?"تمت الإضافة":"Added");
       }
+    }catch(err){
+      toast("خطأ تحميل الوكالات: " + err.message);
+    }
+  }
 
-      // Edit via Owner
-      const match = UI._match || { email, passport };
-      toast("Edit", LANG==="ar"?"جارٍ الحفظ...":"Saving...");
-      const res = await ownerEditAccount({
-        agency: S.agencySelected,
-        matchEmail: match.email,
-        matchPassport: match.passport,
-        email, password, passport, status
+  async function loadAccounts(agency){
+    try{
+      const data = await api("/owner/accounts?agency=" + encodeURIComponent(agency), {
+        method:"GET",
+        headers: ownerHeaders()
       });
-      if(!res || !res.ok){
-        return toast("Edit", (res && res.error) ? res.error : (LANG==="ar"?"فشل الحفظ":"Save failed"));
-      }
-      UI.closeOne();
-      await UI.loadAgency(S.agencySelected);
-      toast("Edit", LANG==="ar"?"تم الحفظ":"Saved");
-    },
+      accounts = Array.isArray(data.accounts) ? data.accounts : [];
+      $('mainTitle').textContent = "Accounts — " + agency;
+      $('mainHint').textContent = "عدد الحسابات: " + accounts.length;
+      applySearch();
+    }catch(err){
+      toast("خطأ تحميل الحسابات: " + err.message);
+      accounts = [];
+      applySearch();
+    }
+  }
 
-    async del(emailEnc, passportEnc){
-      if(!S.agencySelected) return;
-      const email = decodeURIComponent(emailEnc||"");
-      const passport = decodeURIComponent(passportEnc||"");
-      const ok = confirm((LANG==="ar"?"تأكيد الحذف؟\n\n":"Confirm delete?\n\n") + email + " / " + passport);
-      if(!ok) return;
-      toast("Delete", LANG==="ar"?"جارٍ الحذف...":"Deleting...");
-      const res = await ownerDeleteAccount({ agency: S.agencySelected, email, passport });
-      if(!res || !res.ok){
-        return toast("Delete", (res && res.error) ? res.error : (LANG==="ar"?"فشل الحذف":"Delete failed"));
-      }
-      await UI.loadAgency(S.agencySelected);
-      toast("Delete", LANG==="ar"?"تم الحذف":"Deleted");
-    },
+  async function saveEdit(){
+    if(!selectedAgency || !currentEditMatch) return;
 
-    // ---------- Bulk parsing ----------
-    parseBulk(){
-      const raw = document.getElementById("bulkText").value || "";
-      const stats = document.getElementById("bulkStats");
-      const listEl = document.getElementById("bulkList");
-      listEl.innerHTML = "";
-      document.getElementById("btnBulkAdd").disabled = true;
-      S.bulkParsed = [];
+    const email = $('editEmail').value.trim();
+    const passport = $('editPassport').value.trim();
+    const password = $('editPassword').value;
+    const status = $('editStatus').value;
 
-      const tryParse = (txt) => {
-        try { return JSON.parse(txt); } catch(_){ return null; }
+    if(!email || !passport) return toast("Email و Passport مطلوبين");
+
+    try{
+      await api("/owner/account", {
+        method:"PUT",
+        headers: ownerHeaders(),
+        body: JSON.stringify({
+          agency: selectedAgency,
+          matchEmail: currentEditMatch.email,
+          matchPassport: currentEditMatch.passport,
+          email, passport, password, status
+        })
+      });
+      $('editModal').close();
+      toast("تم التعديل ✅");
+      await loadAccounts(selectedAgency);
+      await loadAgencies();
+    }catch(err){
+      toast("فشل التعديل: " + err.message);
+    }
+  }
+
+  async function deleteAccount(){
+    if(!selectedAgency || !currentEditMatch) return;
+    const ok = confirm("تأكيد حذف الحساب؟");
+    if(!ok) return;
+
+    try{
+      await api("/owner/account", {
+        method:"DELETE",
+        headers: ownerHeaders(),
+        body: JSON.stringify({
+          agency: selectedAgency,
+          email: currentEditMatch.email,
+          passport: currentEditMatch.passport
+        })
+      });
+      $('editModal').close();
+      toast("تم الحذف ✅");
+      await loadAccounts(selectedAgency);
+      await loadAgencies();
+    }catch(err){
+      toast("فشل الحذف: " + err.message);
+    }
+  }
+
+  async function importJson(){
+    if(!selectedAgency) return toast("اختر وكالة أولاً");
+    const txt = $('importJson').value.trim();
+    if(!txt) return toast("الصق JSON أولاً");
+
+    let arr;
+    try{
+      arr = JSON.parse(txt);
+    }catch(e){
+      return toast("JSON غير صالح");
+    }
+    if(!Array.isArray(arr)) return toast("يجب أن يكون JSON عبارة عن Array");
+
+    try{
+      const data = await api("/owner/accounts/import", {
+        method:"POST",
+        headers: ownerHeaders(),
+        body: JSON.stringify({
+          agency: selectedAgency,
+          accounts: arr
+        })
+      });
+      $('importModal').close();
+      toast(`Import: added=${data.added||0}, skipped=${data.skipped||0}, total=${data.total||0}`);
+      await loadAccounts(selectedAgency);
+      await loadAgencies();
+    }catch(err){
+      toast("Import فشل: " + err.message);
+    }
+  }
+
+  async function addSingle(){
+    if(!selectedAgency) return;
+
+    const email = $('addEmail').value.trim();
+    const passport = $('addPassport').value.trim();
+    const password = $('addPassword').value;
+    const status = $('addStatus').value;
+
+    if(!email || !passport || !password) return toast("أدخل Email + Passport + Password");
+
+    try{
+      const payload = {
+        agency: selectedAgency,
+        accounts: [{ email, passport, password, status }]
       };
-
-      let obj = tryParse(raw);
-      if(obj == null){
-        // Try to extract first JSON array
-        const m = raw.match(/\[[\s\S]*\]/);
-        if(m) obj = tryParse(m[0]);
-      }
-
-      let arr = null;
-      if(Array.isArray(obj)) arr = obj;
-      else if(obj && Array.isArray(obj.accounts)) arr = obj.accounts;
-      else if(obj && Array.isArray(obj.data)) arr = obj.data;
-
-      if(!arr){
-        stats.textContent = LANG==="ar"
-          ? "❌ لم نتمكن من قراءة JSON.\n• ألصق Array مثل: [ {...}, {...} ]\n• أو Object فيه accounts."
-          : "❌ Could not parse JSON.\n• Paste an array like: [ {...}, {...} ]\n• Or an object with accounts.";
-        return;
-      }
-
-      // Normalize, validate
-      const cleaned = [];
-      const errors = [];
-      for(let i=0;i<arr.length;i++){
-        const a = arr[i] || {};
-        const email = norm(a.email);
-        const password = norm(a.password);
-        const passport = norm(a.passport);
-        const status = norm(a.status) || "";
-        const rowErr = [];
-        if(!email) rowErr.push("email");
-        if(!passport) rowErr.push("passport");
-        // password can be empty but discouraged
-        cleaned.push({ email, password, passport, status });
-        if(rowErr.length) errors.push({ i, fields: rowErr, item: cleaned[cleaned.length-1] });
-      }
-
-      // De-dup by email+passport (owner uses those as identity typically)
-      const dedup = uniqByKey(cleaned, x => (normEmail(x.email)+"||"+normPassport(x.passport)));
-
-      const okCount = dedup.length - errors.length;
-      stats.textContent =
-        (LANG==="ar"
-          ? `✅ Parsed: ${dedup.length}\n⚠️ Missing fields: ${errors.length}\n• Agency: ${S.agencySelected}\n\nملاحظة: الإضافة تتم عبر Agency add (status الافتراضي Pending)، ثم سنطبّق status من JSON (إن وُجد) عبر Owner edit.`
-          : `✅ Parsed: ${dedup.length}\n⚠️ Missing fields: ${errors.length}\n• Agency: ${S.agencySelected}\n\nNote: add is done via Agency add (default status Pending), then we apply JSON status (if any) via Owner edit.`
-        );
-
-      // Render list preview
-      const maxShow = 40;
-      const show = dedup.slice(0, maxShow);
-      for(let i=0;i<show.length;i++){
-        const a = show[i];
-        const miss = [];
-        if(!a.email) miss.push("email");
-        if(!a.passport) miss.push("passport");
-        const li = document.createElement("li");
-        li.innerHTML = `
-          <div style="display:flex;flex-direction:column;gap:4px;min-width:0">
-            <div class="mono" style="overflow:hidden;text-overflow:ellipsis">${escapeHtml(a.email || "(no email)")}</div>
-            <small class="mono">${escapeHtml(a.passport || "(no passport)")}${a.status? " — " + escapeHtml(a.status): ""}</small>
-          </div>
-          ${miss.length ? `<span class="tag">missing: ${escapeHtml(miss.join(","))}</span>` : `<span class="tag">ok</span>`}
-        `;
-        listEl.appendChild(li);
-      }
-      if(dedup.length > maxShow){
-        const li = document.createElement("li");
-        li.innerHTML = `<div class="muted">${LANG==="ar"?"... المزيد":"... more"}</div><span class="tag">+${dedup.length-maxShow}</span>`;
-        listEl.appendChild(li);
-      }
-
-      // Enable add if at least one valid row (email+passport)
-      const valid = dedup.filter(a => a.email && a.passport);
-      S.bulkParsed = valid;
-      document.getElementById("btnBulkAdd").disabled = valid.length === 0;
-      if(valid.length === 0){
-        toast("Bulk", LANG==="ar"?"لا يوجد عناصر صالحة للإضافة (email+passport)":"No valid items to add (email+passport)");
-      }
-    },
-
-    async bulkAdd(){
-      if(!S.agencySelected) return;
-      const items = S.bulkParsed || [];
-      if(items.length === 0) return;
-      const btn = document.getElementById("btnBulkAdd");
-      btn.disabled = true;
-      toast("Bulk", (LANG==="ar"?`جارٍ إضافة ${items.length} حساب...`:`Adding ${items.length} accounts...`));
-
-      // Step 1: add all via agency multi (status ignored here)
-      const addRes = await agencyAddMulti(S.agencySelected, items);
-      if(!addRes || !addRes.ok){
-        btn.disabled = false;
-        return toast("Bulk", (addRes && addRes.error) ? addRes.error : (LANG==="ar"?"فشل الإضافة":"Add failed"));
-      }
-
-      // Step 2: apply statuses for rows that have a non-empty status and not "Pending"
-      const needStatus = items.filter(a => a.status && a.status !== "Pending");
-      let applied = 0;
-      for(const a of needStatus){
-        // Best-effort: update status using Owner API. If account not found yet, continue.
-        const res = await ownerEditAccount({
-          agency: S.agencySelected,
-          matchEmail: a.email,
-          matchPassport: a.passport,
-          email: a.email,
-          password: a.password,
-          passport: a.passport,
-          status: a.status
-        }).catch(()=>null);
-        if(res && res.ok) applied++;
-      }
-
-      UI.closeBulk();
-      await UI.loadAgency(S.agencySelected);
-      toast("Bulk", (LANG==="ar" ? `تمت الإضافة: ${items.length}\nتم تطبيق الحالة: ${applied}` : `Added: ${items.length}\nStatus applied: ${applied}`));
+      const data = await api("/owner/accounts/import", {
+        method:"POST",
+        headers: ownerHeaders(),
+        body: JSON.stringify(payload)
+      });
+      $('addModal').close();
+      toast(`تمت الإضافة ✅ (added=${data.added||0}, skipped=${data.skipped||0})`);
+      await loadAccounts(selectedAgency);
+      await loadAgencies();
+    }catch(err){
+      toast("فشل الإضافة: " + err.message);
     }
+  }
+
+  function exportAgencyJson(){
+    if(!selectedAgency) return;
+    const blob = new Blob([JSON.stringify(accounts, null, 2)], {type:"application/json"});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `accounts_${selectedAgency}.json`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  // ========= UI RENDER =========
+  function renderAgencies(){
+    const list = $('agencyList');
+    const q = $('agencyFilter').value.trim().toLowerCase();
+    const items = agencies
+      .filter(a => (a.agency||'').toLowerCase().includes(q))
+      .sort((a,b) => (a.agency||'').localeCompare(b.agency||''));
+
+    list.innerHTML = "";
+
+    if(!authed){
+      list.innerHTML = `<div class="pill"><span class="dot bad"></span><span>سجل الدخول لعرض الوكالات</span></div>`;
+      return;
+    }
+
+    if(items.length === 0){
+      list.innerHTML = `<div class="pill"><span class="dot warn"></span><span>لا توجد وكالات</span></div>`;
+      return;
+    }
+
+    for(const a of items){
+      const div = document.createElement('div');
+      div.className = 'agencyItem' + (a.agency === selectedAgency ? ' active' : '');
+      div.innerHTML = `
+        <div>
+          <div class="agencyName">${escapeHtml(a.agency)}</div>
+          <div class="agencyMeta">${a.count ?? 0} حساب</div>
+        </div>
+        <span class="pill"><span class="dot" style="background:var(--accent)"></span><span>Open</span></span>
+      `;
+      div.onclick = async () => {
+        selectedAgency = a.agency;
+        setAuthUI(true);
+        renderAgencies();
+        $('searchBox').value = "";
+        await loadAccounts(selectedAgency);
+      };
+      list.appendChild(div);
+    }
+  }
+
+  function applySearch(){
+    const q = $('searchBox').value.trim().toLowerCase();
+    filteredAccounts = accounts.filter((acc) => {
+      const email = String(acc.email||'').toLowerCase();
+      const passport = String(acc.passport||'').toLowerCase();
+      const status = String(acc.status||'').toLowerCase();
+      return !q || email.includes(q) || passport.includes(q) || status.includes(q);
+    });
+    renderTable(filteredAccounts);
+  }
+
+  function renderTable(rows){
+    const tbody = $('tbody');
+    tbody.innerHTML = "";
+
+    if(!selectedAgency){
+      tbody.innerHTML = `<tr><td colspan="6" style="color:var(--muted); padding:18px">اختر وكالة من اليسار.</td></tr>`;
+      return;
+    }
+
+    if(rows.length === 0){
+      tbody.innerHTML = `<tr><td colspan="6" style="color:var(--muted); padding:18px">لا توجد حسابات (أو نتيجة البحث فارغة).</td></tr>`;
+      return;
+    }
+
+    rows.forEach((acc, idx) => {
+      const tr = document.createElement('tr');
+      const status = acc.status || 'Pending';
+      const sClass = safeStatusClass(status);
+
+      tr.innerHTML = `
+        <td>${idx+1}</td>
+        <td class="mono">${escapeHtml(acc.email||'')}</td>
+        <td class="mono">${escapeHtml(acc.passport||'')}</td>
+        <td class="mono" title="Password is hidden">${escapeHtml(maskPassword(acc.password||''))}</td>
+        <td>
+          <span class="status ${sClass}">
+            <span class="dot ${sClass}"></span>
+            <span>${escapeHtml(status)}</span>
+          </span>
+        </td>
+        <td style="text-align:left">
+          <div class="actions">
+            <button class="btn secondary" data-action="copyEmail">Copy Email</button>
+            <button class="btn secondary" data-action="copyPassport">Copy Passport</button>
+            <button class="btn" data-action="edit">Edit</button>
+          </div>
+        </td>
+      `;
+
+      tr.querySelector('[data-action="copyEmail"]').onclick = async () => {
+        await navigator.clipboard.writeText(String(acc.email||''));
+        toast("تم نسخ Email");
+      };
+      tr.querySelector('[data-action="copyPassport"]').onclick = async () => {
+        await navigator.clipboard.writeText(String(acc.passport||''));
+        toast("تم نسخ Passport");
+      };
+      tr.querySelector('[data-action="edit"]').onclick = () => openEdit(acc);
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  function openEdit(acc){
+    currentEditMatch = {
+      email: String(acc.email||''),
+      passport: String(acc.passport||'')
+    };
+    $('editMatchInfo').textContent = `matchEmail=${currentEditMatch.email} | matchPassport=${currentEditMatch.passport}`;
+
+    $('editEmail').value = String(acc.email||'');
+    $('editPassport').value = String(acc.passport||'');
+    $('editPassword').value = String(acc.password||'');
+    $('editStatus').value = String(acc.status||'Pending');
+
+    $('editModal').showModal();
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, (m)=>({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    }[m]));
+  }
+
+  function validateImportJson(){
+    const txt = $('importJson').value.trim();
+    if(!txt){ $('importStats').innerHTML = `<span class="dot warn"></span><span>—</span>`; return; }
+    try{
+      const arr = JSON.parse(txt);
+      if(!Array.isArray(arr)) throw new Error("not array");
+      let ok=0, bad=0;
+      for(const x of arr){
+        const e = normalizeEmail(x?.email);
+        const p = normalizePassport(x?.passport);
+        const pw = String(x?.password||'');
+        if(e && p && pw) ok++; else bad++;
+      }
+      $('importStats').innerHTML = `<span class="dot good"></span><span>Valid: ${ok} | Invalid: ${bad} | Total: ${arr.length}</span>`;
+    }catch(e){
+      $('importStats').innerHTML = `<span class="dot bad"></span><span>JSON غير صالح</span>`;
+    }
+  }
+
+  // ========= EVENTS =========
+  $('btnLogin').onclick = login;
+  $('btnLogout').onclick = logout;
+
+  $('btnRefreshAgencies').onclick = loadAgencies;
+  $('agencyFilter').oninput = renderAgencies;
+
+  $('btnReloadAccounts').onclick = () => selectedAgency ? loadAccounts(selectedAgency) : null;
+  $('searchBox').oninput = applySearch;
+
+  $('btnSaveEdit').onclick = saveEdit;
+  $('btnDeleteAccount').onclick = deleteAccount;
+
+  $('btnOpenImport').onclick = () => {
+    $('importJson').value = "";
+    $('importStats').innerHTML = `<span class="dot"></span><span>—</span>`;
+    $('importModal').showModal();
   };
+  $('btnValidateJson').onclick = validateImportJson;
+  $('btnDoImport').onclick = importJson;
 
-  // =========================
-  // Wire up events
-  // =========================
-  document.getElementById("btnLogin").onclick = UI.login;
-  document.getElementById("btnLogout").onclick = UI.logout;
-
-  document.getElementById("btnPing").onclick = async () => {
-    const res = await apiPing().catch(()=>({ok:false}));
-    if(res && res.ok) toast("Ping", "OK");
-    else toast("Ping", (res && res.error) ? res.error : "Failed");
+  $('btnAddSingle').onclick = () => {
+    $('addEmail').value = "";
+    $('addPassport').value = "";
+    $('addPassword').value = "";
+    $('addStatus').value = "Pending";
+    $('addModal').showModal();
   };
+  $('btnDoAdd').onclick = addSingle;
 
-  document.getElementById("btnRefresh").onclick = UI.refreshAll;
-  document.getElementById("btnBulk").onclick = UI.openBulk;
-  document.getElementById("btnAddOne").onclick = UI.openAddOne;
-  document.getElementById("btnParse").onclick = UI.parseBulk;
-  document.getElementById("btnBulkAdd").onclick = UI.bulkAdd;
+  $('btnExportAgencyJson').onclick = exportAgencyJson;
 
-  document.getElementById("selAgency").addEventListener("change", async (e) => {
-    const v = e.target.value || "";
-    if(!v){ S.agencySelected=""; S.accounts=[]; renderAccounts(); return; }
-    await UI.loadAgency(v);
-  });
-
-  document.getElementById("inSearch").addEventListener("input", () => renderAccounts());
-  document.getElementById("selStatusFilter").addEventListener("change", () => renderAccounts());
-
-  // Enter to login
-  document.getElementById("inPass").addEventListener("keydown", (e) => {
-    if(e.key === "Enter") UI.login();
-  });
-
-  // Init
-  setAuthState(false);
+  // init
+  setAuthUI(false);
   renderAgencies();
-  renderAccounts();
-})();
 </script>
 </body>
 </html>
