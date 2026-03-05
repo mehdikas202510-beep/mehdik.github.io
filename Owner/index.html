@@ -1,479 +1,393 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>Owner Panel — لوحة احترافية</title>
-  <meta name="color-scheme" content="dark light" />
+  <title>Owner Console</title>
   <style>
     :root{
-      --bg0:#070b18;
-      --bg1:#0b1024;
-      --bg2:#0b2a4e;
-      --card:rgba(255,255,255,.06);
-      --card2:rgba(255,255,255,.08);
-      --stroke:rgba(255,255,255,.12);
-      --stroke2:rgba(255,255,255,.18);
-      --ink:#f8fafc;
-      --muted:rgba(248,250,252,.72);
-      --muted2:rgba(248,250,252,.58);
-      --shadow:0 18px 60px rgba(0,0,0,.55);
-      --shadow2:0 10px 28px rgba(0,0,0,.45);
+      --radius:18px;
+      --radius2:14px;
+      --shadow: 0 18px 55px rgba(0,0,0,.25);
+      --blur: 18px;
+
+      --bg: #0b1220;
+      --bg2:#0f172a;
+      --card: rgba(255,255,255,.06);
+      --card2: rgba(255,255,255,.08);
+      --border: rgba(255,255,255,.12);
+      --text: #e5e7eb;
+      --muted: rgba(229,231,235,.72);
+
+      --field: rgba(255,255,255,.06);
+      --field2: rgba(255,255,255,.10);
+      --fieldBorder: rgba(255,255,255,.16);
+
       --ok:#22c55e;
       --warn:#f59e0b;
-      --danger:#ff5a5a;
+      --bad:#fb7185;
       --info:#60a5fa;
-      --focus:rgba(96,165,250,.55);
-      --radius:22px;
-      --radius2:16px;
-      --radius3:12px;
-      --font:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+
+      --primary1:#7c3aed;
+      --primary2:#2563eb;
+
+      --ring: rgba(96,165,250,.38);
     }
-    :root[data-theme="light"]{
-      --bg0:#f3f6ff;
-      --bg1:#eef3ff;
-      --bg2:#e8f0ff;
-      --card:rgba(255,255,255,.78);
-      --card2:rgba(255,255,255,.92);
-      --stroke:rgba(15,23,42,.12);
-      --stroke2:rgba(15,23,42,.16);
-      --ink:#0f172a;
-      --muted:rgba(15,23,42,.70);
-      --muted2:rgba(15,23,42,.55);
-      --shadow:0 18px 50px rgba(2,6,23,.18);
-      --shadow2:0 10px 24px rgba(2,6,23,.14);
-      --focus:rgba(37,99,235,.40);
+
+    [data-theme="light"]{
+      --bg:#f7f8fc;
+      --bg2:#eef2ff;
+      --card: rgba(255,255,255,.76);
+      --card2: rgba(255,255,255,.86);
+      --border: rgba(15,23,42,.12);
+      --text: #0f172a;
+      --muted: rgba(15,23,42,.62);
+
+      --field: rgba(15,23,42,.04);
+      --field2: rgba(15,23,42,.06);
+      --fieldBorder: rgba(15,23,42,.14);
+
+      --shadow: 0 18px 55px rgba(2,6,23,.12);
+      --ring: rgba(37,99,235,.22);
     }
 
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0;
-      font-family:var(--font);
-      color:var(--ink);
+      padding: clamp(14px, 2vw, 22px);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color: var(--text);
       background:
-        radial-gradient(900px 600px at 16% 12%, rgba(96,165,250,.18), transparent 60%),
-        radial-gradient(900px 600px at 85% 18%, rgba(34,197,94,.14), transparent 60%),
-        radial-gradient(900px 600px at 50% 110%, rgba(245,158,11,.12), transparent 60%),
-        linear-gradient(180deg, var(--bg0), var(--bg1) 35%, var(--bg2) 120%);
-      padding:clamp(12px, 2vw, 20px);
-      overflow-x:hidden;
+        radial-gradient(1000px 500px at 15% 10%, rgba(124,58,237,.35), transparent 55%),
+        radial-gradient(900px 520px at 85% 15%, rgba(37,99,235,.35), transparent 55%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
     }
 
-    a{color:inherit}
-    button,input,select,textarea{font:inherit}
-    ::selection{background:rgba(96,165,250,.25)}
-
-    .app{max-width:1240px;margin:0 auto;display:grid;grid-template-columns:1fr;gap:14px}
-
-    .frame{
-      border:1px solid var(--stroke);
-      background:linear-gradient(180deg, var(--card2), var(--card));
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
+    .shell{max-width:1200px;margin:0 auto}
+    .card{
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, var(--card), var(--card2));
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(var(--blur));
       overflow:hidden;
-      position:relative;
-      backdrop-filter: blur(16px);
     }
 
-    /* Topbar */
     .topbar{
       display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
-      padding:14px 16px;
-      border-bottom:1px solid var(--stroke);
+      padding:16px 18px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(90deg, rgba(124,58,237,.22), rgba(37,99,235,.18));
     }
-    .brand{display:flex;align-items:center;gap:12px;min-width:220px}
+
+    .brand{display:flex;align-items:center;gap:12px;flex-wrap:wrap;min-width: 260px;}
     .mark{
-      width:42px;height:42px;border-radius:14px;
+      width:42px;height:42px;border-radius: 14px;
       display:grid;place-items:center;
-      border:1px solid var(--stroke2);
-      background:linear-gradient(135deg, rgba(96,165,250,.22), rgba(255,255,255,.05));
-      box-shadow:var(--shadow2);
-      font-weight:900;
-      letter-spacing:.5px;
+      background: linear-gradient(135deg, rgba(255,255,255,.22), rgba(255,255,255,.06));
+      border: 1px solid rgba(255,255,255,.18);
+      box-shadow: 0 12px 30px rgba(0,0,0,.16);
+      font-weight: 900;
+      letter-spacing: .5px;
       user-select:none;
     }
-    .titles h1{margin:0;font-size:1.15rem;font-weight:950;line-height:1.1}
-    .titles p{margin:6px 0 0;color:var(--muted);font-size:.88rem;max-width:720px}
+    [data-theme="light"] .mark{
+      border-color: rgba(15,23,42,.12);
+      box-shadow: 0 12px 28px rgba(2,6,23,.10);
+    }
+    .brand h1{margin:0;font-size:1.1rem;font-weight:900;letter-spacing:.2px}
+    .sub{margin-top:2px;font-size:.88rem;color:var(--muted)}
 
-    .topActions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .rightbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+
     .pill{
-      display:inline-flex;align-items:center;gap:8px;
-      border:1px solid var(--stroke2);
-      padding:8px 12px;border-radius:999px;
-      background:rgba(255,255,255,.06);
-      font-weight:900;font-size:.82rem;
-    }
-    .dot{width:8px;height:8px;border-radius:50%;background:rgba(248,250,252,.35)}
-    .dot.ok{background:var(--ok)}
-
-    .iconBtn{
-      border:1px solid var(--stroke2);
-      background:rgba(255,255,255,.06);
-      color:var(--ink);
-      border-radius:999px;
+      display:inline-flex;align-items:center;gap:10px;
       padding:8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.12);
+      font-weight:800;
+      font-size:.82rem;
+      user-select:none;
+    }
+    [data-theme="light"] .pill{border-color: rgba(15,23,42,.12);background: rgba(255,255,255,.55);}
+    .dot{width:9px;height:9px;border-radius:50%;background: rgba(255,255,255,.35)}
+    .dot.ok{background: var(--ok)}
+    .dot.bad{background: var(--bad)}
+
+    .btn{
+      border:none;
+      border-radius:999px;
+      padding:10px 14px;
       font-weight:900;
       cursor:pointer;
-      transition:transform .14s ease, filter .14s ease, background .14s ease;
-      display:inline-flex;align-items:center;gap:8px;
-    }
-    .iconBtn:hover{transform:translateY(-1px);filter:brightness(1.05)}
-    .iconBtn:active{transform:translateY(0)}
-
-    /* Layout */
-    .content{padding:14px 16px}
-    .grid{display:grid;grid-template-columns:1fr;gap:14px}
-    @media(min-width:1020px){
-      .grid{grid-template-columns:370px 1fr}
-    }
-
-    .panel{
-      border:1px solid var(--stroke);
-      background:rgba(255,255,255,.04);
-      border-radius:var(--radius2);
-      padding:14px;
-      box-shadow:0 0 0 1px rgba(0,0,0,0);
-    }
-
-    /* Forms */
-    .row2{display:grid;grid-template-columns:1fr;gap:10px}
-    @media(min-width:620px){.row2{grid-template-columns:1fr 1fr}}
-
-    label{display:block;margin:10px 4px 6px;font-size:.9rem;font-weight:950;color:var(--muted)}
-    input,select,textarea{
-      width:100%;
-      padding:11px 12px;
-      border-radius:var(--radius3);
-      border:1px solid var(--stroke2);
-      outline:none;
-      background:rgba(0,0,0,.18);
-      color:var(--ink);
-      font-size:16px;
-    }
-    :root[data-theme="light"] input,
-    :root[data-theme="light"] select,
-    :root[data-theme="light"] textarea{background:rgba(15,23,42,.04)}
-
-    input:focus,select:focus,textarea:focus{box-shadow:0 0 0 4px var(--focus);border-color:transparent}
-
-    .hint{margin-top:10px;font-size:.84rem;color:var(--muted2);line-height:1.55}
-
-    /* Buttons */
-    .btnRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-    .btn{
-      border:none;border-radius:999px;
-      padding:10px 14px;
-      font-weight:950;
-      cursor:pointer;
-      color:white;
-      box-shadow:var(--shadow2);
-      transition:transform .14s ease, filter .14s ease, box-shadow .14s ease;
-      display:inline-flex;align-items:center;gap:8px;
-    }
-    .btn:hover{transform:translateY(-1px);filter:brightness(1.05);box-shadow:0 16px 42px rgba(0,0,0,.50)}
-    .btn:active{transform:translateY(0)}
-    .btn:disabled{opacity:.65;cursor:wait;filter:saturate(.8);box-shadow:none}
-
-    .btnPrimary{background:linear-gradient(135deg,#16a34a,#22c55e)}
-    .btnSoft{background:rgba(255,255,255,.10);border:1px solid var(--stroke2);color:var(--ink)}
-    .btnInfo{background:rgba(96,165,250,.18);border:1px solid rgba(96,165,250,.72);color:var(--ink)}
-
-    /* Stats */
-    .stats{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px}
-    @media(min-width:620px){.stats{grid-template-columns:1fr 1fr 1fr}}
-    .stat{
-      border-radius:var(--radius2);
-      border:1px solid var(--stroke);
-      background:rgba(255,255,255,.04);
-      padding:12px;
-      display:flex;align-items:center;justify-content:space-between;gap:10px
-    }
-    .stat .k{font-size:.78rem;font-weight:950;color:var(--muted)}
-    .stat b{font-size:1.06rem}
-
-    .badge{padding:4px 10px;border-radius:999px;border:1px solid var(--stroke2);background:rgba(255,255,255,.06);font-weight:950;font-size:.78rem;color:var(--ink)}
-    .badge.ok{border-color:rgba(34,197,94,.60);background:rgba(34,197,94,.14)}
-    .badge.info{border-color:rgba(96,165,250,.60);background:rgba(96,165,250,.14)}
-
-    /* Filters */
-    .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-    .chip{
-      border-radius:999px;
-      padding:8px 12px;
-      border:1px solid var(--stroke2);
-      background:rgba(255,255,255,.06);
-      font-weight:950;
-      font-size:.82rem;
-      cursor:pointer;
+      display:inline-flex;align-items:center;gap:10px;
+      background: rgba(255,255,255,.10);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,.16);
+      box-shadow: 0 14px 32px rgba(0,0,0,.14);
+      transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
       user-select:none;
-      transition:filter .14s ease, transform .14s ease, background .14s ease;
+      height: 40px;
     }
-    .chip:hover{filter:brightness(1.05);transform:translateY(-1px)}
-    .chip.active{background:rgba(96,165,250,.16);border-color:rgba(96,165,250,.58)}
+    [data-theme="light"] .btn{border-color: rgba(15,23,42,.12);box-shadow: 0 14px 32px rgba(2,6,23,.10);background: rgba(255,255,255,.72);}
+    .btn:hover{transform: translateY(-1px);filter: brightness(1.03);box-shadow: 0 18px 44px rgba(0,0,0,.18)}
+    .btn:disabled{opacity:.6;cursor:wait;box-shadow:none;transform:none}
+    .btnPrimary{background: linear-gradient(135deg, var(--primary1), var(--primary2));border-color: rgba(255,255,255,.22);color:#fff;}
+    .btnDanger{background: rgba(251,113,133,.14);border-color: rgba(251,113,133,.55);}
+    .btnGhost{background: rgba(255,255,255,.08);}
 
-    /* Table */
-    .tableWrap{margin-top:12px;border-radius:var(--radius2);border:1px solid var(--stroke);overflow:hidden}
-    .tableHead,.tableRow{
-      display:grid;
-      grid-template-columns:1.15fr .95fr .8fr .62fr 240px;
-      gap:10px;
-      padding:10px 12px;
-      align-items:center
-    }
-    .tableHead{
-      position:sticky;top:0;z-index:1;
-      background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
-      font-size:.78rem;
-      font-weight:950;
-      color:var(--muted);
-      border-bottom:1px solid var(--stroke);
-    }
-    .tableRow{background:rgba(255,255,255,.03);border-top:1px solid var(--stroke);font-size:.86rem}
+    .wrap{padding:18px}
+    .grid{display:grid;grid-template-columns: 1fr;gap:14px}
+    @media(min-width:1020px){ .grid{grid-template-columns: .95fr 1.05fr} }
 
-    .actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
-    .miniBtn{
-      border:1px solid var(--stroke2);
-      background:rgba(255,255,255,.06);
-      color:var(--ink);
-      border-radius:12px;
-      padding:7px 10px;
-      font-weight:950;
-      cursor:pointer;
-      line-height:1;
-      white-space:nowrap;
-      transition:filter .14s ease, transform .14s ease;
-    }
-    .miniBtn:hover{filter:brightness(1.05);transform:translateY(-1px)}
-    .miniBtn:active{transform:translateY(0)}
-    .miniBtn.ok{border-color:rgba(34,197,94,.55);background:rgba(34,197,94,.14)}
-    .miniBtn.danger{border-color:rgba(255,90,90,.70);background:rgba(255,90,90,.14)}
+    .panel{border-radius: var(--radius);border: 1px solid var(--border);background: rgba(0,0,0,.10);padding: 14px;}
+    [data-theme="light"] .panel{background: rgba(255,255,255,.55)}
 
-    .statusPill{
-      display:inline-flex;align-items:center;gap:8px;
-      border:1px solid var(--stroke2);
-      padding:6px 10px;border-radius:999px;
-      background:rgba(255,255,255,.06);
-      font-weight:950;font-size:.82rem;
-    }
+    .panelHead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom: 12px;}
+    .panelTitle{display:flex;flex-direction:column;gap:4px;}
+    .panelTitle b{font-size:1rem}
+    .panelTitle span{font-size:.86rem;color:var(--muted);line-height:1.35}
 
-    /* Modal */
-    .backdrop{
-      position:fixed;inset:0;
-      background:rgba(0,0,0,.58);
-      display:none;align-items:center;justify-content:center;
-      padding:14px;
-      z-index:999;
-    }
-    .modal{
-      width:min(760px, 100%);
-      border-radius:var(--radius);
-      border:1px solid var(--stroke2);
-      background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
-      box-shadow:var(--shadow);
-      overflow:hidden;
-      transform:translateY(8px) scale(.98);
-      opacity:0;
-      transition:transform .18s ease, opacity .18s ease;
-      backdrop-filter: blur(18px);
-    }
-    .backdrop.show .modal{transform:translateY(0) scale(1);opacity:1}
-    .modalHead{
-      padding:14px 16px;
-      border-bottom:1px solid var(--stroke);
-      display:flex;align-items:center;justify-content:space-between;gap:10px
-    }
-    .modalHead b{font-size:1rem}
-    .modalBody{padding:14px 16px}
+    .row2{display:grid;grid-template-columns: 1fr;gap:10px}
+    @media(min-width:620px){ .row2{grid-template-columns: 1fr 1fr} }
 
-    /* Toast */
-    #toast{
-      position:fixed;left:50%;bottom:22px;
-      transform:translateX(-50%) translateY(120%);
-      background:rgba(2,6,23,.92);
-      color:#f8fafc;
-      padding:10px 16px;border-radius:999px;
-      box-shadow:0 16px 40px rgba(0,0,0,.55);
-      font-size:.92rem;
-      opacity:0;pointer-events:none;
-      transition:all .25s ease;
-      z-index:1200;
-      max-width:92%;text-align:center
-    }
-    #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    label{display:block;font-weight:900;font-size:.86rem;margin: 10px 4px 6px;color: var(--muted);letter-spacing:.2px;}
 
-    /* Loading overlay */
-    .loading{
-      position:absolute;inset:0;
-      background:rgba(0,0,0,.18);
-      display:none;
-      align-items:center;justify-content:center;
-      z-index:50;
+    input, select{
+      width:100%;
+      border-radius: 14px;
+      padding: 11px 12px;
+      border: 1px solid var(--fieldBorder);
+      background: var(--field);
+      color: var(--text);
+      outline:none;
+      font-size: 15.5px;
+      transition: box-shadow .12s ease, background .12s ease, border-color .12s ease;
     }
-    :root[data-theme="light"] .loading{background:rgba(255,255,255,.28)}
-    .spinner{
-      width:44px;height:44px;border-radius:999px;
-      border:3px solid rgba(255,255,255,.18);
-      border-top-color:rgba(96,165,250,.95);
-      animation:spin .9s linear infinite;
-    }
-    @keyframes spin{to{transform:rotate(360deg)}}
+    input:focus, select:focus{border-color: rgba(96,165,250,.55);background: var(--field2);box-shadow: 0 0 0 4px var(--ring);}
+    ::placeholder{color: rgba(229,231,235,.45)}
+    [data-theme="light"] ::placeholder{color: rgba(15,23,42,.38)}
 
-    /* Mobile */
+    .toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top: 10px;}
+
+    .stats{display:grid;grid-template-columns: 1fr;gap:10px;margin-top: 10px;}
+    @media(min-width:720px){ .stats{grid-template-columns: 1fr 1fr 1fr} }
+
+    .stat{border-radius: 16px;border: 1px solid var(--border);background: rgba(255,255,255,.05);padding: 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+    [data-theme="light"] .stat{background: rgba(255,255,255,.72)}
+    .stat .k{font-size:.78rem;color:var(--muted);font-weight:900}
+    .stat b{font-size:1.05rem}
+    .badge{border-radius:999px;padding: 6px 10px;font-weight:900;font-size:.76rem;border: 1px solid var(--border);background: rgba(255,255,255,.06);color: var(--text);white-space:nowrap;}
+    .badge.ok{border-color: rgba(34,197,94,.45); background: rgba(34,197,94,.12)}
+    .badge.info{border-color: rgba(96,165,250,.45); background: rgba(96,165,250,.12)}
+
+    .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top: 12px;}
+    .chip{border-radius:999px;padding: 8px 12px;border: 1px solid var(--border);background: rgba(255,255,255,.06);font-weight:900;font-size:.82rem;cursor:pointer;user-select:none;transition: transform .12s ease, filter .12s ease, background .12s ease;}
+    .chip:hover{transform: translateY(-1px); filter: brightness(1.03)}
+    .chip.active{background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.26)}
+    [data-theme="light"] .chip.active{background: rgba(37,99,235,.10); border-color: rgba(37,99,235,.18)}
+
+    .table{margin-top: 12px;border-radius: var(--radius);border: 1px solid var(--border);overflow:hidden;background: rgba(255,255,255,.04);}
+    [data-theme="light"] .table{background: rgba(255,255,255,.78)}
+
+    .thead,.trow{display:grid;grid-template-columns: 1.35fr 1fr .9fr .7fr 250px;gap:10px;padding: 10px 12px;align-items:center;}
+    .thead{background: rgba(255,255,255,.08);font-size:.78rem;font-weight:900;color: var(--muted);letter-spacing:.2px;border-bottom: 1px solid var(--border);}
+    .trow{border-top: 1px solid var(--border);background: rgba(0,0,0,.06);font-size: .88rem;}
+    [data-theme="light"] .trow{background: rgba(255,255,255,.55)}
+    .trow:first-child{border-top:none}
+
+    .actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;align-items:center;}
+    .miniBtn{border-radius: 12px;padding: 8px 10px;font-weight:900;font-size:.82rem;border: 1px solid var(--border);background: rgba(255,255,255,.06);color: var(--text);cursor:pointer;transition: transform .12s ease, filter .12s ease;user-select:none;height: 36px;display:inline-flex;align-items:center;gap:8px;}
+    .miniBtn:hover{transform: translateY(-1px); filter: brightness(1.03)}
+    .miniBtn.ok{border-color: rgba(34,197,94,.55); background: rgba(34,197,94,.12)}
+    .miniBtn.danger{border-color: rgba(251,113,133,.65); background: rgba(251,113,133,.12)}
+    .miniBtn.neutral{border-color: rgba(96,165,250,.45); background: rgba(96,165,250,.10)}
+
+    .rowState{display:inline-flex;align-items:center;gap:8px;font-weight:900;font-size:.78rem;color: var(--muted);min-width: 96px; justify-content:flex-start;}
+    .spin{width: 14px;height: 14px;border-radius: 50%;border: 2px solid rgba(255,255,255,.18);border-top-color: rgba(96,165,250,.9);animation: spin 1s linear infinite;}
+    [data-theme="light"] .spin{border-color: rgba(15,23,42,.14);border-top-color: rgba(37,99,235,.9);}
+    @keyframes spin{to{transform: rotate(360deg)}}
+
+    .empty{margin-top: 10px;border-radius: var(--radius);border: 1px dashed rgba(255,255,255,.22);background: rgba(255,255,255,.04);padding: 12px;color: var(--muted);font-weight: 800;display:none;}
+    [data-theme="light"] .empty{border-color: rgba(15,23,42,.22);background: rgba(255,255,255,.72);}
+
+    .backdrop{position:fixed; inset:0;background: rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;padding: 14px;z-index: 1000;}
+    .modal{width: min(740px, 100%);border-radius: 22px;border: 1px solid var(--border);background: linear-gradient(180deg, rgba(15,23,42,.92), rgba(15,23,42,.78));box-shadow: 0 30px 90px rgba(0,0,0,.55);overflow:hidden;}
+    [data-theme="light"] .modal{background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.82));box-shadow: 0 30px 90px rgba(2,6,23,.18);}
+    .modalHead{padding: 14px 16px;border-bottom: 1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;}
+    .modalHead b{font-size: 1rem}
+    .modalBody{padding: 14px 16px}
+
+    #toast{position: fixed;left: 50%;bottom: 20px;transform: translateX(-50%) translateY(120%);opacity: 0;pointer-events: none;z-index: 1200;padding: 10px 16px;border-radius: 999px;border: 1px solid var(--border);background: rgba(15,23,42,.92);color: #f8fafc;box-shadow: 0 18px 55px rgba(0,0,0,.35);max-width: 92%;text-align:center;font-weight: 900;transition: all .22s ease;}
+    [data-theme="light"] #toast{background: rgba(255,255,255,.92);color: #0f172a;box-shadow: 0 18px 55px rgba(2,6,23,.18);}
+    #toast.show{opacity: 1; transform: translateX(-50%) translateY(0)}
+
     @media(max-width:860px){
-      .tableHead{display:none}
-      .tableRow{grid-template-columns:1fr;gap:8px;padding:12px}
-      .tableRow > div:nth-child(1)::before{content:"Email: ";opacity:.75;font-weight:950}
-      .tableRow > div:nth-child(2)::before{content:"Password: ";opacity:.75;font-weight:950}
-      .tableRow > div:nth-child(3)::before{content:"Passport: ";opacity:.75;font-weight:950}
-      .tableRow > div:nth-child(4)::before{content:"Status: ";opacity:.75;font-weight:950}
-      .tableRow > div:nth-child(5){display:flex;justify-content:flex-end;padding-top:6px}
+      .thead{display:none}
+      .trow{grid-template-columns: 1fr; gap:10px; padding: 12px}
+      .actions{justify-content:flex-start}
+      .trow .cellLabel{display:block;font-size:.74rem;color:var(--muted);font-weight:900;margin-bottom:4px}
     }
   </style>
 </head>
 <body>
-  <div class="app">
-    <div class="frame" aria-label="Owner Panel">
-      <div class="loading" id="loading"><div class="spinner" aria-label="Loading"></div></div>
-
+  <div class="shell">
+    <div class="card">
       <div class="topbar">
         <div class="brand">
-          <div class="mark">OP</div>
-          <div class="titles">
-            <h1>Owner Panel</h1>
-            <p>إدارة الوكالات والحسابات: إضافة / تعديل / حذف / Status (✅ / Pending / Ready) — التحقق داخل Worker عبر Secrets</p>
+          <div class="mark">OC</div>
+          <div>
+            <h1>Owner Console</h1>
+            <div class="sub">Agencies & accounts management</div>
           </div>
         </div>
 
-        <div class="topActions">
-          <button class="iconBtn" id="themeBtn" type="button" title="تبديل المظهر">🌓 المظهر</button>
-          <span class="pill" id="sessionPill"><span class="dot" id="dot"></span><span id="pillText">غير مسجّل</span></span>
+        <div class="rightbar">
+          <button class="btn btnGhost" id="themeBtn" type="button" aria-label="Toggle theme">🌓 Theme</button>
+          <span class="pill"><span class="dot" id="dot"></span><span id="pillText">Signed out</span></span>
         </div>
       </div>
 
-      <div class="content">
+      <div class="wrap">
         <div class="grid">
-          <!-- Login -->
-          <section class="panel" id="loginPanel" aria-label="Login">
-            <div class="hint">ادخل بيانات Owner. بعد الدخول سيتم تحميل الوكالات والحسابات.</div>
+          <div class="panel" id="loginPanel">
+            <div class="panelHead">
+              <div class="panelTitle">
+                <b>Sign in</b>
+                <span>Owner credentials are stored only in this browser session.</span>
+              </div>
+            </div>
 
             <div class="row2">
               <div>
-                <label for="ownerUser">USER</label>
-                <input id="ownerUser" type="text" value="Owner" autocomplete="username" />
+                <label>Username</label>
+                <input id="ownerUser" type="text" autocomplete="username" placeholder="Owner" />
               </div>
               <div>
-                <label for="ownerPass">PASS</label>
-                <input id="ownerPass" type="password" value="" autocomplete="current-password" />
+                <label>Password</label>
+                <input id="ownerPass" type="password" autocomplete="current-password" placeholder="••••••••" />
               </div>
             </div>
 
-            <div class="btnRow">
-              <button class="btn btnPrimary" id="loginBtn" type="button" style="flex:1">🔐 تسجيل الدخول</button>
-              <button class="btn btnSoft" id="logoutBtn" type="button" style="display:none">🚪 خروج</button>
+            <div class="toolbar">
+              <button class="btn btnPrimary" id="loginBtn" type="button" style="flex:1">Sign in</button>
+              <button class="btn btnDanger" id="logoutBtn" type="button" style="display:none">Sign out</button>
+            </div>
+          </div>
+
+          <div class="panel" id="dashPanel" style="display:none">
+            <div class="panelHead">
+              <div class="panelTitle">
+                <b>Dashboard</b>
+                <span>Edit any field — changes auto-save.</span>
+              </div>
+              <div class="toolbar" style="margin:0">
+                <button class="btn btnPrimary" id="addBtn" type="button">➕ New account</button>
+                <button class="btn" id="exportBtn" type="button">⬇️ Export JSON</button>
+                <button class="btn" id="refreshBtn" type="button">🔄 Refresh</button>
+              </div>
             </div>
 
-            <div class="hint">
-              يتم إرسال بيانات الدخول في Headers: <b>X-Owner-User</b> و <b>X-Owner-Pass</b> (لا يتم حفظها في السيرفر).
-            </div>
-          </section>
-
-          <!-- Dashboard -->
-          <section class="panel" id="dashPanel" style="display:none" aria-label="Dashboard">
-            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
+            <div class="row2">
               <div>
-                <b style="font-size:1.05rem">لوحة التحكم</b>
-                <div class="hint" style="margin-top:6px">اختر وكالة، ثم تحكم بالحسابات. يمكنك إضافة حساب جديد من زر “إضافة حساب”.</div>
-              </div>
-              <div class="btnRow" style="margin:0">
-                <button class="btn btnInfo" id="addBtn" type="button">➕ إضافة حساب</button>
-                <button class="btn btnSoft" id="exportBtn" type="button">⬇️ تصدير JSON</button>
-                <button class="btn btnSoft" id="refreshBtn" type="button">🔄 تحديث</button>
-              </div>
-            </div>
-
-            <div class="row2" style="margin-top:10px">
-              <div>
-                <label for="agencySelect">الوكالة</label>
+                <label>Agency</label>
                 <select id="agencySelect"></select>
               </div>
               <div>
-                <label for="searchBox">بحث سريع</label>
+                <label>Quick search</label>
                 <input id="searchBox" type="text" placeholder="email / passport / status" />
               </div>
             </div>
 
             <div class="stats">
-              <div class="stat"><div><div class="k">إجمالي الوكالات</div><b id="stAgencies">0</b></div><span class="badge info" id="stAgenciesBadge">—</span></div>
-              <div class="stat"><div><div class="k">حسابات هذه الوكالة</div><b id="stAccounts">0</b></div><span class="badge" id="stAccountsBadge">—</span></div>
-              <div class="stat"><div><div class="k">✅ / Pending / Ready</div><b id="stBreak">0 / 0 / 0</b></div><span class="badge ok" id="stBreakBadge">Status</span></div>
+              <div class="stat">
+                <div>
+                  <div class="k">Total agencies</div>
+                  <b id="stAgencies">0</b>
+                </div>
+                <span class="badge info" id="stAgenciesBadge">—</span>
+              </div>
+
+              <div class="stat">
+                <div>
+                  <div class="k">Accounts (selected agency)</div>
+                  <b id="stAccounts">0</b>
+                </div>
+                <span class="badge" id="stAccountsBadge">—</span>
+              </div>
+
+              <div class="stat">
+                <div>
+                  <div class="k">✅ / Pending / Ready</div>
+                  <b id="stBreak">0 / 0 / 0</b>
+                </div>
+                <span class="badge ok">Status</span>
+              </div>
             </div>
 
-            <div class="chips" id="chips" aria-label="Status filter">
-              <div class="chip active" data-filter="all">الكل</div>
+            <div class="chips" id="chips">
+              <div class="chip active" data-filter="all">All</div>
               <div class="chip" data-filter="✅">✅</div>
               <div class="chip" data-filter="Pending">Pending</div>
               <div class="chip" data-filter="Ready">Ready</div>
             </div>
 
-            <div class="tableWrap" role="table" aria-label="Accounts">
-              <div class="tableHead" role="row">
+            <div class="table" role="table" aria-label="Accounts">
+              <div class="thead" role="row">
                 <div role="columnheader">Email</div>
                 <div role="columnheader">Password</div>
                 <div role="columnheader">Passport</div>
                 <div role="columnheader">Status</div>
-                <div role="columnheader"></div>
+                <div role="columnheader" style="text-align:right">Actions</div>
               </div>
               <div id="listBody"></div>
             </div>
 
-            <div id="emptyBox" class="hint" style="display:none;margin-top:10px;border:1px dashed var(--stroke2);border-radius:16px;padding:12px;background:rgba(255,255,255,.04)">
-              لا توجد حسابات مطابقة للفلتر/البحث.
-            </div>
-          </section>
+            <div id="emptyBox" class="empty">No records match your filters.</div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Add modal -->
   <div class="backdrop" id="backdrop" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true" aria-label="Add Account">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="New account">
       <div class="modalHead">
-        <b>إضافة حساب جديد</b>
-        <button class="miniBtn" id="closeModal" type="button" aria-label="Close">✕</button>
+        <b>New account</b>
+        <button class="miniBtn neutral" id="closeModal" type="button">✕ Close</button>
       </div>
       <div class="modalBody">
         <div class="row2">
           <div>
-            <label for="addAgencySelect">اختيار وكالة</label>
+            <label>Agency</label>
             <select id="addAgencySelect"></select>
-            <div class="hint" style="margin-top:6px">لإنشاء وكالة جديدة: اختر “+ وكالة جديدة…”</div>
           </div>
           <div>
-            <label for="newAgencyName">اسم الوكالة الجديدة (اختياري)</label>
-            <input id="newAgencyName" type="text" placeholder="مثال: agency1" />
+            <label>New agency name</label>
+            <input id="newAgencyName" type="text" placeholder="e.g. agency1" />
           </div>
         </div>
 
         <div class="row2">
           <div>
-            <label for="addEmail">Email</label>
+            <label>Email</label>
             <input id="addEmail" type="text" placeholder="example@mail.com" />
           </div>
           <div>
-            <label for="addPassword">Password</label>
+            <label>Password</label>
             <input id="addPassword" type="text" placeholder="Password" />
           </div>
         </div>
 
         <div class="row2">
           <div>
-            <label for="addPassport">Passport</label>
+            <label>Passport</label>
             <input id="addPassport" type="text" placeholder="AB123456" />
           </div>
           <div>
-            <label for="addStatus">Status</label>
+            <label>Status</label>
             <select id="addStatus">
               <option value="Pending">Pending</option>
               <option value="Ready">Ready</option>
@@ -482,26 +396,20 @@
           </div>
         </div>
 
-        <div class="btnRow">
-          <button class="btn btnPrimary" id="createBtn" type="button" style="flex:1">💾 حفظ الحساب</button>
-          <button class="btn btnSoft" id="resetBtn" type="button">🧹 تفريغ</button>
+        <div class="toolbar">
+          <button class="btn btnPrimary" id="createBtn" type="button" style="flex:1">Create</button>
+          <button class="btn" id="resetBtn" type="button">Reset</button>
         </div>
-
-        <div class="hint">لن يتم إضافة حساب مكرر بنفس (Email + Passport) داخل نفس الوكالة.</div>
       </div>
     </div>
   </div>
 
-  <div id="toast" role="status" aria-live="polite"></div>
+  <div id="toast"></div>
 
 <script>
   const API = "https://api.mehdik.site/owner";
 
-  const root = document.documentElement;
   const toastEl = document.getElementById("toast");
-  const loadingEl = document.getElementById("loading");
-
-  const loginPanel = document.getElementById("loginPanel");
   const dashPanel = document.getElementById("dashPanel");
   const dot = document.getElementById("dot");
   const pillText = document.getElementById("pillText");
@@ -519,6 +427,7 @@
   const refreshBtn = document.getElementById("refreshBtn");
   const addBtn = document.getElementById("addBtn");
   const exportBtn = document.getElementById("exportBtn");
+  const themeBtn = document.getElementById("themeBtn");
 
   const stAgencies = document.getElementById("stAgencies");
   const stAccounts = document.getElementById("stAccounts");
@@ -528,7 +437,6 @@
 
   const chips = document.getElementById("chips");
 
-  // Modal
   const backdrop = document.getElementById("backdrop");
   const closeModal = document.getElementById("closeModal");
   const addAgencySelect = document.getElementById("addAgencySelect");
@@ -540,45 +448,54 @@
   const createBtn = document.getElementById("createBtn");
   const resetBtn = document.getElementById("resetBtn");
 
-  const themeBtn = document.getElementById("themeBtn");
-
   let creds = null;
   let agencies = [];
   let accounts = [];
   let statusFilter = "all";
+  const saveTimers = new Map();
 
   function showToast(msg){
     toastEl.textContent = msg;
     toastEl.classList.add("show");
-    setTimeout(()=>toastEl.classList.remove("show"), 2600);
+    setTimeout(()=>toastEl.classList.remove("show"), 2300);
   }
 
-  function setLoading(on){
-    loadingEl.style.display = on ? "flex" : "none";
+  function setTheme(theme){
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("oc_theme", theme);
+    themeBtn.textContent = theme === "light" ? "🌞 Light" : "🌙 Dark";
+  }
+
+  function toggleTheme(){
+    const cur = document.documentElement.getAttribute("data-theme") || "dark";
+    setTheme(cur === "dark" ? "light" : "dark");
   }
 
   function headers(){
     return {
       "Content-Type": "application/json",
       "X-Owner-User": creds?.user || "",
-      "X-Owner-Pass": creds?.pass || "",
+      "X-Owner-Pass": creds?.pass || ""
     };
   }
 
   function setLoggedIn(on){
     if(on){
-      pillText.textContent = "مُسجّل";
+      pillText.textContent = "Signed in";
+      dot.classList.remove("bad");
       dot.classList.add("ok");
       loginBtn.style.display = "none";
       logoutBtn.style.display = "inline-flex";
       dashPanel.style.display = "block";
     }else{
-      pillText.textContent = "غير مسجّل";
+      pillText.textContent = "Signed out";
       dot.classList.remove("ok");
+      dot.classList.add("bad");
       loginBtn.style.display = "inline-flex";
       logoutBtn.style.display = "none";
       dashPanel.style.display = "none";
-      agencies = []; accounts = [];
+      agencies = [];
+      accounts = [];
       agencySelect.innerHTML = "";
       listBody.innerHTML = "";
       searchBox.value = "";
@@ -593,7 +510,7 @@
     const r = await fetch(API + "/login", {
       method: "POST",
       headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({user, pass}),
+      body: JSON.stringify({user, pass})
     });
     const j = await r.json().catch(()=>null);
     if(!r.ok || !j || !j.ok) throw new Error("Invalid login");
@@ -648,15 +565,16 @@
     for(const a of agencies){
       const opt = document.createElement("option");
       opt.value = a.agency;
-      opt.textContent = `${a.agency} — (${a.count})`;
+      opt.textContent = `${a.agency} (${a.count})`;
       agencySelect.appendChild(opt);
     }
 
     addAgencySelect.innerHTML = "";
     const o0 = document.createElement("option");
     o0.value = "__new__";
-    o0.textContent = "+ وكالة جديدة…";
+    o0.textContent = "+ New agency…";
     addAgencySelect.appendChild(o0);
+
     for(const a of agencies){
       const opt = document.createElement("option");
       opt.value = a.agency;
@@ -666,8 +584,8 @@
   }
 
   function setChipActive(v){
-    for(const el of chips.querySelectorAll('.chip')){
-      el.classList.toggle('active', el.dataset.filter === v);
+    for(const el of chips.querySelectorAll(".chip")){
+      el.classList.toggle("active", el.dataset.filter === v);
     }
   }
 
@@ -681,13 +599,8 @@
 
   function statusSelect(value){
     const sel = document.createElement("select");
-    sel.style.padding = "9px 10px";
-    sel.style.borderRadius = "12px";
-    sel.style.background = "rgba(255,255,255,.06)";
-    sel.style.border = "1px solid var(--stroke2)";
-    sel.style.color = "var(--ink)";
-    const options = ["✅", "Pending", "Ready"]; 
-    for(const o of options){
+    const opts = ["✅","Pending","Ready"];
+    for(const o of opts){
       const op = document.createElement("option");
       op.value = o;
       op.textContent = o;
@@ -711,6 +624,57 @@
     stBreak.textContent = `${cOk} / ${cPend} / ${cReady}`;
   }
 
+  function cellWrap(label, node){
+    if(window.matchMedia("(max-width: 860px)").matches){
+      const wrap = document.createElement("div");
+      const l = document.createElement("span");
+      l.className = "cellLabel";
+      l.textContent = label;
+      wrap.appendChild(l);
+      wrap.appendChild(node);
+      return wrap;
+    }
+    return node;
+  }
+
+  function setRowState(el, state){
+    el.innerHTML = "";
+    if(state === "saving"){
+      const sp = document.createElement("span");
+      sp.className = "spin";
+      const tx = document.createElement("span");
+      tx.textContent = "Saving…";
+      el.appendChild(sp);
+      el.appendChild(tx);
+      return;
+    }
+    if(state === "saved"){
+      const tx = document.createElement("span");
+      tx.style.color = "var(--ok)";
+      tx.textContent = "Saved";
+      el.appendChild(tx);
+      return;
+    }
+    if(state === "error"){
+      const tx = document.createElement("span");
+      tx.style.color = "var(--bad)";
+      tx.textContent = "Failed";
+      el.appendChild(tx);
+      return;
+    }
+    const tx = document.createElement("span");
+    tx.textContent = "Auto-save";
+    el.appendChild(tx);
+  }
+
+  function scheduleAutoSave(key, fn, ms){
+    if(saveTimers.has(key)) clearTimeout(saveTimers.get(key));
+    saveTimers.set(key, setTimeout(()=>{
+      saveTimers.delete(key);
+      fn();
+    }, ms));
+  }
+
   function renderList(){
     listBody.innerHTML = "";
 
@@ -724,70 +688,40 @@
 
     for(const acc of view){
       const row = document.createElement("div");
-      row.className = "tableRow";
+      row.className = "trow";
       row.setAttribute("role","row");
-
-      const c1 = document.createElement("div");
-      const c2 = document.createElement("div");
-      const c3 = document.createElement("div");
-      const c4 = document.createElement("div");
-      const c5 = document.createElement("div");
 
       const emailIn = document.createElement("input");
       emailIn.value = acc.email || "";
-      emailIn.style.padding = "9px 10px";
 
       const passIn = document.createElement("input");
-      passIn.type = "password";
       passIn.value = acc.password || "";
-      passIn.style.padding = "9px 10px";
 
       const passpIn = document.createElement("input");
       passpIn.value = acc.passport || "";
-      passpIn.style.padding = "9px 10px";
 
       const stSel = statusSelect(acc.status);
 
-      c1.appendChild(emailIn);
-      c2.appendChild(passIn);
-      c3.appendChild(passpIn);
-      c4.appendChild(stSel);
+      const state = document.createElement("div");
+      state.className = "rowState";
+      setRowState(state, "idle");
 
       const actions = document.createElement("div");
       actions.className = "actions";
 
-      const showBtn = document.createElement("button");
-      showBtn.type = "button";
-      showBtn.className = "miniBtn";
-      showBtn.textContent = "👁";
-      showBtn.title = "إظهار/إخفاء كلمة المرور";
-
-      showBtn.addEventListener("click", ()=>{
-        passIn.type = passIn.type === "password" ? "text" : "password";
-      });
-
-      const copyBtn = document.createElement("button");
-      copyBtn.type = "button";
-      copyBtn.className = "miniBtn";
-      copyBtn.textContent = "📋";
-      copyBtn.title = "نسخ (email | password | passport)";
-      copyBtn.addEventListener("click", async ()=>{
-        const text = `${emailIn.value}\t${passIn.value}\t${passpIn.value}`;
-        try{ await navigator.clipboard.writeText(text); showToast("تم النسخ"); }
-        catch(_){ showToast("تعذر النسخ"); }
-      });
-
       const saveBtn = document.createElement("button");
       saveBtn.type = "button";
       saveBtn.className = "miniBtn ok";
-      saveBtn.textContent = "حفظ";
+      saveBtn.textContent = "Save now";
 
       const delBtn = document.createElement("button");
       delBtn.type = "button";
       delBtn.className = "miniBtn danger";
-      delBtn.textContent = "حذف";
+      delBtn.textContent = "Delete";
 
-      saveBtn.addEventListener("click", async ()=>{
+      const rowKey = `${agencySelect.value}::${acc.email||""}::${acc.passport||""}`;
+
+      async function doSave(){
         const agency = agencySelect.value;
         const body = {
           agency,
@@ -796,119 +730,122 @@
           email: emailIn.value.trim(),
           password: passIn.value.trim(),
           passport: passpIn.value.trim(),
-          status: stSel.value,
+          status: stSel.value
         };
+
+        if(!body.email || !body.password || !body.passport){
+          setRowState(state, "error");
+          return;
+        }
+
         try{
+          setRowState(state, "saving");
           saveBtn.disabled = true;
-          setLoading(true);
           await apiUpdate(body);
+
           acc.email = body.email;
           acc.password = body.password;
           acc.passport = body.passport;
           acc.status = body.status;
+
           updateStats();
-          renderList();
-          showToast("تم الحفظ");
-        }catch(e){
-          console.error(e);
-          showToast("فشل الحفظ");
+          setRowState(state, "saved");
+          showToast("Saved");
+          scheduleAutoSave("rerender:"+rowKey, ()=>renderList(), 450);
+        }catch(_){
+          setRowState(state, "error");
+          showToast("Save failed");
         }finally{
-          setLoading(false);
           saveBtn.disabled = false;
+          scheduleAutoSave("idle:"+rowKey, ()=>setRowState(state, "idle"), 2200);
         }
-      });
+      }
+
+      function onEdit(){
+        setRowState(state, "saving");
+        scheduleAutoSave("autosave:"+rowKey, doSave, 900);
+      }
+
+      emailIn.addEventListener("input", onEdit);
+      passIn.addEventListener("input", onEdit);
+      passpIn.addEventListener("input", onEdit);
+      stSel.addEventListener("change", onEdit);
+
+      saveBtn.addEventListener("click", ()=> scheduleAutoSave("autosave:"+rowKey, doSave, 0));
 
       delBtn.addEventListener("click", async ()=>{
-        if(!confirm("حذف هذا الحساب؟")) return;
+        const ok = confirm("Delete this account?");
+        if(!ok) return;
         const agency = agencySelect.value;
         const body = { agency, email: (acc.email||""), passport: (acc.passport||"") };
         try{
           delBtn.disabled = true;
-          setLoading(true);
           await apiDelete(body);
           accounts = accounts.filter(x => !((x.email||"")===acc.email && (x.passport||"")===acc.passport));
           updateStats();
           renderList();
-          showToast("تم الحذف");
-        }catch(e){
-          console.error(e);
-          showToast("فشل الحذف");
+          showToast("Deleted");
+        }catch(_){
+          showToast("Delete failed");
         }finally{
-          setLoading(false);
           delBtn.disabled = false;
         }
       });
 
-      actions.appendChild(showBtn);
-      actions.appendChild(copyBtn);
+      actions.appendChild(state);
       actions.appendChild(saveBtn);
       actions.appendChild(delBtn);
-      c5.appendChild(actions);
 
-      row.appendChild(c1); row.appendChild(c2); row.appendChild(c3); row.appendChild(c4); row.appendChild(c5);
+      row.appendChild(cellWrap("Email", emailIn));
+      row.appendChild(cellWrap("Password", passIn));
+      row.appendChild(cellWrap("Passport", passpIn));
+      row.appendChild(cellWrap("Status", stSel));
+      row.appendChild(actions);
+
       listBody.appendChild(row);
     }
   }
 
   async function refreshAll(keepAgency=true){
-    setLoading(true);
-    try{
-      agencies = await apiAgencies();
-      renderAgencies();
-      const prev = agencySelect.value;
+    agencies = await apiAgencies();
+    renderAgencies();
+    const prev = agencySelect.value;
 
-      if(agencies.length){
-        if(keepAgency && prev && agencies.some(a => a.agency === prev)) agencySelect.value = prev;
-        else agencySelect.value = agencies[0].agency;
+    if(agencies.length){
+      if(keepAgency && prev && agencies.some(a => a.agency === prev)) agencySelect.value = prev;
+      else agencySelect.value = agencies[0].agency;
 
-        accounts = await apiAccounts(agencySelect.value);
-        accounts = accounts.map(a => ({...a, status: normalizeStatus(a.status)}));
-      }else{
-        accounts = [];
-      }
-      updateStats();
-      renderList();
-    }finally{
-      setLoading(false);
+      accounts = await apiAccounts(agencySelect.value);
+      accounts = accounts.map(a => ({...a, status: normalizeStatus(a.status)}));
+    }else{
+      accounts = [];
     }
+    updateStats();
+    renderList();
   }
 
   function openModal(){
     backdrop.style.display = "flex";
-    requestAnimationFrame(()=>{
-      backdrop.classList.add("show");
-      backdrop.setAttribute("aria-hidden","false");
-    });
-    if(agencySelect.value) addAgencySelect.value = agencySelect.value;
-    else addAgencySelect.value = "__new__";
+    backdrop.setAttribute("aria-hidden","false");
+    addAgencySelect.value = agencySelect.value ? agencySelect.value : "__new__";
     newAgencyName.value = "";
     addEmail.value = "";
     addPassword.value = "";
     addPassport.value = "";
     addStatus.value = "Pending";
-    toggleNewAgencyField();
-    setTimeout(()=>addEmail.focus(), 60);
+    newAgencyName.disabled = addAgencySelect.value !== "__new__";
+    setTimeout(()=>addEmail.focus(), 50);
   }
 
   function closeModalFn(){
-    backdrop.classList.remove("show");
+    backdrop.style.display = "none";
     backdrop.setAttribute("aria-hidden","true");
-    setTimeout(()=>{ backdrop.style.display = "none"; }, 160);
   }
 
   function resolveAgencyForCreate(){
     const sel = addAgencySelect.value;
-    if(sel === "__new__"){
-      const n = (newAgencyName.value || "").trim();
-      return n;
-    }
+    if(sel === "__new__") return (newAgencyName.value || "").trim();
     return sel;
-  }
-
-  function toggleNewAgencyField(){
-    const isNew = addAgencySelect.value === "__new__";
-    newAgencyName.disabled = !isNew;
-    if(isNew) newAgencyName.focus();
   }
 
   async function createAccount(){
@@ -918,14 +855,13 @@
     const passport = (addPassport.value || "").trim();
     const status = normalizeStatus(addStatus.value);
 
-    if(!agency){ showToast("أدخل اسم الوكالة"); return; }
-    if(!email || !password || !passport){ showToast("أكمل Email / Password / Passport"); return; }
+    if(!agency){ showToast("Enter agency name"); return; }
+    if(!email || !password || !passport){ showToast("Complete all fields"); return; }
 
     try{
       createBtn.disabled = true;
-      setLoading(true);
       await apiCreate({ agency, email, password, passport, status });
-      showToast("تمت الإضافة");
+      showToast("Created");
       closeModalFn();
 
       await refreshAll(false);
@@ -934,72 +870,47 @@
       accounts = accounts.map(a => ({...a, status: normalizeStatus(a.status)}));
       updateStats();
       renderList();
-
     }catch(e){
-      console.error(e);
-      const msg = (e && e.message) ? e.message : "فشل الإضافة";
-      showToast(msg === "Account already exists" ? "الحساب موجود مسبقاً" : "فشل الإضافة");
+      const msg = (e && e.message) ? e.message : "Failed";
+      showToast(msg === "Account already exists" ? "Already exists" : "Create failed");
     }finally{
-      setLoading(false);
       createBtn.disabled = false;
     }
   }
 
   function exportJSON(){
     const agency = agencySelect.value || "";
-    const payload = {
-      exportedAt: new Date().toISOString(),
-      agency,
-      accounts,
-    };
+    const payload = { exportedAt: new Date().toISOString(), agency, accounts };
     const blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = `agency_${agency || 'all'}_accounts.json`;
+    a.download = `agency_${agency || "all"}_accounts.json`;
     document.body.appendChild(a);
     a.click();
     a.remove();
-    setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
+    setTimeout(()=>URL.revokeObjectURL(a.href), 1500);
   }
 
-  // Theme
-  function applyTheme(theme){
-    if(theme === "light") root.setAttribute("data-theme","light");
-    else root.removeAttribute("data-theme");
-  }
-  (function bootTheme(){
-    const saved = localStorage.getItem("owner_theme");
-    if(saved === "light" || saved === "dark") applyTheme(saved);
-  })();
-  themeBtn.addEventListener("click", ()=>{
-    const isLight = root.getAttribute("data-theme") === "light";
-    const next = isLight ? "dark" : "light";
-    applyTheme(next);
-    localStorage.setItem("owner_theme", next);
-  });
+  themeBtn.addEventListener("click", toggleTheme);
 
-  // Events
   loginBtn.addEventListener("click", async ()=>{
     const user = (ownerUser.value || "").trim();
     const pass = (ownerPass.value || "").trim();
-    if(!user || !pass){ showToast("أدخل USER و PASS"); return; }
+    if(!user || !pass){ showToast("Enter username & password"); return; }
 
     try{
       loginBtn.disabled = true;
-      setLoading(true);
       await apiLogin(user, pass);
       creds = { user, pass };
       sessionStorage.setItem("owner_creds", JSON.stringify(creds));
       setLoggedIn(true);
-      showToast("تم تسجيل الدخول");
+      showToast("Signed in");
       await refreshAll(false);
-    }catch(e){
-      console.error(e);
+    }catch(_){
       creds = null;
       setLoggedIn(false);
-      showToast("بيانات دخول غير صحيحة");
+      showToast("Invalid credentials");
     }finally{
-      setLoading(false);
       loginBtn.disabled = false;
     }
   });
@@ -1007,18 +918,17 @@
   logoutBtn.addEventListener("click", ()=>{
     creds = null;
     setLoggedIn(false);
-    showToast("تم تسجيل الخروج");
+    showToast("Signed out");
   });
 
   refreshBtn.addEventListener("click", async ()=>{
     try{
       refreshBtn.disabled = true;
-      showToast("جاري التحديث…");
+      showToast("Refreshing…");
       await refreshAll(true);
-      showToast("تم التحديث");
-    }catch(e){
-      console.error(e);
-      showToast("فشل التحديث");
+      showToast("Updated");
+    }catch(_){
+      showToast("Refresh failed");
     }finally{
       refreshBtn.disabled = false;
     }
@@ -1026,35 +936,31 @@
 
   agencySelect.addEventListener("change", async ()=>{
     try{
-      showToast("جاري التحميل…");
-      setLoading(true);
+      showToast("Loading…");
       accounts = await apiAccounts(agencySelect.value);
       accounts = accounts.map(a => ({...a, status: normalizeStatus(a.status)}));
       updateStats();
       renderList();
-      showToast("تم التحميل");
-    }catch(e){
-      console.error(e);
-      showToast("فشل التحميل");
-    }finally{
-      setLoading(false);
+      showToast("Loaded");
+    }catch(_){
+      showToast("Load failed");
     }
   });
 
   searchBox.addEventListener("input", ()=> renderList());
 
   chips.addEventListener("click", (ev)=>{
-    const chip = ev.target.closest('.chip');
+    const chip = ev.target.closest(".chip");
     if(!chip) return;
     statusFilter = chip.dataset.filter;
     setChipActive(statusFilter);
     renderList();
   });
 
-  addBtn.addEventListener("click", ()=> openModal());
-  exportBtn.addEventListener("click", ()=> exportJSON());
+  addBtn.addEventListener("click", openModal);
+  exportBtn.addEventListener("click", exportJSON);
 
-  closeModal.addEventListener("click", ()=> closeModalFn());
+  closeModal.addEventListener("click", closeModalFn);
   backdrop.addEventListener("click", (e)=>{ if(e.target === backdrop) closeModalFn(); });
 
   resetBtn.addEventListener("click", ()=>{
@@ -1066,19 +972,21 @@
     addEmail.focus();
   });
 
-  createBtn.addEventListener("click", ()=> createAccount());
+  createBtn.addEventListener("click", createAccount);
 
-  addAgencySelect.addEventListener("change", ()=> toggleNewAgencyField());
-
-  // Keyboard helpers
-  document.addEventListener("keydown", (e)=>{
-    if(e.key === "Escape" && backdrop.style.display === "flex") closeModalFn();
-    if(e.key === "Enter" && document.activeElement === ownerPass) loginBtn.click();
+  addAgencySelect.addEventListener("change", ()=>{
+    const isNew = addAgencySelect.value === "__new__";
+    newAgencyName.disabled = !isNew;
+    if(isNew) newAgencyName.focus();
   });
 
-  // Restore session
   (function boot(){
+    const savedTheme = localStorage.getItem("oc_theme") || "dark";
+    setTheme(savedTheme);
+
     setLoggedIn(false);
+    ownerUser.value = "Owner";
+
     try{
       const s = sessionStorage.getItem("owner_creds");
       if(!s) return;
@@ -1090,7 +998,7 @@
         setLoggedIn(true);
         refreshAll(false).catch(()=> setLoggedIn(false));
       }
-    }catch(_){/* ignore */}
+    }catch(_){ }
   })();
 </script>
 </body>
