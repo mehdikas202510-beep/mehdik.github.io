@@ -1,1 +1,413 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Owner Panel - Agency Accounts</title>
+  <style>
+    :root{
+      --bg:#0b1220; --card:#0f1a30; --muted:#8ea3c7; --text:#e9f0ff;
+      --line:rgba(255,255,255,.08); --ok:#22c55e; --warn:#f59e0b; --bad:#ef4444;
+    }
+    *{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif}
+    body{margin:0;background:radial-gradient(1200px 800px at 10% 10%, #14244a 0%, var(--bg) 45%);
+         color:var(--text); min-height:100vh}
+    .wrap{max-width:1200px;margin:0 auto;padding:24px}
+    .top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+    .brand{display:flex;align-items:center;gap:10px}
+    .dot{width:10px;height:10px;border-radius:99px;background:var(--ok);box-shadow:0 0 18px rgba(34,197,94,.7)}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+          border:1px solid var(--line); border-radius:18px; padding:16px; box-shadow:0 10px 40px rgba(0,0,0,.35)}
+    .grid{display:grid;grid-template-columns: 1.1fr .9fr; gap:16px; margin-top:16px}
+    @media (max-width: 980px){.grid{grid-template-columns:1fr}}
+    label{display:block;color:var(--muted);font-size:13px;margin:10px 0 6px}
+    input, select{
+      width:100%; padding:12px 12px; border-radius:12px;
+      background:rgba(0,0,0,.25); border:1px solid var(--line); color:var(--text);
+      outline:none;
+    }
+    input:focus, select:focus{border-color:rgba(142,163,199,.5)}
+    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .btn{
+      padding:10px 12px;border-radius:12px;border:1px solid var(--line);
+      background:rgba(255,255,255,.06);color:var(--text);cursor:pointer
+    }
+    .btn:hover{background:rgba(255,255,255,.1)}
+    .btn.ok{border-color:rgba(34,197,94,.35); background:rgba(34,197,94,.12)}
+    .btn.bad{border-color:rgba(239,68,68,.35); background:rgba(239,68,68,.12)}
+    .btn.warn{border-color:rgba(245,158,11,.35); background:rgba(245,158,11,.12)}
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:999px;
+      background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--muted);font-size:13px
+    }
+    .muted{color:var(--muted)}
+    table{width:100%;border-collapse:collapse;margin-top:10px}
+    th,td{padding:10px;border-bottom:1px solid var(--line);text-align:right;vertical-align:middle}
+    th{color:var(--muted);font-size:12px;font-weight:600}
+    td{font-size:13px}
+    .status{
+      padding:7px 10px;border-radius:999px; border:1px solid var(--line); display:inline-flex; gap:8px; align-items:center
+    }
+    .s-ok{color:var(--ok)}
+    .s-pend{color:var(--warn)}
+    .s-ready{color:#60a5fa}
+    .actions{display:flex;gap:8px;flex-wrap:wrap}
+    .hint{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.6}
+    .hidden{display:none !important}
+    .toast{position:fixed;left:18px;bottom:18px; background:rgba(15,26,48,.9);
+           border:1px solid var(--line); border-radius:14px; padding:12px 14px; min-width:220px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <div class="dot"></div>
+        <div>
+          <div style="font-size:18px;font-weight:800">Owner Panel</div>
+          <div class="muted" style="font-size:13px">إدارة جميع agency_accounts (تعديل/حذف/Status)</div>
+        </div>
+      </div>
+      <div class="row">
+        <span class="pill" id="authState">غير مسجّل دخول</span>
+        <button class="btn" id="logoutBtn">Logout</button>
+      </div>
+    </div>
 
+    <!-- LOGIN -->
+    <div class="card" id="loginCard" style="margin-top:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
+        <div>
+          <div style="font-size:16px;font-weight:800">تسجيل دخول Owner</div>
+          <div class="muted" style="font-size:13px;margin-top:4px">يتم التحقق من البيانات داخل Worker عبر Secrets</div>
+        </div>
+      </div>
+      <div class="grid" style="margin-top:10px">
+        <div>
+          <label>USER</label>
+          <input id="user" placeholder="Owner" autocomplete="username">
+        </div>
+        <div>
+          <label>PASS</label>
+          <input id="pass" type="password" placeholder="Admin26" autocomplete="current-password">
+        </div>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <button class="btn ok" id="loginBtn">Login</button>
+        <span class="muted" id="loginMsg"></span>
+      </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="grid hidden" id="dash">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+          <div>
+            <div style="font-size:16px;font-weight:800">Agencies</div>
+            <div class="muted" style="font-size:13px;margin-top:4px">اختر وكالة ثم عدّل الحسابات</div>
+          </div>
+          <div class="row">
+            <button class="btn" id="refreshAgencies">Refresh</button>
+            <span class="pill" id="agCount">—</span>
+          </div>
+        </div>
+
+        <label style="margin-top:14px">Agency</label>
+        <select id="agencySelect"></select>
+
+        <label>بحث (Email / Passport / Status)</label>
+        <input id="search" placeholder="مثال: gmail أو AB123 أو Pending">
+
+        <div class="hint">
+          • أي تعديل على صف: اضغط <b>Save</b>. <br>
+          • تغيير Status يظهر مباشرة في صفحة saved accounts عند البحث.
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+          <div>
+            <div style="font-size:16px;font-weight:800">Accounts</div>
+            <div class="muted" style="font-size:13px;margin-top:4px" id="agencyTitle">—</div>
+          </div>
+          <div class="row">
+            <button class="btn" id="reloadAccounts">Reload</button>
+            <span class="pill" id="accCount">—</span>
+          </div>
+        </div>
+
+        <div style="overflow:auto; margin-top:10px">
+          <table>
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Password</th>
+                <th>Passport</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+
+        <div class="hint">
+          Status values: ✅ / Pending / Ready
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast hidden" id="toast"></div>
+
+<script>
+  const API = "https://api.mehdik.site";
+  const LS_TOKEN = "OWNER_TOKEN_v1";
+
+  const el = (id)=>document.getElementById(id);
+  const toast = (msg)=>{
+    const t = el("toast");
+    t.textContent = msg;
+    t.classList.remove("hidden");
+    setTimeout(()=>t.classList.add("hidden"), 2600);
+  };
+
+  function setAuthPill(ok){
+    el("authState").textContent = ok ? "مسجّل دخول ✅" : "غير مسجّل دخول";
+    el("authState").style.color = ok ? "#22c55e" : "#8ea3c7";
+  }
+
+  function token(){ return localStorage.getItem(LS_TOKEN) || ""; }
+
+  async function api(path, opts={}){
+    const headers = opts.headers || {};
+    if (token()) headers["Authorization"] = "Bearer " + token();
+    opts.headers = headers;
+    const r = await fetch(API + path, opts);
+    const j = await r.json().catch(()=>({ok:false}));
+    if (r.status === 401) {
+      localStorage.removeItem(LS_TOKEN);
+      setAuthPill(false);
+      el("dash").classList.add("hidden");
+      el("loginCard").classList.remove("hidden");
+    }
+    return j;
+  }
+
+  async function login(){
+    el("loginMsg").textContent = "";
+    const user = el("user").value.trim();
+    const pass = el("pass").value;
+
+    const r = await fetch(API + "/owner/api/login",{
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({ user, pass })
+    });
+    const j = await r.json().catch(()=>({ok:false}));
+
+    if (!j.ok){
+      el("loginMsg").textContent = "بيانات غير صحيحة";
+      el("loginMsg").style.color = "#ef4444";
+      return;
+    }
+    localStorage.setItem(LS_TOKEN, j.token);
+    setAuthPill(true);
+    el("loginCard").classList.add("hidden");
+    el("dash").classList.remove("hidden");
+    toast("تم تسجيل الدخول");
+    await loadAgencies();
+  }
+
+  async function loadAgencies(){
+    const j = await api("/owner/api/agencies");
+    if (!j.ok) return toast("فشل تحميل الوكالات");
+    const sel = el("agencySelect");
+    sel.innerHTML = "";
+    (j.agencies || []).sort((a,b)=>a.agency.localeCompare(b.agency)).forEach(x=>{
+      const opt = document.createElement("option");
+      opt.value = x.agency;
+      opt.textContent = x.agency;
+      sel.appendChild(opt);
+    });
+    el("agCount").textContent = (j.agencies||[]).length + " agencies";
+    if ((j.agencies||[]).length){
+      sel.value = sel.value || j.agencies[0].agency;
+      await loadAccounts();
+    } else {
+      el("tbody").innerHTML = "";
+      el("accCount").textContent = "0 accounts";
+      el("agencyTitle").textContent = "لا توجد وكالات";
+    }
+  }
+
+  let accounts = [];
+  async function loadAccounts(){
+    const agency = el("agencySelect").value;
+    if (!agency) return;
+    el("agencyTitle").textContent = "Agency: " + agency;
+
+    const j = await api("/owner/api/accounts?agency=" + encodeURIComponent(agency));
+    if (!j.ok) return toast("فشل تحميل الحسابات");
+    accounts = j.accounts || [];
+    el("accCount").textContent = accounts.length + " accounts";
+    render();
+  }
+
+  function maskPass(p){
+    p = String(p||"");
+    if (p.length <= 2) return "•".repeat(Math.max(2,p.length));
+    return "•".repeat(p.length-2) + p.slice(-2);
+  }
+
+  function statusClass(s){
+    if (s === "✅") return "s-ok";
+    if (s === "Ready") return "s-ready";
+    return "s-pend";
+  }
+
+  function render(){
+    const q = el("search").value.trim().toLowerCase();
+    const rows = accounts.filter(a=>{
+      if (!q) return true;
+      return String(a.email||"").toLowerCase().includes(q)
+        || String(a.passport||"").toLowerCase().includes(q)
+        || String(a.status||"").toLowerCase().includes(q);
+    });
+
+    const tb = el("tbody");
+    tb.innerHTML = "";
+
+    for (const a of rows){
+      const tr = document.createElement("tr");
+
+      const tdEmail = document.createElement("td");
+      const inpEmail = document.createElement("input");
+      inpEmail.value = a.email || "";
+      inpEmail.style.minWidth = "220px";
+      tdEmail.appendChild(inpEmail);
+
+      const tdPass = document.createElement("td");
+      const wrap = document.createElement("div");
+      wrap.className = "row";
+      wrap.style.flexWrap = "nowrap";
+
+      const inpPass = document.createElement("input");
+      inpPass.type = "password";
+      inpPass.value = a.password || "";
+      inpPass.style.minWidth = "160px";
+
+      const btnShow = document.createElement("button");
+      btnShow.className = "btn";
+      btnShow.textContent = "Show";
+      btnShow.onclick = ()=>{
+        inpPass.type = inpPass.type === "password" ? "text" : "password";
+      };
+
+      wrap.appendChild(inpPass);
+      wrap.appendChild(btnShow);
+      tdPass.appendChild(wrap);
+
+      const tdPassport = document.createElement("td");
+      const inpPassport = document.createElement("input");
+      inpPassport.value = a.passport || "";
+      inpPassport.style.minWidth = "140px";
+      tdPassport.appendChild(inpPassport);
+
+      const tdStatus = document.createElement("td");
+      const sel = document.createElement("select");
+      ["✅","Pending","Ready"].forEach(s=>{
+        const opt = document.createElement("option");
+        opt.value = s; opt.textContent = s;
+        sel.appendChild(opt);
+      });
+      sel.value = a.status || "Pending";
+      tdStatus.appendChild(sel);
+
+      const tdAct = document.createElement("td");
+      const box = document.createElement("div");
+      box.className = "actions";
+
+      const save = document.createElement("button");
+      save.className = "btn ok";
+      save.textContent = "Save";
+      save.onclick = async ()=>{
+        const agency = el("agencySelect").value;
+        const updates = {
+          email: inpEmail.value.trim(),
+          password: inpPass.value,
+          passport: inpPassport.value.trim(),
+          status: sel.value
+        };
+        const j = await api("/owner/api/account/update",{
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify({ agency, id: a.id, updates })
+        });
+        if (!j.ok) return toast("فشل الحفظ");
+        // update local
+        Object.assign(a, updates);
+        toast("تم الحفظ ✅");
+        render();
+      };
+
+      const del = document.createElement("button");
+      del.className = "btn bad";
+      del.textContent = "Delete";
+      del.onclick = async ()=>{
+        if (!confirm("تأكيد حذف الحساب؟")) return;
+        const agency = el("agencySelect").value;
+        const j = await api("/owner/api/account/delete",{
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify({ agency, id: a.id })
+        });
+        if (!j.ok) return toast("فشل الحذف");
+        accounts = accounts.filter(x=>x.id !== a.id);
+        el("accCount").textContent = accounts.length + " accounts";
+        toast("تم الحذف 🗑️");
+        render();
+      };
+
+      box.appendChild(save);
+      box.appendChild(del);
+      tdAct.appendChild(box);
+
+      tr.appendChild(tdEmail);
+      tr.appendChild(tdPass);
+      tr.appendChild(tdPassport);
+      tr.appendChild(tdStatus);
+      tr.appendChild(tdAct);
+
+      tb.appendChild(tr);
+    }
+  }
+
+  // events
+  el("loginBtn").onclick = login;
+  el("refreshAgencies").onclick = loadAgencies;
+  el("reloadAccounts").onclick = loadAccounts;
+  el("agencySelect").onchange = loadAccounts;
+  el("search").oninput = render;
+
+  el("logoutBtn").onclick = ()=>{
+    localStorage.removeItem(LS_TOKEN);
+    setAuthPill(false);
+    el("dash").classList.add("hidden");
+    el("loginCard").classList.remove("hidden");
+    toast("تم تسجيل الخروج");
+  };
+
+  // boot
+  (function init(){
+    const has = !!token();
+    setAuthPill(has);
+    if (has){
+      el("loginCard").classList.add("hidden");
+      el("dash").classList.remove("hidden");
+      loadAgencies();
+    }
+  })();
+</script>
+</body>
+</html>
