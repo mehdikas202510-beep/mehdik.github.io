@@ -192,6 +192,9 @@
     }
     .statusOk{border-color:rgba(46,233,120,.55);background:rgba(46,233,120,.12)}
     .statusPending{border-color:rgba(255,186,60,.55);background:rgba(255,186,60,.12)}
+    .statusReady{border-color:rgba(77,163,255,.60);background:rgba(77,163,255,.12)}
+    .statusEmpty{border-color:rgba(255,255,255,.16);background:rgba(255,255,255,.06);opacity:.85}
+
 
 @media (max-width:560px){
       .listHead{display:none}
@@ -811,92 +814,20 @@ mode_single: "واحد",
         const c3 = document.createElement("div"); c3.textContent = a.passport;
 
         const c4 = document.createElement("div");
-        const wrap = document.createElement("div");
-        wrap.className = "actionBtns";
+const rawStatus = (a.status ?? "").toString().trim();
+const s = rawStatus; // default empty
+const pill = document.createElement("span");
 
-        if(i === dupIndex){
-          const editBtn = document.createElement("button");
-          editBtn.type = "button";
-          editBtn.className = "miniBtn";
-          editBtn.textContent = t("btn_edit");
-          editBtn.addEventListener("click", ()=>{
-            emailEl.value = a.email || "";
-            passEl.value = a.password || "";
-            passpEl.value = a.passport || "";
-            accounts.splice(i,1);
-            dupIndex = -1;
-            multiListReady = false;
-            singleDupView = false;
-            toggleMode(true);
-            renderList();
-            emailEl.focus();
-          });
+let cls = "statusEmpty";
+let label = "";
+if (s === "✅") { cls = "statusOk"; label = "✅"; }
+else if (s.toLowerCase() === "pending") { cls = "statusPending"; label = "Pending"; }
+else if (s.toLowerCase() === "ready") { cls = "statusReady"; label = "Ready"; }
+else { cls = "statusEmpty"; label = ""; } // empty/unknown
 
-          const delBtn = document.createElement("button");
-          delBtn.type = "button";
-          delBtn.className = "miniBtn danger";
-          delBtn.textContent = t("btn_delete");
-          delBtn.addEventListener("click", ()=>{
-            accounts.splice(i,1);
-            dupIndex = -1;
-            multiListReady = false;
-            if(!moltiEl.checked) singleDupView = false;
-            toggleMode(true);
-            renderList();
-          });
-
-          wrap.appendChild(editBtn);
-          wrap.appendChild(delBtn);
-        } else {
-          const x = document.createElement("button");
-          x.className = "xbtn";
-          x.type = "button";
-          x.textContent = "×";
-          x.addEventListener("click", ()=>{
-            accounts.splice(i,1);
-            dupIndex = -1;
-            multiListReady = false;
-            toggleMode(true);
-            renderList();
-          });
-          wrap.appendChild(x);
-        }
-
-        c4.appendChild(wrap);
-        row.appendChild(c1); row.appendChild(c2); row.appendChild(c3); row.appendChild(c4);
-        listBody.appendChild(row);
-      }
-
-      updateCount();
-    }
-
-    function renderSaved(){
-      savedBody.innerHTML = "";
-      const q = ((savedSearchEl && savedSearchEl.value) || "").trim().toLowerCase();
-      const view = q ? savedAccounts.filter(a =>
-        ((a.email||"" ).toLowerCase().includes(q)) ||
-        ((a.passport||"" ).toLowerCase().includes(q)) ||
-        ((String(a.status||"").toLowerCase()).includes(q))
-      ) : savedAccounts;
-
-      savedEmpty.style.display = view.length ? "none" : "block";
-
-      for(let i=0;i<view.length;i++){
-        const a = view[i];
-        const row = document.createElement("div");
-        row.className = "listRow";
-        row.setAttribute("role","row");
-
-        const c1 = document.createElement("div"); c1.textContent = a.email || "";
-        const c2 = document.createElement("div"); c2.textContent = maskPassword(a.password || "");
-        const c3 = document.createElement("div"); c3.textContent = a.passport || "";
-
-        const c4 = document.createElement("div");
-        const s = (a.status || "Pending");
-        const pill = document.createElement("span");
-        pill.className = "statusPill " + ((s === "✅") ? "statusOk" : "statusPending");
-        pill.textContent = (s === "✅") ? "✅" : "Pending";
-        c4.appendChild(pill);
+pill.className = "statusPill " + cls;
+pill.textContent = label || "—";
+c4.appendChild(pill);
 
         const c5 = document.createElement("div");
         const wrap = document.createElement("div");
