@@ -157,7 +157,7 @@
     .list{margin-top:10px;border-radius:16px;border:1px solid rgba(255,255,255,.14);overflow:hidden}
     .listHead,.listRow{
       display:grid;
-      grid-template-columns:1.25fr .9fr .7fr 140px;
+      grid-template-columns:1.10fr .85fr .70fr .55fr 170px;
       gap:10px;
       padding:10px 12px;
       align-items:center
@@ -167,7 +167,12 @@
       font-size:.78rem;
       letter-spacing:.2px;
       opacity:.95;
-      font-weight:950
+      font-weight:950;
+      display:grid;
+      grid-template-columns:1.10fr .85fr .70fr .55fr 170px;
+      gap:10px;
+      padding:10px 12px;
+      align-items:center
     }
     .listRow{
       background:rgba(5,28,70,.18);
@@ -186,7 +191,8 @@
       .listRow > div:nth-child(1)::before{content:"Email: ";opacity:.8;font-weight:900}
       .listRow > div:nth-child(2)::before{content:"Password: ";opacity:.8;font-weight:900}
       .listRow > div:nth-child(3)::before{content:"Passport: ";opacity:.8;font-weight:900}
-      .listRow > div:nth-child(4){
+      .listRow > div:nth-child(4)::before{content:"Status: ";opacity:.8;font-weight:900}
+      .listRow > div:nth-child(5){
         display:flex;
         justify-content:flex-end;
         padding-top:6px;
@@ -276,6 +282,25 @@
       from{filter:brightness(1); transform:translateY(0);}
       to{filter:brightness(1.08); transform:translateY(-1px);}
     }
+    .selectedRow{
+      background:rgba(56,189,248,.14)!important;
+      box-shadow:inset 0 0 0 1px rgba(56,189,248,.45);
+    }
+    .rowPickBtn{
+      border:1px solid rgba(255,255,255,.35);
+      background:rgba(255,255,255,.10);
+      color:#fff;
+      border-radius:10px;
+      padding:6px 10px;
+      font-weight:800;
+      cursor:pointer;
+      line-height:1;
+      white-space:nowrap;
+    }
+    .rowPickBtn.active{
+      background:rgba(56,189,248,.22);
+      border-color:rgba(56,189,248,.6);
+    }
     .actionBtns{display:flex; gap:8px; justify-content:flex-end; align-items:center; flex-wrap:wrap;}
     .miniBtn{
       border:1px solid rgba(255,255,255,.35);
@@ -346,6 +371,36 @@
 @media (max-width:520px){
   #savedBody{ max-height: 60vh; }
 }
+
+    /* ✅ Status Badge */
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:5px 10px;
+      border-radius:999px;
+      font-weight:950;
+      font-size:.74rem;
+      letter-spacing:.2px;
+      border:1px solid rgba(255,255,255,.22);
+      background:rgba(255,255,255,.10);
+      white-space:nowrap;
+      max-width:100%;
+    }
+    .badge[data-variant="ok"]{ background:rgba(34,197,94,.18); border-color:rgba(34,197,94,.45); }
+    .badge[data-variant="warn"]{ background:rgba(251,191,36,.18); border-color:rgba(251,191,36,.45); }
+    .badge[data-variant="danger"]{ background:rgba(255,90,90,.18); border-color:rgba(255,90,90,.55); }
+    .badge[data-variant="info"]{ background:rgba(56,189,248,.16); border-color:rgba(56,189,248,.45); }
+
+
+
+    .listHead > div:last-child{ text-align:right; }
+    .listRow > div{ min-width:0; } /* allow ellipsis */
+    .listRow > div:not(:last-child){
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
 
 </style>
 </head>
@@ -426,7 +481,8 @@
                     <div role="columnheader" data-i18n="col_email">Email</div>
                     <div role="columnheader" data-i18n="col_password">Password</div>
                     <div role="columnheader" data-i18n="col_passport">Passport</div>
-                    <div role="columnheader"></div>
+                    <div role="columnheader" data-i18n="col_status">Status</div>
+                    <div role="columnheader" data-i18n="col_action">Action</div>
                   </div>
                   <div id="listBody"></div>
                 </div>
@@ -441,6 +497,10 @@
                 <button id="backBtn" type="button" class="btn btnSoft" style="padding:8px 14px;border-radius:999px;box-shadow:none" data-i18n="back_btn">Back</button>
               </div>
 
+              <div class="btnRow" style="margin-top:0;margin-bottom:8px">
+                <button id="savedChangePwBtn" type="button" class="btn btnPrimary" style="display:none;width:100%" data-i18n="btn_req_pw">Change password</button>
+              </div>
+
               <div class="row" style="grid-template-columns:1fr;gap:10px;margin:8px 0 10px">
                 <input id="savedSearch" type="text" placeholder="Search…" style="width:100%"/>
                 <div class="listHead" role="row">
@@ -448,7 +508,7 @@
                   <div role="columnheader" data-i18n="col_password">Password</div>
                   <div role="columnheader" data-i18n="col_passport">Passport</div>
                   <div role="columnheader" data-i18n="col_status">Status</div>
-                  <div role="columnheader"></div>
+                  <div role="columnheader" data-i18n="col_action">Action</div>
                 </div>
                 <div id="savedBody"></div>
               </div>
@@ -538,6 +598,7 @@
         col_password: "Password",
         col_passport: "Passport",
         col_status: "Status",
+        col_action: "Action",
         status_done: "✅",
         status_pending: "Pending",
         status_ready_state: "Ready",
@@ -572,6 +633,7 @@
         saved_empty: "No saved accounts for this agency.",
         saved_search_ph: "Search by email or passport…",
         btn_req_pw: "Change password",
+        btn_select: "Select",
         pw_title: "Request password change",
         pw_new_lbl: "New Password",
         btn_copy: "Copy",
@@ -600,6 +662,7 @@
         col_password: "كلمة السر",
         col_passport: "الجواز",
         col_status: "الحالة",
+        col_action: "الإجراء",
         status_done: "✅",
         status_pending: "Pending",
         status_ready_state: "Ready",
@@ -634,6 +697,7 @@
         saved_empty: "لا توجد حسابات محفوظة لهذه الوكالة.",
         saved_search_ph: "ابحث بالإيميل أو رقم الجواز…",
         btn_req_pw: "طلب تعديل كلمة السر",
+        btn_select: "تحديد",
         pw_title: "طلب تعديل كلمة السر",
         pw_new_lbl: "كلمة السر الجديدة",
         btn_copy: "نسخ",
@@ -668,6 +732,7 @@
     const savedBody = document.getElementById("savedBody");
     const savedEmpty = document.getElementById("savedEmpty");
     const savedSearchEl = document.getElementById("savedSearch");
+    const savedChangePwBtn = document.getElementById("savedChangePwBtn");
 
     const pwModal = document.getElementById("pwModal");
     const pwClose = document.getElementById("pwClose");
@@ -704,7 +769,7 @@
     // Saved accounts view
     let inSavedView = false;
     let savedAccounts = [];
-    let selectedSavedIndex = -1;
+    let selectedSavedKey = "";
 
     function showToast(msg){
       toastEl.textContent = msg;
@@ -755,6 +820,7 @@
 
     function setViewSaved(on){
       inSavedView = on;
+      if(!on) selectedSavedKey = "";
       if(on){
         mainUI.style.display = "none";
         savedWrap.style.display = "block";
@@ -769,6 +835,7 @@
         if(statusEl.textContent.trim().length === 0) setStatusKey("status_ready");
       }
       updateCount();
+      refreshSavedActionButton();
     }
 
     function updateCount(){
@@ -811,6 +878,40 @@
       return "•".repeat(Math.min(10, p.length - 2)) + p.slice(-2);
     }
 
+    function savedAccountKey(a){
+      return `${(a?.email||"").trim().toLowerCase()}||${(a?.passport||"").trim().toUpperCase()}`;
+    }
+
+    function getSelectedSavedAccount(){
+      return savedAccounts.find(a => savedAccountKey(a) === selectedSavedKey) || null;
+    }
+
+    function refreshSavedActionButton(){
+      if(!savedChangePwBtn) return;
+      const hasSelection = !!getSelectedSavedAccount();
+      savedChangePwBtn.style.display = hasSelection ? "inline-flex" : "none";
+      savedChangePwBtn.disabled = !hasSelection;
+    }
+
+    function statusVariant(s){
+      const v = (s == null ? "" : String(s)).trim().toLowerCase();
+      if(!v) return "warn";                 // empty => pending
+      if(v.includes("error") || v.includes("fail") || v.includes("خطأ") || v.includes("فشل")) return "danger";
+      if(v.includes("sent") || v.includes("تم") || v.includes("done") || v === "✅") return "ok";
+      if(v.includes("ready") || v.includes("جاهز")) return "info";
+      if(v.includes("pending") || v.includes("انتظار")) return "warn";
+      return "info";
+    }
+
+    function makeBadge(text){
+      const span = document.createElement("span");
+      span.className = "badge";
+      span.setAttribute("data-variant", statusVariant(text));
+      span.textContent = (text != null && String(text).trim() !== "") ? String(text) : t("status_pending");
+      return span;
+    }
+
+
     function renderList(){
       if(inSavedView) return;
       listBody.innerHTML = "";
@@ -829,6 +930,9 @@
         const c3 = document.createElement("div"); c3.textContent = a.passport;
 
         const c4 = document.createElement("div");
+        c4.appendChild(makeBadge(a.status));
+
+        const c5 = document.createElement("div");
         const wrap = document.createElement("div");
         wrap.className = "actionBtns";
 
@@ -880,8 +984,8 @@
           wrap.appendChild(x);
         }
 
-        c4.appendChild(wrap);
-        row.appendChild(c1); row.appendChild(c2); row.appendChild(c3); row.appendChild(c4);
+        c5.appendChild(wrap);
+        row.appendChild(c1); row.appendChild(c2); row.appendChild(c3); row.appendChild(c4); row.appendChild(c5);
         listBody.appendChild(row);
       }
 
@@ -897,11 +1001,11 @@
         ((String(a.status||"").toLowerCase()).includes(q))
       ) : savedAccounts;
 
-      if(selectedSavedIndex >= view.length){
-        selectedSavedIndex = -1;
-      }
-
       savedEmpty.style.display = view.length ? "none" : "block";
+
+      if(selectedSavedKey && !savedAccounts.some(a => savedAccountKey(a) === selectedSavedKey)){
+        selectedSavedKey = "";
+      }
 
       for(let i=0;i<view.length;i++){
         const a = view[i];
@@ -909,36 +1013,28 @@
         row.className = "listRow";
         row.setAttribute("role","row");
 
-        if(i === selectedSavedIndex){
-          row.classList.add("dupGlow");
-        }
-
-        row.style.cursor = "pointer";
-        row.addEventListener("click", ()=>{
-          selectedSavedIndex = i;
-          renderSaved();
-        });
+        const isSelected = savedAccountKey(a) === selectedSavedKey;
+        if(isSelected) row.classList.add("selectedRow");
 
         const c1 = document.createElement("div"); c1.textContent = a.email || "";
         const c2 = document.createElement("div"); c2.textContent = maskPassword(a.password || "");
         const c3 = document.createElement("div"); c3.textContent = a.passport || "";
-        const c4 = document.createElement("div"); c4.textContent = (a.status != null && String(a.status).trim() !== "") ? String(a.status) : t("status_pending");
+        const c4 = document.createElement("div");
+        c4.appendChild(makeBadge(a.status));
 
         const c5 = document.createElement("div");
         const wrap = document.createElement("div");
         wrap.className = "actionBtns";
 
-        if(i === selectedSavedIndex){
-          const btn = document.createElement("button");
-          btn.type = "button";
-          btn.className = "miniBtn";
-          btn.textContent = t("btn_req_pw");
-          btn.addEventListener("click", (e)=>{
-            e.stopPropagation();
-            openPwModal(a);
-          });
-          wrap.appendChild(btn);
-        }
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "rowPickBtn" + (isSelected ? " active" : "");
+        btn.textContent = t("btn_select");
+        btn.addEventListener("click", ()=>{
+          selectedSavedKey = savedAccountKey(a);
+          renderSaved();
+        });
+        wrap.appendChild(btn);
 
         c5.appendChild(wrap);
         row.appendChild(c1); row.appendChild(c2); row.appendChild(c3); row.appendChild(c4); row.appendChild(c5);
@@ -946,6 +1042,7 @@
       }
 
       updateCount();
+      refreshSavedActionButton();
     }
 
     // ---- Saved: password update modal + copy helpers ----
@@ -997,6 +1094,14 @@
       savedSearchEl.addEventListener("input", ()=>{ if(inSavedView) renderSaved(); });
     }
 
+    if(savedChangePwBtn){
+      savedChangePwBtn.addEventListener("click", ()=>{
+        const acc = getSelectedSavedAccount();
+        if(!acc) return;
+        openPwModal(acc);
+      });
+    }
+
     pwClose.addEventListener("click", closePwModal);
     document.getElementById("pwCancel").addEventListener("click", closePwModal);
     pwModal.addEventListener("click", (e)=>{ if(e.target === pwModal) closePwModal(); });
@@ -1039,6 +1144,7 @@
         email: (emailEl.value||"").trim(),
         password: (passEl.value||"").trim(),
         passport: (passpEl.value||"").trim(),
+        status: t("status_ready_state"),
       };
     }
 
@@ -1108,7 +1214,7 @@
 
         const list = await loadSavedAccounts(agency);
         savedAccounts = list;
-        selectedSavedIndex = -1;
+        selectedSavedKey = "";
         setViewSaved(true);
         renderSaved();
         showToast(t("toast_saved_loaded"));
@@ -1124,7 +1230,6 @@
     });
 
     backBtn.addEventListener("click", ()=>{
-      selectedSavedIndex = -1;
       setViewSaved(false);
       renderList();
       toggleMode(true);
