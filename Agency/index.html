@@ -1,506 +1,1327 @@
-<!doctype html>
-<html lang="ar" dir="rtl">
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Agency Panel</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Agency</title>
   <style>
     :root{
-      --bg:#070a14;
-      --panel:#0e1630;
-      --text:#eef2ff;
-      --muted:#a6b0d4;
-      --line:#22305b;
-      --accent:#6aa7ff;
-      --good:#3ddc97;
-      --warn:#ffcc66;
-      --bad:#ff6b6b;
-      --radius:18px;
-      --shadow: 0 12px 40px rgba(0,0,0,.35);
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans";
+      --glass:rgba(255,255,255,.12);
+      --border:rgba(255,255,255,.24);
+      --ink:#fff;
+      --danger:#ff5a5a;
+      --bg1:#00c6ff;
+      --bg2:#007aff;
+      --bg3:#001b4d;
+      --dark:rgba(5,28,70,.55);
+      --dark2:rgba(5,28,70,.75);
     }
     *{box-sizing:border-box}
+    html,body{height:100%}
     body{
       margin:0;
-      font-family:var(--sans);
-      color:var(--text);
-      background:
-        radial-gradient(900px 500px at 80% 10%, rgba(106,167,255,.16), transparent 55%),
-        radial-gradient(700px 400px at 10% 20%, rgba(61,220,151,.10), transparent 60%),
-        linear-gradient(180deg, var(--bg), #040611);
-      min-height:100vh;
-      padding:18px;
-    }
-    .wrap{max-width:1100px; margin:0 auto; display:grid; grid-template-columns: 1.1fr .9fr; gap:16px}
-    @media (max-width: 980px){ .wrap{grid-template-columns:1fr} }
-
-    .card{
-      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
-      border:1px solid rgba(255,255,255,.06);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      overflow:hidden;
-    }
-    .head{
-      padding:14px 16px;
-      border-bottom:1px solid rgba(255,255,255,.08);
+      padding:clamp(12px, 2vw, 18px);
       display:flex;
       align-items:center;
-      justify-content:space-between;
-      gap:10px;
+      justify-content:center;
+      background:radial-gradient(circle at top,var(--bg1) 0,var(--bg2) 45%,var(--bg3) 100%);
+      color:var(--ink);
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
     }
-    .head h1, .head h2{margin:0; font-size:15px}
-    .sub{margin:0; color:var(--muted); font-size:12px}
-    .body{padding:14px 16px}
 
-    label{display:block; font-size:12px; color:var(--muted); margin:10px 0 6px}
-    input, textarea, select{
-      width:100%;
-      padding:12px 12px;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(2,4,10,.55);
-      color:var(--text);
-      outline:none;
+    .shell{width:100%;max-width:980px}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px}
+    .langbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+
+    .langbtn{
+      border:1px solid rgba(255,255,255,.35);
+      background:rgba(5,28,70,.45);
+      color:#fff;border-radius:999px;
+      padding:6px 12px;font-weight:900;cursor:pointer;
+      transition:.15s ease;user-select:none
     }
-    input:focus, textarea:focus{border-color:rgba(106,167,255,.55)}
-    textarea{min-height:110px}
-    .row{display:flex; gap:10px; align-items:center}
-    .row > *{flex:1}
-    .btn{
-      padding:11px 12px;
+    .langbtn:hover{filter:brightness(1.07);transform:translateY(-1px)}
+    .langbtn.active{
+      background:rgba(255,255,255,.18);
+      border-color:rgba(255,255,255,.65);
+      box-shadow:0 0 0 1px rgba(255,255,255,.25)
+    }
+
+    .card{
+      background:var(--glass);
+      border:1px solid var(--border);
+      border-radius:22px;
+      box-shadow:0 18px 45px rgba(0,0,0,.45);
+      backdrop-filter:blur(16px);
+      overflow:hidden
+    }
+
+    .head{
+      padding:clamp(14px, 2vw, 18px) clamp(14px, 2vw, 18px) 0;
+      display:flex;flex-direction:column;gap:8px
+    }
+    h1{
+      margin:0;
+      font-size:clamp(1.5rem, 2.2vw, 1.9rem);
+      font-weight:900;
+      text-shadow:0 10px 25px rgba(0,0,0,.3)
+    }
+
+    form{padding:clamp(12px, 2vw, 14px) clamp(14px, 2vw, 18px) clamp(14px, 2vw, 18px)}
+
+    /* ✅ Responsive Grid:
+       - موبايل: عمود واحد (Summary تحت)
+       - ديسكتوب: عمودين */
+    .grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+      align-items:start;
+    }
+    @media (min-width:900px){
+      .grid{
+        grid-template-columns:1.1fr .9fr;
+        gap:14px;
+      }
+    }
+
+    .panel{
+      background:rgba(5,28,70,.26);
+      border:1px solid rgba(255,255,255,.16);
+      border-radius:18px;
+      padding:clamp(12px, 2vw, 14px)
+    }
+
+    .titleRow{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 10px;
+      flex-wrap:wrap;
+    }
+    .titleRow b{font-size:1.02rem;letter-spacing:.2px}
+    .pill{
+      border:1px solid rgba(255,255,255,.3);
+      padding:4px 10px;border-radius:999px;
+      background:rgba(255,255,255,.08);
+      font-size:.78rem;font-weight:900;opacity:.95;
+    }
+    .hint{font-size:.8rem;opacity:.86;line-height:1.35}
+
+    label{display:block;font-weight:900;margin:10px 6px 6px;font-size:.9rem}
+
+    input[type=text],input[type=password]{
+      width:100%;
+      padding:10px 11px;
       border-radius:12px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(106,167,255,.18);
-      color:var(--text);
+      border:1px solid rgba(255,255,255,.22);
+      outline:none;
+      background:var(--dark);
+      color:#fff;
+      font-size:.95rem;
+      transition:all .2s ease
+    }
+    input::placeholder{color:rgba(255,255,255,.55)}
+    input:focus{border-color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.55);background:var(--dark2)}
+
+    .row{display:grid;grid-template-columns:1fr;gap:10px}
+    @media (min-width:720px){.row{grid-template-columns:1fr 1fr}}
+
+    .toggle{
+      display:flex;align-items:center;gap:10px;
+      padding:10px 12px;border-radius:16px;
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(5,28,70,.22)
+    }
+    .toggle input{width:18px;height:18px}
+    .toggle .meta{display:flex;flex-direction:column;gap:2px}
+    .toggle .meta b{font-size:.95rem}
+    .toggle .meta span{font-size:.78rem;opacity:.86}
+
+    .btnRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .btn{
+      border:none;border-radius:999px;
+      padding:10px 14px;
+      font-weight:950;
       cursor:pointer;
-      font-weight:700;
-      transition:.12s;
+      box-shadow:0 12px 28px rgba(0,0,0,.4);
+      transition:transform .15s ease,filter .15s ease,box-shadow .15s ease;
+      color:#fff
+    }
+    .btn:disabled{opacity:.6;cursor:wait;box-shadow:none}
+    .btn:hover:not(:disabled){transform:translateY(-1px);filter:brightness(1.05);box-shadow:0 16px 38px rgba(0,0,0,.55)}
+    .btnPrimary{background:linear-gradient(135deg,#16a34a,#22c55e)}
+    .btnSoft{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2)}
+    .err{color:#ffd0d0;font-size:.78rem;margin:6px 6px 0;display:none}
+    .err.show{display:block}
+    .invalid{border-color:var(--danger)!important;box-shadow:0 0 0 1px rgba(255,90,90,.6)!important}
+
+    /* ✅ القائمة (Desktop/Tablet) */
+    .list{margin-top:10px;border-radius:16px;border:1px solid rgba(255,255,255,.14);overflow:hidden}
+    .listHead,.listRow{
+      display:grid;
+      grid-template-columns:1.25fr .9fr .7fr 140px;
+      gap:10px;
+      padding:10px 12px;
+      align-items:center
+    }
+    .listHead{
+      background:rgba(255,255,255,.08);
+      font-size:.78rem;
+      letter-spacing:.2px;
+      opacity:.95;
+      font-weight:950
+    }
+    .listRow{
+      background:rgba(5,28,70,.18);
+      border-top:1px solid rgba(255,255,255,.09);
+      font-size:.85rem
+    }
+
+    /* ✅ القائمة على الموبايل: تتحول Stack */
+    @media (max-width:560px){
+      .listHead{display:none}
+      .listRow{
+        grid-template-columns:1fr;
+        gap:8px;
+        padding:12px;
+      }
+      .listRow > div:nth-child(1)::before{content:"Email: ";opacity:.8;font-weight:900}
+      .listRow > div:nth-child(2)::before{content:"Password: ";opacity:.8;font-weight:900}
+      .listRow > div:nth-child(3)::before{content:"Passport: ";opacity:.8;font-weight:900}
+      .listRow > div:nth-child(4){
+        display:flex;
+        justify-content:flex-end;
+        padding-top:6px;
+      }
+    }
+
+
+    /* ✅ Saved Accounts (with Status column) */
+    #savedWrap .listHead, #savedWrap .listRow{
+      grid-template-columns:1.15fr .85fr .7fr .55fr 170px;
+    }
+    @media (max-width:560px){
+      #savedWrap .listHead{display:none}
+      #savedWrap .listRow{
+        grid-template-columns:1fr;
+        gap:8px;
+        padding:12px;
+      }
+      #savedWrap .listRow > div:nth-child(1)::before{content:"Email: ";opacity:.8;font-weight:900}
+      #savedWrap .listRow > div:nth-child(2)::before{content:"Password: ";opacity:.8;font-weight:900}
+      #savedWrap .listRow > div:nth-child(3)::before{content:"Passport: ";opacity:.8;font-weight:900}
+      #savedWrap .listRow > div:nth-child(4)::before{content:"Status: ";opacity:.8;font-weight:900}
+      #savedWrap .listRow > div:nth-child(5){
+        display:flex;
+        justify-content:flex-end;
+        padding-top:6px;
+      }
+    }
+
+    .xbtn{
+      width:36px;height:36px;border-radius:12px;
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(255,255,255,.08);
+      color:#fff;cursor:pointer;
+      display:inline-flex;align-items:center;justify-content:center;
+      transition:.15s ease
+    }
+    .xbtn:hover{filter:brightness(1.08);transform:translateY(-1px)}
+    .iconBtn{
+      width:42px;height:42px;border-radius:14px;
+      border:1px solid rgba(255,255,255,.20);
+      background:rgba(255,255,255,.10);
+      color:#fff;cursor:pointer;
+      display:inline-flex;align-items:center;justify-content:center;
+      transition:.15s ease;
+      box-shadow:0 10px 25px rgba(0,0,0,.35);
       user-select:none;
     }
-    .btn:hover{transform:translateY(-1px); background:rgba(106,167,255,.25)}
-    .btn.secondary{background:rgba(255,255,255,.06)}
-    .btn.good{background:rgba(61,220,151,.18)}
-    .btn.bad{background:rgba(255,107,107,.14)}
-    .pill{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:7px 10px; border-radius:999px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.16);
-      color:var(--muted);
-      font-size:12px;
-    }
-    .dot{width:8px;height:8px;border-radius:999px;background:var(--muted)}
-    .mono{font-family:var(--mono); direction:ltr; text-align:left}
+    .iconBtn:hover{filter:brightness(1.07);transform:translateY(-1px)}
+    .firmaRow{display:flex;gap:10px;align-items:center}
 
-    /* Saved accounts */
-    .savedBox{
-      border:1px solid rgba(255,255,255,.06);
-      border-radius:16px;
-      overflow:hidden;
-      background:rgba(0,0,0,.12);
+    .asideStats{display:flex;flex-direction:column;gap:10px}
+
+    /* ✅ Sticky Summary على الشاشات الكبيرة */
+    @media (min-width:900px){
+      .asideStats{
+        position:sticky;
+        top:14px;
+      }
     }
-    .savedTop{
-      padding:12px;
-      border-bottom:1px solid rgba(255,255,255,.06);
-      background:rgba(12,18,40,.75);
-      position:sticky;
-      top:0;
-      z-index:2;
-      backdrop-filter: blur(10px);
-    }
-    .savedScroll{
-      max-height:520px;
-      overflow:auto;
-    }
-    table{
-      width:100%;
-      border-collapse:separate;
-      border-spacing:0;
-      min-width:760px;
-    }
-    thead th{
-      position:sticky; top:0;
-      background:rgba(12,18,40,.92);
-      backdrop-filter: blur(8px);
-      border-bottom:1px solid rgba(255,255,255,.08);
-      text-align:right;
-      padding:11px 10px;
-      font-size:12px;
-      color:var(--muted);
-    }
-    tbody td{
-      border-bottom:1px solid rgba(255,255,255,.06);
-      padding:11px 10px;
-      font-size:13px;
-      vertical-align:top;
-    }
-    tbody tr:hover td{background:rgba(106,167,255,.06)}
-    .actions{display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap}
-    dialog{
-      border:none;
+
+    .stat{
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.14);
       border-radius:18px;
-      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      color:var(--text);
-      width:min(760px, 92vw);
-      box-shadow:var(--shadow);
-      padding:0;
+      padding:12px 12px;
+      display:flex;flex-direction:column;gap:4px
     }
-    dialog::backdrop{background:rgba(0,0,0,.55)}
-    .modalHead{padding:14px 16px; border-bottom:1px solid rgba(255,255,255,.08); display:flex; justify-content:space-between; align-items:center; gap:10px}
-    .modalBody{padding:14px 16px}
-    .modalFoot{padding:14px 16px; border-top:1px solid rgba(255,255,255,.08); display:flex; gap:10px; flex-wrap:wrap}
-  </style>
+    .stat b{font-size:1.35rem}
+    .stat span{font-size:.85rem;opacity:.86}
+
+    #toast{
+      position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(110%);
+      background:rgba(15,23,42,.96);color:#f9fafb;padding:10px 16px;border-radius:999px;
+      box-shadow:0 16px 35px rgba(0,0,0,.5);font-size:.9rem;opacity:0;pointer-events:none;
+      transition:all .25s ease;z-index:999;max-width:92%;text-align:center
+    }
+    #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+    .dupGlow{
+      outline:2px solid rgba(255,90,90,.9);
+      box-shadow:0 0 0 2px rgba(255,90,90,.25), 0 0 18px rgba(255,90,90,.55);
+      border-radius:14px;
+      animation:dupPulse .9s ease-in-out infinite alternate;
+    }
+    @keyframes dupPulse{
+      from{filter:brightness(1); transform:translateY(0);}
+      to{filter:brightness(1.08); transform:translateY(-1px);}
+    }
+    .actionBtns{display:flex; gap:8px; justify-content:flex-end; align-items:center; flex-wrap:wrap;}
+    .miniBtn{
+      border:1px solid rgba(255,255,255,.35);
+      background:rgba(5,28,70,.45);
+      color:#fff;
+      border-radius:10px;
+      padding:6px 10px;
+      font-weight:800;
+      cursor:pointer;
+      line-height:1;
+      white-space:nowrap;
+    }
+    .miniBtn.danger{
+      border-color:rgba(255,90,90,.75);
+      background:rgba(255,90,90,.18);
+    }
+    .emptyBox{
+      margin-top:10px;
+      padding:12px 12px;
+      border-radius:16px;
+      border:1px dashed rgba(255,255,255,.22);
+      background:rgba(5,28,70,.16);
+      font-size:.88rem;
+      opacity:.92;
+    }
+
+    /* ✅ تحسينات إضافية للموبايل */
+    @media (max-width:600px){
+      body{padding:12px;align-items:flex-start}
+      .shell{max-width:560px}
+      .card{border-radius:18px}
+      .head{padding:14px 14px 0}
+      form{padding:12px 14px 14px}
+      .topbar{margin:0 0 10px}
+      .langbar{justify-content:center}
+      /* منع تكبير iOS عند التركيز */
+      input[type=text],input[type=password]{font-size:16px}
+      /* أزرار بعرض كامل */
+      .btnRow{flex-direction:column}
+      .btnRow .btn{width:100%}
+      .iconBtn{width:46px;height:46px;border-radius:16px}
+      /* تحسين القراءة */
+      .hint{font-size:.82rem}
+      label{margin:10px 4px 6px}
+    }
+    @media (max-width:380px){
+      h1{font-size:1.35rem}
+      .panel{border-radius:16px}
+      input[type=text],input[type=password]{padding:11px 11px}
+      .langbtn{padding:6px 10px}
+    }
+
+  
+/* === Scrollable Saved Accounts list === */
+#savedBody{
+  max-height: 420px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 14px;
+  background: rgba(255,255,255,.04);
+}
+#savedBody .listRow{ border-bottom: 1px solid rgba(255,255,255,.06); }
+#savedBody .listRow:last-child{ border-bottom: 0; }
+#savedBody::-webkit-scrollbar{ width: 10px; }
+#savedBody::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.18); border-radius: 999px; }
+#savedBody::-webkit-scrollbar-track{ background: transparent; }
+@media (max-width:520px){
+  #savedBody{ max-height: 60vh; }
+}
+
+</style>
 </head>
+
 <body>
-  <div class="wrap">
-    <!-- Left: Agency Submit -->
-    <section class="card">
+  <div class="shell">
+    <div class="topbar">
+      <div class="langbar">
+        <button id="btnEN" class="langbtn active" type="button">EN</button>
+        <button id="btnAR" class="langbtn" type="button">AR</button>
+      </div>
+    </div>
+
+    <div class="card">
       <div class="head">
-        <div>
-          <h1>Agency Submission</h1>
-          <p class="sub">إضافة حساب واحد أو عدة حسابات للوكالة</p>
-        </div>
-        <span class="pill"><span class="dot" style="background:var(--accent)"></span><span id="apiHint">API: -</span></span>
-      </div>
-      <div class="body">
-        <label>Firma (Agency Signature)</label>
-        <input id="firma" placeholder="مثال: Agency-01" />
-
-        <div class="row">
-          <div>
-            <label>Email</label>
-            <input id="email" placeholder="example@mail.com" />
-          </div>
-          <div>
-            <label>Password</label>
-            <input id="password" placeholder="••••••••" />
-          </div>
-        </div>
-
-        <label>Passport</label>
-        <input id="passport" placeholder="AB123456" />
-
-        <div class="row" style="margin-top:10px">
-          <button class="btn good" id="btnSendSingle">Send (Single)</button>
-          <button class="btn secondary" id="btnAddToList">+ Add to List</button>
-        </div>
-
-        <label style="margin-top:14px">Multi List (Email;Password;Passport لكل سطر)</label>
-        <textarea id="multiText" class="mono" placeholder="a@b.com;123;AB11&#10;x@y.com;999;CD22"></textarea>
-
-        <div class="row" style="margin-top:10px">
-          <button class="btn" id="btnSendMulti">Send (Multi)</button>
-          <button class="btn secondary" id="btnClearMulti">Clear</button>
-        </div>
-
-        <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap">
-          <span class="pill" id="msgPill"><span class="dot"></span><span id="msg">—</span></span>
-        </div>
-      </div>
-    </section>
-
-    <!-- Right: Saved Accounts -->
-    <section class="card">
-      <div class="head">
-        <div>
-          <h2>Saved Accounts</h2>
-          <p class="sub">عرض الحسابات المحفوظة للوكالة (Scrollable)</p>
-        </div>
-        <button class="btn secondary" id="btnLoadSaved">Load</button>
+        <h1 data-i18n="title">Agency</h1>
       </div>
 
-      <div class="body">
-        <div class="savedBox">
-          <div class="savedTop">
-            <div class="row">
-              <input id="savedSearch" placeholder="بحث (Email / Passport / Status)..." />
-              <button class="btn" id="btnApplySearch">Search</button>
+      <form id="agency-form" novalidate>
+        <div class="grid">
+          <div class="panel">
+            <div class="titleRow">
+              <b data-i18n="agency_details">Agency Details</b>
+              <span class="pill" id="modePill">Single</span>
             </div>
-            <p class="sub" id="savedMeta" style="margin-top:8px">—</p>
+
+            <label for="firma" data-i18n="firma_lbl">Agency Signature</label>
+            <div class="firmaRow">
+              <input id="firma" name="firma" type="text" autocomplete="organization" style="flex:1"/>
+              <button id="searchAgencyBtn" type="button" class="iconBtn" title="Search">🔎</button>
+            </div>
+            <div id="errFirma" class="err" data-i18n="err_firma">Invalid agency signature</div>
+
+            <div id="mainUI">
+              <div style="height:10px"></div>
+
+              <div class="toggle">
+                <input id="molti" type="checkbox"/>
+                <div class="meta">
+                  <b data-i18n="multi">Multi</b>
+                  <span data-i18n="multi_hint">Add multiple accounts in one request</span>
+                </div>
+              </div>
+
+              <div style="height:8px"></div>
+
+              <div class="titleRow" style="margin-top:8px">
+                <b data-i18n="account">Account</b>
+                <span class="hint" data-i18n="account_hint">Email + Password + Passport</span>
+              </div>
+
+              <div class="row">
+                <div>
+                  <label for="email" data-i18n="email_lbl">Email</label>
+                  <input id="email" name="email" type="text" placeholder="email@example.com" autocomplete="username"/>
+                  <div id="errEmail" class="err" data-i18n="err_email">Invalid email</div>
+                </div>
+                <div>
+                  <label for="password" data-i18n="pass_lbl">Password</label>
+                  <input id="password" name="password" type="password" autocomplete="current-password"/>
+                  <div id="errPassword" class="err" data-i18n="err_pass">Invalid password</div>
+                </div>
+              </div>
+
+              <label for="passport" data-i18n="passport_lbl">Passport Number</label>
+              <input id="passport" name="passport" type="text" placeholder="AA1234567"/>
+              <div id="errPassport" class="err" data-i18n="err_passport">Invalid passport number</div>
+
+              <div class="btnRow">
+                <button id="addBtn" type="button" class="btn btnSoft" style="display:none"></button>
+                <button id="listDoneBtn" type="button" class="btn btnSoft" style="display:none"></button>
+                <button id="sendBtn" type="submit" class="btn btnPrimary" style="flex:1;display:inline-flex;align-items:center;justify-content:center"></button>
+              </div>
+
+              <div id="listWrap" style="display:none">
+                <div class="list" role="table" aria-label="Accounts list">
+                  <div class="listHead" role="row">
+                    <div role="columnheader" data-i18n="col_email">Email</div>
+                    <div role="columnheader" data-i18n="col_password">Password</div>
+                    <div role="columnheader" data-i18n="col_passport">Passport</div>
+                    <div role="columnheader"></div>
+                  </div>
+                  <div id="listBody"></div>
+                </div>
+                <div id="errList" class="err" data-i18n="err_list">Add at least one account</div>
+              </div>
+            </div>
+
+            <!-- Saved Accounts view -->
+            <div id="savedWrap" style="display:none;margin-top:12px">
+              <div class="titleRow">
+                <b data-i18n="saved_title">Saved Accounts</b>
+                <button id="backBtn" type="button" class="btn btnSoft" style="padding:8px 14px;border-radius:999px;box-shadow:none" data-i18n="back_btn">Back</button>
+              </div>
+
+              <div class="row" style="grid-template-columns:1fr;gap:10px;margin:8px 0 10px">
+                <input id="savedSearch" type="text" placeholder="Search…" style="width:100%"/>
+                <div class="listHead" role="row">
+                  <div role="columnheader" data-i18n="col_email">Email</div>
+                  <div role="columnheader" data-i18n="col_password">Password</div>
+                  <div role="columnheader" data-i18n="col_passport">Passport</div>
+                  <div role="columnheader" data-i18n="col_status">Status</div>
+                  <div role="columnheader"></div>
+                </div>
+                <div id="savedBody"></div>
+              </div>
+
+              <div id="savedEmpty" class="emptyBox" style="display:none" data-i18n="saved_empty">No saved accounts for this agency.</div>
+            </div>
+
           </div>
 
-          <div class="savedScroll">
-            <table>
-              <thead>
-                <tr>
-                  <th style="width:42px">#</th>
-                  <th>Email</th>
-                  <th>Passport</th>
-                  <th>Password</th>
-                  <th>Status</th>
-                  <th style="width:230px; text-align:left">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="savedTbody">
-                <tr><td colspan="6" style="color:var(--muted); padding:16px">اضغط Load لعرض البيانات.</td></tr>
-              </tbody>
-            </table>
+          <div class="asideStats">
+            <div class="panel">
+              <div class="titleRow">
+                <b data-i18n="summary">Summary</b>
+                <span class="hint" data-i18n="status_lbl">Status</span>
+              </div>
+              <div class="stat">
+                <b id="count">0</b>
+                <span data-i18n="count_lbl">Accounts</span>
+              </div>
+              <div class="stat" id="statusStat">
+                <b id="status"></b>
+                <span data-i18n="fill_send">Fill and send</span>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </form>
+    </div>
   </div>
 
-  <!-- Change password modal -->
-  <dialog id="pwModal">
-    <div class="modalHead">
-      <h3>Change Password</h3>
-      <button class="btn secondary" onclick="document.getElementById('pwModal').close()">إغلاق</button>
-    </div>
-    <div class="modalBody">
-      <p class="pill mono" id="pwInfo">—</p>
-      <label>New Password</label>
-      <input id="newPw" placeholder="New password" />
-    </div>
-    <div class="modalFoot">
-      <button class="btn good" id="btnSavePw">Save</button>
-      <button class="btn secondary" onclick="document.getElementById('pwModal').close()">Cancel</button>
-    </div>
-  </dialog>
-
-<script>
-  const API_ENDPOINT = "https://api.mehdik.site/"; // <-- غيّره إذا لزم
-  document.getElementById('apiHint').textContent = "API: " + API_ENDPOINT;
-
-  const $ = (id)=>document.getElementById(id);
-
-  let savedAccounts = [];
-  let pwTarget = null; // {email, passport}
-
-  function setMsg(text, kind=""){
-    const dot = $('msgPill').querySelector('.dot');
-    dot.style.background = kind==="good" ? "var(--good)" : kind==="bad" ? "var(--bad)" : "var(--accent)";
-    $('msg').textContent = text;
-  }
-
-  function maskPassword(p){
-    if(!p) return "";
-    const s = String(p);
-    if(s.length <= 2) return "••";
-    return "•".repeat(Math.min(8, s.length-2)) + s.slice(-2);
-  }
-
-  function escapeHtml(s){
-    return String(s).replace(/[&<>"']/g, (m)=>({
-      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-    }[m]));
-  }
-
-  async function postForm(formData){
-    const res = await fetch(API_ENDPOINT, { method:"POST", body: formData });
-    const txt = await res.text();
-    let data;
-    try{ data = txt ? JSON.parse(txt) : {}; }catch(e){ data = { raw: txt }; }
-    if(!res.ok){
-      const msg = data?.error || data?.message || ("HTTP " + res.status);
-      throw new Error(msg);
-    }
-    return data;
-  }
-
-  function buildSingleForm(action){
-    const firma = $('firma').value.trim();
-    const email = $('email').value.trim();
-    const password = $('password').value;
-    const passport = $('passport').value.trim();
-
-    const fd = new FormData();
-    fd.append("formType","agency");
-    fd.append("action", action);
-    fd.append("firma", firma);
-    fd.append("email", email);
-    fd.append("password", password);
-    fd.append("passport", passport);
-    fd.append("molti", "false");
-    return {fd, firma, email, password, passport};
-  }
-
-  async function sendSingle(){
-    try{
-      const {fd, firma, email, passport} = buildSingleForm("add");
-      if(!firma || !email || !passport) return setMsg("أدخل Firma + Email + Passport", "bad");
-
-      // check duplicates first
-      const chk = new FormData();
-      chk.append("formType","agency");
-      chk.append("action","check");
-      chk.append("firma", firma);
-      chk.append("molti","false");
-      chk.append("email", $('email').value.trim());
-      chk.append("password", $('password').value);
-      chk.append("passport", $('passport').value.trim());
-
-      const checkRes = await postForm(chk);
-      if(checkRes?.exists){
-        return setMsg("الحساب موجود مسبقاً (Duplicate).", "bad");
-      }
-
-      const res = await postForm(fd);
-      setMsg("تم الإرسال ✅", "good");
-      await loadSaved();
-    }catch(err){
-      setMsg("فشل: " + err.message, "bad");
-    }
-  }
-
-  function addToList(){
-    const email = $('email').value.trim();
-    const password = $('password').value;
-    const passport = $('passport').value.trim();
-    if(!email || !password || !passport) return setMsg("أدخل Email + Password + Passport لإضافته للقائمة", "bad");
-
-    const line = `${email};${password};${passport}`;
-    const current = $('multiText').value.trim();
-    $('multiText').value = current ? (current + "\n" + line) : line;
-    setMsg("تمت الإضافة للقائمة ✅", "good");
-  }
-
-  async function sendMulti(){
-    try{
-      const firma = $('firma').value.trim();
-      const accountsText = $('multiText').value.trim();
-      if(!firma || !accountsText) return setMsg("أدخل Firma ثم أضف حسابات للقائمة", "bad");
-
-      // check duplicates server-side
-      const chk = new FormData();
-      chk.append("formType","agency");
-      chk.append("action","check");
-      chk.append("firma", firma);
-      chk.append("molti","true");
-      chk.append("accounts", accountsText);
-
-      const checkRes = await postForm(chk);
-      if(checkRes?.duplicates?.length){
-        setMsg("وجدت تكرارات — عدّل القائمة ثم أعد الإرسال", "bad");
-        return;
-      }
-
-      const fd = new FormData();
-      fd.append("formType","agency");
-      fd.append("action","add");
-      fd.append("firma", firma);
-      fd.append("molti","true");
-      fd.append("accounts", accountsText);
-
-      await postForm(fd);
-      setMsg("تم إرسال القائمة ✅", "good");
-      await loadSaved();
-    }catch(err){
-      setMsg("فشل: " + err.message, "bad");
-    }
-  }
-
-  async function loadSaved(){
-    try{
-      const firma = $('firma').value.trim();
-      if(!firma) return setMsg("أدخل Firma أولاً", "bad");
-
-      const fd = new FormData();
-      fd.append("formType","agency");
-      fd.append("action","list");
-      fd.append("firma", firma);
-
-      const res = await postForm(fd);
-      savedAccounts = Array.isArray(res.accounts) ? res.accounts : [];
-      $('savedMeta').textContent = `Total: ${savedAccounts.length}`;
-      renderSaved(savedAccounts);
-      setMsg("تم تحميل Saved Accounts ✅", "good");
-    }catch(err){
-      setMsg("فشل تحميل Saved Accounts: " + err.message, "bad");
-    }
-  }
-
-  function applySavedSearch(){
-    const q = $('savedSearch').value.trim().toLowerCase();
-    const rows = savedAccounts.filter(a=>{
-      const e = String(a.email||'').toLowerCase();
-      const p = String(a.passport||'').toLowerCase();
-      const s = String(a.status||'').toLowerCase();
-      return !q || e.includes(q) || p.includes(q) || s.includes(q);
-    });
-    $('savedMeta').textContent = `Total: ${savedAccounts.length} | Showing: ${rows.length}`;
-    renderSaved(rows);
-  }
-
-  function renderSaved(rows){
-    const tb = $('savedTbody');
-    tb.innerHTML = "";
-    if(!rows.length){
-      tb.innerHTML = `<tr><td colspan="6" style="color:var(--muted); padding:16px">لا توجد نتائج.</td></tr>`;
-      return;
-    }
-    rows.forEach((a, idx)=>{
-      const tr = document.createElement('tr');
-      const status = a.status || 'Pending';
-      tr.innerHTML = `
-        <td>${idx+1}</td>
-        <td class="mono">${escapeHtml(a.email||'')}</td>
-        <td class="mono">${escapeHtml(a.passport||'')}</td>
-        <td class="mono" title="Masked">${escapeHtml(maskPassword(a.password||''))}</td>
-        <td>${escapeHtml(status)}</td>
-        <td style="text-align:left">
-          <div class="actions">
-            <button class="btn secondary" data-act="copyEmail">Copy Email</button>
-            <button class="btn secondary" data-act="copyPassport">Copy Passport</button>
-            <button class="btn" data-act="pw">Change</button>
+  <!-- Password update modal -->
+  <div id="pwModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:998;align-items:center;justify-content:center;padding:18px">
+    <div class="panel" style="max-width:520px;width:100%;background:rgba(15,23,42,.92);border-color:rgba(255,255,255,.18);box-shadow:0 18px 45px rgba(0,0,0,.55)">
+      <div class="titleRow" style="margin:0 0 10px">
+        <b data-i18n="pw_title">Request password change</b>
+        <button id="pwClose" type="button" class="xbtn" aria-label="Close">×</button>
+      </div>
+      <div class="row" style="grid-template-columns:1fr;gap:10px">
+        <div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+            <label style="margin:0" data-i18n="email_lbl">Email</label>
+            <button id="copyEmailBtn" type="button" class="miniBtn" data-i18n="btn_copy">Copy</button>
           </div>
-        </td>
-      `;
-      tr.querySelector('[data-act="copyEmail"]').onclick = async ()=>{
-        await navigator.clipboard.writeText(String(a.email||''));
-        setMsg("تم نسخ Email", "good");
-      };
-      tr.querySelector('[data-act="copyPassport"]').onclick = async ()=>{
-        await navigator.clipboard.writeText(String(a.passport||''));
-        setMsg("تم نسخ Passport", "good");
-      };
-      tr.querySelector('[data-act="pw"]').onclick = ()=>{
-        pwTarget = { email: String(a.email||''), passport: String(a.passport||'') };
-        $('pwInfo').textContent = `email=${pwTarget.email} | passport=${pwTarget.passport}`;
-        $('newPw').value = "";
-        $('pwModal').showModal();
-      };
-      tb.appendChild(tr);
-    });
-  }
+          <input id="pwEmail" type="text" readonly/>
+        </div>
+        <div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+            <label style="margin:0" data-i18n="passport_lbl">Passport Number</label>
+            <button id="copyPassportBtn" type="button" class="miniBtn" data-i18n="btn_copy">Copy</button>
+          </div>
+          <input id="pwPassport" type="text" readonly/>
+        </div>
+        <div>
+          <label for="pwNew" data-i18n="pw_new_lbl">New Password</label>
+          <input id="pwNew" type="text" placeholder="********"/>
+        </div>
+      </div>
+      <div class="btnRow" style="margin-top:12px">
+        <button id="pwSave" type="button" class="btn btnPrimary" style="flex:1" data-i18n="btn_save">Save</button>
+        <button id="pwCancel" type="button" class="btn btnSoft" data-i18n="btn_cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+  <div id="toast"></div>
 
-  async function saveNewPassword(){
-    try{
-      const firma = $('firma').value.trim();
-      if(!firma) return setMsg("أدخل Firma أولاً", "bad");
-      if(!pwTarget) return;
-      const newPassword = $('newPw').value;
-      if(!newPassword) return setMsg("أدخل كلمة مرور جديدة", "bad");
+  <script>
+    const API_ENDPOINT = "https://api.mehdik.site/";
+    fetch(API_ENDPOINT, { method: "GET", mode: "cors", cache: "no-store" }).catch(()=>{});
 
+    const i18n = {
+      en: {
+        title: "Agency",
+        agency_details: "Agency Details",
+        firma_lbl: "Agency Signature",
+        multi: "Multi",
+        multi_hint: "Add multiple accounts in one request",
+        account: "Account",
+        account_hint: "Email + Password + Passport",
+        email_lbl: "Email",
+        pass_lbl: "Password",
+        passport_lbl: "Passport Number",
+        summary: "Summary",
+        status_lbl: "Status",
+        count_lbl: "Accounts",
+        fill_send: "Fill and send",
+        col_email: "Email",
+        col_password: "Password",
+        col_passport: "Passport",
+        col_status: "Status",
+        status_done: "✅",
+        status_pending: "Pending",
+        status_ready_state: "Ready",
+        mode_single: "Single",
+        mode_multi: "Multi",
+        btn_add: "+ Add to list",
+        btn_send: "Send",
+        btn_sending: "Sending…",
+        status_ready: "Ready",
+        status_sending: "Sending…",
+        status_sent: "Sent",
+        status_error: "Error",
+        err_firma: "Invalid agency signature",
+        err_email: "Invalid email",
+        err_pass: "Invalid password",
+        err_passport: "Invalid passport number",
+        err_list: "Add at least one account",
+        toast_check_firma: "Check agency signature",
+        toast_check_account: "Check account fields",
+        toast_added: "Added to list",
+        toast_sent: "Sent successfully",
+        toast_failed: "Send failed",
+        toast_need_one: "Add at least one account",
+        toast_dup: "Account already exists (saved before)",
+        btn_delete: "Delete",
+        btn_edit: "Edit",
+        btn_list_done: "List Done",
+        saved_title: "Saved Accounts",
+        back_btn: "Back",
+        toast_loading: "Loading…",
+        toast_saved_loaded: "Saved accounts loaded",
+        saved_empty: "No saved accounts for this agency.",
+        saved_search_ph: "Search by email or passport…",
+        btn_req_pw: "Change password",
+        pw_title: "Request password change",
+        pw_new_lbl: "New Password",
+        btn_copy: "Copy",
+        btn_save: "Save",
+        btn_cancel: "Cancel",
+        toast_copied: "Copied",
+        toast_pw_updated: "Password updated",
+        toast_pw_failed: "Password update failed"
+      },
+      ar: {
+        title: "الوكالة",
+        agency_details: "بيانات الوكالة",
+        firma_lbl: "توقيع الوكالة",
+        multi: "متعدد",
+        multi_hint: "إضافة عدة حسابات في طلب واحد",
+        account: "الحساب",
+        account_hint: "إيميل + كلمة سر + رقم الجواز",
+        email_lbl: "الإيميل",
+        pass_lbl: "كلمة السر",
+        passport_lbl: "رقم جواز السفر",
+        summary: "ملخص",
+        status_lbl: "الحالة",
+        count_lbl: "عدد الحسابات",
+        fill_send: "املأ ثم أرسل",
+        col_email: "الإيميل",
+        col_password: "كلمة السر",
+        col_passport: "الجواز",
+        col_status: "الحالة",
+        status_done: "✅",
+        status_pending: "Pending",
+        status_ready_state: "Ready",
+        mode_single: "واحد",
+        mode_multi: "متعدد",
+        btn_add: "+ أضف للقائمة",
+        btn_send: "إرسال",
+        btn_sending: "جاري الإرسال…",
+        status_ready: "جاهز",
+        status_sending: "جاري الإرسال…",
+        status_sent: "تم الإرسال",
+        status_error: "خطأ",
+        err_firma: "توقيع غير صالح",
+        err_email: "إيميل غير صالح",
+        err_pass: "كلمة سر غير صالحة",
+        err_passport: "رقم جواز غير صالح",
+        err_list: "أضف حسابًا واحدًا على الأقل",
+        toast_check_firma: "تحقق من توقيع الوكالة",
+        toast_check_account: "تحقق من بيانات الحساب",
+        toast_added: "تمت الإضافة للقائمة",
+        toast_sent: "تم الإرسال بنجاح",
+        toast_failed: "فشل الإرسال",
+        toast_need_one: "أضف حسابًا واحدًا على الأقل",
+        toast_dup: "الحساب موجود مسبقًا (محفوظ سابقًا)",
+        btn_delete: "حذف",
+        btn_edit: "تعديل",
+        btn_list_done: "تم",
+        saved_title: "الحسابات المحفوظة",
+        back_btn: "رجوع",
+        toast_loading: "جاري التحميل…",
+        toast_saved_loaded: "تم تحميل الحسابات المحفوظة",
+        saved_empty: "لا توجد حسابات محفوظة لهذه الوكالة.",
+        saved_search_ph: "ابحث بالإيميل أو رقم الجواز…",
+        btn_req_pw: "طلب تعديل كلمة السر",
+        pw_title: "طلب تعديل كلمة السر",
+        pw_new_lbl: "كلمة السر الجديدة",
+        btn_copy: "نسخ",
+        btn_save: "حفظ",
+        btn_cancel: "إلغاء",
+        toast_copied: "تم النسخ",
+        toast_pw_updated: "تم تعديل كلمة السر",
+        toast_pw_failed: "فشل تعديل كلمة السر"
+      }
+    };
+
+    let currentLang = "en";
+    const t = (key) => (i18n[currentLang] && i18n[currentLang][key] != null) ? i18n[currentLang][key] : key;
+
+    const form = document.getElementById("agency-form");
+    const toastEl = document.getElementById("toast");
+    const sendBtn = document.getElementById("sendBtn");
+    const addBtn = document.getElementById("addBtn");
+    const listDoneBtn = document.getElementById("listDoneBtn");
+
+    const modePill = document.getElementById("modePill");
+    const countEl = document.getElementById("count");
+    const statusEl = document.getElementById("status");
+    const statusStat = document.getElementById("statusStat");
+
+    const firmaEl = document.getElementById("firma");
+    const searchAgencyBtn = document.getElementById("searchAgencyBtn");
+    const backBtn = document.getElementById("backBtn");
+
+    const mainUI = document.getElementById("mainUI");
+    const savedWrap = document.getElementById("savedWrap");
+    const savedBody = document.getElementById("savedBody");
+    const savedEmpty = document.getElementById("savedEmpty");
+    const savedSearchEl = document.getElementById("savedSearch");
+
+    const pwModal = document.getElementById("pwModal");
+    const pwClose = document.getElementById("pwClose");
+    const pwCancel = document.getElementById("pwCancel");
+    const pwSave = document.getElementById("pwSave");
+    const pwEmail = document.getElementById("pwEmail");
+    const pwPassport = document.getElementById("pwPassport");
+    const pwNew = document.getElementById("pwNew");
+    const copyEmailBtn = document.getElementById("copyEmailBtn");
+    const copyPassportBtn = document.getElementById("copyPassportBtn");
+
+    const moltiEl = document.getElementById("molti");
+    const emailEl = document.getElementById("email");
+    const passEl = document.getElementById("password");
+    const passpEl = document.getElementById("passport");
+
+    const errFirma = document.getElementById("errFirma");
+    const errEmail = document.getElementById("errEmail");
+    const errPassword = document.getElementById("errPassword");
+    const errPassport = document.getElementById("errPassport");
+    const errList = document.getElementById("errList");
+
+    const listWrap = document.getElementById("listWrap");
+    const listBody = document.getElementById("listBody");
+
+    // Multi list
+    const accounts = [];
+    let multiListReady = false;
+
+    // Duplicate highlight (during check)
+    let dupIndex = -1;
+    let singleDupView = false;
+
+    // Saved accounts view
+    let inSavedView = false;
+    let savedAccounts = [];
+
+    function showToast(msg){
+      toastEl.textContent = msg;
+      toastEl.classList.add("show");
+      setTimeout(()=>toastEl.classList.remove("show"), 2600);
+    }
+
+    function validateEmail(val){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val); }
+
+    function clearInvalid(el, err){ if(el) el.classList.remove("invalid"); if(err) err.classList.remove("show"); }
+    function setInvalid(el, err){ if(el) el.classList.add("invalid"); if(err) err.classList.add("show"); ok = false; }
+
+    function setStatusKey(key){ statusEl.textContent = t(key); }
+
+    function applyLanguage(lang){
+      currentLang = lang;
+
+      if(lang === "ar"){
+        document.documentElement.lang = "ar";
+        document.documentElement.dir = "rtl";
+      }else{
+        document.documentElement.lang = "en";
+        document.documentElement.dir = "ltr";
+      }
+
+      document.getElementById("btnEN").classList.toggle("active", lang === "en");
+      document.getElementById("btnAR").classList.toggle("active", lang === "ar");
+
+      document.querySelectorAll("[data-i18n]").forEach(el=>{
+        const key = el.getAttribute("data-i18n");
+        if(i18n[lang][key] != null) el.textContent = i18n[lang][key];
+      });
+
+      firmaEl.placeholder = lang === "ar" ? "اسم الوكالة / توقيع" : "Agency name / Signature";
+      passEl.placeholder = lang === "ar" ? "كلمة السر" : "Password";
+
+      if(savedSearchEl) savedSearchEl.placeholder = t("saved_search_ph");
+      if(pwNew) pwNew.placeholder = lang === "ar" ? "كلمة السر الجديدة" : "New password";
+
+      addBtn.textContent = t("btn_add");
+      listDoneBtn.textContent = t("btn_list_done");
+      sendBtn.textContent = t("btn_send");
+      searchAgencyBtn.title = lang === "ar" ? "بحث" : "Search";
+
+      toggleMode(true);
+      if(statusEl.textContent.trim().length === 0) setStatusKey("status_ready");
+    }
+
+    function setViewSaved(on){
+      inSavedView = on;
+      if(on){
+        mainUI.style.display = "none";
+        savedWrap.style.display = "block";
+        modePill.style.display = "none";
+        if(statusStat) statusStat.style.display = "none";
+        statusEl.textContent = "";
+      }else{
+        mainUI.style.display = "block";
+        savedWrap.style.display = "none";
+        modePill.style.display = "inline-flex";
+        if(statusStat) statusStat.style.display = "flex";
+        if(statusEl.textContent.trim().length === 0) setStatusKey("status_ready");
+      }
+      updateCount();
+    }
+
+    function updateCount(){
+      countEl.textContent = String(inSavedView ? savedAccounts.length : accounts.length);
+    }
+
+    function toggleMode(skipListRender){
+      if(inSavedView) return;
+
+      const on = moltiEl.checked;
+      modePill.textContent = on ? t("mode_multi") : t("mode_single");
+
+      if(on) singleDupView = false;
+
+      if(on){
+        addBtn.style.display = "inline-flex";
+        listWrap.style.display = "block";
+        if(!multiListReady){
+          sendBtn.style.display = "none";
+          listDoneBtn.style.display = "inline-flex";
+        }else{
+          sendBtn.style.display = "inline-flex";
+          listDoneBtn.style.display = "none";
+        }
+      }else{
+        multiListReady = false;
+        addBtn.style.display = "none";
+        listDoneBtn.style.display = "none";
+        listWrap.style.display = singleDupView ? "block" : "none";
+        sendBtn.style.display = "inline-flex";
+        errList.classList.remove("show");
+      }
+
+      if(!skipListRender) renderList();
+    }
+
+    function maskPassword(p){
+      if(!p) return "";
+      if(p.length <= 2) return "••";
+      return "•".repeat(Math.min(10, p.length - 2)) + p.slice(-2);
+    }
+
+    function renderList(){
+      if(inSavedView) return;
+      listBody.innerHTML = "";
+
+      for(let i=0;i<accounts.length;i++){
+        const a = accounts[i];
+
+        const row = document.createElement("div");
+        row.className = "listRow";
+        row.setAttribute("role","row");
+
+        if(i === dupIndex) row.classList.add("dupGlow");
+
+        const c1 = document.createElement("div"); c1.textContent = a.email;
+        const c2 = document.createElement("div"); c2.textContent = maskPassword(a.password);
+        const c3 = document.createElement("div"); c3.textContent = a.passport;
+
+        const c4 = document.createElement("div");
+        const wrap = document.createElement("div");
+        wrap.className = "actionBtns";
+
+        if(i === dupIndex){
+          const editBtn = document.createElement("button");
+          editBtn.type = "button";
+          editBtn.className = "miniBtn";
+          editBtn.textContent = t("btn_edit");
+          editBtn.addEventListener("click", ()=>{
+            emailEl.value = a.email || "";
+            passEl.value = a.password || "";
+            passpEl.value = a.passport || "";
+            accounts.splice(i,1);
+            dupIndex = -1;
+            multiListReady = false;
+            singleDupView = false;
+            toggleMode(true);
+            renderList();
+            emailEl.focus();
+          });
+
+          const delBtn = document.createElement("button");
+          delBtn.type = "button";
+          delBtn.className = "miniBtn danger";
+          delBtn.textContent = t("btn_delete");
+          delBtn.addEventListener("click", ()=>{
+            accounts.splice(i,1);
+            dupIndex = -1;
+            multiListReady = false;
+            if(!moltiEl.checked) singleDupView = false;
+            toggleMode(true);
+            renderList();
+          });
+
+          wrap.appendChild(editBtn);
+          wrap.appendChild(delBtn);
+        } else {
+          const x = document.createElement("button");
+          x.className = "xbtn";
+          x.type = "button";
+          x.textContent = "×";
+          x.addEventListener("click", ()=>{
+            accounts.splice(i,1);
+            dupIndex = -1;
+            multiListReady = false;
+            toggleMode(true);
+            renderList();
+          });
+          wrap.appendChild(x);
+        }
+
+        c4.appendChild(wrap);
+        row.appendChild(c1); row.appendChild(c2); row.appendChild(c3); row.appendChild(c4);
+        listBody.appendChild(row);
+      }
+
+      updateCount();
+    }
+
+    function renderSaved(){
+      savedBody.innerHTML = "";
+      const q = ((savedSearchEl && savedSearchEl.value) || "").trim().toLowerCase();
+      const view = q ? savedAccounts.filter(a =>
+        ((a.email||"" ).toLowerCase().includes(q)) ||
+        ((a.passport||"" ).toLowerCase().includes(q)) ||
+        ((String(a.status||"").toLowerCase()).includes(q))
+      ) : savedAccounts;
+
+      savedEmpty.style.display = view.length ? "none" : "block";
+
+      for(let i=0;i<view.length;i++){
+        const a = view[i];
+        const row = document.createElement("div");
+        row.className = "listRow";
+        row.setAttribute("role","row");
+
+        const c1 = document.createElement("div"); c1.textContent = a.email || "";
+        const c2 = document.createElement("div"); c2.textContent = maskPassword(a.password || "");
+        const c3 = document.createElement("div"); c3.textContent = a.passport || "";
+        const c4 = document.createElement("div"); c4.textContent = (a.status != null && String(a.status).trim() !== "") ? String(a.status) : t("status_pending");
+
+        const c5 = document.createElement("div");
+        const wrap = document.createElement("div");
+        wrap.className = "actionBtns";
+
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "miniBtn";
+        btn.textContent = t("btn_req_pw");
+        btn.addEventListener("click", ()=> openPwModal(a));
+        wrap.appendChild(btn);
+
+        c5.appendChild(wrap);
+        row.appendChild(c1); row.appendChild(c2); row.appendChild(c3); row.appendChild(c4); row.appendChild(c5);
+        savedBody.appendChild(row);
+      }
+
+      updateCount();
+    }
+
+    // ---- Saved: password update modal + copy helpers ----
+    let pwTarget = null;
+
+    function openPwModal(acc){
+      if(!acc) return;
+      pwTarget = acc;
+      pwEmail.value = acc.email || "";
+      pwPassport.value = acc.passport || "";
+      pwNew.value = "";
+      pwModal.style.display = "flex";
+      pwNew.focus();
+    }
+
+    function closePwModal(){
+      pwTarget = null;
+      pwModal.style.display = "none";
+    }
+
+    async function copyText(txt){
+      try{
+        await navigator.clipboard.writeText(txt || "");
+        showToast(t("toast_copied"));
+      }catch(_){
+        const ta = document.createElement("textarea");
+        ta.value = txt || "";
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        try{ document.execCommand("copy"); showToast(t("toast_copied")); }catch(e){}
+        document.body.removeChild(ta);
+      }
+    }
+
+    async function updatePasswordOnServer(agency, email, passport, newPassword){
       const fd = new FormData();
       fd.append("formType","agency");
       fd.append("action","update_password");
-      fd.append("firma", firma);
-      fd.append("email", pwTarget.email);
-      fd.append("passport", pwTarget.passport);
-      fd.append("newPassword", newPassword);
-
-      await postForm(fd);
-      $('pwModal').close();
-      setMsg("تم تحديث كلمة المرور ✅", "good");
-      await loadSaved();
-    }catch(err){
-      setMsg("فشل تحديث كلمة المرور: " + err.message, "bad");
+      fd.append("firma", agency);
+      fd.append("email", email || "");
+      fd.append("passport", passport || "");
+      fd.append("newPassword", newPassword || "");
+      return await postForm(fd);
     }
-  }
 
-  $('btnSendSingle').onclick = sendSingle;
-  $('btnAddToList').onclick = addToList;
-  $('btnSendMulti').onclick = sendMulti;
-  $('btnClearMulti').onclick = ()=>{ $('multiText').value=""; setMsg("تم مسح القائمة"); };
-  $('btnLoadSaved').onclick = loadSaved;
-  $('btnApplySearch').onclick = applySavedSearch;
-  $('savedSearch').oninput = applySavedSearch;
-  $('btnSavePw').onclick = saveNewPassword;
+    if(savedSearchEl){
+      savedSearchEl.addEventListener("input", ()=>{ if(inSavedView) renderSaved(); });
+    }
 
-  setMsg("جاهز");
-</script>
+    pwClose.addEventListener("click", closePwModal);
+    document.getElementById("pwCancel").addEventListener("click", closePwModal);
+    pwModal.addEventListener("click", (e)=>{ if(e.target === pwModal) closePwModal(); });
+
+    document.getElementById("copyEmailBtn").addEventListener("click", ()=> copyText(pwEmail.value));
+    document.getElementById("copyPassportBtn").addEventListener("click", ()=> copyText(pwPassport.value));
+
+    document.getElementById("pwSave").addEventListener("click", async ()=>{
+      if(!pwTarget) return;
+      if(!validateFirma()){ showToast(t("toast_check_firma")); return; }
+      const agency = (firmaEl.value||"").trim();
+      const newPass = (pwNew.value||"").trim();
+      if(newPass.length < 1){ showToast(t("err_pass")); return; }
+
+      try{
+        document.getElementById("pwSave").disabled = true;
+        const r = await updatePasswordOnServer(agency, pwTarget.email, pwTarget.passport, newPass);
+        if(!r || !r.ok) throw new Error((r && r.error) || "Server error");
+
+        for(const a of savedAccounts){
+          if(((a.email||"").toLowerCase() === (pwTarget.email||"").toLowerCase()) &&
+             ((a.passport||"").toUpperCase() === (pwTarget.passport||"").toUpperCase())){
+            a.password = newPass;
+            break;
+          }
+        }
+        renderSaved();
+        closePwModal();
+        showToast(t("toast_pw_updated"));
+      }catch(err){
+        console.error(err);
+        showToast(t("toast_pw_failed"));
+      }finally{
+        document.getElementById("pwSave").disabled = false;
+      }
+    });
+
+    function getCurrentAccount(){
+      return {
+        email: (emailEl.value||"").trim(),
+        password: (passEl.value||"").trim(),
+        passport: (passpEl.value||"").trim(),
+      };
+    }
+
+    let ok = true;
+    function validateFirma(){
+      ok = true;
+      clearInvalid(firmaEl, errFirma);
+      const firma = (firmaEl.value||"").trim();
+      if(firma.length < 2) setInvalid(firmaEl, errFirma);
+      return ok;
+    }
+
+    function validateCurrentAccount(){
+      ok = true;
+      clearInvalid(emailEl, errEmail);
+      clearInvalid(passEl, errPassword);
+      clearInvalid(passpEl, errPassport);
+
+      const a = getCurrentAccount();
+      if(!validateEmail(a.email)) setInvalid(emailEl, errEmail);
+      if(a.password.length < 1) setInvalid(passEl, errPassword);
+      if(a.passport.length < 3) setInvalid(passpEl, errPassport);
+      return ok;
+    }
+
+    function clearAccountFields(){
+      emailEl.value = "";
+      passEl.value = "";
+      passpEl.value = "";
+      emailEl.focus();
+    }
+
+    function buildAccountsText(list){
+      return list.map(a => `${a.email};${a.password};${a.passport}`).join("\n");
+    }
+
+    async function postForm(fd){
+      const res = await fetch(API_ENDPOINT, { method:"POST", body: fd });
+      let json = null;
+      try { json = await res.json(); } catch { throw new Error("Invalid response"); }
+      if(!res.ok) throw new Error(json && json.error ? json.error : "Server error");
+      return json;
+    }
+
+    async function loadSavedAccounts(agency){
+      const fd = new FormData();
+      fd.append("formType","agency");
+      fd.append("action","list");
+      fd.append("firma", agency);
+      const json = await postForm(fd);
+      return Array.isArray(json.accounts) ? json.accounts : [];
+    }
+
+    searchAgencyBtn.addEventListener("click", async ()=>{
+      if(!validateFirma()){
+        showToast(t("toast_check_firma"));
+        return;
+      }
+
+      const agency = (firmaEl.value||"").trim();
+      try{
+        showToast(t("toast_loading"));
+        sendBtn.disabled = true;
+        addBtn.disabled = true;
+        listDoneBtn.disabled = true;
+        searchAgencyBtn.disabled = true;
+
+        const list = await loadSavedAccounts(agency);
+        savedAccounts = list;
+        setViewSaved(true);
+        renderSaved();
+        showToast(t("toast_saved_loaded"));
+      }catch(err){
+        console.error(err);
+        showToast(t("toast_failed"));
+      }finally{
+        sendBtn.disabled = false;
+        addBtn.disabled = false;
+        listDoneBtn.disabled = false;
+        searchAgencyBtn.disabled = false;
+      }
+    });
+
+    backBtn.addEventListener("click", ()=>{
+      setViewSaved(false);
+      renderList();
+      toggleMode(true);
+    });
+
+    function findDuplicateLocalIndex(a){
+      const key = `${(a.email||"").trim().toLowerCase()}||${(a.password||"").trim()}||${(a.passport||"").trim().toUpperCase()}`;
+      for(let i=0;i<accounts.length;i++){
+        const b = accounts[i];
+        const k2 = `${(b.email||"").trim().toLowerCase()}||${(b.password||"").trim()}||${(b.passport||"").trim().toUpperCase()}`;
+        if(k2 === key) return i;
+      }
+      return -1;
+    }
+
+    addBtn.addEventListener("click", ()=>{
+      if(inSavedView) return;
+      if(!validateFirma()){ showToast(t("toast_check_firma")); return; }
+      if(!validateCurrentAccount()){ showToast(t("toast_check_account")); return; }
+
+      const a = getCurrentAccount();
+      const di = findDuplicateLocalIndex(a);
+      if(di !== -1){
+        dupIndex = di;
+        multiListReady = false;
+        renderList();
+        showToast(t("toast_dup"));
+        return;
+      }
+
+      dupIndex = -1;
+      accounts.push(a);
+      errList.classList.remove("show");
+      multiListReady = false;
+      renderList();
+      showToast(t("toast_added"));
+      clearAccountFields();
+    });
+
+    listDoneBtn.addEventListener("click", ()=>{
+      if(inSavedView) return;
+
+      const currentFilled = (emailEl.value||"").trim() || (passEl.value||"").trim() || (passpEl.value||"").trim();
+
+      if(currentFilled){
+        if(!validateFirma()){ showToast(t("toast_check_firma")); return; }
+        if(!validateCurrentAccount()){ showToast(t("toast_check_account")); return; }
+
+        const a2 = getCurrentAccount();
+        const di2 = findDuplicateLocalIndex(a2);
+        if(di2 !== -1){
+          dupIndex = di2;
+          multiListReady = false;
+          renderList();
+          showToast(t("toast_dup"));
+          return;
+        }
+
+        dupIndex = -1;
+        accounts.push(a2);
+        clearAccountFields();
+      }
+
+      if(accounts.length === 0){
+        errList.classList.add("show");
+        showToast(t("toast_need_one"));
+        return;
+      }
+
+      accounts.sort((a,b)=>{
+        const ae = (a.email||"").toLowerCase();
+        const be = (b.email||"").toLowerCase();
+        if(ae < be) return -1;
+        if(ae > be) return 1;
+        return (a.passport||"").localeCompare(b.passport||"");
+      });
+
+      errList.classList.remove("show");
+      multiListReady = true;
+      renderList();
+
+      listDoneBtn.style.display = "none";
+      sendBtn.style.display = "inline-flex";
+    });
+
+    moltiEl.addEventListener("change", ()=>{
+      if(inSavedView) return;
+      dupIndex = -1;
+      multiListReady = false;
+      if(!moltiEl.checked){
+        accounts.length = 0;
+      }
+      toggleMode(false);
+      renderList();
+    });
+
+    async function checkDuplicatesOnServer(agency, isMulti, list){
+      const fd = new FormData();
+      fd.append("formType", "agency");
+      fd.append("action", "check");
+      fd.append("firma", agency);
+      fd.append("molti", isMulti ? "1" : "0");
+
+      if(isMulti){
+        fd.append("accounts", buildAccountsText(list));
+      }else{
+        const a = list[0] || {email:"",password:"",passport:""};
+        fd.append("email", a.email);
+        fd.append("password", a.password);
+        fd.append("passport", a.passport);
+      }
+
+      const json = await postForm(fd);
+      return Array.isArray(json.duplicates) ? json.duplicates : [];
+    }
+
+    form.addEventListener("submit", async (e)=>{
+      e.preventDefault();
+      if(inSavedView) return;
+
+      if(!validateFirma()){
+        showToast(t("toast_check_firma"));
+        return;
+      }
+
+      const agency = (firmaEl.value||"").trim();
+      const isMulti = moltiEl.checked;
+
+      let listToSend = [];
+      if(!isMulti){
+        if(!validateCurrentAccount()){
+          showToast(t("toast_check_account"));
+          return;
+        }
+        listToSend = [getCurrentAccount()];
+      }else{
+        if(!multiListReady){
+          showToast(t("btn_list_done"));
+          return;
+        }
+        if(accounts.length === 0){
+          errList.classList.add("show");
+          showToast(t("toast_need_one"));
+          return;
+        }
+        listToSend = [...accounts];
+      }
+
+      try{
+        sendBtn.disabled = true;
+        setStatusKey("status_sending");
+        sendBtn.textContent = t("btn_sending");
+
+        const dup = await checkDuplicatesOnServer(agency, isMulti, listToSend);
+
+        if(dup.length){
+          dupIndex = dup[0];
+
+          if(!isMulti){
+            accounts.length = 0;
+            accounts.push(listToSend[0]);
+            singleDupView = true;
+            listWrap.style.display = "block";
+          }
+
+          renderList();
+          showToast(t("toast_dup"));
+          setStatusKey("status_ready");
+          return;
+        }
+
+        const fd = new FormData();
+        fd.append("formType", "agency");
+        fd.append("action", "add");
+        fd.append("firma", agency);
+        fd.append("molti", isMulti ? "1" : "0");
+
+        if(!isMulti){
+          const a = listToSend[0];
+          fd.append("email", a.email);
+          fd.append("password", a.password);
+          fd.append("passport", a.passport);
+        }else{
+          fd.append("accounts", buildAccountsText(listToSend));
+        }
+
+        const json = await postForm(fd);
+        if(!json.ok) throw new Error(json.error || "Server error");
+
+        setStatusKey("status_sent");
+        showToast(t("toast_sent"));
+
+        form.reset();
+        accounts.length = 0;
+        dupIndex = -1;
+        multiListReady = false;
+        singleDupView = false;
+        toggleMode(false);
+        renderList();
+
+      }catch(err){
+        console.error(err);
+        setStatusKey("status_error");
+        showToast(t("toast_failed"));
+      }finally{
+        sendBtn.disabled = false;
+        sendBtn.textContent = t("btn_send");
+        if(statusEl.textContent.trim().length === 0) setStatusKey("status_ready");
+      }
+    });
+
+    document.getElementById("btnEN").addEventListener("click", ()=>applyLanguage("en"));
+    document.getElementById("btnAR").addEventListener("click", ()=>applyLanguage("ar"));
+
+    setStatusKey("status_ready");
+    applyLanguage("en");
+    setViewSaved(false);
+    toggleMode(false);
+    renderList();
+  </script>
 </body>
 </html>
