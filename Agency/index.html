@@ -195,8 +195,10 @@
 
 
     /* ✅ Saved Accounts (with Status column) */
-    #savedWrap .listHead, #savedWrap .listRow{
-      grid-template-columns:1.15fr .85fr .7fr .55fr 170px;
+    #savedWrap .listHead,
+#savedWrap .listRow{
+      grid-template-columns: 260px 140px 120px 140px 170px;
+      align-items:center;
     }
     @media (max-width:560px){
       #savedWrap .listHead{display:none}
@@ -338,56 +340,6 @@
   border-radius: 14px;
   background: rgba(255,255,255,.04);
 }
-
-/* ✅ v4: Hard-align Saved Accounts columns (header + rows) */
-#savedBody .listHead,
-#savedBody .listRow{
-  display:grid;
-  grid-template-columns: 1.6fr .9fr .85fr .75fr 170px; /* Email | Password | Passport | Status | Action */
-  gap:10px;
-  align-items:center;
-}
-#savedBody .listHead > div,
-#savedBody .listRow > div{
-  min-width:0;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-#savedBody .listRow > div:nth-child(4){
-  white-space:nowrap; /* keep status one-line */
-}
-#savedBody .pwCell{
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-  letter-spacing:.3px;
-}
-#savedBody .statusPill{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  padding:4px 10px;
-  border-radius:999px;
-  font-weight:900;
-  font-size:.78rem;
-  border:1px solid rgba(255,255,255,.22);
-  background: rgba(255,255,255,.06);
-}
-#savedBody .statusPill.ok{
-  border-color: rgba(34,197,94,.45);
-  background: rgba(34,197,94,.16);
-}
-#savedBody .statusPill.warn{
-  border-color: rgba(251,191,36,.45);
-  background: rgba(251,191,36,.16);
-}
-#savedBody .statusPill.bad{
-  border-color: rgba(251,113,133,.45);
-  background: rgba(251,113,133,.16);
-}
-#savedBody .statusPill span{
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
 #savedBody .listRow{ border-bottom: 1px solid rgba(255,255,255,.06); }
 #savedBody .listRow:last-child{ border-bottom: 0; }
 #savedBody::-webkit-scrollbar{ width: 10px; }
@@ -395,6 +347,30 @@
 #savedBody::-webkit-scrollbar-track{ background: transparent; }
 @media (max-width:520px){
   #savedBody{ max-height: 60vh; }
+}
+
+
+/* ✅ Status badges */
+.statusBadge{
+  display:inline-block;
+  padding:4px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:800;
+  text-align:center;
+  white-space:nowrap;
+}
+.status-done{
+  background:#22c55e;
+  color:#fff;
+}
+.status-progress{
+  background:#f59e0b;
+  color:#fff;
+}
+.status-rejected{
+  background:#ef4444;
+  color:#fff;
 }
 
 </style>
@@ -948,19 +924,6 @@
 
       savedEmpty.style.display = view.length ? "none" : "block";
 
-      // ✅ v4: header inside scroll for perfect alignment (scrollbar-safe)
-      const head = document.createElement("div");
-      head.className = "listHead";
-      head.setAttribute("role","row");
-      head.innerHTML = `
-        <div role="columnheader">${t("col_email")}</div>
-        <div role="columnheader">${t("col_password")}</div>
-        <div role="columnheader">${t("col_passport")}</div>
-        <div role="columnheader">${t("col_status")}</div>
-        <div role="columnheader"></div>
-      `;
-      savedBody.appendChild(head);
-
       for(let i=0;i<view.length;i++){
         const a = view[i];
         const row = document.createElement("div");
@@ -968,15 +931,32 @@
         row.setAttribute("role","row");
 
         const c1 = document.createElement("div"); c1.textContent = a.email || "";
-        const c2 = document.createElement("div"); c2.className = "pwCell"; c2.textContent = maskPassword(a.password || "");
+        const c2 = document.createElement("div"); c2.textContent = maskPassword(a.password || "");
         const c3 = document.createElement("div"); c3.textContent = a.passport || "";
         const c4 = document.createElement("div");
-        const st = document.createElement("span");
-        const rawStatus = (a.status != null && String(a.status).trim() !== "") ? String(a.status) : t("status_pending");
-        const s = rawStatus.trim().toLowerCase();
-        st.className = "statusPill " + (["done","ok","approved","active","success","✅"].includes(s) ? "ok" : (["rejected","fail","failed","bad","blocked","deny"].includes(s) ? "bad" : "warn"));
-        st.innerHTML = `<span>${rawStatus}</span>`;
-        c4.appendChild(st);
+
+        let status = (a.status || "").toLowerCase();
+        const badge = document.createElement("span");
+        badge.className = "statusBadge";
+
+        if(status.includes("done")){
+          badge.classList.add("status-done");
+          badge.textContent = "Done";
+        }
+        else if(status.includes("progress")){
+          badge.classList.add("status-progress");
+          badge.textContent = "In Progress";
+        }
+        else if(status.includes("reject")){
+          badge.classList.add("status-rejected");
+          badge.textContent = "Rejected";
+        }
+        else{
+          badge.classList.add("status-progress");
+          badge.textContent = "Pending";
+        }
+
+        c4.appendChild(badge);
 
         const c5 = document.createElement("div");
         const wrap = document.createElement("div");
