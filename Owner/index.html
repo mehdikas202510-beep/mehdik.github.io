@@ -1,954 +1,1021 @@
 <!doctype html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Owner Console</title>
+  <title>Owner Panel — Agencies & Accounts</title>
   <style>
     :root{
       --bg:#0b1020;
-      --panel:#111a33;
-      --panel2:#0e1630;
+      --panel:#0f1730;
+      --panel2:#111d3e;
       --text:#e8eeff;
-      --muted:#a7b3d6;
-      --line:#23305a;
-      --accent:#6aa7ff;
-      --good:#3ddc97;
-      --warn:#ffcc66;
-      --bad:#ff6b6b;
-      --shadow: 0 12px 40px rgba(0,0,0,.35);
-      --radius:18px;
-      --radius2:14px;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+      --muted:#a9b4d6;
+      --brand:#6ee7ff;
+      --brand2:#a78bfa;
+      --ok:#34d399;
+      --warn:#fbbf24;
+      --bad:#fb7185;
+      --line:rgba(255,255,255,.09);
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --radius: 18px;
+      --radius2: 14px;
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
     }
     *{box-sizing:border-box}
     body{
       margin:0;
-      font-family:var(--sans);
-      background:
-        radial-gradient(900px 500px at 80% 10%, rgba(106,167,255,.18), transparent 55%),
-        radial-gradient(700px 400px at 10% 20%, rgba(61,220,151,.12), transparent 60%),
-        linear-gradient(180deg, var(--bg), #060a16);
+      font-family:var(--font);
       color:var(--text);
+      background:
+        radial-gradient(900px 600px at 18% 12%, rgba(110,231,255,.18), transparent 60%),
+        radial-gradient(900px 600px at 82% 18%, rgba(167,139,250,.18), transparent 60%),
+        radial-gradient(900px 600px at 50% 120%, rgba(52,211,153,.10), transparent 60%),
+        var(--bg);
       min-height:100vh;
     }
-    a{color:var(--accent); text-decoration:none}
-    .app{
-      display:grid;
-      grid-template-columns: 320px 1fr;
-      gap:18px;
-      padding:18px;
-      min-height:100vh;
-    }
-    .card{
-      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-      border:1px solid rgba(255,255,255,.06);
+    a{color:inherit}
+    .wrap{max-width:1200px;margin:0 auto;padding:26px 18px 48px}
+    .topbar{
+      display:flex;align-items:center;justify-content:space-between;gap:14px;
+      padding:18px 18px;
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
       border-radius:var(--radius);
       box-shadow:var(--shadow);
-    }
-    .sidebar{
-      padding:16px;
-      display:flex;
-      flex-direction:column;
-      gap:14px;
-      position:sticky;
-      top:18px;
-      height:calc(100vh - 36px);
-      overflow:hidden;
+      backdrop-filter: blur(10px);
     }
     .brand{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      padding:12px 12px;
-      border-radius:14px;
-      background:rgba(106,167,255,.08);
-      border:1px solid rgba(106,167,255,.18);
+      display:flex;align-items:center;gap:12px;
+      min-width:260px;
     }
     .logo{
       width:40px;height:40px;border-radius:14px;
-      background:conic-gradient(from 210deg, rgba(106,167,255,1), rgba(61,220,151,1), rgba(255,204,102,1), rgba(106,167,255,1));
-      box-shadow:0 12px 30px rgba(106,167,255,.22);
+      background: linear-gradient(135deg, rgba(110,231,255,.9), rgba(167,139,250,.9));
+      box-shadow: 0 14px 40px rgba(110,231,255,.15);
     }
-    .brand h1{margin:0;font-size:16px;letter-spacing:.2px}
-    .brand p{margin:2px 0 0 0;color:var(--muted);font-size:12px}
-    .sectionTitle{
-      margin:0;
-      font-size:12px;
-      color:var(--muted);
-      letter-spacing:.6px;
-      text-transform:uppercase;
+    .title{
+      display:flex;flex-direction:column;line-height:1.15
     }
-    .loginBox{
-      padding:14px;
-      border-radius:var(--radius2);
-      background:rgba(0,0,0,.18);
-      border:1px solid rgba(255,255,255,.06);
-    }
-    .row{display:flex; gap:10px; align-items:center}
-    .row > *{flex:1}
-    label{display:block; font-size:12px; color:var(--muted); margin:10px 0 6px}
-    input, select, textarea{
-      width:100%;
-      padding:12px 12px;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(5,8,18,.55);
-      color:var(--text);
-      outline:none;
-    }
-    input:focus, textarea:focus, select:focus{border-color:rgba(106,167,255,.55)}
-    textarea{min-height:150px; font-family:var(--mono); direction:ltr}
-    .btn{
-      padding:11px 12px;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(106,167,255,.16);
-      color:var(--text);
-      cursor:pointer;
-      font-weight:600;
-      transition:.15s;
-      user-select:none;
-    }
-    .btn:hover{transform:translateY(-1px); background:rgba(106,167,255,.22)}
-    .btn.secondary{background:rgba(255,255,255,.06)}
-    .btn.good{background:rgba(61,220,151,.18)}
-    .btn.bad{background:rgba(255,107,107,.16)}
-    .btn.warn{background:rgba(255,204,102,.16)}
-    .btn:disabled{opacity:.5; cursor:not-allowed; transform:none}
+    .title b{font-size:16px;letter-spacing:.2px}
+    .title span{font-size:12px;color:var(--muted)}
+    .actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
     .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.16);
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+      padding:10px 12px;border-radius:999px;
+      display:flex;align-items:center;gap:10px;
       color:var(--muted);
-      font-size:12px;
-      white-space:nowrap;
     }
-    .dot{width:8px;height:8px;border-radius:999px;background:var(--muted)}
-    .dot.good{background:var(--good)}
-    .dot.bad{background:var(--bad)}
-    .dot.warn{background:var(--warn)}
-    .agencyList{
-      overflow:auto;
-      padding-right:4px;
-      flex:1;
+    .pill input{
+      border:none;outline:none;background:transparent;color:var(--text);
+      width:240px;max-width:42vw;
+      font-size:13px;
     }
-    .agencyItem{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      padding:12px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.06);
-      background:rgba(0,0,0,.14);
-      margin-bottom:10px;
+    .btn{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      padding:10px 12px;border-radius:12px;
       cursor:pointer;
-      transition:.12s;
+      transition:.15s transform, .15s background, .15s border;
+      display:inline-flex;gap:9px;align-items:center;
+      font-weight:600;font-size:13px;
     }
-    .agencyItem:hover{border-color:rgba(106,167,255,.35)}
-    .agencyItem.active{
-      border-color:rgba(106,167,255,.55);
-      background:rgba(106,167,255,.10);
+    .btn:hover{transform:translateY(-1px);background:rgba(255,255,255,.09)}
+    .btn.primary{
+      border:none;
+      background: linear-gradient(135deg, rgba(110,231,255,.9), rgba(167,139,250,.9));
+      color:#051026;
     }
-    .agencyName{font-weight:700; font-size:13px}
-    .agencyMeta{color:var(--muted); font-size:12px}
-    .main{
-      padding:16px;
-      display:flex;
-      flex-direction:column;
-      gap:14px;
+    .btn.danger{
+      background:rgba(251,113,133,.12);
+      border:1px solid rgba(251,113,133,.35);
+      color:#ffd3db;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 360px 1fr;
+      gap:16px;
+      margin-top:16px;
+    }
+    @media (max-width: 980px){
+      .grid{grid-template-columns:1fr}
+      .brand{min-width:auto}
+      .pill input{width:180px}
+    }
+    .card{
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
       overflow:hidden;
     }
-    .topbar{
-      display:flex;
-      gap:12px;
-      align-items:center;
-      flex-wrap:wrap;
+    .cardHead{
+      padding:14px 14px;
+      border-bottom:1px solid var(--line);
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      background:rgba(0,0,0,.10);
     }
-    .topbar .left{display:flex; gap:10px; align-items:center; flex-wrap:wrap; flex:1}
-    .topbar .right{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
-    .bigTitle{
-      margin:0;
-      font-size:18px;
-      letter-spacing:.2px;
+    .cardHead .h{
+      display:flex;flex-direction:column;gap:2px;
     }
-    .hint{color:var(--muted); font-size:12px; margin:0}
+    .cardHead .h b{font-size:14px}
+    .cardHead .h span{font-size:12px;color:var(--muted)}
+    .cardBody{padding:14px}
+    .stack{display:flex;flex-direction:column;gap:10px}
+    .field{
+      display:flex;flex-direction:column;gap:6px;
+    }
+    label{font-size:12px;color:var(--muted)}
+    .input, select, textarea{
+      width:100%;
+      padding:11px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:rgba(0,0,0,.20);
+      color:var(--text);
+      outline:none;
+      font-size:13px;
+    }
+    textarea{min-height:110px;resize:vertical}
+    .row{display:flex;gap:10px;align-items:center}
+    .row > *{flex:1}
+    .hint{font-size:12px;color:var(--muted);line-height:1.4}
+    .sep{height:1px;background:var(--line);margin:12px 0}
+    .list{
+      display:flex;flex-direction:column;gap:10px;
+      max-height:560px;
+      overflow:auto;
+      padding-right:6px;
+    }
+    .item{
+      border:1px solid var(--line);
+      background:rgba(0,0,0,.20);
+      border-radius:var(--radius2);
+      padding:12px;
+      display:flex;justify-content:space-between;gap:10px;
+    }
+    .item:hover{background:rgba(0,0,0,.26)}
+    .meta{
+      display:flex;flex-direction:column;gap:6px;min-width:0
+    }
+    .meta b{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .meta span{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .badge{
+      font-size:11px;
+      padding:5px 9px;border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.05);
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .badge.ok{border-color:rgba(52,211,153,.35);background:rgba(52,211,153,.12);color:#b9ffe8}
+    .badge.warn{border-color:rgba(251,191,36,.35);background:rgba(251,191,36,.12);color:#ffe7b0}
+    .badge.bad{border-color:rgba(251,113,133,.35);background:rgba(251,113,133,.12);color:#ffd3db}
     .tableWrap{
       overflow:auto;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.06);
-      background:rgba(0,0,0,.12);
-      flex:1;
+      border-top:1px solid var(--line);
     }
-    table{
-      width:100%;
-      border-collapse:separate;
-      border-spacing:0;
-      min-width:980px;
-    }
-    thead th{
-      position:sticky; top:0;
-      background:rgba(12,18,40,.92);
-      backdrop-filter: blur(8px);
-      border-bottom:1px solid rgba(255,255,255,.08);
-      text-align:right;
+    table{width:100%;border-collapse:collapse;min-width:860px}
+    th, td{
       padding:12px 12px;
-      font-size:12px;
-      color:var(--muted);
-      letter-spacing:.4px;
-    }
-    tbody td{
-      border-bottom:1px solid rgba(255,255,255,.06);
-      padding:12px 12px;
+      border-bottom:1px solid var(--line);
+      text-align:left;
       font-size:13px;
-      vertical-align:top;
+      vertical-align:middle;
     }
-    tbody tr:hover td{background:rgba(106,167,255,.06)}
-    .mono{font-family:var(--mono); direction:ltr; text-align:left}
-    .status{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:6px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.16);
-      font-size:12px;
+    th{color:var(--muted);font-weight:700;background:rgba(0,0,0,.10);position:sticky;top:0;z-index:2}
+    td small{color:var(--muted)}
+    .td-actions{white-space:nowrap;display:flex;gap:8px;justify-content:flex-end}
+    .mini{
+      padding:8px 10px;border-radius:11px;font-weight:700;font-size:12px;
     }
-    .status.good{border-color:rgba(61,220,151,.35)}
-    .status.warn{border-color:rgba(255,204,102,.35)}
-    .status.bad{border-color:rgba(255,107,107,.35)}
-    .actions{display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap}
-    .toast{
-      position:fixed;
-      bottom:18px;
-      left:18px;
-      right:18px;
-      display:flex;
-      justify-content:center;
-      pointer-events:none;
-      z-index:9999;
+    .muted{color:var(--muted)}
+    .hidden{display:none !important;}
+
+    /* Modal */
+    .modalBack{
+      position:fixed;inset:0;background:rgba(0,0,0,.55);
+      display:flex;align-items:center;justify-content:center;
+      padding:18px;
+      z-index:1000;
     }
-    .toast .msg{
-      pointer-events:auto;
-      max-width:900px;
-      width:100%;
-      padding:12px 14px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.55);
-      backdrop-filter: blur(10px);
-      box-shadow: var(--shadow);
-      color:var(--text);
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-    }
-    .kbd{
-      font-family:var(--mono);
-      padding:2px 8px;
-      border-radius:8px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.06);
-      color:var(--muted);
-      font-size:12px;
-    }
-    dialog{
-      border:none;
-      border-radius:18px;
-      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      color:var(--text);
-      width:min(980px, 92vw);
+    .modal{
+      width:min(760px, 100%);
+      border-radius:22px;
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
       box-shadow:var(--shadow);
-      padding:0;
+      overflow:hidden;
     }
-    dialog::backdrop{background:rgba(0,0,0,.55)}
     .modalHead{
-      padding:14px 16px;
-      border-bottom:1px solid rgba(255,255,255,.08);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
+      padding:14px 14px;
+      border-bottom:1px solid var(--line);
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      background:rgba(0,0,0,.12);
     }
-    .modalHead h3{margin:0; font-size:14px}
-    .modalBody{padding:14px 16px}
-    .modalFoot{
-      padding:14px 16px;
-      border-top:1px solid rgba(255,255,255,.08);
-      display:flex;
-      justify-content:flex-start;
-      gap:10px;
-      flex-wrap:wrap;
+    .modalHead b{font-size:14px}
+    .modalBody{padding:14px}
+    .closeX{cursor:pointer;border:1px solid var(--line);background:rgba(255,255,255,.05);border-radius:12px;padding:8px 10px}
+    .toast{
+      position:fixed;right:16px;bottom:16px;
+      max-width:min(420px, 92vw);
+      display:flex;flex-direction:column;gap:10px;
+      z-index:2000;
     }
-    .grid2{display:grid; grid-template-columns:1fr 1fr; gap:12px}
-    @media (max-width: 980px){
-      .app{grid-template-columns:1fr; }
-      .sidebar{position:relative; height:auto}
-      table{min-width:860px}
-      .grid2{grid-template-columns:1fr}
+    .toast .t{
+      border:1px solid var(--line);
+      background:rgba(0,0,0,.35);
+      border-radius:14px;
+      padding:12px 12px;
+      box-shadow:var(--shadow);
     }
+    .t b{font-size:13px}
+    .t div{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.35}
+    .kbd{font-size:11px;padding:3px 7px;border:1px solid var(--line);border-radius:8px;background:rgba(255,255,255,.05);color:var(--muted)}
   </style>
 </head>
+
 <body>
-  <div class="app">
-    <!-- Sidebar -->
-    <aside class="card sidebar">
+  <div class="wrap">
+    <div class="topbar">
       <div class="brand">
         <div class="logo"></div>
-        <div>
-          <h1>Owner Console</h1>
-          <p>إدارة الوكالات والحسابات بشكل متقدم</p>
+        <div class="title">
+          <b>Owner Panel</b>
+          <span>Agencies & Accounts — secure admin dashboard</span>
         </div>
       </div>
 
-      <div class="loginBox">
-        <p class="sectionTitle">تسجيل الدخول</p>
-        <label>Owner User</label>
-        <input id="ownerUser" placeholder="مثال: admin" autocomplete="username" />
-        <label>Owner Password</label>
-        <input id="ownerPass" placeholder="••••••••" type="password" autocomplete="current-password" />
-        <div class="row" style="margin-top:10px">
-          <button class="btn good" id="btnLogin">Login</button>
-          <button class="btn secondary" id="btnLogout" disabled>Logout</button>
+      <div class="actions">
+        <div class="pill">
+          <span class="kbd">API</span>
+          <input id="apiBase" value="https://api.mehdik.site" />
         </div>
-        <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap">
-          <span class="pill" id="authPill"><span class="dot bad" id="authDot"></span><span id="authText">غير مسجل</span></span>
-          <span class="pill"><span class="dot" style="background:var(--accent)"></span><span id="apiInfo">API: -</span></span>
-        </div>
+        <button class="btn" id="btnPing">Ping</button>
+        <button class="btn danger" id="btnLogout">Logout</button>
       </div>
+    </div>
 
-      <p class="sectionTitle">الوكالات</p>
-      <input id="agencyFilter" placeholder="بحث عن وكالة..." />
-
-      <div class="agencyList" id="agencyList"></div>
-
-      <div style="display:flex; gap:10px; flex-wrap:wrap">
-        <button class="btn secondary" id="btnRefreshAgencies" disabled>Refresh</button>
-        <button class="btn warn" id="btnExportAgencyJson" disabled>Export JSON</button>
-      </div>
-      <p class="hint" style="margin-top:4px">
-        تلميح: استخدم <span class="kbd">Ctrl</span> + <span class="kbd">F</span> للبحث داخل الجدول.
-      </p>
-    </aside>
-
-    <!-- Main -->
-    <main class="card main">
-      <div class="topbar">
-        <div class="left">
-          <div>
-            <h2 class="bigTitle" id="mainTitle">اختر وكالة لعرض الحسابات</h2>
-            <p class="hint" id="mainHint">بعد تسجيل الدخول، اختر وكالة من القائمة.</p>
+    <div class="grid">
+      <!-- Left: Auth + Agencies -->
+      <div class="card" id="authCard">
+        <div class="cardHead">
+          <div class="h">
+            <b>Authentication</b>
+            <span>Login once, then manage everything</span>
           </div>
         </div>
-        <div class="right">
-          <input id="searchBox" placeholder="بحث داخل الحسابات (Email/Passport/Status)..." style="min-width:300px" disabled />
-          <button class="btn secondary" id="btnOpenImport" disabled>Import JSON</button>
-          <button class="btn secondary" id="btnAddSingle" disabled>+ Add Account</button>
-          <button class="btn" id="btnReloadAccounts" disabled>Reload</button>
+        <div class="cardBody">
+          <div class="stack" id="loginBox">
+            <div class="field">
+              <label>Owner user</label>
+              <input class="input" id="ownerUser" placeholder="Owner username" />
+            </div>
+            <div class="field">
+              <label>Owner pass</label>
+              <input class="input" id="ownerPass" placeholder="Owner password" type="password" />
+            </div>
+            <button class="btn primary" id="btnLogin">Login</button>
+            <div class="hint">
+              This panel uses <b>Bearer token</b> after login.
+              If your Worker still expects the legacy headers, it will fall back automatically.
+            </div>
+            <div class="sep"></div>
+            <div class="hint">
+              Tip: use <span class="kbd">Ctrl</span> + <span class="kbd">K</span> to focus search once logged in.
+            </div>
+          </div>
+
+          <div class="stack hidden" id="agenciesBox">
+            <div class="row">
+              <div class="field">
+                <label>Search agencies</label>
+                <input class="input" id="agencySearch" placeholder="Type to filter..." />
+              </div>
+              <div class="field">
+                <label>&nbsp;</label>
+                <button class="btn" id="btnReloadAgencies">Reload</button>
+              </div>
+            </div>
+
+            <div class="list" id="agenciesList"></div>
+
+            <div class="sep"></div>
+            <div class="hint">
+              Select an agency to view accounts. You can also generate an <b>Agency Key</b> (optional) for extra protection.
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="tableWrap" id="tableWrap">
-        <table>
-          <thead>
-            <tr>
-              <th style="width:42px">#</th>
-              <th>Email</th>
-              <th>Passport</th>
-              <th>Password</th>
-              <th>Status</th>
-              <th style="width:260px; text-align:left">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="tbody">
-            <tr><td colspan="6" style="color:var(--muted); padding:18px">لا توجد بيانات بعد.</td></tr>
-          </tbody>
-        </table>
+      <!-- Right: Accounts -->
+      <div class="card" id="accountsCard">
+        <div class="cardHead">
+          <div class="h">
+            <b id="accountsTitle">Accounts</b>
+            <span id="accountsSub">Login then select an agency</span>
+          </div>
+          <div class="row" style="max-width:520px">
+            <div class="pill" style="flex:1">
+              <span class="kbd">⌕</span>
+              <input id="accountSearch" placeholder="Search email / passport / status" disabled />
+            </div>
+            <button class="btn" id="btnAdd" disabled>Add</button>
+            <button class="btn" id="btnBulk" disabled>Paste JSON</button>
+          </div>
+        </div>
+
+        <div class="tableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:30%">Email</th>
+                <th style="width:18%">Passport</th>
+                <th style="width:14%">Status</th>
+                <th style="width:24%">Password (owner only)</th>
+                <th style="width:14%; text-align:right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="accountsTbody">
+              <tr><td colspan="5" class="muted" style="padding:16px">No data</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="cardBody">
+          <div class="hint">
+            Bulk JSON format:
+            <span class="kbd">[{"email":"a@x.com","password":"p","passport":"AB123","status":"Pending"}]</span>
+            — status optional, defaults to Pending.
+          </div>
+        </div>
       </div>
-    </main>
+    </div>
   </div>
 
-  <!-- Edit modal -->
-  <dialog id="editModal">
-    <div class="modalHead">
-      <h3>تعديل حساب</h3>
-      <button class="btn secondary" onclick="document.getElementById('editModal').close()">إغلاق</button>
-    </div>
-    <div class="modalBody">
-      <div class="grid2">
-        <div>
-          <label>Email (new)</label>
-          <input id="editEmail" />
-        </div>
-        <div>
-          <label>Passport (new)</label>
-          <input id="editPassport" />
-        </div>
-        <div>
-          <label>Password (new)</label>
-          <input id="editPassword" />
-        </div>
-        <div>
-          <label>Status</label>
-          <select id="editStatus">
-            <option value="Pending">Pending</option>
-            <option value="Done">Done</option>
-            <option value="Rejected">Rejected</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="pill" style="margin-top:12px">
-        <span class="dot" style="background:var(--warn)"></span>
-        <span id="editMatchInfo" class="mono">match: -</span>
-      </div>
-    </div>
-    <div class="modalFoot">
-      <button class="btn good" id="btnSaveEdit">Save</button>
-      <button class="btn bad" id="btnDeleteAccount">Delete</button>
-      <button class="btn secondary" onclick="document.getElementById('editModal').close()">Cancel</button>
-    </div>
-  </dialog>
-
-  <!-- Import JSON modal -->
-  <dialog id="importModal">
-    <div class="modalHead">
-      <h3>Import JSON (لصق JSON)</h3>
-      <button class="btn secondary" onclick="document.getElementById('importModal').close()">إغلاق</button>
-    </div>
-    <div class="modalBody">
-      <p class="hint" style="margin-top:0">
-        الصيغة المطلوبة:
-      </p>
-      <pre class="pill mono" style="white-space:pre-wrap; line-height:1.5">
-[
-  {"email":"a@b.com","password":"123","passport":"AB123","status":"Pending"},
-  {"email":"x@y.com","password":"***","passport":"CD999"}
-]
-      </pre>
-      <label>Paste JSON</label>
-      <textarea id="importJson" placeholder='[{"email":"...","password":"...","passport":"..."}]'></textarea>
-      <div class="row" style="margin-top:10px">
-        <button class="btn secondary" id="btnValidateJson">Validate</button>
-        <span class="pill" id="importStats"><span class="dot"></span><span>—</span></span>
-      </div>
-      <p class="hint">ملاحظة: سيتم تجاهل العناصر الناقصة أو غير الصحيحة، وسيتم الإبلاغ بعدد المضاف/المتجاهل.</p>
-    </div>
-    <div class="modalFoot">
-      <button class="btn good" id="btnDoImport">Import</button>
-      <button class="btn secondary" onclick="document.getElementById('importModal').close()">Cancel</button>
-    </div>
-  </dialog>
-
-  <!-- Add single modal -->
-  <dialog id="addModal">
-    <div class="modalHead">
-      <h3>Add Account</h3>
-      <button class="btn secondary" onclick="document.getElementById('addModal').close()">إغلاق</button>
-    </div>
-    <div class="modalBody">
-      <div class="grid2">
-        <div>
-          <label>Email</label>
-          <input id="addEmail" />
-        </div>
-        <div>
-          <label>Passport</label>
-          <input id="addPassport" />
-        </div>
-        <div>
-          <label>Password</label>
-          <input id="addPassword" />
-        </div>
-        <div>
-          <label>Status</label>
-          <select id="addStatus">
-            <option value="Pending">Pending</option>
-            <option value="Done">Done</option>
-            <option value="Rejected">Rejected</option>
-          </select>
-        </div>
-      </div>
-    </div>
-    <div class="modalFoot">
-      <button class="btn good" id="btnDoAdd">Add</button>
-      <button class="btn secondary" onclick="document.getElementById('addModal').close()">Cancel</button>
-    </div>
-  </dialog>
-
-  <!-- Toast -->
-  <div class="toast" id="toast" style="display:none">
-    <div class="msg">
-      <div id="toastText">—</div>
-      <button class="btn secondary" onclick="hideToast()">OK</button>
-    </div>
-  </div>
+  <!-- Modals -->
+  <div id="modalBack" class="modalBack hidden"></div>
+  <div class="toast" id="toast"></div>
 
 <script>
-  // ========= CONFIG =========
-  const API_BASE = "https://api.mehdik.site"; // <-- غيّرها إذا لزم
-  document.getElementById('apiInfo').textContent = "API: " + API_BASE;
+(() => {
+  // ---------- State ----------
+  const state = {
+    token: null,
+    ownerUser: null,
+    ownerPassLegacy: null, // optional fallback
+    agencies: [],
+    selectedAgency: null,
+    accounts: [],
+    filteredAccounts: [],
+  };
 
-  // ========= STATE =========
-  let ownerUser = "";
-  let ownerPass = "";
-  let authed = false;
-
-  let agencies = [];  // [{agency,count}]
-  let selectedAgency = "";
-  let accounts = [];  // raw accounts for selected agency
-  let filteredAccounts = [];
-
-  let currentEditMatch = null; // {email, passport}
-
-  // ========= HELPERS =========
+  // ---------- Elements ----------
   const $ = (id) => document.getElementById(id);
 
-  function setAuthUI(ok){
-    authed = ok;
-    $('authDot').className = 'dot ' + (ok ? 'good' : 'bad');
-    $('authText').textContent = ok ? 'مسجل' : 'غير مسجل';
-    $('btnLogin').disabled = ok;
-    $('btnLogout').disabled = !ok;
-    $('btnRefreshAgencies').disabled = !ok;
-    $('agencyFilter').disabled = !ok;
-    $('searchBox').disabled = !ok || !selectedAgency;
-    $('btnOpenImport').disabled = !ok || !selectedAgency;
-    $('btnReloadAccounts').disabled = !ok || !selectedAgency;
-    $('btnAddSingle').disabled = !ok || !selectedAgency;
-    $('btnExportAgencyJson').disabled = !ok || !selectedAgency;
+  const apiBaseEl = $("apiBase");
+  const btnPing = $("btnPing");
+  const btnLogout = $("btnLogout");
+  const btnLogin = $("btnLogin");
+  const ownerUserEl = $("ownerUser");
+  const ownerPassEl = $("ownerPass");
+
+  const loginBox = $("loginBox");
+  const agenciesBox = $("agenciesBox");
+  const agenciesList = $("agenciesList");
+  const btnReloadAgencies = $("btnReloadAgencies");
+  const agencySearch = $("agencySearch");
+
+  const accountsTitle = $("accountsTitle");
+  const accountsSub = $("accountsSub");
+  const accountSearch = $("accountSearch");
+  const btnAdd = $("btnAdd");
+  const btnBulk = $("btnBulk");
+  const accountsTbody = $("accountsTbody");
+
+  const modalBack = $("modalBack");
+  const toastBox = $("toast");
+
+  // ---------- Helpers ----------
+  const apiBase = () => (apiBaseEl.value || "").replace(/\/+$/, "");
+  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+  function toast(title, msg){
+    const el = document.createElement("div");
+    el.className = "t";
+    el.innerHTML = `<b>${escapeHtml(title)}</b><div>${escapeHtml(msg || "")}</div>`;
+    toastBox.appendChild(el);
+    setTimeout(() => { el.style.opacity = "0"; el.style.transform="translateY(6px)"; el.style.transition=".25s"; }, 3400);
+    setTimeout(() => el.remove(), 3800);
   }
 
-  function toast(msg){
-    $('toastText').textContent = msg;
-    $('toast').style.display = 'flex';
-  }
-  function hideToast(){
-    $('toast').style.display = 'none';
+  function escapeHtml(s){
+    return String(s ?? "").replace(/[&<>"']/g, c => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    }[c]));
   }
 
-  function ownerHeaders(){
-    return {
-      "X-Owner-User": ownerUser,
-      "X-Owner-Pass": ownerPass
-    };
-  }
-
-  function safeStatusClass(s){
-    const v = (s||"").toLowerCase();
-    if(v.includes('done')) return 'good';
-    if(v.includes('reject') || v.includes('fail')) return 'bad';
-    return 'warn';
+  function badgeClass(status){
+    const s = (status || "").toLowerCase();
+    if (["ok","approved","done","active"].includes(s)) return "badge ok";
+    if (["pending","wait","hold","in progress"].includes(s)) return "badge warn";
+    if (["rejected","fail","bad","blocked"].includes(s)) return "badge bad";
+    return "badge";
   }
 
   function maskPassword(p){
-    if(!p) return '';
+    if (!p) return "";
     const s = String(p);
-    if(s.length <= 2) return '••';
-    return '•'.repeat(Math.min(8, s.length-2)) + s.slice(-2);
+    if (s.length <= 2) return "••";
+    return "•".repeat(Math.min(10, s.length - 2)) + s.slice(-2);
   }
 
-  function normalizeEmail(v){ return String(v||'').trim().toLowerCase(); }
-  function normalizePassport(v){ return String(v||'').trim().toUpperCase(); }
+  function setLoggedInUI(on){
+    loginBox.classList.toggle("hidden", on);
+    agenciesBox.classList.toggle("hidden", !on);
 
-  // ========= API =========
-  async function api(path, opts={}){
-    const url = API_BASE + path;
-    const res = await fetch(url, {
-      ...opts,
-      headers: {
-        "Content-Type": "application/json",
-        ...(opts.headers || {})
-      }
-    });
+    accountSearch.disabled = !on || !state.selectedAgency;
+    btnAdd.disabled = !on || !state.selectedAgency;
+    btnBulk.disabled = !on || !state.selectedAgency;
+  }
+
+  function authHeaders(){
+    const h = {};
+    // Primary: Bearer token
+    if (state.token) h["Authorization"] = `Bearer ${state.token}`;
+    // Legacy fallback
+    if (state.ownerUser && state.ownerPassLegacy){
+      h["X-Owner-User"] = state.ownerUser;
+      h["X-Owner-Pass"] = state.ownerPassLegacy;
+    }
+    return h;
+  }
+
+  async function apiFetch(path, opts={}){
+    const url = apiBase() + path;
+    const headers = { ...(opts.headers || {}), ...authHeaders() };
+
+    const res = await fetch(url, { ...opts, headers });
     const text = await res.text();
     let data = null;
-    try{ data = text ? JSON.parse(text) : null; }catch(e){ data = { raw: text }; }
-    if(!res.ok){
-      const msg = (data && (data.error || data.message)) ? (data.error || data.message) : ("HTTP " + res.status);
+    try { data = text ? JSON.parse(text) : null; } catch { data = { raw:text }; }
+
+    if (!res.ok){
+      const msg = (data && (data.error || data.message)) || `HTTP ${res.status}`;
       throw new Error(msg);
     }
     return data;
   }
 
-  async function login(){
-    ownerUser = $('ownerUser').value.trim();
-    ownerPass = $('ownerPass').value.trim();
-    if(!ownerUser || !ownerPass) return toast("أدخل user و password");
-
+  // ---------- Auth ----------
+  async function doPing(){
     try{
-      await api("/owner/login", {
-        method:"POST",
-        body: JSON.stringify({ user: ownerUser, pass: ownerPass })
-      });
-      setAuthUI(true);
-      toast("تم تسجيل الدخول ✅");
-      await loadAgencies();
-    }catch(err){
-      setAuthUI(false);
-      toast("فشل تسجيل الدخول: " + err.message);
+      const data = await fetch(apiBase() + "/owner/ping");
+      const j = await data.json().catch(()=>null);
+      toast("Ping", j?.ok ? "Owner ping OK" : "Ping response received");
+    }catch(e){
+      toast("Ping failed", e.message);
     }
   }
 
-  function logout(){
-    ownerUser = ""; ownerPass = "";
-    $('ownerUser').value = "";
-    $('ownerPass').value = "";
-    selectedAgency = "";
-    accounts = [];
-    agencies = [];
-    renderAgencies();
-    renderTable([]);
-    $('mainTitle').textContent = "اختر وكالة لعرض الحسابات";
-    $('mainHint').textContent = "بعد تسجيل الدخول، اختر وكالة من القائمة.";
-    setAuthUI(false);
-    toast("تم تسجيل الخروج");
+  async function doLogin(){
+    const user = ownerUserEl.value.trim();
+    const pass = ownerPassEl.value;
+
+    if (!user || !pass) return toast("Missing", "Enter owner user & pass");
+
+    try{
+      const data = await apiFetch("/owner/login", {
+        method:"POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ user, pass })
+      });
+
+      // Worker returns token; keep legacy too as fallback
+      state.token = data.token || null;
+      state.ownerUser = user;
+      state.ownerPassLegacy = pass;
+
+      localStorage.setItem("owner_api_base", apiBase());
+      localStorage.setItem("owner_token", state.token || "");
+      localStorage.setItem("owner_user", user);
+
+      toast("Welcome", "Login success");
+      setLoggedInUI(true);
+      await loadAgencies();
+    }catch(e){
+      toast("Login failed", e.message);
+    }
+  }
+
+  function doLogout(){
+    state.token = null;
+    state.ownerUser = null;
+    state.ownerPassLegacy = null;
+    state.agencies = [];
+    state.selectedAgency = null;
+    state.accounts = [];
+    state.filteredAccounts = [];
+
+    localStorage.removeItem("owner_token");
+    localStorage.removeItem("owner_user");
+
+    agenciesList.innerHTML = "";
+    renderAccounts([]);
+    accountsTitle.textContent = "Accounts";
+    accountsSub.textContent = "Login then select an agency";
+    setLoggedInUI(false);
+    toast("Logout", "Done");
+  }
+
+  // ---------- Agencies ----------
+  function renderAgencies(list){
+    agenciesList.innerHTML = "";
+    if (!list.length){
+      agenciesList.innerHTML = `<div class="muted" style="padding:10px">No agencies found</div>`;
+      return;
+    }
+
+    for (const a of list){
+      const el = document.createElement("div");
+      el.className = "item";
+      const isSelected = (state.selectedAgency && state.selectedAgency === a.agency);
+      el.style.borderColor = isSelected ? "rgba(110,231,255,.45)" : "";
+      el.style.background = isSelected ? "rgba(110,231,255,.08)" : "";
+
+      el.innerHTML = `
+        <div class="meta">
+          <b title="${escapeHtml(a.agency)}">${escapeHtml(a.agency)}</b>
+          <span>${a.count} accounts</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+          <span class="badge">${escapeHtml(a.has_key ? "Agency Key: ON" : "Agency Key: OFF")}</span>
+          <div style="display:flex;gap:8px">
+            <button class="btn mini" data-act="select">Select</button>
+            <button class="btn mini" data-act="key">${a.has_key ? "Rotate Key" : "Create Key"}</button>
+          </div>
+        </div>
+      `;
+
+      el.querySelector('[data-act="select"]').onclick = async () => {
+        state.selectedAgency = a.agency;
+        accountsTitle.textContent = `Accounts — ${a.agency}`;
+        accountsSub.textContent = "Search, add, edit, delete or bulk import";
+        setLoggedInUI(true);
+        renderAgencies(filterAgencies());
+        await loadAccounts(a.agency);
+      };
+
+      el.querySelector('[data-act="key"]').onclick = async () => {
+        await openAgencyKeyModal(a.agency);
+      };
+
+      agenciesList.appendChild(el);
+    }
+  }
+
+  function filterAgencies(){
+    const q = agencySearch.value.trim().toLowerCase();
+    if (!q) return state.agencies;
+    return state.agencies.filter(x => x.agency.toLowerCase().includes(q));
   }
 
   async function loadAgencies(){
     try{
-      const data = await api("/owner/agencies", { method:"GET", headers: ownerHeaders() });
-      agencies = Array.isArray(data.agencies) ? data.agencies : [];
-      renderAgencies();
-      if(selectedAgency){
-        const still = agencies.find(a => a.agency === selectedAgency);
-        if(!still){
-          selectedAgency = "";
-          renderTable([]);
-        }
-      }
-    }catch(err){
-      toast("خطأ تحميل الوكالات: " + err.message);
+      const data = await apiFetch("/owner/agencies");
+      state.agencies = data.agencies || [];
+      renderAgencies(filterAgencies());
+    }catch(e){
+      toast("Agencies failed", e.message);
     }
+  }
+
+  // ---------- Accounts ----------
+  function renderAccounts(list){
+    const rows = list || [];
+    accountsTbody.innerHTML = "";
+    if (!rows.length){
+      accountsTbody.innerHTML = `<tr><td colspan="5" class="muted" style="padding:16px">No accounts</td></tr>`;
+      return;
+    }
+
+    for (const acc of rows){
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><b>${escapeHtml(acc.email || "")}</b><br><small class="muted">${escapeHtml(acc.updatedAt ? ("Updated: " + acc.updatedAt) : "")}</small></td>
+        <td>${escapeHtml(acc.passport || "")}</td>
+        <td><span class="${badgeClass(acc.status)}">${escapeHtml(acc.status || "Pending")}</span></td>
+        <td><span class="muted" title="Stored password visible only to owner">${escapeHtml(maskPassword(acc.password || ""))}</span></td>
+        <td class="td-actions">
+          <button class="btn mini" data-act="edit">Edit</button>
+          <button class="btn mini danger" data-act="del">Delete</button>
+        </td>
+      `;
+      tr.querySelector('[data-act="edit"]').onclick = () => openEditModal(acc);
+      tr.querySelector('[data-act="del"]').onclick = () => openDeleteModal(acc);
+      accountsTbody.appendChild(tr);
+    }
+  }
+
+  function filterAccounts(){
+    const q = accountSearch.value.trim().toLowerCase();
+    if (!q) return state.accounts;
+    return state.accounts.filter(a => {
+      return (a.email||"").toLowerCase().includes(q)
+        || (a.passport||"").toLowerCase().includes(q)
+        || (a.status||"").toLowerCase().includes(q);
+    });
   }
 
   async function loadAccounts(agency){
     try{
-      const data = await api("/owner/accounts?agency=" + encodeURIComponent(agency), {
-        method:"GET",
-        headers: ownerHeaders()
-      });
-      accounts = Array.isArray(data.accounts) ? data.accounts : [];
-      $('mainTitle').textContent = "Accounts — " + agency;
-      $('mainHint').textContent = "عدد الحسابات: " + accounts.length;
-      applySearch();
-    }catch(err){
-      toast("خطأ تحميل الحسابات: " + err.message);
-      accounts = [];
-      applySearch();
-    }
-  }
+      const data = await apiFetch(`/owner/accounts?agency=${encodeURIComponent(agency)}`);
+      state.accounts = data.accounts || [];
+      accountSearch.disabled = false;
+      btnAdd.disabled = false;
+      btnBulk.disabled = false;
 
-  async function saveEdit(){
-    if(!selectedAgency || !currentEditMatch) return;
-
-    const email = $('editEmail').value.trim();
-    const passport = $('editPassport').value.trim();
-    const password = $('editPassword').value;
-    const status = $('editStatus').value;
-
-    if(!email || !passport) return toast("Email و Passport مطلوبين");
-
-    try{
-      await api("/owner/account", {
-        method:"PUT",
-        headers: ownerHeaders(),
-        body: JSON.stringify({
-          agency: selectedAgency,
-          matchEmail: currentEditMatch.email,
-          matchPassport: currentEditMatch.passport,
-          email, passport, password, status
-        })
-      });
-      $('editModal').close();
-      toast("تم التعديل ✅");
-      await loadAccounts(selectedAgency);
-      await loadAgencies();
-    }catch(err){
-      toast("فشل التعديل: " + err.message);
-    }
-  }
-
-  async function deleteAccount(){
-    if(!selectedAgency || !currentEditMatch) return;
-    const ok = confirm("تأكيد حذف الحساب؟");
-    if(!ok) return;
-
-    try{
-      await api("/owner/account", {
-        method:"DELETE",
-        headers: ownerHeaders(),
-        body: JSON.stringify({
-          agency: selectedAgency,
-          email: currentEditMatch.email,
-          passport: currentEditMatch.passport
-        })
-      });
-      $('editModal').close();
-      toast("تم الحذف ✅");
-      await loadAccounts(selectedAgency);
-      await loadAgencies();
-    }catch(err){
-      toast("فشل الحذف: " + err.message);
-    }
-  }
-
-  async function importJson(){
-    if(!selectedAgency) return toast("اختر وكالة أولاً");
-    const txt = $('importJson').value.trim();
-    if(!txt) return toast("الصق JSON أولاً");
-
-    let arr;
-    try{
-      arr = JSON.parse(txt);
+      state.filteredAccounts = filterAccounts();
+      renderAccounts(state.filteredAccounts);
     }catch(e){
-      return toast("JSON غير صالح");
-    }
-    if(!Array.isArray(arr)) return toast("يجب أن يكون JSON عبارة عن Array");
-
-    try{
-      const data = await api("/owner/accounts/import", {
-        method:"POST",
-        headers: ownerHeaders(),
-        body: JSON.stringify({
-          agency: selectedAgency,
-          accounts: arr
-        })
-      });
-      $('importModal').close();
-      toast(`Import: added=${data.added||0}, skipped=${data.skipped||0}, total=${data.total||0}`);
-      await loadAccounts(selectedAgency);
-      await loadAgencies();
-    }catch(err){
-      toast("Import فشل: " + err.message);
+      toast("Accounts failed", e.message);
     }
   }
 
-  async function addSingle(){
-    if(!selectedAgency) return;
-
-    const email = $('addEmail').value.trim();
-    const passport = $('addPassport').value.trim();
-    const password = $('addPassword').value;
-    const status = $('addStatus').value;
-
-    if(!email || !passport || !password) return toast("أدخل Email + Passport + Password");
-
-    try{
-      const payload = {
-        agency: selectedAgency,
-        accounts: [{ email, passport, password, status }]
-      };
-      const data = await api("/owner/accounts/import", {
-        method:"POST",
-        headers: ownerHeaders(),
-        body: JSON.stringify(payload)
-      });
-      $('addModal').close();
-      toast(`تمت الإضافة ✅ (added=${data.added||0}, skipped=${data.skipped||0})`);
-      await loadAccounts(selectedAgency);
-      await loadAgencies();
-    }catch(err){
-      toast("فشل الإضافة: " + err.message);
-    }
-  }
-
-  function exportAgencyJson(){
-    if(!selectedAgency) return;
-    const blob = new Blob([JSON.stringify(accounts, null, 2)], {type:"application/json"});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `accounts_${selectedAgency}.json`;
-    a.click();
-    URL.revokeObjectURL(a.href);
-  }
-
-  // ========= UI RENDER =========
-  function renderAgencies(){
-    const list = $('agencyList');
-    const q = $('agencyFilter').value.trim().toLowerCase();
-    const items = agencies
-      .filter(a => (a.agency||'').toLowerCase().includes(q))
-      .sort((a,b) => (a.agency||'').localeCompare(b.agency||''));
-
-    list.innerHTML = "";
-
-    if(!authed){
-      list.innerHTML = `<div class="pill"><span class="dot bad"></span><span>سجل الدخول لعرض الوكالات</span></div>`;
-      return;
-    }
-
-    if(items.length === 0){
-      list.innerHTML = `<div class="pill"><span class="dot warn"></span><span>لا توجد وكالات</span></div>`;
-      return;
-    }
-
-    for(const a of items){
-      const div = document.createElement('div');
-      div.className = 'agencyItem' + (a.agency === selectedAgency ? ' active' : '');
-      div.innerHTML = `
-        <div>
-          <div class="agencyName">${escapeHtml(a.agency)}</div>
-          <div class="agencyMeta">${a.count ?? 0} حساب</div>
+  // ---------- Modals ----------
+  function openModal(title, innerHtml, onMount){
+    modalBack.classList.remove("hidden");
+    modalBack.innerHTML = `
+      <div class="modal">
+        <div class="modalHead">
+          <b>${escapeHtml(title)}</b>
+          <button class="closeX" id="modalClose">✕</button>
         </div>
-        <span class="pill"><span class="dot" style="background:var(--accent)"></span><span>Open</span></span>
-      `;
-      div.onclick = async () => {
-        selectedAgency = a.agency;
-        setAuthUI(true);
-        renderAgencies();
-        $('searchBox').value = "";
-        await loadAccounts(selectedAgency);
-      };
-      list.appendChild(div);
-    }
+        <div class="modalBody">${innerHtml}</div>
+      </div>
+    `;
+    $("modalClose").onclick = closeModal;
+    modalBack.onclick = (e) => { if (e.target === modalBack) closeModal(); };
+    if (onMount) onMount();
+  }
+  function closeModal(){
+    modalBack.classList.add("hidden");
+    modalBack.innerHTML = "";
   }
 
-  function applySearch(){
-    const q = $('searchBox').value.trim().toLowerCase();
-    filteredAccounts = accounts.filter((acc) => {
-      const email = String(acc.email||'').toLowerCase();
-      const passport = String(acc.passport||'').toLowerCase();
-      const status = String(acc.status||'').toLowerCase();
-      return !q || email.includes(q) || passport.includes(q) || status.includes(q);
-    });
-    renderTable(filteredAccounts);
-  }
-
-  function renderTable(rows){
-    const tbody = $('tbody');
-    tbody.innerHTML = "";
-
-    if(!selectedAgency){
-      tbody.innerHTML = `<tr><td colspan="6" style="color:var(--muted); padding:18px">اختر وكالة من اليسار.</td></tr>`;
-      return;
-    }
-
-    if(rows.length === 0){
-      tbody.innerHTML = `<tr><td colspan="6" style="color:var(--muted); padding:18px">لا توجد حسابات (أو نتيجة البحث فارغة).</td></tr>`;
-      return;
-    }
-
-    rows.forEach((acc, idx) => {
-      const tr = document.createElement('tr');
-      const status = acc.status || 'Pending';
-      const sClass = safeStatusClass(status);
-
-      tr.innerHTML = `
-        <td>${idx+1}</td>
-        <td class="mono">${escapeHtml(acc.email||'')}</td>
-        <td class="mono">${escapeHtml(acc.passport||'')}</td>
-        <td class="mono" title="Password is hidden">${escapeHtml(maskPassword(acc.password||''))}</td>
-        <td>
-          <span class="status ${sClass}">
-            <span class="dot ${sClass}"></span>
-            <span>${escapeHtml(status)}</span>
-          </span>
-        </td>
-        <td style="text-align:left">
-          <div class="actions">
-            <button class="btn secondary" data-action="copyEmail">Copy Email</button>
-            <button class="btn secondary" data-action="copyPassport">Copy Passport</button>
-            <button class="btn" data-action="edit">Edit</button>
+  function openEditModal(acc){
+    const a = state.selectedAgency;
+    openModal("Edit Account", `
+      <div class="stack">
+        <div class="hint">Matching keys: <span class="kbd">email</span> + <span class="kbd">passport</span> (from existing record)</div>
+        <div class="row">
+          <div class="field">
+            <label>Match Email</label>
+            <input class="input" id="mEmail" value="${escapeHtml(acc.email||"")}" />
           </div>
-        </td>
-      `;
+          <div class="field">
+            <label>Match Passport</label>
+            <input class="input" id="mPass" value="${escapeHtml(acc.passport||"")}" />
+          </div>
+        </div>
 
-      tr.querySelector('[data-action="copyEmail"]').onclick = async () => {
-        await navigator.clipboard.writeText(String(acc.email||''));
-        toast("تم نسخ Email");
-      };
-      tr.querySelector('[data-action="copyPassport"]').onclick = async () => {
-        await navigator.clipboard.writeText(String(acc.passport||''));
-        toast("تم نسخ Passport");
-      };
-      tr.querySelector('[data-action="edit"]').onclick = () => openEdit(acc);
+        <div class="sep"></div>
 
-      tbody.appendChild(tr);
+        <div class="row">
+          <div class="field">
+            <label>New Email</label>
+            <input class="input" id="nEmail" value="${escapeHtml(acc.email||"")}" />
+          </div>
+          <div class="field">
+            <label>New Passport</label>
+            <input class="input" id="nPass" value="${escapeHtml(acc.passport||"")}" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label>New Password</label>
+            <input class="input" id="nPwd" value="${escapeHtml(acc.password||"")}" />
+          </div>
+          <div class="field">
+            <label>Status</label>
+            <select id="nStatus" class="input">
+              ${["Pending","OK","Rejected","Hold","Done"].map(s => `<option ${String(acc.status||"Pending").toLowerCase()===s.toLowerCase()?"selected":""}>${s}</option>`).join("")}
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <button class="btn" id="btnCancel">Cancel</button>
+          <button class="btn primary" id="btnSave">Save changes</button>
+        </div>
+      </div>
+    `, () => {
+      $("btnCancel").onclick = closeModal;
+      $("btnSave").onclick = async () => {
+        try{
+          const body = {
+            agency: a,
+            matchEmail: $("mEmail").value.trim(),
+            matchPassport: $("mPass").value.trim(),
+            email: $("nEmail").value.trim(),
+            passport: $("nPass").value.trim(),
+            password: $("nPwd").value,
+            status: $("nStatus").value
+          };
+          await apiFetch("/owner/account", {
+            method:"PUT",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify(body)
+          });
+          toast("Saved", "Account updated");
+          closeModal();
+          await loadAgencies();
+          await loadAccounts(a);
+        }catch(e){
+          toast("Update failed", e.message);
+        }
+      };
     });
   }
 
-  function openEdit(acc){
-    currentEditMatch = {
-      email: String(acc.email||''),
-      passport: String(acc.passport||'')
-    };
-    $('editMatchInfo').textContent = `matchEmail=${currentEditMatch.email} | matchPassport=${currentEditMatch.passport}`;
-
-    $('editEmail').value = String(acc.email||'');
-    $('editPassport').value = String(acc.passport||'');
-    $('editPassword').value = String(acc.password||'');
-    $('editStatus').value = String(acc.status||'Pending');
-
-    $('editModal').showModal();
+  function openDeleteModal(acc){
+    const a = state.selectedAgency;
+    openModal("Delete Account", `
+      <div class="stack">
+        <div class="hint">This will permanently remove the account from KV.</div>
+        <div class="item">
+          <div class="meta">
+            <b>${escapeHtml(acc.email||"")}</b>
+            <span>Passport: ${escapeHtml(acc.passport||"")}</span>
+          </div>
+          <span class="${badgeClass(acc.status)}">${escapeHtml(acc.status||"Pending")}</span>
+        </div>
+        <div class="row">
+          <button class="btn" id="btnCancel">Cancel</button>
+          <button class="btn danger" id="btnDel">Delete</button>
+        </div>
+      </div>
+    `, () => {
+      $("btnCancel").onclick = closeModal;
+      $("btnDel").onclick = async () => {
+        try{
+          await apiFetch("/owner/account", {
+            method:"DELETE",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({ agency: a, email: acc.email, passport: acc.passport })
+          });
+          toast("Deleted", "Account removed");
+          closeModal();
+          await loadAgencies();
+          await loadAccounts(a);
+        }catch(e){
+          toast("Delete failed", e.message);
+        }
+      };
+    });
   }
 
-  function escapeHtml(s){
-    return String(s).replace(/[&<>"']/g, (m)=>({
-      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-    }[m]));
+  function openAddModal(){
+    const a = state.selectedAgency;
+    openModal("Add Account", `
+      <div class="stack">
+        <div class="row">
+          <div class="field">
+            <label>Email</label>
+            <input class="input" id="aEmail" placeholder="example@mail.com" />
+          </div>
+          <div class="field">
+            <label>Passport</label>
+            <input class="input" id="aPass" placeholder="AB123..." />
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label>Password</label>
+            <input class="input" id="aPwd" placeholder="password" />
+          </div>
+          <div class="field">
+            <label>Status</label>
+            <select id="aStatus" class="input">
+              ${["Pending","OK","Rejected","Hold","Done"].map(s => `<option>${s}</option>`).join("")}
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <button class="btn" id="btnCancel">Cancel</button>
+          <button class="btn primary" id="btnAddNow">Add</button>
+        </div>
+      </div>
+    `, () => {
+      $("btnCancel").onclick = closeModal;
+      $("btnAddNow").onclick = async () => {
+        try{
+          const body = {
+            agency: a,
+            accounts: [{
+              email: $("aEmail").value.trim(),
+              password: $("aPwd").value,
+              passport: $("aPass").value.trim(),
+              status: $("aStatus").value
+            }],
+            mode: "upsert"
+          };
+          await apiFetch("/owner/bulk-import", {
+            method:"POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify(body)
+          });
+          toast("Added", "Account created");
+          closeModal();
+          await loadAgencies();
+          await loadAccounts(a);
+        }catch(e){
+          toast("Add failed", e.message);
+        }
+      };
+    });
   }
 
-  function validateImportJson(){
-    const txt = $('importJson').value.trim();
-    if(!txt){ $('importStats').innerHTML = `<span class="dot warn"></span><span>—</span>`; return; }
-    try{
-      const arr = JSON.parse(txt);
-      if(!Array.isArray(arr)) throw new Error("not array");
-      let ok=0, bad=0;
-      for(const x of arr){
-        const e = normalizeEmail(x?.email);
-        const p = normalizePassport(x?.passport);
-        const pw = String(x?.password||'');
-        if(e && p && pw) ok++; else bad++;
-      }
-      $('importStats').innerHTML = `<span class="dot good"></span><span>Valid: ${ok} | Invalid: ${bad} | Total: ${arr.length}</span>`;
-    }catch(e){
-      $('importStats').innerHTML = `<span class="dot bad"></span><span>JSON غير صالح</span>`;
+  function openBulkModal(){
+    const a = state.selectedAgency;
+    openModal("Paste JSON (Bulk Import)", `
+      <div class="stack">
+        <div class="hint">
+          Paste JSON array. Each entry: <span class="kbd">email</span>, <span class="kbd">password</span>, <span class="kbd">passport</span>, optional <span class="kbd">status</span>.
+        </div>
+
+        <div class="field">
+          <label>Import mode</label>
+          <select id="mode" class="input">
+            <option value="upsert">Upsert (update if exists / add if new)</option>
+            <option value="replace">Replace agency list (DANGER)</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>JSON</label>
+          <textarea id="jsonBox" class="input" placeholder='[{"email":"a@x.com","password":"p","passport":"AB1","status":"Pending"}]'></textarea>
+        </div>
+
+        <div class="row">
+          <button class="btn" id="btnCancel">Cancel</button>
+          <button class="btn primary" id="btnImport">Import</button>
+        </div>
+      </div>
+    `, () => {
+      $("btnCancel").onclick = closeModal;
+      $("btnImport").onclick = async () => {
+        try{
+          const mode = $("mode").value;
+          const raw = $("jsonBox").value.trim();
+          const parsed = JSON.parse(raw);
+          if (!Array.isArray(parsed)) throw new Error("JSON must be an array");
+          if (!parsed.length) throw new Error("Empty array");
+
+          // Basic normalize
+          const accounts = parsed.map(x => ({
+            email: String(x.email||"").trim(),
+            password: String(x.password||""),
+            passport: String(x.passport||"").trim(),
+            status: String(x.status||"Pending").trim() || "Pending"
+          }));
+
+          // simple validation
+          for (const it of accounts){
+            if (!it.email || !it.passport) throw new Error("Each item must include email & passport");
+          }
+
+          await apiFetch("/owner/bulk-import", {
+            method:"POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({ agency: a, mode, accounts })
+          });
+
+          toast("Imported", `${accounts.length} accounts processed`);
+          closeModal();
+          await loadAgencies();
+          await loadAccounts(a);
+        }catch(e){
+          toast("Import failed", e.message);
+        }
+      };
+    });
+  }
+
+  async function openAgencyKeyModal(agency){
+    openModal("Agency Key", `
+      <div class="stack">
+        <div class="hint">
+          Agency Key is optional. If enabled, the Agency page must send it with requests. This prevents outsiders from listing/updating accounts by guessing the agency name.
+        </div>
+        <div class="row">
+          <button class="btn" id="btnCancel">Cancel</button>
+          <button class="btn primary" id="btnGenerate">Generate / Rotate Key</button>
+        </div>
+        <div class="sep"></div>
+        <div class="field">
+          <label>Current key (copy)</label>
+          <input class="input" id="keyBox" readonly placeholder="(generate to view)" />
+        </div>
+        <div class="row">
+          <button class="btn" id="btnCopy" disabled>Copy</button>
+          <button class="btn danger" id="btnDisable">Disable key</button>
+        </div>
+      </div>
+    `, () => {
+      $("btnCancel").onclick = closeModal;
+
+      $("btnGenerate").onclick = async () => {
+        try{
+          const data = await apiFetch("/owner/agency-key", {
+            method:"PUT",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({ agency, action:"rotate" })
+          });
+          $("keyBox").value = data.key || "";
+          $("btnCopy").disabled = !data.key;
+          toast("Key updated", "Agency Key generated/rotated");
+          await loadAgencies();
+        }catch(e){
+          toast("Key failed", e.message);
+        }
+      };
+
+      $("btnDisable").onclick = async () => {
+        try{
+          await apiFetch("/owner/agency-key", {
+            method:"PUT",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({ agency, action:"disable" })
+          });
+          $("keyBox").value = "";
+          $("btnCopy").disabled = true;
+          toast("Key disabled", "Agency Key removed");
+          await loadAgencies();
+        }catch(e){
+          toast("Disable failed", e.message);
+        }
+      };
+
+      $("btnCopy").onclick = async () => {
+        try{
+          await navigator.clipboard.writeText($("keyBox").value || "");
+          toast("Copied", "Key copied to clipboard");
+        }catch(e){
+          toast("Copy failed", e.message);
+        }
+      };
+    });
+  }
+
+  // ---------- Events ----------
+  btnPing.onclick = doPing;
+  btnLogout.onclick = doLogout;
+  btnLogin.onclick = doLogin;
+  btnReloadAgencies.onclick = loadAgencies;
+
+  agencySearch.oninput = () => renderAgencies(filterAgencies());
+  accountSearch.oninput = () => {
+    state.filteredAccounts = filterAccounts();
+    renderAccounts(state.filteredAccounts);
+  };
+
+  btnAdd.onclick = () => openAddModal();
+  btnBulk.onclick = () => openBulkModal();
+
+  // Ctrl+K search focus
+  window.addEventListener("keydown", (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k"){
+      e.preventDefault();
+      if (!accountSearch.disabled) accountSearch.focus();
+    }
+  });
+
+  // ---------- Boot ----------
+  function boot(){
+    const savedBase = localStorage.getItem("owner_api_base");
+    const savedToken = localStorage.getItem("owner_token");
+    const savedUser = localStorage.getItem("owner_user");
+
+    if (savedBase) apiBaseEl.value = savedBase;
+    if (savedToken) state.token = savedToken;
+    if (savedUser) state.ownerUser = savedUser;
+
+    // We cannot restore pass (intentionally). Legacy fallback requires re-login if token invalid.
+    if (state.token){
+      setLoggedInUI(true);
+      loadAgencies().catch(()=>{});
+      toast("Session", "Restored token session");
+    }else{
+      setLoggedInUI(false);
     }
   }
-
-  // ========= EVENTS =========
-  $('btnLogin').onclick = login;
-  $('btnLogout').onclick = logout;
-
-  $('btnRefreshAgencies').onclick = loadAgencies;
-  $('agencyFilter').oninput = renderAgencies;
-
-  $('btnReloadAccounts').onclick = () => selectedAgency ? loadAccounts(selectedAgency) : null;
-  $('searchBox').oninput = applySearch;
-
-  $('btnSaveEdit').onclick = saveEdit;
-  $('btnDeleteAccount').onclick = deleteAccount;
-
-  $('btnOpenImport').onclick = () => {
-    $('importJson').value = "";
-    $('importStats').innerHTML = `<span class="dot"></span><span>—</span>`;
-    $('importModal').showModal();
-  };
-  $('btnValidateJson').onclick = validateImportJson;
-  $('btnDoImport').onclick = importJson;
-
-  $('btnAddSingle').onclick = () => {
-    $('addEmail').value = "";
-    $('addPassport').value = "";
-    $('addPassword').value = "";
-    $('addStatus').value = "Pending";
-    $('addModal').showModal();
-  };
-  $('btnDoAdd').onclick = addSingle;
-
-  $('btnExportAgencyJson').onclick = exportAgencyJson;
-
-  // init
-  setAuthUI(false);
-  renderAgencies();
+  boot();
+})();
 </script>
 </body>
 </html>
