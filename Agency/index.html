@@ -157,7 +157,7 @@
     .list{margin-top:10px;border-radius:16px;border:1px solid rgba(255,255,255,.14);overflow:hidden}
     .listHead,.listRow{
       display:grid;
-      grid-template-columns:1.10fr .85fr .70fr .55fr 170px;
+      grid-template-columns:1.12fr .72fr .72fr .95fr 132px;
       gap:10px;
       padding:10px 12px;
       align-items:center
@@ -169,7 +169,7 @@
       opacity:.95;
       font-weight:950;
       display:grid;
-      grid-template-columns:1.10fr .85fr .70fr .55fr 170px;
+      grid-template-columns:1.12fr .72fr .72fr .95fr 132px;
       gap:10px;
       padding:10px 12px;
       align-items:center
@@ -202,7 +202,7 @@
 
     /* ✅ Saved Accounts (with Status column) */
     #savedWrap .listHead, #savedWrap .listRow{
-      grid-template-columns:1.15fr .85fr .7fr .55fr 170px;
+      grid-template-columns:1.12fr .72fr .72fr .95fr 132px;
     }
     @media (max-width:560px){
       #savedWrap .listHead{display:none}
@@ -282,13 +282,14 @@
       from{filter:brightness(1); transform:translateY(0);}
       to{filter:brightness(1.08); transform:translateY(-1px);}
     }
-    .actionBtns{display:flex; gap:8px; justify-content:flex-end; align-items:center; flex-wrap:wrap;}
+    .actionBtns{display:flex; gap:6px; justify-content:flex-end; align-items:center; flex-wrap:nowrap;}
     .miniBtn{
       border:1px solid rgba(255,255,255,.35);
       background:rgba(5,28,70,.45);
       color:#fff;
       border-radius:10px;
-      padding:6px 10px;
+      padding:5px 9px;
+      font-size:.71rem;
       font-weight:800;
       cursor:pointer;
       line-height:1;
@@ -308,6 +309,43 @@
       opacity:.92;
     }
 
+
+    /* ✅ Saved accounts balance: smaller action button + wider status */
+    #savedWrap .listHead > div:nth-child(4),
+    #savedWrap .listRow > div:nth-child(4){
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:visible;
+      white-space:normal;
+    }
+    #savedWrap .listHead > div:nth-child(5),
+    #savedWrap .listRow > div:nth-child(5){
+      display:flex;
+      justify-content:flex-end;
+      align-items:center;
+    }
+    #savedWrap .miniBtn{
+      box-shadow:none;
+      min-height:30px;
+    }
+    #savedSearch{
+      border-radius:14px;
+      background:rgba(5,28,70,.42);
+    }
+    @media (max-width:760px){
+      #savedWrap .listHead, #savedWrap .listRow{
+        grid-template-columns:1.1fr .78fr .8fr .95fr 120px;
+      }
+      #savedWrap .miniBtn{
+        padding:5px 8px;
+        font-size:.68rem;
+      }
+      .badge{
+        min-width:84px;
+        font-size:.74rem;
+      }
+    }
     /* ✅ تحسينات إضافية للموبايل */
     @media (max-width:600px){
       body{padding:12px;align-items:flex-start}
@@ -358,10 +396,12 @@
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      padding:5px 10px;
+      padding:6px 12px;
+      min-height:30px;
+      min-width:92px;
       border-radius:999px;
       font-weight:950;
-      font-size:.74rem;
+      font-size:.78rem;
       letter-spacing:.2px;
       border:1px solid rgba(255,255,255,.22);
       background:rgba(255,255,255,.10);
@@ -609,7 +649,7 @@
         toast_saved_loaded: "Saved accounts loaded",
         saved_empty: "No saved accounts for this agency.",
         saved_search_ph: "Search by email or passport…",
-        btn_req_pw: "Change password",
+        btn_req_pw: "Password",
         pw_title: "Request password change",
         pw_new_lbl: "New Password",
         btn_copy: "Copy",
@@ -672,7 +712,7 @@
         toast_saved_loaded: "تم تحميل الحسابات المحفوظة",
         saved_empty: "لا توجد حسابات محفوظة لهذه الوكالة.",
         saved_search_ph: "ابحث بالإيميل أو رقم الجواز…",
-        btn_req_pw: "طلب تعديل كلمة السر",
+        btn_req_pw: "تعديل كلمة السر",
         pw_title: "طلب تعديل كلمة السر",
         pw_new_lbl: "كلمة السر الجديدة",
         btn_copy: "نسخ",
