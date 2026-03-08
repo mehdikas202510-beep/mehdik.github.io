@@ -298,7 +298,6 @@
       border-color:rgba(255,90,90,.75);
       background:rgba(255,90,90,.18);
     }
-    .is-hidden{display:none !important;}
     .emptyBox{
       margin-top:10px;
       padding:12px 12px;
@@ -524,7 +523,6 @@
         <b data-i18n="pw_title">Request password change</b>
         <button id="pwClose" type="button" class="xbtn" aria-label="Close">×</button>
       </div>
-      <div id="pwSelectHint" class="emptyBox" style="margin-top:0;margin-bottom:10px;display:none" data-i18n="pw_select_hint">Select an account first to change its password.</div>
       <div class="row" style="grid-template-columns:1fr;gap:10px">
         <div>
           <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
@@ -541,12 +539,12 @@
           <input id="pwPassport" type="text" readonly/>
         </div>
         <div>
-          <label for="pwNew" data-i18n="pw_current_tail_lbl">Last 2 of current password</label>
-          <input id="pwNew" type="text" placeholder="**" readonly maxlength="2"/>
+          <label for="pwNew" data-i18n="pw_new_lbl">New Password</label>
+          <input id="pwNew" type="text" placeholder="********"/>
         </div>
       </div>
       <div class="btnRow" style="margin-top:12px">
-        <button id="pwSave" type="button" class="btn btnPrimary is-hidden" style="flex:1" data-i18n="btn_save">Save</button>
+        <button id="pwSave" type="button" class="btn btnPrimary" style="flex:1" data-i18n="btn_save">Save</button>
         <button id="pwCancel" type="button" class="btn btnSoft" data-i18n="btn_cancel">Cancel</button>
       </div>
     </div>
@@ -611,10 +609,8 @@
         toast_saved_loaded: "Saved accounts loaded",
         saved_empty: "No saved accounts for this agency.",
         saved_search_ph: "Search by email or passport…",
-        btn_req_pw: "Select account",
+        btn_req_pw: "Change password",
         pw_title: "Request password change",
-        pw_select_hint: "Select an account first to change its password.",
-        pw_current_tail_lbl: "Last 2 of current password",
         pw_new_lbl: "New Password",
         btn_copy: "Copy",
         btn_save: "Save",
@@ -676,10 +672,8 @@
         toast_saved_loaded: "تم تحميل الحسابات المحفوظة",
         saved_empty: "لا توجد حسابات محفوظة لهذه الوكالة.",
         saved_search_ph: "ابحث بالإيميل أو رقم الجواز…",
-        btn_req_pw: "تحديد الحساب",
+        btn_req_pw: "طلب تعديل كلمة السر",
         pw_title: "طلب تعديل كلمة السر",
-        pw_select_hint: "حدد الحساب أولاً حتى يظهر زر تغيير كلمة السر.",
-        pw_current_tail_lbl: "آخر رقمين من كلمة السر الحالية",
         pw_new_lbl: "كلمة السر الجديدة",
         btn_copy: "نسخ",
         btn_save: "حفظ",
@@ -721,7 +715,6 @@
     const pwEmail = document.getElementById("pwEmail");
     const pwPassport = document.getElementById("pwPassport");
     const pwNew = document.getElementById("pwNew");
-    const pwSelectHint = document.getElementById("pwSelectHint");
     const copyEmailBtn = document.getElementById("copyEmailBtn");
     const copyPassportBtn = document.getElementById("copyPassportBtn");
 
@@ -787,7 +780,7 @@
       passEl.placeholder = lang === "ar" ? "كلمة السر" : "Password";
 
       if(savedSearchEl) savedSearchEl.placeholder = t("saved_search_ph");
-      if(pwNew) pwNew.placeholder = lang === "ar" ? "آخر رقمين" : "Last 2 digits";
+      if(pwNew) pwNew.placeholder = lang === "ar" ? "كلمة السر الجديدة" : "New password";
 
       addBtn.textContent = t("btn_add");
       listDoneBtn.textContent = t("btn_list_done");
@@ -854,11 +847,6 @@
       if(!p) return "";
       if(p.length <= 2) return "••";
       return "•".repeat(Math.min(10, p.length - 2)) + p.slice(-2);
-    }
-
-    function getPasswordTail(p){
-      if(!p) return "--";
-      return p.slice(-2);
     }
 
 
@@ -988,20 +976,12 @@
         const wrap = document.createElement("div");
         wrap.className = "actionBtns";
 
-        const selectBtn = document.createElement("button");
-        selectBtn.type = "button";
-        selectBtn.className = "miniBtn";
-        selectBtn.textContent = t("btn_req_pw");
-        selectBtn.addEventListener("click", ()=> openPwModal(a));
-
-        const changeBtn = document.createElement("button");
-        changeBtn.type = "button";
-        changeBtn.className = "miniBtn" + (((pwTarget && (pwTarget.email||"").toLowerCase() === (a.email||"").toLowerCase() && (pwTarget.passport||"").toUpperCase() === (a.passport||"").toUpperCase())) ? "" : " is-hidden");
-        changeBtn.textContent = currentLang === "ar" ? "تغيير كلمة السر" : "Change password";
-        changeBtn.addEventListener("click", ()=> openPwModal(a));
-
-        wrap.appendChild(selectBtn);
-        wrap.appendChild(changeBtn);
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "miniBtn";
+        btn.textContent = t("btn_req_pw");
+        btn.addEventListener("click", ()=> openPwModal(a));
+        wrap.appendChild(btn);
 
         c5.appendChild(wrap);
         row.appendChild(c1); row.appendChild(c2); row.appendChild(c3); row.appendChild(c4); row.appendChild(c5);
@@ -1019,24 +999,14 @@
       pwTarget = acc;
       pwEmail.value = acc.email || "";
       pwPassport.value = acc.passport || "";
-      pwNew.value = getPasswordTail(acc.password || "");
-      pwNew.readOnly = false;
-      pwSave.classList.remove("is-hidden");
-      if(pwSelectHint) pwSelectHint.style.display = "none";
+      pwNew.value = "";
       pwModal.style.display = "flex";
-      renderSaved();
       pwNew.focus();
-      pwNew.select();
     }
 
     function closePwModal(){
-      pwModal.style.display = "none";
-      pwNew.value = "";
-      pwNew.readOnly = true;
-      pwSave.classList.add("is-hidden");
-      if(pwSelectHint) pwSelectHint.style.display = "block";
       pwTarget = null;
-      renderSaved();
+      pwModal.style.display = "none";
     }
 
     async function copyText(txt){
@@ -1077,16 +1047,12 @@
     document.getElementById("copyEmailBtn").addEventListener("click", ()=> copyText(pwEmail.value));
     document.getElementById("copyPassportBtn").addEventListener("click", ()=> copyText(pwPassport.value));
 
-    pwNew.addEventListener("input", ()=>{
-      pwNew.value = (pwNew.value || "").replace(/\D+/g, "").slice(-2);
-    });
-
     document.getElementById("pwSave").addEventListener("click", async ()=>{
       if(!pwTarget) return;
       if(!validateFirma()){ showToast(t("toast_check_firma")); return; }
       const agency = (firmaEl.value||"").trim();
-      const newPass = (pwNew.value||"").trim().replace(/\D+/g, "").slice(-2);
-      if(newPass.length !== 2){ showToast(t("err_pass")); return; }
+      const newPass = (pwNew.value||"").trim();
+      if(newPass.length < 1){ showToast(t("err_pass")); return; }
 
       try{
         document.getElementById("pwSave").disabled = true;
