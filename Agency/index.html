@@ -410,7 +410,7 @@
     }
     .badge[data-variant="ok"]{ background:rgba(34,197,94,.18); border-color:rgba(34,197,94,.45); }
     .badge[data-variant="warn"]{ background:rgba(251,191,36,.18); border-color:rgba(251,191,36,.45); }
-    .badge[data-variant="danger"]{ background:rgba(255,90,90,.18); border-color:rgba(255,90,90,.55); }
+    .badge[data-variant="danger"]{ background:rgba(239,68,68,.22); border-color:rgba(239,68,68,.65); color:#ffb3b3; box-shadow:inset 0 0 0 1px rgba(239,68,68,.12); }
     .badge[data-variant="info"]{ background:rgba(56,189,248,.16); border-color:rgba(56,189,248,.45); }
 
 
@@ -892,11 +892,42 @@
 
     function statusVariant(s){
       const v = (s == null ? "" : String(s)).trim().toLowerCase();
-      if(!v) return "warn";                 // empty => pending
-      if(v.includes("error") || v.includes("fail") || v.includes("خطأ") || v.includes("فشل")) return "danger";
-      if(v.includes("sent") || v.includes("تم") || v.includes("done") || v === "✅") return "ok";
-      if(v.includes("ready") || v.includes("جاهز")) return "info";
-      if(v.includes("pending") || v.includes("انتظار")) return "warn";
+      if(!v) return "warn";
+
+      if(
+        v.includes("reject") ||
+        v.includes("rejected") ||
+        v.includes("رفض") ||
+        v.includes("مرفوض") ||
+        v.includes("fail") ||
+        v.includes("failed") ||
+        v.includes("error") ||
+        v.includes("خطأ") ||
+        v.includes("فشل")
+      ) return "danger";
+
+      if(
+        v.includes("sent") ||
+        v.includes("done") ||
+        v.includes("approved") ||
+        v.includes("تم") ||
+        v === "✅"
+      ) return "ok";
+
+      if(
+        v.includes("pending") ||
+        v.includes("انتظار") ||
+        v.includes("waiting")
+      ) return "warn";
+
+      if(
+        v.includes("ready") ||
+        v.includes("progress") ||
+        v.includes("in progress") ||
+        v.includes("جاهز") ||
+        v.includes("قيد")
+      ) return "info";
+
       return "info";
     }
 
