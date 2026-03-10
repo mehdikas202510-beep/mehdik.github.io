@@ -47,6 +47,22 @@
     .rtl-toggle{border:1px solid var(--border);background:rgba(255,255,255,.05);padding:8px 10px;border-radius:999px;display:flex;gap:8px;align-items:center}.rtl-toggle button{border:0;background:transparent;color:var(--muted);padding:6px 10px;border-radius:999px;cursor:pointer;font-weight:800}.rtl-toggle button.active{color:var(--text);background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.10)}
     .split{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}@media (max-width:1100px){.split{grid-template-columns:1fr}}
     .mini{font-size:11px;color:var(--muted)}
+
+    body[data-theme="light"]{
+      --bg:#eef3fb;--panel:#ffffff;--panel2:#f8fbff;--text:#0f172a;--muted:#5b6475;--border:rgba(15,23,42,.10);
+      --shadow:0 12px 30px rgba(15,23,42,.10);--chip:#e8eefb;
+      background:
+        radial-gradient(1100px 600px at 10% 10%, rgba(124,92,255,.12), transparent 60%),
+        radial-gradient(900px 500px at 90% 10%, rgba(34,197,94,.10), transparent 55%),
+        linear-gradient(180deg, #f8fbff, var(--bg));
+    }
+    body[data-theme="light"] .topbar{background:linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.86))}
+    body[data-theme="light"] .card{background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,251,255,.95))}
+    body[data-theme="light"] thead th{background:rgba(248,251,255,.98)}
+    body[data-theme="light"] .toast{background:rgba(255,255,255,.98)}
+    body[data-theme="light"] .modal{background:rgba(15,23,42,.28)}
+    body[data-theme="light"] .modal .box{background:linear-gradient(180deg, rgba(255,255,255,.99), rgba(248,251,255,.96))}
+
   </style>
 </head>
 <body>
@@ -61,6 +77,7 @@
     </div>
     <div class="actions">
       <div class="rtl-toggle"><button id="langAR" class="active">AR</button><button id="langEN">EN</button></div>
+      <div class="rtl-toggle"><button id="themeDark" class="active">Dark</button><button id="themeLight">Light</button></div>
       <span class="chip">API: <span class="mono" id="apiHost">…</span></span>
       <span class="chip">Auth: <span id="authState">Guest</span></span>
       <button class="btn ghost" id="btnPing">Ping</button>
@@ -192,6 +209,7 @@
     en:{ app:"Owner Panel — Pro Max", sub:"Agencies + managers system + Telegram integration", login:"Login", manage:"Accounts", agency:"Agency", search:"Search", filter:"Status filter", user:"Owner User", pass:"Owner Pass", kAg:"# Agencies", kAcc:"Selected agency accounts", kMgr:"# Managers", kAssign:"Total assigned accounts", priv:"Credentials are saved in sessionStorage on this browser only. Use on a trusted device.", hint:"Credentials are sent in headers with each request" }
   };
   let LANG = "ar";
+  let THEME = "dark";
   const S = { ownerUser:"", ownerPass:"", agencies:[], agencySelected:"", accounts:[], managers:[], managerSelected:"", bulkParsed:[] };
 
   const $ = (id) => document.getElementById(id);
@@ -215,9 +233,16 @@
     $("t_kpiAg").textContent = d.kAg; $("t_kpiAcc").textContent = d.kAcc; $("t_kpiManagers").textContent = d.kMgr; $("t_kpiAssigned").textContent = d.kAssign; $("t_priv").textContent = d.priv; $("t_loginHint").textContent = d.hint;
   }
 
+  function setTheme(theme){
+    THEME = theme === "light" ? "light" : "dark";
+    document.body.dataset.theme = THEME;
+    $("themeDark").classList.toggle("active", THEME === "dark");
+    $("themeLight").classList.toggle("active", THEME === "light");
+  }
+
   function toast(title, msg){ const t=$("toast"); $("toastTitle").textContent=title; $("toastMsg").textContent=msg; t.classList.add("show"); clearTimeout(toast._tm); toast._tm=setTimeout(()=>t.classList.remove("show"), 3500); }
-  function persistSession(){ sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ ownerUser:S.ownerUser, ownerPass:S.ownerPass, agencySelected:S.agencySelected, managerSelected:S.managerSelected, lang:LANG })); }
-  function restoreSession(){ try { const raw=sessionStorage.getItem(STORAGE_KEY); if(!raw) return; const d=JSON.parse(raw); if(d.lang) setLang(d.lang); S.ownerUser=norm(d.ownerUser); S.ownerPass=norm(d.ownerPass); S.agencySelected=norm(d.agencySelected); S.managerSelected=norm(d.managerSelected); $("inUser").value=S.ownerUser; $("inPass").value=S.ownerPass; } catch(_){} }
+  function persistSession(){ sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ ownerUser:S.ownerUser, ownerPass:S.ownerPass, agencySelected:S.agencySelected, managerSelected:S.managerSelected, lang:LANG, theme:THEME })); }
+  function restoreSession(){ try { const raw=sessionStorage.getItem(STORAGE_KEY); if(!raw) return; const d=JSON.parse(raw); if(d.lang) setLang(d.lang); if(d.theme) setTheme(d.theme); S.ownerUser=norm(d.ownerUser); S.ownerPass=norm(d.ownerPass); S.agencySelected=norm(d.agencySelected); S.managerSelected=norm(d.managerSelected); $("inUser").value=S.ownerUser; $("inPass").value=S.ownerPass; } catch(_){} }
   function setAuthState(authed){ $("authState").textContent = authed ? "Owner" : "Guest"; $("btnLogout").disabled=!authed; ["btnRefresh","btnBulk","btnAddOne","selAgency","inSearch","selStatusFilter","btnSendAgencyAll","btnOpenManager","btnManagerAssignAll","selManagerView","btnReloadQueue"].forEach(id=>$(id).disabled=!authed); $("pillText").textContent = authed ? (LANG === "ar" ? "متصل" : "Connected") : (LANG === "ar" ? "غير متصل" : "Disconnected"); }
   async function apiFetch(url, options={}){ const controller = new AbortController(); const timer=setTimeout(()=>controller.abort(), 15000); try{ const response = await fetch(url, {...options, headers:{...(options.headers||{})}, signal:controller.signal}); const data=await response.json().catch(()=>({})); if(!response.ok) return {ok:false,status:response.status,error:data.error||`HTTP ${response.status}`}; return data; } catch(err){ return {ok:false,error:err?.name==="AbortError"?"Request timeout":(err?.message||"Network error")}; } finally{ clearTimeout(timer);} }
 
@@ -278,8 +303,9 @@
   let searchTimer=null; $("inSearch").addEventListener('input',()=>{ clearTimeout(searchTimer); searchTimer=setTimeout(renderAccounts, SEARCH_DEBOUNCE_MS); }); $("selStatusFilter").addEventListener('change', renderAccounts); $("inPass").addEventListener('keydown',(e)=>{ if(e.key==='Enter') UI.login(); });
   document.querySelectorAll('.tabbtn').forEach(btn=>btn.addEventListener('click',()=>{ document.querySelectorAll('.tabbtn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.querySelectorAll('.tabpane').forEach(p=>p.classList.add('hidden')); $(btn.dataset.tab).classList.remove('hidden'); }));
   $("langAR").onclick=()=>{ setLang('ar'); persistSession(); }; $("langEN").onclick=()=>{ setLang('en'); persistSession(); };
+  $("themeDark").onclick=()=>{ setTheme('dark'); persistSession(); }; $("themeLight").onclick=()=>{ setTheme('light'); persistSession(); };
 
-  restoreSession(); setLang(LANG); setAuthState(Boolean(S.ownerUser && S.ownerPass)); renderAgencies(); renderAccounts(); renderManagers(); if(S.ownerUser && S.ownerPass) UI.refreshAll();
+  setTheme(THEME); restoreSession(); setLang(LANG); setAuthState(Boolean(S.ownerUser && S.ownerPass)); renderAgencies(); renderAccounts(); renderManagers(); if(S.ownerUser && S.ownerPass) UI.refreshAll();
 })();
 </script>
 </body>
