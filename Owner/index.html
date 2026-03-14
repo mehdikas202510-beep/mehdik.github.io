@@ -3,114 +3,633 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Owner Panel — Manual Managers</title>
+  <title>Owner Panel — Advanced Manual Managers</title>
   <style>
     :root{
-      --bg:#f5f7fb;--panel:#ffffff;--panel2:#f8fafc;--text:#0f172a;--muted:#64748b;--border:#dbe4f0;
-      --shadow:0 10px 30px rgba(15,23,42,.08);--brand:#2563eb;--good:#16a34a;--warn:#d97706;--bad:#dc2626;--chip:#eef2ff;
+      --bg:#eef4fb;
+      --bg-soft:#f8fbff;
+      --panel:#ffffff;
+      --panel-2:#f7fafd;
+      --text:#0f172a;
+      --muted:#64748b;
+      --muted-2:#94a3b8;
+      --border:#dbe5f0;
+      --line:#ecf2f8;
+      --brand:#2563eb;
+      --brand-2:#1d4ed8;
+      --good:#16a34a;
+      --warn:#d97706;
+      --bad:#dc2626;
+      --info:#0ea5e9;
+      --shadow:0 18px 45px rgba(15,23,42,.08);
+      --shadow-sm:0 8px 24px rgba(15,23,42,.06);
+      --radius:22px;
+      --radius-sm:16px;
       --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
       --sans:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,"Noto Sans Arabic","Noto Sans",sans-serif;
-      --r:18px;
     }
-    *{box-sizing:border-box} html,body{height:100%} body{margin:0;font-family:var(--sans);background:linear-gradient(180deg,#f8fbff,#eef3f8);color:var(--text)}
-    .wrap{max-width:1400px;margin:0 auto;padding:24px}.hidden{display:none!important}
-    .topbar{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:14px 16px;border:1px solid var(--border);border-radius:24px;background:var(--panel);box-shadow:var(--shadow);position:sticky;top:14px;z-index:5}
-    .brand{display:flex;align-items:center;gap:10px}.logo{width:38px;height:38px;border-radius:14px;background:linear-gradient(135deg,#60a5fa,#2563eb)}
-    .title{display:flex;flex-direction:column;gap:2px}.title b{font-size:15px}.title span{font-size:12px;color:var(--muted)}
-    .actions,.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-    .tabs{display:flex;gap:10px;margin-top:18px}
-    .tabbtn,.btn{border:1px solid var(--border);background:#fff;color:var(--text);padding:10px 12px;border-radius:14px;cursor:pointer;font-weight:700;display:inline-flex;gap:8px;align-items:center}
-    .tabbtn.active,.btn.primary{border-color:#93c5fd;background:#eff6ff;color:#1d4ed8}
-    .btn.danger{border-color:#fecaca;background:#fef2f2;color:#b91c1c}
-    .btn.good{border-color:#bbf7d0;background:#f0fdf4;color:#15803d}
-    .btn.warn{border-color:#fed7aa;background:#fff7ed;color:#c2410c}
-    .btn[disabled]{opacity:.55;cursor:not-allowed}
-    .chip,.pill,.tag{font-size:12px;padding:6px 10px;border-radius:999px;background:#fff;border:1px solid var(--border);color:var(--muted);display:inline-flex;gap:8px;align-items:center}
-    .tag.good{background:#f0fdf4;color:#166534;border-color:#bbf7d0}.tag.bad{background:#fef2f2;color:#991b1b;border-color:#fecaca}
-    .grid{display:grid;grid-template-columns:340px 1fr;gap:18px;margin-top:18px}
-    @media (max-width:1100px){.grid{grid-template-columns:1fr}.topbar{position:static}}
-    .card{border:1px solid var(--border);border-radius:var(--r);background:var(--panel);box-shadow:var(--shadow);overflow:hidden}
-    .card .hd{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
-    .card .bd{padding:14px 16px}.card .hd h3{margin:0;font-size:14px}
-    .field{display:flex;flex-direction:column;gap:7px;flex:1;min-width:160px} label{font-size:12px;color:var(--muted)}
-    input,select,textarea{width:100%;border:1px solid var(--border);background:#fff;color:var(--text);padding:10px 12px;border-radius:14px;outline:none;font-family:var(--sans)}
-    textarea{min-height:150px;resize:vertical}
-    .muted{color:var(--muted);font-size:12px;line-height:1.6}.mono{font-family:var(--mono);font-size:12px}
-    .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.kpi{border:1px solid var(--border);border-radius:16px;padding:12px;background:var(--panel2)} .kpi b{display:block;font-size:18px} .kpi span{color:var(--muted);font-size:12px}
-    .tablewrap{overflow:auto;border-radius:14px;border:1px solid var(--border)} table{border-collapse:separate;border-spacing:0;width:100%;min-width:920px}
-    thead th{position:sticky;top:0;background:#f8fafc;text-align:right;font-size:12px;color:var(--muted);padding:10px 12px;border-bottom:1px solid var(--border);white-space:nowrap}
-    tbody td{padding:11px 12px;border-bottom:1px solid #eef2f7;font-size:13px;vertical-align:middle;white-space:nowrap} tbody tr:hover{background:#f8fafc}
-    .status{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;font-weight:800;font-size:12px;border:1px solid var(--border);background:#fff}
-    .dot{width:8px;height:8px;border-radius:999px;background:var(--muted)} .s-good .dot{background:var(--good)} .s-warn .dot{background:var(--warn)} .s-bad .dot{background:var(--bad)} .s-neutral .dot{background:#2563eb}
-    .toast{position:fixed;inset:auto 18px 18px auto;background:#fff;border:1px solid var(--border);border-radius:16px;padding:12px 14px;box-shadow:var(--shadow);max-width:520px;display:none;z-index:20}
-    .toast.show{display:block}.toast b{display:block;font-size:13px;margin-bottom:4px}.toast span{font-size:12px;color:var(--muted);line-height:1.5;white-space:pre-wrap}
-    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(15,23,42,.35);z-index:30;padding:18px}.modal.show{display:flex}
-    .modal .box{width:min(900px,100%);border:1px solid var(--border);border-radius:22px;background:#fff;box-shadow:0 18px 50px rgba(15,23,42,.25);overflow:hidden}
-    .modal .box .hd,.modal .box .ft{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}.modal .box .ft{border-bottom:none;border-top:1px solid var(--border);justify-content:flex-start;flex-wrap:wrap}.modal .box .bd{padding:14px 16px}
-    .list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;max-height:300px;overflow:auto} .list li{padding:10px 12px;border:1px solid var(--border);background:#f8fafc;border-radius:14px}
-    .split{display:grid;grid-template-columns:1.15fr .85fr;gap:16px}@media (max-width:1100px){.split{grid-template-columns:1fr}}
-    .mini{font-size:11px;color:var(--muted)}
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 0% 0%, rgba(37,99,235,.10), transparent 60%),
+        radial-gradient(900px 500px at 100% 0%, rgba(14,165,233,.08), transparent 55%),
+        linear-gradient(180deg,#f8fbff 0%, #eff4fb 100%);
+    }
+    button,input,select,textarea{font:inherit}
+    .hidden{display:none!important}
+    .app{
+      max-width:1600px;
+      margin:0 auto;
+      padding:20px;
+    }
+    .shell{
+      display:grid;
+      grid-template-columns:320px minmax(0,1fr);
+      gap:18px;
+      align-items:start;
+    }
+    @media (max-width:1180px){
+      .shell{grid-template-columns:1fr}
+    }
+    .sidebar,.panel,.hero,.section-card,.table-card,.modal .box{
+      background:rgba(255,255,255,.92);
+      backdrop-filter:blur(8px);
+      border:1px solid rgba(219,229,240,.95);
+      box-shadow:var(--shadow);
+      border-radius:var(--radius);
+    }
+    .sidebar{
+      position:sticky;
+      top:18px;
+      padding:18px;
+      overflow:hidden;
+    }
+    @media (max-width:1180px){
+      .sidebar{position:static}
+    }
+    .brand{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      padding-bottom:16px;
+      border-bottom:1px solid var(--line);
+      margin-bottom:16px;
+    }
+    .logo{
+      width:48px;height:48px;border-radius:16px;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.75), transparent 35%),
+        linear-gradient(135deg, #60a5fa 0%, #2563eb 55%, #1d4ed8 100%);
+      box-shadow:0 14px 26px rgba(37,99,235,.25);
+      flex:0 0 auto;
+    }
+    .brand b{display:block;font-size:17px}
+    .brand span{display:block;color:var(--muted);font-size:12px;line-height:1.6}
+    .stack{display:flex;flex-direction:column;gap:14px}
+    .section-title{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      margin-bottom:10px;
+    }
+    .section-title h3,.section-title h2{
+      margin:0;
+      font-size:14px;
+      letter-spacing:.2px;
+    }
+    .section-title p{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:12px;
+    }
+    .chip,.badge,.pill,.state{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:8px 12px;
+      border:1px solid var(--border);
+      border-radius:999px;
+      background:#fff;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1;
+      white-space:nowrap;
+    }
+    .chip strong,.pill strong{color:var(--text)}
+    .dot{width:8px;height:8px;border-radius:999px;background:var(--muted-2)}
+    .ok .dot{background:var(--good)}
+    .danger .dot{background:var(--bad)}
+    .info .dot{background:var(--info)}
+    .warn .dot{background:var(--warn)}
+    .btn{
+      border:1px solid var(--border);
+      background:#fff;
+      color:var(--text);
+      min-height:42px;
+      padding:10px 14px;
+      border-radius:14px;
+      cursor:pointer;
+      font-weight:800;
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      transition:.18s ease;
+      box-shadow:var(--shadow-sm);
+    }
+    .btn:hover{transform:translateY(-1px);border-color:#cdd9e8}
+    .btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+    .btn.primary{background:linear-gradient(180deg,#eff6ff,#dbeafe);color:var(--brand-2);border-color:#bfdbfe}
+    .btn.good{background:linear-gradient(180deg,#f0fdf4,#dcfce7);color:#166534;border-color:#bbf7d0}
+    .btn.warn{background:linear-gradient(180deg,#fff7ed,#ffedd5);color:#9a3412;border-color:#fed7aa}
+    .btn.danger{background:linear-gradient(180deg,#fef2f2,#fee2e2);color:#991b1b;border-color:#fecaca}
+    .btn.subtle{background:var(--panel-2)}
+    .login-grid{display:grid;grid-template-columns:1fr;gap:12px}
+    .field{display:flex;flex-direction:column;gap:8px;min-width:150px}
+    .field label{font-size:12px;color:var(--muted);font-weight:700}
+    input,select,textarea{
+      width:100%;
+      border:1px solid var(--border);
+      background:#fff;
+      color:var(--text);
+      outline:none;
+      min-height:44px;
+      padding:11px 13px;
+      border-radius:14px;
+      transition:border-color .16s ease, box-shadow .16s ease;
+    }
+    textarea{min-height:180px;resize:vertical}
+    input:focus,select:focus,textarea:focus{border-color:#93c5fd;box-shadow:0 0 0 4px rgba(59,130,246,.12)}
+    .kpis{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+    }
+    .kpi{
+      background:linear-gradient(180deg,#ffffff 0%, #f8fbff 100%);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:14px;
+      min-height:92px;
+    }
+    .kpi .k-label{font-size:12px;color:var(--muted);margin-bottom:8px}
+    .kpi .k-value{font-size:26px;font-weight:900;line-height:1}
+    .kpi .k-help{margin-top:8px;font-size:11px;color:var(--muted-2)}
+    .main{display:flex;flex-direction:column;gap:18px}
+    .hero{
+      padding:18px;
+      overflow:hidden;
+      position:relative;
+    }
+    .hero:before{
+      content:"";
+      position:absolute;inset:auto auto -50px -20px;
+      width:240px;height:240px;border-radius:50%;
+      background:radial-gradient(circle, rgba(37,99,235,.09), transparent 65%);
+      pointer-events:none;
+    }
+    .hero-top{
+      display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;
+      margin-bottom:16px;
+    }
+    .hero h1{
+      margin:0;
+      font-size:24px;
+      letter-spacing:-.3px;
+    }
+    .hero p{
+      margin:8px 0 0;
+      color:var(--muted);
+      line-height:1.8;
+      max-width:900px;
+      font-size:13px;
+    }
+    .hero-actions,.toolbar,.filters,.row{
+      display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+    }
+    .tabs{
+      display:flex;gap:10px;flex-wrap:wrap;
+    }
+    .tabbtn{
+      border:1px solid var(--border);
+      background:#fff;
+      color:var(--muted);
+      min-height:44px;
+      padding:10px 16px;
+      border-radius:999px;
+      font-weight:900;
+      cursor:pointer;
+      transition:.18s ease;
+    }
+    .tabbtn.active{
+      color:var(--brand-2);
+      border-color:#bfdbfe;
+      background:linear-gradient(180deg,#eff6ff,#dbeafe);
+      box-shadow:0 10px 24px rgba(37,99,235,.14);
+    }
+    .stats-grid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:12px;
+    }
+    @media (max-width:960px){
+      .stats-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media (max-width:620px){
+      .stats-grid{grid-template-columns:1fr}
+    }
+    .stat-card{
+      border:1px solid var(--border);
+      background:linear-gradient(180deg,#fff,#f8fbff);
+      border-radius:18px;
+      padding:14px;
+    }
+    .stat-card .top{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      margin-bottom:8px;
+    }
+    .stat-card .title{font-size:12px;color:var(--muted);font-weight:800}
+    .stat-card .num{font-size:28px;font-weight:900;letter-spacing:-.4px}
+    .stat-card .sub{font-size:11px;color:var(--muted-2)}
+    .section-card,.table-card{
+      overflow:hidden;
+    }
+    .section-card .hd,.table-card .hd{
+      padding:16px 18px;
+      border-bottom:1px solid var(--line);
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      flex-wrap:wrap;
+    }
+    .section-card .bd,.table-card .bd{
+      padding:18px;
+    }
+    .filters{
+      display:grid;
+      grid-template-columns:1.1fr 1.2fr .8fr .9fr;
+      gap:12px;
+      align-items:end;
+    }
+    @media (max-width:1240px){
+      .filters{grid-template-columns:1fr 1fr}
+    }
+    @media (max-width:700px){
+      .filters{grid-template-columns:1fr}
+    }
+    .tablewrap{
+      overflow:auto;
+      border:1px solid var(--border);
+      border-radius:18px;
+      background:#fff;
+    }
+    table{
+      width:100%;
+      min-width:980px;
+      border-collapse:separate;
+      border-spacing:0;
+    }
+    thead th{
+      position:sticky;
+      top:0;
+      z-index:1;
+      background:#f8fbff;
+      color:var(--muted);
+      text-align:right;
+      font-size:12px;
+      font-weight:900;
+      padding:13px 14px;
+      border-bottom:1px solid var(--border);
+      white-space:nowrap;
+    }
+    tbody td{
+      padding:13px 14px;
+      border-bottom:1px solid var(--line);
+      vertical-align:middle;
+      white-space:nowrap;
+      font-size:13px;
+    }
+    tbody tr:hover{background:#fbfdff}
+    .mono{font-family:var(--mono);font-size:12px}
+    .email-cell{display:flex;flex-direction:column;gap:3px}
+    .email-cell strong{font-size:13px}
+    .email-cell span{font-size:11px;color:var(--muted)}
+    .status{
+      display:inline-flex;align-items:center;gap:8px;
+      min-height:34px;
+      padding:7px 11px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:#fff;
+      font-weight:900;
+      font-size:12px;
+    }
+    .s-good{background:#f0fdf4;color:#166534;border-color:#bbf7d0}
+    .s-good .dot{background:var(--good)}
+    .s-bad{background:#fef2f2;color:#991b1b;border-color:#fecaca}
+    .s-bad .dot{background:var(--bad)}
+    .s-warn{background:#fff7ed;color:#9a3412;border-color:#fed7aa}
+    .s-warn .dot{background:var(--warn)}
+    .s-neutral{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
+    .s-neutral .dot{background:var(--brand)}
+    .manager-badge{
+      display:inline-flex;align-items:center;gap:8px;
+      min-height:32px;padding:6px 10px;border-radius:999px;
+      border:1px solid var(--border);background:#fff;color:var(--text);font-size:12px;font-weight:800;
+    }
+    .manager-badge.soft{color:var(--muted)}
+    .manager-badge.selected{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8}
+    .manager-badge.locked{background:#fef2f2;border-color:#fecaca;color:#991b1b}
+    .actions-cell{display:flex;gap:8px;align-items:center;flex-wrap:wrap;white-space:normal}
+    .progress{
+      height:10px;border-radius:999px;background:#edf2f7;overflow:hidden;border:1px solid #e2e8f0;
+    }
+    .progress > span{
+      display:block;height:100%;border-radius:999px;
+      background:linear-gradient(90deg,#60a5fa,#2563eb);
+      width:0%;
+    }
+    .manager-grid{
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:18px;
+    }
+    @media (max-width:1200px){
+      .manager-grid{grid-template-columns:1fr}
+    }
+    .manager-card{
+      border:1px solid var(--border);
+      background:linear-gradient(180deg,#fff,#fbfdff);
+      border-radius:18px;
+      padding:14px;
+    }
+    .manager-list{
+      display:grid;gap:12px;
+    }
+    .manager-summary{
+      display:grid;
+      grid-template-columns:auto 1fr auto;
+      gap:12px;
+      align-items:center;
+    }
+    .manager-avatar{
+      width:44px;height:44px;border-radius:14px;
+      background:linear-gradient(135deg,#dbeafe,#bfdbfe);
+      color:#1d4ed8;
+      display:flex;align-items:center;justify-content:center;
+      font-weight:900;
+    }
+    .manager-meta b{display:block;font-size:14px}
+    .manager-meta span{display:block;font-size:12px;color:var(--muted)}
+    .queue-panel{
+      display:flex;flex-direction:column;gap:14px;
+    }
+    .queue-head{
+      display:grid;
+      grid-template-columns:1fr auto auto;
+      gap:10px;
+      align-items:end;
+    }
+    @media (max-width:700px){
+      .queue-head{grid-template-columns:1fr}
+    }
+    .empty{
+      text-align:center;
+      padding:30px 18px;
+      color:var(--muted);
+    }
+    .empty b{display:block;color:var(--text);margin-bottom:6px}
+    .hint{
+      padding:12px 14px;
+      border-radius:16px;
+      border:1px dashed #c8d8ea;
+      background:#f8fbff;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.8;
+    }
+    .toast{
+      position:fixed;
+      inset:auto 18px 18px auto;
+      z-index:90;
+      width:min(460px, calc(100vw - 24px));
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      padding:14px 16px;
+      display:none;
+    }
+    .toast.show{display:block}
+    .toast b{display:block;font-size:14px;margin-bottom:4px}
+    .toast span{display:block;font-size:12px;color:var(--muted);line-height:1.7;white-space:pre-wrap}
+    .modal{
+      position:fixed;inset:0;z-index:100;
+      display:none;align-items:center;justify-content:center;
+      background:rgba(15,23,42,.35);
+      padding:18px;
+    }
+    .modal.show{display:flex}
+    .modal .box{
+      width:min(920px,100%);
+      overflow:hidden;
+    }
+    .modal .hd,.modal .ft{
+      padding:16px 18px;
+      border-bottom:1px solid var(--line);
+      display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+    }
+    .modal .ft{border-bottom:none;border-top:1px solid var(--line);justify-content:flex-start}
+    .modal .bd{padding:18px}
+    .list{
+      margin:0;padding:0;list-style:none;
+      display:flex;flex-direction:column;gap:8px;
+      max-height:320px;overflow:auto;
+    }
+    .list li{
+      padding:10px 12px;border:1px solid var(--border);background:#f8fbff;border-radius:14px;
+      font-size:12px;
+    }
+    .two-col{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
+    @media (max-width:900px){
+      .two-col{grid-template-columns:1fr}
+    }
+    .mini{font-size:12px;color:var(--muted);line-height:1.8}
+    .count-chip{
+      min-width:110px;
+      justify-content:center;
+      font-weight:900;
+    }
+    .status-legend{
+      display:flex;gap:8px;flex-wrap:wrap;
+    }
   </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="topbar">
-    <div class="brand">
-      <div class="logo"></div>
-      <div class="title">
-        <b>Owner Panel — Manual Managers</b>
-        <span>نظام يدوي: المدير يختار الحسابات بنفسه ولا يتم التعويض تلقائياً</span>
-      </div>
-    </div>
-    <div class="actions">
-      <span class="chip">API: <span class="mono" id="apiHost">…</span></span>
-      <span class="chip">Auth: <span id="authState">Guest</span></span>
-      <button class="btn" id="btnPing">Ping</button>
-      <button class="btn danger" id="btnLogout" disabled>Logout</button>
-    </div>
-  </div>
-
-  <div class="tabs">
-    <button class="tabbtn active" data-tab="accountsTab">الحسابات</button>
-    <button class="tabbtn" data-tab="managersTab">المديرين</button>
-  </div>
-
-  <div class="grid">
-    <div class="card">
-      <div class="hd"><h3>تسجيل الدخول</h3><span class="pill"><span class="dot"></span><span id="pillText">غير متصل</span></span></div>
-      <div class="bd">
-        <div class="row">
-          <div class="field"><label>Owner User</label><input id="inUser" placeholder="admin" /></div>
-          <div class="field"><label>Owner Pass</label><input id="inPass" type="password" placeholder="••••••••" /></div>
-        </div>
-        <div style="margin-top:12px" class="row"><button class="btn primary" id="btnLogin">Login</button><span class="muted">يتم حفظ بيانات الدخول محلياً في هذا المتصفح فقط.</span></div>
-        <div style="height:1px;background:#eef2f7;margin:14px 0"></div>
-        <div class="kpis">
-          <div class="kpi"><b id="kpiAgencies">—</b><span>عدد الوكالات</span></div>
-          <div class="kpi"><b id="kpiAccounts">—</b><span>حسابات الوكالة المحددة</span></div>
-          <div class="kpi"><b id="kpiManagers">—</b><span>عدد المديرين</span></div>
-          <div class="kpi"><b id="kpiAssigned">—</b><span>الحسابات المختارة للمديرين</span></div>
+<div class="app">
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <b>Owner Panel</b>
+          <span>واجهة متقدمة لإدارة الوكالات والحسابات والمديرين بطريقة يدوية احترافية.</span>
         </div>
       </div>
-    </div>
 
-    <div>
-      <div id="accountsTab" class="tabpane">
-        <div class="card">
-          <div class="hd">
-            <h3>إدارة الحسابات</h3>
+      <div class="stack">
+        <section>
+          <div class="section-title">
+            <div>
+              <h3>الاتصال</h3>
+              <p>تسجيل الدخول يتم عبر Secrets الخاصة بالـ Worker.</p>
+            </div>
+            <span class="chip"><span class="dot info"></span> <strong id="authState">Guest</strong></span>
+          </div>
+
+          <div class="login-grid">
+            <div class="field">
+              <label>Owner User</label>
+              <input id="inUser" placeholder="admin" />
+            </div>
+            <div class="field">
+              <label>Owner Pass</label>
+              <input id="inPass" type="password" placeholder="••••••••" />
+            </div>
             <div class="row">
-              <button class="btn" id="btnRefresh" disabled>Refresh</button>
-              <button class="btn" id="btnSendAgencyAll" disabled>Send Agency → Telegram</button>
-              <button class="btn primary" id="btnBulk" disabled>+ Bulk Paste</button>
-              <button class="btn" id="btnAddOne" disabled>+ Add One</button>
+              <button class="btn primary" id="btnLogin">Login</button>
+              <button class="btn danger" id="btnLogout" disabled>Logout</button>
+              <button class="btn subtle" id="btnPing">Ping</button>
+            </div>
+            <div class="hint">
+              <strong>API</strong><br>
+              <span class="mono" id="apiHost">…</span><br><br>
+              يتم حفظ بيانات الدخول محلياً داخل هذا المتصفح فقط.
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <div class="section-title">
+            <div>
+              <h3>ملخص سريع</h3>
+              <p>نظرة عامة على النظام الحالي.</p>
+            </div>
+            <span class="pill ok"><span class="dot"></span><strong id="pillText">غير متصل</strong></span>
+          </div>
+          <div class="kpis">
+            <div class="kpi">
+              <div class="k-label">عدد الوكالات</div>
+              <div class="k-value" id="kpiAgencies">—</div>
+              <div class="k-help">إجمالي الوكالات المخزنة</div>
+            </div>
+            <div class="kpi">
+              <div class="k-label">حسابات الوكالة</div>
+              <div class="k-value" id="kpiAccounts">—</div>
+              <div class="k-help">بعد تطبيق البحث والفلاتر</div>
+            </div>
+            <div class="kpi">
+              <div class="k-label">عدد المديرين</div>
+              <div class="k-value" id="kpiManagers">—</div>
+              <div class="k-help">المديرون النشطون</div>
+            </div>
+            <div class="kpi">
+              <div class="k-label">الحسابات المختارة</div>
+              <div class="k-value" id="kpiAssigned">—</div>
+              <div class="k-help">إجمالي الحسابات لدى المديرين</div>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <div class="section-title">
+            <div>
+              <h3>حالة الفلاتر</h3>
+              <p>معلومات العرض الحالية.</p>
+            </div>
+          </div>
+          <div class="stack">
+            <span class="chip"><strong>Agency:</strong> <span id="sideAgency">—</span></span>
+            <span class="chip"><strong>Manager:</strong> <span id="sideManager">—</span></span>
+            <span class="chip"><strong>Search:</strong> <span id="sideSearch">—</span></span>
+            <span class="chip"><strong>Status Filter:</strong> <span id="sideStatus">All</span></span>
+          </div>
+        </section>
+      </div>
+    </aside>
+
+    <main class="main">
+      <section class="hero">
+        <div class="hero-top">
+          <div>
+            <h1>لوحة تحكم متقدمة للوكالات والمديرين</h1>
+            <p>
+              هذه النسخة تحافظ على نفس منطق النظام اليدوي: المدير هو من يختار الحسابات ويتحكم بها،
+              وعند وضع الحساب على <strong>Done</strong> أو <strong>Rejected</strong> يتم حذفه مباشرة من قائمة المدير.
+              تم الإبقاء فقط على إرسال الوكالة إلى تلغرام وعلى إشعارات الزيارات في الـ Worker.
+            </p>
+          </div>
+          <div class="hero-actions">
+            <span class="chip count-chip"><strong id="heroAgencyCount">0</strong> Agencies</span>
+            <span class="chip count-chip"><strong id="heroManagerCount">0</strong> Managers</span>
+            <span class="chip count-chip"><strong id="heroSelectedCount">0</strong> Selected</span>
+          </div>
+        </div>
+
+        <div class="tabs">
+          <button class="tabbtn active" data-tab="accountsTab">الحسابات</button>
+          <button class="tabbtn" data-tab="managersTab">المديرين</button>
+        </div>
+      </section>
+
+      <section class="stats-grid">
+        <div class="stat-card">
+          <div class="top"><span class="title">Done</span><span class="status s-good"><span class="dot"></span>Completed</span></div>
+          <div class="num" id="statDone">0</div>
+          <div class="sub">الحسابات المنتهية في الوكالة الحالية</div>
+        </div>
+        <div class="stat-card">
+          <div class="top"><span class="title">In Progress</span><span class="status s-neutral"><span class="dot"></span>Active</span></div>
+          <div class="num" id="statInProgress">0</div>
+          <div class="sub">الحسابات الجاري العمل عليها</div>
+        </div>
+        <div class="stat-card">
+          <div class="top"><span class="title">Rejected</span><span class="status s-bad"><span class="dot"></span>Rejected</span></div>
+          <div class="num" id="statRejected">0</div>
+          <div class="sub">الحسابات المرفوضة حالياً</div>
+        </div>
+        <div class="stat-card">
+          <div class="top"><span class="title">Pending</span><span class="status s-warn"><span class="dot"></span>Pending</span></div>
+          <div class="num" id="statPending">0</div>
+          <div class="sub">الحسابات الجاهزة للاختيار أو المتابعة</div>
+        </div>
+      </section>
+
+      <section id="accountsTab" class="tabpane">
+        <div class="table-card">
+          <div class="hd">
+            <div>
+              <div class="section-title" style="margin:0">
+                <div>
+                  <h2>إدارة الحسابات</h2>
+                  <p>عرض، تعديل، إضافة، إرسال الوكالة إلى تلغرام، واختيار الحسابات للمديرين يدوياً.</p>
+                </div>
+              </div>
+            </div>
+            <div class="toolbar">
+              <button class="btn subtle" id="btnRefresh" disabled>Refresh</button>
+              <button class="btn primary" id="btnSendAgencyAll" disabled>Send Agency → Telegram</button>
+              <button class="btn" id="btnBulk" disabled>+ Bulk Paste</button>
+              <button class="btn good" id="btnAddOne" disabled>+ Add One</button>
             </div>
           </div>
           <div class="bd">
-            <div class="row">
-              <div class="field" style="min-width:220px"><label>الوكالة</label><select id="selAgency" disabled></select></div>
-              <div class="field"><label>بحث</label><input id="inSearch" placeholder="email / passport / status..." disabled /></div>
-              <div class="field" style="max-width:220px"><label>الحالة</label>
+            <div class="filters">
+              <div class="field">
+                <label>الوكالة</label>
+                <select id="selAgency" disabled></select>
+              </div>
+              <div class="field">
+                <label>بحث</label>
+                <input id="inSearch" placeholder="email / passport / status / manager..." disabled />
+              </div>
+              <div class="field">
+                <label>فلتر الحالة</label>
                 <select id="selStatusFilter" disabled>
                   <option value="">(الكل)</option>
                   <option value="Done">Done</option>
@@ -119,356 +638,932 @@
                   <option value="Pending">Pending</option>
                 </select>
               </div>
-              <div class="field" style="min-width:240px"><label>المدير المختار للتحديد اليدوي</label><select id="selManagerAssign" disabled></select></div>
+              <div class="field">
+                <label>المدير المختار للتحديد اليدوي</label>
+                <select id="selManagerAssign" disabled></select>
+              </div>
             </div>
-            <div style="margin-top:12px" class="tablewrap">
+
+            <div class="row" style="justify-content:space-between;margin:14px 0 16px">
+              <div class="status-legend">
+                <span class="status s-good"><span class="dot"></span>Done</span>
+                <span class="status s-neutral"><span class="dot"></span>In Progress</span>
+                <span class="status s-bad"><span class="dot"></span>Rejected</span>
+                <span class="status s-warn"><span class="dot"></span>Pending</span>
+              </div>
+              <span class="chip"><strong>ترتيب العرض:</strong> Done → In Progress → Rejected → Pending</span>
+            </div>
+
+            <div class="tablewrap">
               <table>
-                <thead><tr><th>#</th><th>Agency</th><th>Email</th><th>Password</th><th>Passport</th><th>Status</th><th>Manager</th><th>Actions</th></tr></thead>
-                <tbody id="tbody"><tr><td colspan="8" class="muted" style="padding:16px">—</td></tr></tbody>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Agency</th>
+                    <th>Account</th>
+                    <th>Password</th>
+                    <th>Passport</th>
+                    <th>Status</th>
+                    <th>Manager</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody">
+                  <tr><td colspan="8"><div class="empty"><b>لا توجد بيانات</b><span>اختر وكالة بعد تسجيل الدخول.</span></div></td></tr>
+                </tbody>
               </table>
             </div>
-            <div class="mini" style="margin-top:10px">الترتيب ثابت: Done ثم In Progress ثم Rejected ثم Pending. لا يمكن اختيار Done أو Rejected للمديرين.</div>
-          </div>
-        </div>
-      </div>
 
-      <div id="managersTab" class="tabpane hidden">
-        <div class="split">
-          <div class="card">
-            <div class="hd"><h3>المديرين</h3><div class="row"><button class="btn" id="btnOpenManager" disabled>+ مدير جديد</button></div></div>
-            <div class="bd">
-              <div class="tablewrap">
-                <table>
-                  <thead><tr><th>#</th><th>ID</th><th>الاسم</th><th>الحد الأقصى</th><th>المختار الآن</th><th>Actions</th></tr></thead>
-                  <tbody id="managersTbody"><tr><td colspan="6" class="muted" style="padding:16px">—</td></tr></tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="hd"><h3>قائمة المدير</h3><div class="row"><select id="selManagerView" disabled></select></div></div>
-            <div class="bd">
-              <div class="tablewrap">
-                <table>
-                  <thead><tr><th>#</th><th>Agency</th><th>Email</th><th>Passport</th><th>Status</th><th>Update</th></tr></thead>
-                  <tbody id="managerQueueTbody"><tr><td colspan="6" class="muted" style="padding:16px">—</td></tr></tbody>
-                </table>
-              </div>
-              <div class="mini" style="margin-top:10px">عند وضع Done أو Rejected ينحذف الحساب مباشرة من قائمة المدير بدون تعويض تلقائي.</div>
+            <div class="hint" style="margin-top:14px">
+              لا يمكن اختيار الحسابات التي حالتها <strong>Done</strong> أو <strong>Rejected</strong> للمديرين.
+              إذا كان الحساب محجوزاً لمدير آخر فسيظهر على أنه محجوز.
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </section>
+
+      <section id="managersTab" class="tabpane hidden">
+        <div class="manager-grid">
+          <div class="section-card">
+            <div class="hd">
+              <div class="section-title" style="margin:0">
+                <div>
+                  <h2>المديرون</h2>
+                  <p>إدارة تعريفات المديرين والسعة القصوى لكل مدير.</p>
+                </div>
+              </div>
+              <button class="btn primary" id="btnOpenManager" disabled>+ مدير جديد</button>
+            </div>
+            <div class="bd">
+              <div id="managersCards" class="manager-list"></div>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div class="hd">
+              <div class="section-title" style="margin:0">
+                <div>
+                  <h2>قائمة المدير</h2>
+                  <p>تحديث الحالة من هنا يحذف الحساب تلقائياً عند Done أو Rejected.</p>
+                </div>
+              </div>
+            </div>
+            <div class="bd queue-panel">
+              <div class="queue-head">
+                <div class="field">
+                  <label>اختر المدير</label>
+                  <select id="selManagerView" disabled></select>
+                </div>
+                <span class="chip count-chip"><strong id="queueSelectedCount">0</strong> Selected</span>
+                <span class="chip count-chip"><strong id="queueLimitCount">0</strong> Limit</span>
+              </div>
+
+              <div class="tablewrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Agency</th>
+                      <th>Account</th>
+                      <th>Passport</th>
+                      <th>Status</th>
+                      <th>Update</th>
+                    </tr>
+                  </thead>
+                  <tbody id="managerQueueTbody">
+                    <tr><td colspan="6"><div class="empty"><b>اختر مديراً</b><span>سيتم عرض الحسابات المختارة له هنا.</span></div></td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="hint">
+                عند وضع الحساب على <strong>Done</strong> أو <strong>Rejected</strong> يتم تحديث حالته في الوكالة،
+                ثم يُحذف مباشرة من قائمة المدير المختارة دون تعويض تلقائي.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
   </div>
 </div>
 
 <div class="toast" id="toast"><b id="toastTitle">—</b><span id="toastMsg">—</span></div>
 
-<div class="modal" id="modalOne"><div class="box"><div class="hd"><div><b id="oneTitle">Account</b><div class="muted" id="oneSub">—</div></div><button class="btn" onclick="UI.closeOne()">✕</button></div><div class="bd">
-  <div class="row"><div class="field"><label>Email</label><input id="oneEmail" placeholder="name@example.com" /></div><div class="field"><label>Password</label><input id="onePass" placeholder="password" /></div></div>
-  <div style="margin-top:10px" class="row"><div class="field"><label>Passport</label><input id="onePassport" placeholder="AA123456" /></div><div class="field"><label>Status</label><select id="oneStatus"><option>Done</option><option>In Progress</option><option>Rejected</option><option selected>Pending</option></select></div></div>
-</div><div class="ft"><button class="btn" onclick="UI.closeOne()">Cancel</button><button class="btn primary" id="btnSaveOne">Save</button></div></div></div>
+<div class="modal" id="modalOne">
+  <div class="box">
+    <div class="hd">
+      <div>
+        <b id="oneTitle">Account</b>
+        <div class="mini" id="oneSub">—</div>
+      </div>
+      <button class="btn" onclick="UI.closeOne()">✕</button>
+    </div>
+    <div class="bd">
+      <div class="row">
+        <div class="field"><label>Email</label><input id="oneEmail" placeholder="name@example.com" /></div>
+        <div class="field"><label>Password</label><input id="onePass" placeholder="password" /></div>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <div class="field"><label>Passport</label><input id="onePassport" placeholder="AA123456" /></div>
+        <div class="field">
+          <label>Status</label>
+          <select id="oneStatus">
+            <option>Done</option>
+            <option>In Progress</option>
+            <option>Rejected</option>
+            <option selected>Pending</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="ft">
+      <button class="btn" onclick="UI.closeOne()">Cancel</button>
+      <button class="btn primary" id="btnSaveOne">Save</button>
+    </div>
+  </div>
+</div>
 
-<div class="modal" id="modalBulk"><div class="box"><div class="hd"><div><b>Bulk Paste</b><div class="muted">ألصق JSON Array ثم Preview ثم Add</div></div><button class="btn" onclick="UI.closeBulk()">✕</button></div><div class="bd"><div class="row" style="align-items:flex-start"><div class="field" style="flex:1.25"><label>JSON</label><textarea id="bulkText" class="mono" placeholder='[{"email":"a@x.com","password":"123","passport":"AA1","status":"Pending"}]'></textarea></div><div class="field" style="flex:.75;min-width:260px"><label>Preview</label><div class="mono" id="bulkStats">—</div><div style="height:1px;background:#eef2f7;margin:14px 0"></div><ul class="list" id="bulkList"></ul></div></div></div><div class="ft"><button class="btn" onclick="UI.closeBulk()">Cancel</button><button class="btn" id="btnParse">Preview</button><button class="btn primary" id="btnBulkAdd" disabled>Add accounts</button></div></div></div>
+<div class="modal" id="modalBulk">
+  <div class="box">
+    <div class="hd">
+      <div>
+        <b>Bulk Paste</b>
+        <div class="mini">ألصق JSON Array ثم Preview ثم Add</div>
+      </div>
+      <button class="btn" onclick="UI.closeBulk()">✕</button>
+    </div>
+    <div class="bd">
+      <div class="two-col">
+        <div class="field">
+          <label>JSON</label>
+          <textarea id="bulkText" class="mono" placeholder='[{"email":"a@x.com","password":"123","passport":"AA1","status":"Pending"}]'></textarea>
+        </div>
+        <div class="field">
+          <label>Preview</label>
+          <div class="hint mono" id="bulkStats">—</div>
+          <ul class="list" id="bulkList"></ul>
+        </div>
+      </div>
+    </div>
+    <div class="ft">
+      <button class="btn" onclick="UI.closeBulk()">Cancel</button>
+      <button class="btn" id="btnParse">Preview</button>
+      <button class="btn primary" id="btnBulkAdd" disabled>Add accounts</button>
+    </div>
+  </div>
+</div>
 
-<div class="modal" id="modalManager"><div class="box"><div class="hd"><div><b id="managerTitle">مدير جديد</b><div class="muted">هذا الحد الأقصى فقط، والاختيار يتم يدوياً.</div></div><button class="btn" onclick="UI.closeManager()">✕</button></div><div class="bd">
-  <div class="row"><div class="field"><label>ID</label><input id="mgrId" placeholder="manager-1" /></div><div class="field"><label>الاسم</label><input id="mgrName" placeholder="مدير أول" /></div></div>
-  <div style="margin-top:10px" class="row"><div class="field"><label>الحد الأقصى للحسابات</label><input id="mgrDesired" type="number" min="1" max="200" value="8" /></div></div>
-</div><div class="ft"><button class="btn" onclick="UI.closeManager()">Cancel</button><button class="btn primary" id="btnSaveManager">Save</button></div></div></div>
+<div class="modal" id="modalManager">
+  <div class="box">
+    <div class="hd">
+      <div>
+        <b id="managerTitle">مدير جديد</b>
+        <div class="mini">هذا الحد الأقصى فقط، والاختيار يتم يدوياً من صفحة الحسابات.</div>
+      </div>
+      <button class="btn" onclick="UI.closeManager()">✕</button>
+    </div>
+    <div class="bd">
+      <div class="row">
+        <div class="field"><label>ID</label><input id="mgrId" placeholder="manager-1" /></div>
+        <div class="field"><label>الاسم</label><input id="mgrName" placeholder="مدير أول" /></div>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <div class="field"><label>الحد الأقصى للحسابات</label><input id="mgrDesired" type="number" min="1" max="200" value="8" /></div>
+      </div>
+    </div>
+    <div class="ft">
+      <button class="btn" onclick="UI.closeManager()">Cancel</button>
+      <button class="btn primary" id="btnSaveManager">Save</button>
+    </div>
+  </div>
+</div>
 
 <script>
 (() => {
   const API_BASE = (document.body?.dataset?.apiBase || "https://api.mehdik.site").replace(/\/$/, "");
   const OWNER_BASE = API_BASE + "/owner";
   document.getElementById("apiHost").textContent = API_BASE;
-  const STORAGE_KEY = "owner-panel-manual-managers:v1";
+
+  const STORAGE_KEY = "owner-panel-advanced-manual-managers:v1";
   const VALID_STATUSES = ["Done","In Progress","Rejected","Pending"];
   const STATUS_PRIORITY = {"Done":0,"In Progress":1,"Rejected":2,"Pending":3};
-  const S = { ownerUser:"", ownerPass:"", agencies:[], agencySelected:"", accounts:[], managers:[], managerSelected:"", managerAssignSelected:"", bulkParsed:[] };
+
+  const S = {
+    ownerUser:"",
+    ownerPass:"",
+    agencies:[],
+    agencySelected:"",
+    accounts:[],
+    managers:[],
+    managerSelected:"",
+    managerAssignSelected:"",
+    bulkParsed:[]
+  };
 
   const $ = (id) => document.getElementById(id);
   const norm = (s) => String(s || "").trim();
   const normEmail = (s) => norm(s).toLowerCase();
   const normPassport = (s) => norm(s).toUpperCase();
   const statusValue = (s) => VALID_STATUSES.includes(norm(s)) ? norm(s) : "Pending";
-  const escapeHtml = (x) => String(x ?? "").replace(/[&<>"']/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normEmail(email));
   const isValidPassport = (passport) => /^[A-Z0-9][A-Z0-9\-]{2,19}$/.test(normPassport(passport));
+  const escapeHtml = (x) => String(x ?? "").replace(/[&<>"']/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   const statusClass = (st) => st === "Done" ? "s-good" : st === "Rejected" ? "s-bad" : st === "In Progress" ? "s-neutral" : "s-warn";
-  const maskPassword = (p) => { const s=String(p||""); if(!s) return ""; if(s.length<=2) return "•".repeat(s.length); return "•".repeat(Math.min(10, Math.max(1,s.length-2))) + s.slice(-2); };
+  const maskPassword = (p) => {
+    const s = String(p || "");
+    if (!s) return "";
+    if (s.length <= 2) return "•".repeat(s.length);
+    return "•".repeat(Math.min(10, Math.max(1, s.length - 2))) + s.slice(-2);
+  };
   const ownerHeaders = () => ({ "X-Owner-User": S.ownerUser || "", "X-Owner-Pass": S.ownerPass || "" });
 
-  function toast(title, msg){ const t=$("toast"); $("toastTitle").textContent=title; $("toastMsg").textContent=msg; t.classList.add("show"); clearTimeout(toast._tm); toast._tm=setTimeout(()=>t.classList.remove("show"), 3500); }
-  function persistSession(){ sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ ownerUser:S.ownerUser, ownerPass:S.ownerPass, agencySelected:S.agencySelected, managerSelected:S.managerSelected, managerAssignSelected:S.managerAssignSelected })); }
-  function restoreSession(){ try { const raw=sessionStorage.getItem(STORAGE_KEY); if(!raw) return; const d=JSON.parse(raw); S.ownerUser=norm(d.ownerUser); S.ownerPass=norm(d.ownerPass); S.agencySelected=norm(d.agencySelected); S.managerSelected=norm(d.managerSelected); S.managerAssignSelected=norm(d.managerAssignSelected); $("inUser").value=S.ownerUser; $("inPass").value=S.ownerPass; } catch(_){} }
-  function setAuthState(authed){ $("authState").textContent = authed ? "Owner" : "Guest"; $("btnLogout").disabled=!authed; ["btnRefresh","btnBulk","btnAddOne","selAgency","inSearch","selStatusFilter","btnSendAgencyAll","btnOpenManager","selManagerView","selManagerAssign"].forEach(id=>$(id).disabled=!authed); $("pillText").textContent = authed ? "متصل" : "غير متصل"; }
+  function toast(title, msg){
+    $("toastTitle").textContent = title;
+    $("toastMsg").textContent = msg;
+    $("toast").classList.add("show");
+    clearTimeout(toast._tm);
+    toast._tm = setTimeout(() => $("toast").classList.remove("show"), 3600);
+  }
+
+  function persistSession(){
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
+      ownerUser:S.ownerUser,
+      ownerPass:S.ownerPass,
+      agencySelected:S.agencySelected,
+      managerSelected:S.managerSelected,
+      managerAssignSelected:S.managerAssignSelected
+    }));
+  }
+
+  function restoreSession(){
+    try{
+      const raw = sessionStorage.getItem(STORAGE_KEY);
+      if(!raw) return;
+      const d = JSON.parse(raw);
+      S.ownerUser = norm(d.ownerUser);
+      S.ownerPass = norm(d.ownerPass);
+      S.agencySelected = norm(d.agencySelected);
+      S.managerSelected = norm(d.managerSelected);
+      S.managerAssignSelected = norm(d.managerAssignSelected);
+      $("inUser").value = S.ownerUser;
+      $("inPass").value = S.ownerPass;
+    }catch(_){}
+  }
+
+  function setAuthState(authed){
+    $("authState").textContent = authed ? "Owner" : "Guest";
+    $("btnLogout").disabled = !authed;
+    [
+      "btnRefresh","btnBulk","btnAddOne","selAgency","inSearch","selStatusFilter",
+      "btnSendAgencyAll","btnOpenManager","selManagerView","selManagerAssign"
+    ].forEach(id => $(id).disabled = !authed);
+    $("pillText").textContent = authed ? "متصل" : "غير متصل";
+  }
 
   async function apiFetch(url, options={}){
-    const controller = new AbortController(); const timer = setTimeout(()=>controller.abort(), 15000);
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 15000);
     try{
-      const response = await fetch(url, { ...options, signal:controller.signal });
-      const data = await response.json().catch(()=>({ ok:false, error:"Invalid server response" }));
+      const response = await fetch(url, { ...options, signal: controller.signal });
+      const data = await response.json().catch(() => ({ ok:false, error:"Invalid server response" }));
       if(!response.ok && data && typeof data.ok === "undefined") data.ok = false;
       return data;
-    }catch(err){ return { ok:false, error: err?.name === "AbortError" ? "Request timeout" : (err?.message || "Request failed") }; }
-    finally{ clearTimeout(timer); }
+    }catch(err){
+      return { ok:false, error: err?.name === "AbortError" ? "Request timeout" : (err?.message || "Request failed") };
+    }finally{
+      clearTimeout(timer);
+    }
   }
 
   const API = {
-    ping:()=>apiFetch(OWNER_BASE+"/ping",{headers:ownerHeaders()}),
-    login:(user,pass)=>apiFetch(OWNER_BASE+"/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user,pass})}),
-    agencies:()=>apiFetch(OWNER_BASE+"/agencies",{headers:ownerHeaders()}),
-    accounts:(agency)=>apiFetch(OWNER_BASE+"/accounts?agency="+encodeURIComponent(agency),{headers:ownerHeaders()}),
-    addAccount:(payload)=>apiFetch(OWNER_BASE+"/account",{method:"POST",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
-    editAccount:(payload)=>apiFetch(OWNER_BASE+"/account",{method:"PUT",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
-    delAccount:(payload)=>apiFetch(OWNER_BASE+"/account",{method:"DELETE",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
-    sendAgencyAll:(agency)=>apiFetch(OWNER_BASE+"/agency/send-all",{method:"POST",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify({agency})}),
-    managers:()=>apiFetch(OWNER_BASE+"/managers",{headers:ownerHeaders()}),
-    createManager:(payload)=>apiFetch(OWNER_BASE+"/manager",{method:"POST",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
-    editManager:(payload)=>apiFetch(OWNER_BASE+"/manager",{method:"PUT",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
-    deleteManager:(payload)=>apiFetch(OWNER_BASE+"/manager",{method:"DELETE",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
-    managerSelect:(payload)=>apiFetch(OWNER_BASE+"/manager/select",{method:"POST",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
-    managerUnselect:(payload)=>apiFetch(OWNER_BASE+"/manager/unselect",{method:"POST",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
-    managerStatus:(payload)=>apiFetch(OWNER_BASE+"/manager/status",{method:"POST",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)})
+    ping:()=>apiFetch(OWNER_BASE + "/ping",{headers:ownerHeaders()}),
+    login:(user,pass)=>apiFetch(OWNER_BASE + "/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user,pass})}),
+    agencies:()=>apiFetch(OWNER_BASE + "/agencies",{headers:ownerHeaders()}),
+    accounts:(agency)=>apiFetch(OWNER_BASE + "/accounts?agency=" + encodeURIComponent(agency),{headers:ownerHeaders()}),
+    addAccount:(payload)=>apiFetch(OWNER_BASE + "/account",{method:"POST",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
+    editAccount:(payload)=>apiFetch(OWNER_BASE + "/account",{method:"PUT",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
+    delAccount:(payload)=>apiFetch(OWNER_BASE + "/account",{method:"DELETE",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
+    sendAgencyAll:(agency)=>apiFetch(OWNER_BASE + "/agency/send-all",{method:"POST",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify({agency})}),
+    managers:()=>apiFetch(OWNER_BASE + "/managers",{headers:ownerHeaders()}),
+    createManager:(payload)=>apiFetch(OWNER_BASE + "/manager",{method:"POST",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
+    editManager:(payload)=>apiFetch(OWNER_BASE + "/manager",{method:"PUT",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
+    deleteManager:(payload)=>apiFetch(OWNER_BASE + "/manager",{method:"DELETE",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
+    managerSelect:(payload)=>apiFetch(OWNER_BASE + "/manager/select",{method:"POST",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
+    managerUnselect:(payload)=>apiFetch(OWNER_BASE + "/manager/unselect",{method:"POST",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
+    managerStatus:(payload)=>apiFetch(OWNER_BASE + "/manager/status",{method:"POST",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)})
   };
-
-  function applyFilters(list){
-    const q = norm($("inSearch").value).toLowerCase();
-    const sf = norm($("selStatusFilter").value);
-    return (Array.isArray(list)?list:[]).filter(a => {
-      const okQ = !q || [a.agency,a.email,a.passport,a.status].join(" ").toLowerCase().includes(q);
-      const okS = !sf || statusValue(a.status) === sf;
-      return okQ && okS;
-    }).sort((a,b)=> (STATUS_PRIORITY[statusValue(a.status)]-STATUS_PRIORITY[statusValue(b.status)]) || String(a.email).localeCompare(String(b.email)));
-  }
 
   function managerByAccount(agency,email,passport){
     for(const m of S.managers){
-      if((m.queue||[]).some(a => norm(a.agency).toLowerCase()===norm(agency).toLowerCase() && normEmail(a.email)===normEmail(email) && normPassport(a.passport)===normPassport(passport))) return m;
+      if((m.queue || []).some(a =>
+        norm(a.agency).toLowerCase() === norm(agency).toLowerCase() &&
+        normEmail(a.email) === normEmail(email) &&
+        normPassport(a.passport) === normPassport(passport)
+      )) return m;
     }
     return null;
   }
 
+  function applyFilters(list){
+    const q = norm($("inSearch").value).toLowerCase();
+    const sf = norm($("selStatusFilter").value);
+    return (Array.isArray(list) ? list : []).filter(a => {
+      const assigned = managerByAccount(a.agency || S.agencySelected, a.email, a.passport);
+      const hay = [
+        a.agency, a.email, a.passport, a.status,
+        assigned?.name || "", assigned?.id || ""
+      ].join(" ").toLowerCase();
+      const okQ = !q || hay.includes(q);
+      const okS = !sf || statusValue(a.status) === sf;
+      return okQ && okS;
+    }).sort((a,b) =>
+      (STATUS_PRIORITY[statusValue(a.status)] - STATUS_PRIORITY[statusValue(b.status)]) ||
+      String(a.email || "").localeCompare(String(b.email || ""))
+    );
+  }
+
+  function updateSidebar(){
+    $("sideAgency").textContent = S.agencySelected || "—";
+    const manager = S.managers.find(m => m.id === S.managerAssignSelected) || S.managers.find(m => m.id === S.managerSelected);
+    $("sideManager").textContent = manager ? `${manager.name} (${manager.id})` : "—";
+    $("sideSearch").textContent = norm($("inSearch").value) || "—";
+    $("sideStatus").textContent = norm($("selStatusFilter").value) || "All";
+    $("heroAgencyCount").textContent = String(S.agencies.length || 0);
+    $("heroManagerCount").textContent = String(S.managers.length || 0);
+    $("heroSelectedCount").textContent = String(S.managers.reduce((n,m)=>n + (m.assignedCount || 0), 0));
+  }
+
+  function updateAccountStats(){
+    const filtered = applyFilters(S.accounts);
+    $("kpiAccounts").textContent = String(filtered.length || 0);
+    const counts = {Done:0, "In Progress":0, Rejected:0, Pending:0};
+    for(const a of filtered){ counts[statusValue(a.status)]++; }
+    $("statDone").textContent = counts["Done"];
+    $("statInProgress").textContent = counts["In Progress"];
+    $("statRejected").textContent = counts["Rejected"];
+    $("statPending").textContent = counts["Pending"];
+  }
+
   function renderAgencies(){
-    $("kpiAgencies").textContent = String(S.agencies.length||0);
-    const sel = $("selAgency"); sel.innerHTML = '<option value="">(اختر وكالة)</option>';
-    for(const a of S.agencies){ const o=document.createElement('option'); o.value=a.agency; o.textContent=`${a.agency} (${a.count||0})`; sel.appendChild(o); }
+    $("kpiAgencies").textContent = String(S.agencies.length || 0);
+    const sel = $("selAgency");
+    sel.innerHTML = '<option value="">(اختر وكالة)</option>';
+    for(const a of S.agencies){
+      const o = document.createElement("option");
+      o.value = a.agency;
+      o.textContent = `${a.agency} (${a.count || 0})`;
+      sel.appendChild(o);
+    }
     if(S.agencySelected) sel.value = S.agencySelected;
+    updateSidebar();
   }
 
   function renderManagersSelectors(){
-    $("kpiManagers").textContent = String(S.managers.length||0);
-    $("kpiAssigned").textContent = String(S.managers.reduce((n,m)=>n+(m.assignedCount||0),0));
+    $("kpiManagers").textContent = String(S.managers.length || 0);
+    const assigned = S.managers.reduce((n,m)=>n + (m.assignedCount || 0), 0);
+    $("kpiAssigned").textContent = String(assigned);
     for(const id of ["selManagerView","selManagerAssign"]){
-      const sel=$(id); sel.innerHTML='<option value="">(اختر مدير)</option>';
-      for(const m of S.managers){ const o=document.createElement('option'); o.value=m.id; o.textContent=`${m.name} (${m.assignedCount||0}/${m.desiredCount})`; sel.appendChild(o); }
+      const sel = $(id);
+      sel.innerHTML = '<option value="">(اختر مدير)</option>';
+      for(const m of S.managers){
+        const o = document.createElement("option");
+        o.value = m.id;
+        o.textContent = `${m.name} (${m.assignedCount || 0}/${m.desiredCount || 0})`;
+        sel.appendChild(o);
+      }
     }
-    if(S.managerSelected) $("selManagerView").value=S.managerSelected;
-    if(S.managerAssignSelected) $("selManagerAssign").value=S.managerAssignSelected;
+    if(S.managerSelected) $("selManagerView").value = S.managerSelected;
+    if(S.managerAssignSelected) $("selManagerAssign").value = S.managerAssignSelected;
+    updateSidebar();
   }
 
   function renderManagers(){
     renderManagersSelectors();
-    const tb=$("managersTbody");
-    if(!S.managers.length){ tb.innerHTML='<tr><td colspan="6" class="muted" style="padding:16px">—</td></tr>'; renderManagerQueue(); return; }
-    tb.innerHTML=S.managers.map((m,i)=>`<tr>
-      <td>${i+1}</td>
-      <td class="mono">${escapeHtml(m.id)}</td>
-      <td>${escapeHtml(m.name)}</td>
-      <td>${m.desiredCount}</td>
-      <td>${m.assignedCount||0}</td>
-      <td><div class="row">
-        <button class="btn" onclick="UI.editManager('${encodeURIComponent(m.id)}')">Edit</button>
-        <button class="btn danger" onclick="UI.deleteManager('${encodeURIComponent(m.id)}')">Delete</button>
-      </div></td>
-    </tr>`).join("");
+    const wrap = $("managersCards");
+    if(!S.managers.length){
+      wrap.innerHTML = '<div class="empty"><b>لا يوجد مديرون</b><span>ابدأ بإضافة مدير جديد.</span></div>';
+      renderManagerQueue();
+      return;
+    }
+    wrap.innerHTML = S.managers.map(m => {
+      const assigned = Number(m.assignedCount || 0);
+      const desired = Math.max(1, Number(m.desiredCount || 0));
+      const pct = Math.max(0, Math.min(100, Math.round((assigned / desired) * 100)));
+      const initials = escapeHtml((m.name || m.id || "M").slice(0,2).toUpperCase());
+      const selected = S.managerSelected === m.id ? ' selected' : '';
+      return `
+        <div class="manager-card">
+          <div class="manager-summary">
+            <div class="manager-avatar">${initials}</div>
+            <div class="manager-meta">
+              <b>${escapeHtml(m.name || m.id)}</b>
+              <span class="mono">${escapeHtml(m.id)}</span>
+            </div>
+            <span class="manager-badge${selected}">${assigned}/${desired}</span>
+          </div>
+          <div style="margin-top:12px" class="progress"><span style="width:${pct}%"></span></div>
+          <div class="row" style="justify-content:space-between;margin-top:10px">
+            <span class="mini">نسبة الامتلاء: ${pct}%</span>
+            <span class="mini">الحسابات المختارة: ${assigned}</span>
+          </div>
+          <div class="actions-cell" style="margin-top:12px">
+            <button class="btn subtle" onclick="UI.focusManager('${encodeURIComponent(m.id)}')">View Queue</button>
+            <button class="btn" onclick="UI.editManager('${encodeURIComponent(m.id)}')">Edit</button>
+            <button class="btn danger" onclick="UI.deleteManager('${encodeURIComponent(m.id)}')">Delete</button>
+          </div>
+        </div>
+      `;
+    }).join("");
     renderManagerQueue();
   }
 
   function renderAccounts(){
-    const tb=$("tbody");
-    if(!S.agencySelected){ tb.innerHTML='<tr><td colspan="8" class="muted" style="padding:16px">اختر وكالة أولاً</td></tr>'; $("kpiAccounts").textContent="0"; return; }
-    const filtered=applyFilters(S.accounts); $("kpiAccounts").textContent=String(filtered.length||0);
-    if(!filtered.length){ tb.innerHTML='<tr><td colspan="8" class="muted" style="padding:16px">لا توجد بيانات</td></tr>'; return; }
+    const tb = $("tbody");
+    if(!S.agencySelected){
+      tb.innerHTML = '<tr><td colspan="8"><div class="empty"><b>اختر وكالة أولاً</b><span>بعد تسجيل الدخول اختر وكالة لعرض الحسابات.</span></div></td></tr>';
+      updateAccountStats();
+      updateSidebar();
+      return;
+    }
+
+    const filtered = applyFilters(S.accounts);
+    updateAccountStats();
+    updateSidebar();
+
+    if(!filtered.length){
+      tb.innerHTML = '<tr><td colspan="8"><div class="empty"><b>لا توجد نتائج</b><span>جرّب تغيير البحث أو الفلاتر.</span></div></td></tr>';
+      return;
+    }
+
     const selectedManagerId = S.managerAssignSelected;
-    tb.innerHTML=filtered.map((a,i)=>{
-      const assigned = managerByAccount(a.agency||S.agencySelected,a.email,a.passport);
-      const assignedBadge = assigned ? `<span class="tag ${assigned.id===selectedManagerId ? 'good':''}">${escapeHtml(assigned.name)}</span>` : '<span class="muted">—</span>';
-      let managerAction = '<span class="muted">اختر مديراً</span>';
+    tb.innerHTML = filtered.map((a, i) => {
+      const agency = a.agency || S.agencySelected;
+      const assigned = managerByAccount(agency, a.email, a.passport);
+      const st = statusValue(a.status);
+
+      let managerBadge = '<span class="manager-badge soft">—</span>';
       if(assigned){
-        if(assigned.id===selectedManagerId){
-          managerAction = `<button class="btn danger" onclick="UI.managerUnselect('${encodeURIComponent(assigned.id)}','${encodeURIComponent(a.agency||S.agencySelected)}','${encodeURIComponent(a.email||"")}','${encodeURIComponent(a.passport||"")}')">Remove</button>`;
+        managerBadge = `<span class="manager-badge ${assigned.id===selectedManagerId ? 'selected' : ''}">${escapeHtml(assigned.name)}</span>`;
+      }
+
+      let managerAction = '<span class="mini">اختر مديراً للتحديد</span>';
+      if(assigned){
+        if(assigned.id === selectedManagerId){
+          managerAction = `<button class="btn danger" onclick="UI.managerUnselect('${encodeURIComponent(assigned.id)}','${encodeURIComponent(agency)}','${encodeURIComponent(a.email || "")}','${encodeURIComponent(a.passport || "")}')">Remove</button>`;
         }else{
-          managerAction = `<span class="tag bad">محجوز لمدير آخر</span>`;
+          managerAction = `<span class="manager-badge locked">محجوز لمدير آخر</span>`;
         }
       }else if(selectedManagerId){
-        const st=statusValue(a.status);
-        if(st==="Done"||st==="Rejected") managerAction = `<span class="tag bad">غير قابل للاختيار</span>`;
-        else managerAction = `<button class="btn good" onclick="UI.managerSelect('${encodeURIComponent(selectedManagerId)}','${encodeURIComponent(a.agency||S.agencySelected)}','${encodeURIComponent(a.email||"")}','${encodeURIComponent(a.passport||"")}')">Select</button>`;
+        if(st === "Done" || st === "Rejected"){
+          managerAction = `<span class="manager-badge locked">غير قابل للاختيار</span>`;
+        }else{
+          managerAction = `<button class="btn good" onclick="UI.managerSelect('${encodeURIComponent(selectedManagerId)}','${encodeURIComponent(agency)}','${encodeURIComponent(a.email || "")}','${encodeURIComponent(a.passport || "")}')">Select</button>`;
+        }
       }
-      return `<tr>
-        <td class="mono">${i+1}</td>
-        <td class="mono">${escapeHtml(a.agency||S.agencySelected)}</td>
-        <td class="mono">${escapeHtml(a.email||"")}</td>
-        <td class="mono">${escapeHtml(maskPassword(a.password||""))}</td>
-        <td class="mono">${escapeHtml(a.passport||"")}</td>
-        <td><span class="status ${statusClass(statusValue(a.status))}"><span class="dot"></span>${escapeHtml(statusValue(a.status))}</span></td>
-        <td>${assignedBadge}</td>
-        <td><div class="row">
-          <button class="btn" onclick="UI.openEdit('${encodeURIComponent(a.email||"")}','${encodeURIComponent(a.passport||"")}')">Edit</button>
-          <button class="btn danger" onclick="UI.del('${encodeURIComponent(a.email||"")}','${encodeURIComponent(a.passport||"")}')">Delete</button>
-          ${managerAction}
-        </div></td>
-      </tr>`;
+
+      return `
+        <tr>
+          <td class="mono">${i + 1}</td>
+          <td class="mono">${escapeHtml(agency)}</td>
+          <td>
+            <div class="email-cell">
+              <strong class="mono">${escapeHtml(a.email || "")}</strong>
+              <span>${escapeHtml(a.agency || S.agencySelected)}</span>
+            </div>
+          </td>
+          <td class="mono">${escapeHtml(maskPassword(a.password || ""))}</td>
+          <td class="mono">${escapeHtml(a.passport || "")}</td>
+          <td><span class="status ${statusClass(st)}"><span class="dot"></span>${escapeHtml(st)}</span></td>
+          <td>${managerBadge}</td>
+          <td>
+            <div class="actions-cell">
+              <button class="btn subtle" onclick="UI.openEdit('${encodeURIComponent(a.email || "")}','${encodeURIComponent(a.passport || "")}')">Edit</button>
+              <button class="btn danger" onclick="UI.del('${encodeURIComponent(a.email || "")}','${encodeURIComponent(a.passport || "")}')">Delete</button>
+              ${managerAction}
+            </div>
+          </td>
+        </tr>
+      `;
     }).join("");
   }
 
   function renderManagerQueue(){
-    const tb=$("managerQueueTbody");
-    const manager=S.managers.find(m=>m.id===S.managerSelected);
-    if(!manager){ tb.innerHTML='<tr><td colspan="6" class="muted" style="padding:16px">اختر مديراً</td></tr>'; return; }
-    const queue=(manager.queue||[]).slice().sort((a,b)=> (STATUS_PRIORITY[statusValue(a.status)]-STATUS_PRIORITY[statusValue(b.status)]) || String(a.agency).localeCompare(String(b.agency)));
-    if(!queue.length){ tb.innerHTML='<tr><td colspan="6" class="muted" style="padding:16px">لا توجد حسابات مختارة</td></tr>'; return; }
-    tb.innerHTML=queue.map((a,i)=>`<tr>
-      <td>${i+1}</td>
-      <td class="mono">${escapeHtml(a.agency||"")}</td>
-      <td class="mono">${escapeHtml(a.email||"")}</td>
-      <td class="mono">${escapeHtml(a.passport||"")}</td>
-      <td><span class="status ${statusClass(statusValue(a.status))}"><span class="dot"></span>${escapeHtml(statusValue(a.status))}</span></td>
-      <td><div class="row">
-        <button class="btn" onclick="UI.managerSetStatus('${encodeURIComponent(manager.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}','In Progress')">In Progress</button>
-        <button class="btn warn" onclick="UI.managerSetStatus('${encodeURIComponent(manager.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}','Pending')">Pending</button>
-        <button class="btn good" onclick="UI.managerSetStatus('${encodeURIComponent(manager.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}','Done')">Done</button>
-        <button class="btn danger" onclick="UI.managerSetStatus('${encodeURIComponent(manager.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}','Rejected')">Rejected</button>
-        <button class="btn danger" onclick="UI.managerUnselect('${encodeURIComponent(manager.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}')">Remove</button>
-      </div></td>
-    </tr>`).join('');
+    const tb = $("managerQueueTbody");
+    const manager = S.managers.find(m => m.id === S.managerSelected);
+    if(!manager){
+      $("queueSelectedCount").textContent = "0";
+      $("queueLimitCount").textContent = "0";
+      tb.innerHTML = '<tr><td colspan="6"><div class="empty"><b>اختر مديراً</b><span>سيتم عرض الحسابات المختارة له هنا.</span></div></td></tr>';
+      updateSidebar();
+      return;
+    }
+
+    const queue = (manager.queue || []).slice().sort((a,b) =>
+      (STATUS_PRIORITY[statusValue(a.status)] - STATUS_PRIORITY[statusValue(b.status)]) ||
+      String(a.agency || "").localeCompare(String(b.agency || ""))
+    );
+
+    $("queueSelectedCount").textContent = String(queue.length || 0);
+    $("queueLimitCount").textContent = String(manager.desiredCount || 0);
+    updateSidebar();
+
+    if(!queue.length){
+      tb.innerHTML = '<tr><td colspan="6"><div class="empty"><b>لا توجد حسابات مختارة</b><span>اختر الحسابات لهذا المدير من تبويب الحسابات.</span></div></td></tr>';
+      return;
+    }
+
+    tb.innerHTML = queue.map((a,i) => {
+      const st = statusValue(a.status);
+      return `
+        <tr>
+          <td>${i + 1}</td>
+          <td class="mono">${escapeHtml(a.agency || "")}</td>
+          <td>
+            <div class="email-cell">
+              <strong class="mono">${escapeHtml(a.email || "")}</strong>
+              <span>${escapeHtml(manager.name || manager.id)}</span>
+            </div>
+          </td>
+          <td class="mono">${escapeHtml(a.passport || "")}</td>
+          <td><span class="status ${statusClass(st)}"><span class="dot"></span>${escapeHtml(st)}</span></td>
+          <td>
+            <div class="actions-cell">
+              <button class="btn subtle" onclick="UI.managerSetStatus('${encodeURIComponent(manager.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}','In Progress')">In Progress</button>
+              <button class="btn warn" onclick="UI.managerSetStatus('${encodeURIComponent(manager.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}','Pending')">Pending</button>
+              <button class="btn good" onclick="UI.managerSetStatus('${encodeURIComponent(manager.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}','Done')">Done</button>
+              <button class="btn danger" onclick="UI.managerSetStatus('${encodeURIComponent(manager.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}','Rejected')">Rejected</button>
+              <button class="btn danger" onclick="UI.managerUnselect('${encodeURIComponent(manager.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}')">Remove</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join("");
   }
 
   const UI = {
-    _oneMode:"add", _oneMatch:{email:"",passport:""}, _mgrMode:"add",
-    logout(){ S.ownerUser=""; S.ownerPass=""; S.agencies=[]; S.accounts=[]; S.managers=[]; S.agencySelected=""; S.managerSelected=""; S.managerAssignSelected=""; sessionStorage.removeItem(STORAGE_KEY); setAuthState(false); renderAgencies(); renderAccounts(); renderManagers(); toast('Logout','Logged out'); },
-    async login(){
-      const user=norm($("inUser").value), pass=norm($("inPass").value);
-      if(!user || !pass) return toast('Login','أدخل بيانات الدخول');
-      const res=await API.login(user,pass); if(!res.ok) return toast('Login',res.error||'Unauthorized');
-      S.ownerUser=user; S.ownerPass=pass; setAuthState(true); persistSession(); await UI.refreshAll(); toast('Login','تم تسجيل الدخول');
-    },
-    async refreshAll(){
-      const [a,m] = await Promise.all([API.agencies(), API.managers()]);
-      if(!a.ok) return toast('Agencies',a.error||'Failed');
-      S.agencies=Array.isArray(a.agencies)?a.agencies:[];
-      S.managers=Array.isArray(m.managers)?m.managers:[];
-      renderAgencies(); renderManagers();
-      if(S.agencySelected) await UI.loadAgency(S.agencySelected); else { S.accounts=[]; renderAccounts(); }
+    _oneMode:"add",
+    _oneMatch:{email:"",passport:""},
+    _mgrMode:"add",
+
+    focusManager(idEnc){
+      const id = decodeURIComponent(idEnc || "");
+      S.managerSelected = id;
+      S.managerAssignSelected = id;
+      $("selManagerView").value = id;
+      $("selManagerAssign").value = id;
       persistSession();
-    },
-    async loadAgency(agency){
-      S.agencySelected=agency||''; persistSession(); renderAgencies();
-      if(!S.agencySelected){ S.accounts=[]; renderAccounts(); return; }
-      const res=await API.accounts(S.agencySelected); if(!res.ok) return toast('Accounts',res.error||'Failed');
-      S.accounts=Array.isArray(res.accounts)?res.accounts:[];
+      document.querySelectorAll(".tabbtn").forEach(b => b.classList.remove("active"));
+      document.querySelector('.tabbtn[data-tab="managersTab"]').classList.add("active");
+      document.querySelectorAll(".tabpane").forEach(p => p.classList.add("hidden"));
+      $("managersTab").classList.remove("hidden");
+      renderManagers();
       renderAccounts();
     },
+
+    logout(){
+      S.ownerUser = "";
+      S.ownerPass = "";
+      S.agencies = [];
+      S.accounts = [];
+      S.managers = [];
+      S.agencySelected = "";
+      S.managerSelected = "";
+      S.managerAssignSelected = "";
+      sessionStorage.removeItem(STORAGE_KEY);
+      $("inUser").value = "";
+      $("inPass").value = "";
+      setAuthState(false);
+      renderAgencies();
+      renderManagers();
+      renderAccounts();
+      toast("Logout","تم تسجيل الخروج");
+    },
+
+    async login(){
+      const user = norm($("inUser").value);
+      const pass = norm($("inPass").value);
+      if(!user || !pass) return toast("Login","أدخل بيانات الدخول");
+      const res = await API.login(user, pass);
+      if(!res.ok) return toast("Login", res.error || "Unauthorized");
+      S.ownerUser = user;
+      S.ownerPass = pass;
+      setAuthState(true);
+      persistSession();
+      await UI.refreshAll();
+      toast("Login","تم تسجيل الدخول");
+    },
+
+    async refreshAll(){
+      const [a,m] = await Promise.all([API.agencies(), API.managers()]);
+      if(!a.ok) return toast("Agencies", a.error || "Failed");
+      S.agencies = Array.isArray(a.agencies) ? a.agencies : [];
+      S.managers = Array.isArray(m.managers) ? m.managers : [];
+      renderAgencies();
+      renderManagers();
+      if(S.agencySelected) await UI.loadAgency(S.agencySelected);
+      else{
+        S.accounts = [];
+        renderAccounts();
+      }
+      persistSession();
+    },
+
+    async loadAgency(agency){
+      S.agencySelected = agency || "";
+      persistSession();
+      renderAgencies();
+      if(!S.agencySelected){
+        S.accounts = [];
+        renderAccounts();
+        return;
+      }
+      const res = await API.accounts(S.agencySelected);
+      if(!res.ok) return toast("Accounts", res.error || "Failed");
+      S.accounts = Array.isArray(res.accounts) ? res.accounts : [];
+      renderAccounts();
+    },
+
     async loadManagers(){
-      const res=await API.managers(); if(!res.ok) return toast('Managers',res.error||'Failed');
-      S.managers=Array.isArray(res.managers)?res.managers:[];
-      renderManagers(); renderAccounts(); persistSession();
+      const res = await API.managers();
+      if(!res.ok) return toast("Managers", res.error || "Failed");
+      S.managers = Array.isArray(res.managers) ? res.managers : [];
+      renderManagers();
+      renderAccounts();
+      persistSession();
     },
-    openAddOne(){ if(!S.agencySelected) return toast('Account','اختر وكالة أولاً'); UI._oneMode="add"; UI._oneMatch={email:"",passport:""}; $("oneTitle").textContent='Add Account'; $("oneSub").textContent=S.agencySelected; $("oneEmail").value=''; $("onePass").value=''; $("onePassport").value=''; $("oneStatus").value='Pending'; $("modalOne").classList.add('show'); },
+
+    openAddOne(){
+      if(!S.agencySelected) return toast("Account","اختر وكالة أولاً");
+      UI._oneMode = "add";
+      UI._oneMatch = { email:"", passport:"" };
+      $("oneTitle").textContent = "Add Account";
+      $("oneSub").textContent = S.agencySelected;
+      $("oneEmail").value = "";
+      $("onePass").value = "";
+      $("onePassport").value = "";
+      $("oneStatus").value = "Pending";
+      $("modalOne").classList.add("show");
+    },
+
     openEdit(emailEnc, passportEnc){
-      const email=decodeURIComponent(emailEnc||''), passport=decodeURIComponent(passportEnc||'');
-      const a=S.accounts.find(x=>normEmail(x.email)===normEmail(email)&&normPassport(x.passport)===normPassport(passport)); if(!a) return;
-      UI._oneMode="edit"; UI._oneMatch={email:a.email,passport:a.passport}; $("oneTitle").textContent='Edit Account'; $("oneSub").textContent=S.agencySelected; $("oneEmail").value=a.email||''; $("onePass").value=a.password||''; $("onePassport").value=a.passport||''; $("oneStatus").value=statusValue(a.status); $("modalOne").classList.add('show');
+      const email = decodeURIComponent(emailEnc || "");
+      const passport = decodeURIComponent(passportEnc || "");
+      const a = S.accounts.find(x => normEmail(x.email) === normEmail(email) && normPassport(x.passport) === normPassport(passport));
+      if(!a) return;
+      UI._oneMode = "edit";
+      UI._oneMatch = { email:a.email, passport:a.passport };
+      $("oneTitle").textContent = "Edit Account";
+      $("oneSub").textContent = S.agencySelected;
+      $("oneEmail").value = a.email || "";
+      $("onePass").value = a.password || "";
+      $("onePassport").value = a.passport || "";
+      $("oneStatus").value = statusValue(a.status);
+      $("modalOne").classList.add("show");
     },
-    closeOne(){ $("modalOne").classList.remove('show'); },
+
+    closeOne(){ $("modalOne").classList.remove("show"); },
+
     async saveOne(){
-      if(!S.agencySelected) return toast('Account','اختر وكالة أولاً');
-      const payload={agency:S.agencySelected,email:norm($("oneEmail").value),password:norm($("onePass").value),passport:norm($("onePassport").value),status:$("oneStatus").value};
-      if(!isValidEmail(payload.email)) return toast('Account','Email غير صالح');
-      if(!isValidPassport(payload.passport)) return toast('Account','Passport غير صالح');
+      if(!S.agencySelected) return toast("Account","اختر وكالة أولاً");
+      const payload = {
+        agency:S.agencySelected,
+        email:norm($("oneEmail").value),
+        password:norm($("onePass").value),
+        passport:norm($("onePassport").value),
+        status:$("oneStatus").value
+      };
+      if(!isValidEmail(payload.email)) return toast("Account","Email غير صالح");
+      if(!isValidPassport(payload.passport)) return toast("Account","Passport غير صالح");
+
       let res;
-      if(UI._oneMode==="add") res=await API.addAccount(payload);
-      else res=await API.editAccount({...payload,matchEmail:UI._oneMatch.email,matchPassport:UI._oneMatch.passport});
-      if(!res.ok) return toast('Account',res.error||'Failed');
-      UI.closeOne(); await UI.refreshAll(); await UI.loadAgency(S.agencySelected); toast('Account','تم الحفظ');
+      if(UI._oneMode === "add") res = await API.addAccount(payload);
+      else res = await API.editAccount({ ...payload, matchEmail:UI._oneMatch.email, matchPassport:UI._oneMatch.passport });
+
+      if(!res.ok) return toast("Account", res.error || "Failed");
+      UI.closeOne();
+      await UI.refreshAll();
+      await UI.loadAgency(S.agencySelected);
+      toast("Account","تم الحفظ");
     },
+
     async del(emailEnc, passportEnc){
       if(!S.agencySelected) return;
-      const email=decodeURIComponent(emailEnc||''), passport=decodeURIComponent(passportEnc||'');
+      const email = decodeURIComponent(emailEnc || "");
+      const passport = decodeURIComponent(passportEnc || "");
       if(!confirm(`Delete ${email}?`)) return;
-      const res=await API.delAccount({agency:S.agencySelected,email,passport}); if(!res.ok) return toast('Delete',res.error||'Failed');
-      await UI.refreshAll(); await UI.loadAgency(S.agencySelected); toast('Delete','تم الحذف');
+      const res = await API.delAccount({ agency:S.agencySelected, email, passport });
+      if(!res.ok) return toast("Delete", res.error || "Failed");
+      await UI.refreshAll();
+      await UI.loadAgency(S.agencySelected);
+      toast("Delete","تم الحذف");
     },
-    openBulk(){ if(!S.agencySelected) return toast('Bulk','اختر وكالة أولاً'); $("bulkText").value=''; $("bulkStats").textContent='—'; $("bulkList").innerHTML=''; $("btnBulkAdd").disabled=true; S.bulkParsed=[]; $("modalBulk").classList.add('show'); },
-    closeBulk(){ $("modalBulk").classList.remove('show'); },
+
+    openBulk(){
+      if(!S.agencySelected) return toast("Bulk","اختر وكالة أولاً");
+      $("bulkText").value = "";
+      $("bulkStats").textContent = "—";
+      $("bulkList").innerHTML = "";
+      $("btnBulkAdd").disabled = true;
+      S.bulkParsed = [];
+      $("modalBulk").classList.add("show");
+    },
+
+    closeBulk(){ $("modalBulk").classList.remove("show"); },
+
     parseBulk(){
-      let arr=[]; try{ arr=JSON.parse($("bulkText").value||'[]'); }catch(_){ return toast('Bulk','JSON غير صالح'); }
-      if(!Array.isArray(arr)) return toast('Bulk','JSON يجب أن يكون Array');
-      const parsed=[], bad=[];
+      let arr = [];
+      try{ arr = JSON.parse($("bulkText").value || "[]"); }
+      catch(_){ return toast("Bulk","JSON غير صالح"); }
+
+      if(!Array.isArray(arr)) return toast("Bulk","JSON يجب أن يكون Array");
+
+      const parsed = [], bad = [];
       for(const item of arr){
-        const a={ email:norm(item.email), password:norm(item.password), passport:norm(item.passport), status:statusValue(item.status) };
-        if(!isValidEmail(a.email)||!isValidPassport(a.passport)||!a.password) { bad.push(JSON.stringify(item)); continue; }
+        const a = {
+          email:norm(item.email),
+          password:norm(item.password),
+          passport:norm(item.passport),
+          status:statusValue(item.status)
+        };
+        if(!isValidEmail(a.email) || !isValidPassport(a.passport) || !a.password){
+          bad.push(JSON.stringify(item));
+          continue;
+        }
         parsed.push(a);
       }
-      S.bulkParsed=parsed; $("bulkStats").textContent=`Valid: ${parsed.length}\nInvalid: ${bad.length}`; $("bulkList").innerHTML=parsed.slice(0,50).map(a=>`<li>${escapeHtml(a.email)} — ${escapeHtml(a.passport)} — ${escapeHtml(a.status)}</li>`).join(''); $("btnBulkAdd").disabled=!parsed.length;
+
+      S.bulkParsed = parsed;
+      $("bulkStats").textContent = `Valid: ${parsed.length}\nInvalid: ${bad.length}`;
+      $("bulkList").innerHTML = parsed.slice(0,50).map(a => `<li>${escapeHtml(a.email)} — ${escapeHtml(a.passport)} — ${escapeHtml(a.status)}</li>`).join("");
+      $("btnBulkAdd").disabled = !parsed.length;
     },
+
     async bulkAdd(){
-      let ok=0, fail=0;
-      for(const item of S.bulkParsed){ const res=await API.addAccount({agency:S.agencySelected,...item}); if(res.ok) ok++; else fail++; }
-      await UI.loadAgency(S.agencySelected); await UI.refreshAll(); toast('Bulk',`Added: ${ok} | Failed: ${fail}`); UI.closeBulk();
+      let ok = 0, fail = 0;
+      for(const item of S.bulkParsed){
+        const res = await API.addAccount({ agency:S.agencySelected, ...item });
+        if(res.ok) ok++;
+        else fail++;
+      }
+      await UI.loadAgency(S.agencySelected);
+      await UI.refreshAll();
+      toast("Bulk", `Added: ${ok} | Failed: ${fail}`);
+      UI.closeBulk();
     },
+
     async sendAgencyAll(){
-      if(!S.agencySelected) return toast('Telegram','اختر وكالة أولاً');
-      const res=await API.sendAgencyAll(S.agencySelected); if(!res.ok) return toast('Telegram',res.error||'Failed');
-      toast('Telegram',`تم الإرسال: ${res.count||0} حساب`);
+      if(!S.agencySelected) return toast("Telegram","اختر وكالة أولاً");
+      const res = await API.sendAgencyAll(S.agencySelected);
+      if(!res.ok) return toast("Telegram", res.error || "Failed");
+      toast("Telegram", `تم الإرسال: ${res.count || 0} حساب`);
     },
-    openManager(){ UI._mgrMode='add'; $("managerTitle").textContent='مدير جديد'; $("mgrId").disabled=false; $("mgrId").value=''; $("mgrName").value=''; $("mgrDesired").value='8'; $("modalManager").classList.add('show'); },
-    editManager(idEnc){ const id=decodeURIComponent(idEnc||''); const m=S.managers.find(x=>x.id===id); if(!m) return; UI._mgrMode='edit'; $("managerTitle").textContent='تعديل مدير'; $("mgrId").disabled=true; $("mgrId").value=m.id; $("mgrName").value=m.name||''; $("mgrDesired").value=m.desiredCount||8; $("modalManager").classList.add('show'); },
-    closeManager(){ $("modalManager").classList.remove('show'); },
+
+    openManager(){
+      UI._mgrMode = "add";
+      $("managerTitle").textContent = "مدير جديد";
+      $("mgrId").disabled = false;
+      $("mgrId").value = "";
+      $("mgrName").value = "";
+      $("mgrDesired").value = "8";
+      $("modalManager").classList.add("show");
+    },
+
+    editManager(idEnc){
+      const id = decodeURIComponent(idEnc || "");
+      const m = S.managers.find(x => x.id === id);
+      if(!m) return;
+      UI._mgrMode = "edit";
+      $("managerTitle").textContent = "تعديل مدير";
+      $("mgrId").disabled = true;
+      $("mgrId").value = m.id;
+      $("mgrName").value = m.name || "";
+      $("mgrDesired").value = m.desiredCount || 8;
+      $("modalManager").classList.add("show");
+    },
+
+    closeManager(){ $("modalManager").classList.remove("show"); },
+
     async saveManager(){
-      const payload={id:norm($("mgrId").value),name:norm($("mgrName").value),desiredCount:Number($("mgrDesired").value||8)};
-      if(!payload.id) return toast('Manager','ID مطلوب');
-      let res = UI._mgrMode==='add' ? await API.createManager(payload) : await API.editManager(payload);
-      if(!res.ok) return toast('Manager',res.error||'Failed');
-      UI.closeManager(); await UI.loadManagers(); toast('Manager','تم الحفظ');
+      const payload = {
+        id:norm($("mgrId").value),
+        name:norm($("mgrName").value),
+        desiredCount:Number($("mgrDesired").value || 8)
+      };
+      if(!payload.id) return toast("Manager","ID مطلوب");
+      const res = UI._mgrMode === "add" ? await API.createManager(payload) : await API.editManager(payload);
+      if(!res.ok) return toast("Manager", res.error || "Failed");
+      UI.closeManager();
+      await UI.loadManagers();
+      toast("Manager","تم الحفظ");
     },
+
     async deleteManager(idEnc){
-      const id=decodeURIComponent(idEnc||''); if(!confirm(`Delete manager ${id}?`)) return;
-      const res=await API.deleteManager({id}); if(!res.ok) return toast('Manager',res.error||'Failed');
-      if(S.managerSelected===id) S.managerSelected=''; if(S.managerAssignSelected===id) S.managerAssignSelected='';
-      await UI.loadManagers(); renderAccounts(); toast('Manager','تم الحذف');
+      const id = decodeURIComponent(idEnc || "");
+      if(!confirm(`Delete manager ${id}?`)) return;
+      const res = await API.deleteManager({id});
+      if(!res.ok) return toast("Manager", res.error || "Failed");
+      if(S.managerSelected === id) S.managerSelected = "";
+      if(S.managerAssignSelected === id) S.managerAssignSelected = "";
+      await UI.loadManagers();
+      renderAccounts();
+      toast("Manager","تم الحذف");
     },
+
     async managerSelect(idEnc, agencyEnc, emailEnc, passportEnc){
-      const id=decodeURIComponent(idEnc||''), agency=decodeURIComponent(agencyEnc||''), email=decodeURIComponent(emailEnc||''), passport=decodeURIComponent(passportEnc||'');
-      const res=await API.managerSelect({id,agency,email,passport}); if(!res.ok) return toast('Manager',res.error||'Failed');
-      S.managerSelected=id; await UI.loadManagers(); if(S.agencySelected===agency) await UI.loadAgency(agency); toast('Manager','تمت إضافة الحساب لقائمة المدير');
+      const id = decodeURIComponent(idEnc || "");
+      const agency = decodeURIComponent(agencyEnc || "");
+      const email = decodeURIComponent(emailEnc || "");
+      const passport = decodeURIComponent(passportEnc || "");
+      const res = await API.managerSelect({id, agency, email, passport});
+      if(!res.ok) return toast("Manager", res.error || "Failed");
+      S.managerSelected = id;
+      await UI.loadManagers();
+      if(S.agencySelected === agency) await UI.loadAgency(agency);
+      toast("Manager","تمت إضافة الحساب لقائمة المدير");
     },
+
     async managerUnselect(idEnc, agencyEnc, emailEnc, passportEnc){
-      const id=decodeURIComponent(idEnc||''), agency=decodeURIComponent(agencyEnc||''), email=decodeURIComponent(emailEnc||''), passport=decodeURIComponent(passportEnc||'');
-      const res=await API.managerUnselect({id,agency,email,passport}); if(!res.ok) return toast('Manager',res.error||'Failed');
-      await UI.loadManagers(); if(S.agencySelected===agency) await UI.loadAgency(agency); S.managerSelected=id; toast('Manager','تم حذف الحساب من قائمة المدير');
+      const id = decodeURIComponent(idEnc || "");
+      const agency = decodeURIComponent(agencyEnc || "");
+      const email = decodeURIComponent(emailEnc || "");
+      const passport = decodeURIComponent(passportEnc || "");
+      const res = await API.managerUnselect({id, agency, email, passport});
+      if(!res.ok) return toast("Manager", res.error || "Failed");
+      await UI.loadManagers();
+      if(S.agencySelected === agency) await UI.loadAgency(agency);
+      S.managerSelected = id;
+      toast("Manager","تم حذف الحساب من قائمة المدير");
     },
+
     async managerSetStatus(idEnc, agencyEnc, emailEnc, passportEnc, status){
-      const id=decodeURIComponent(idEnc||''), agency=decodeURIComponent(agencyEnc||''), email=decodeURIComponent(emailEnc||''), passport=decodeURIComponent(passportEnc||'');
-      const res=await API.managerStatus({id,agency,email,passport,status}); if(!res.ok) return toast('Status',res.error||'Failed');
-      await UI.loadManagers(); if(S.agencySelected===agency) await UI.loadAgency(agency); S.managerSelected=id; renderManagers();
-      toast('Status', (status==='Done'||status==='Rejected') ? `تم وضع ${status} وحذف الحساب من قائمة المدير` : `تم وضع ${status}`);
+      const id = decodeURIComponent(idEnc || "");
+      const agency = decodeURIComponent(agencyEnc || "");
+      const email = decodeURIComponent(emailEnc || "");
+      const passport = decodeURIComponent(passportEnc || "");
+      const res = await API.managerStatus({id, agency, email, passport, status});
+      if(!res.ok) return toast("Status", res.error || "Failed");
+      await UI.loadManagers();
+      if(S.agencySelected === agency) await UI.loadAgency(agency);
+      S.managerSelected = id;
+      renderManagers();
+      toast("Status", (status === "Done" || status === "Rejected")
+        ? `تم وضع ${status} وحذف الحساب من قائمة المدير`
+        : `تم وضع ${status}`);
     }
   };
 
   window.UI = UI;
-  $("btnLogin").onclick=UI.login; $("btnLogout").onclick=UI.logout; $("btnPing").onclick=async()=>{ const r=await API.ping(); toast('Ping',r.ok?'OK':(r.error||'Failed')); };
-  $("btnRefresh").onclick=UI.refreshAll; $("btnBulk").onclick=UI.openBulk; $("btnAddOne").onclick=UI.openAddOne; $("btnParse").onclick=UI.parseBulk; $("btnBulkAdd").onclick=UI.bulkAdd; $("btnSaveOne").onclick=UI.saveOne; $("btnSendAgencyAll").onclick=UI.sendAgencyAll; $("btnOpenManager").onclick=UI.openManager; $("btnSaveManager").onclick=UI.saveManager;
-  $("selAgency").addEventListener('change', (e)=>UI.loadAgency(e.target.value||'')); $("inSearch").addEventListener('input', renderAccounts); $("selStatusFilter").addEventListener('change', renderAccounts);
-  $("selManagerView").addEventListener('change', (e)=>{ S.managerSelected=e.target.value||''; persistSession(); renderManagerQueue(); });
-  $("selManagerAssign").addEventListener('change', (e)=>{ S.managerAssignSelected=e.target.value||''; persistSession(); renderAccounts(); });
-  document.querySelectorAll('.tabbtn').forEach(btn=>btn.addEventListener('click',()=>{ document.querySelectorAll('.tabbtn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.querySelectorAll('.tabpane').forEach(p=>p.classList.add('hidden')); document.getElementById(btn.dataset.tab).classList.remove('hidden'); }));
 
-  restoreSession(); setAuthState(false);
-  if(S.ownerUser && S.ownerPass){ setAuthState(true); UI.refreshAll().catch(()=>{}); }
+  $("btnLogin").onclick = UI.login;
+  $("btnLogout").onclick = UI.logout;
+  $("btnPing").onclick = async () => {
+    const r = await API.ping();
+    toast("Ping", r.ok ? "OK" : (r.error || "Failed"));
+  };
+  $("btnRefresh").onclick = UI.refreshAll;
+  $("btnBulk").onclick = UI.openBulk;
+  $("btnAddOne").onclick = UI.openAddOne;
+  $("btnParse").onclick = UI.parseBulk;
+  $("btnBulkAdd").onclick = UI.bulkAdd;
+  $("btnSaveOne").onclick = UI.saveOne;
+  $("btnSendAgencyAll").onclick = UI.sendAgencyAll;
+  $("btnOpenManager").onclick = UI.openManager;
+  $("btnSaveManager").onclick = UI.saveManager;
+
+  $("selAgency").addEventListener("change", (e) => UI.loadAgency(e.target.value || ""));
+  $("inSearch").addEventListener("input", () => { renderAccounts(); updateSidebar(); });
+  $("selStatusFilter").addEventListener("change", () => { renderAccounts(); updateSidebar(); });
+  $("selManagerView").addEventListener("change", (e) => {
+    S.managerSelected = e.target.value || "";
+    persistSession();
+    renderManagerQueue();
+    renderManagers();
+  });
+  $("selManagerAssign").addEventListener("change", (e) => {
+    S.managerAssignSelected = e.target.value || "";
+    persistSession();
+    renderAccounts();
+    renderManagers();
+  });
+
+  document.querySelectorAll(".tabbtn").forEach(btn => btn.addEventListener("click", () => {
+    document.querySelectorAll(".tabbtn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    document.querySelectorAll(".tabpane").forEach(p => p.classList.add("hidden"));
+    document.getElementById(btn.dataset.tab).classList.remove("hidden");
+  }));
+
+  restoreSession();
+  setAuthState(false);
+  renderAgencies();
+  renderManagers();
+  renderAccounts();
+
+  if(S.ownerUser && S.ownerPass){
+    setAuthState(true);
+    UI.refreshAll().catch(() => {});
+  }
 })();
 </script>
 </body>
