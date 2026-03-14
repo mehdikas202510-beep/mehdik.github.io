@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Owner Panel — Pro Max</title>
+  <title>Owner Panel — Managers Manual Select</title>
   <style>
     :root{
       --bg:#0b1220;--panel:#101a2e;--panel2:#0e172a;--text:#e8eefc;--muted:#9fb0d0;--border:rgba(255,255,255,.10);
@@ -12,16 +12,23 @@
       --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans Arabic", "Noto Sans", sans-serif;
       --r: 18px;
     }
+    body.light{
+      --bg:#eef3fb;--panel:#ffffff;--panel2:#f8fbff;--text:#162034;--muted:#5e6f91;--border:rgba(12,25,58,.12);
+      --shadow:0 12px 30px rgba(35,56,98,.10);--chip:#edf2ff;
+      background:linear-gradient(180deg,#eef3fb,#dde6f7);color:var(--text)
+    }
     *{box-sizing:border-box} html,body{height:100%} body{margin:0;font-family:var(--sans);background:
       radial-gradient(1100px 600px at 10% 10%, rgba(124,92,255,.18), transparent 60%),
       radial-gradient(900px 500px at 90% 10%, rgba(34,197,94,.12), transparent 55%),
       linear-gradient(180deg, #050a14, var(--bg));color:var(--text)}
-    a{color:inherit}.wrap{max-width:1380px;margin:0 auto;padding:24px}.hidden{display:none!important}
+    a{color:inherit}.wrap{max-width:1480px;margin:0 auto;padding:24px}.hidden{display:none!important}
     .topbar{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:14px 16px;border:1px solid var(--border);border-radius:24px;background:linear-gradient(180deg, rgba(16,26,46,.92), rgba(16,26,46,.68));box-shadow:var(--shadow);position:sticky;top:14px;backdrop-filter: blur(10px);z-index:5}
+    body.light .topbar,.card,.modal .box{background:linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.90))}
     .brand{display:flex;align-items:center;gap:10px}.logo{width:38px;height:38px;border-radius:14px;background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.22), transparent 45%),linear-gradient(135deg, rgba(124,92,255,1), rgba(34,197,94,1));box-shadow: 0 10px 20px rgba(124,92,255,.22)}
     .title{display:flex;flex-direction:column;gap:2px}.title b{font-size:15px}.title span{font-size:12px;color:var(--muted)}
     .actions,.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.tabs{display:flex;gap:10px;margin-top:18px}
     .tabbtn,.btn{border:1px solid var(--border);background:rgba(255,255,255,.06);color:var(--text);padding:10px 12px;border-radius:14px;cursor:pointer;transition:transform .06s ease, background .15s ease, border-color .15s ease;font-weight:700;display:inline-flex;gap:8px;align-items:center}
+    body.light .tabbtn, body.light .btn, body.light input, body.light select, body.light textarea {background:rgba(245,248,255,.9)}
     .tabbtn.active,.btn.primary{border-color: rgba(124,92,255,.55);background: linear-gradient(180deg, rgba(124,92,255,.30), rgba(124,92,255,.18))}
     .btn.danger{border-color: rgba(239,68,68,.55);background: linear-gradient(180deg, rgba(239,68,68,.22), rgba(239,68,68,.10))}
     .btn.ghost{background:transparent}.btn:active,.tabbtn:active{transform:translateY(1px)} .btn[disabled]{opacity:.5;cursor:not-allowed}
@@ -33,36 +40,21 @@
     input,select,textarea{width:100%;border:1px solid var(--border);background:rgba(255,255,255,.06);color:var(--text);padding:10px 12px;border-radius:14px;outline:none;font-family:var(--sans)}
     textarea{min-height:150px;resize:vertical} .muted{color:var(--muted);font-size:12px;line-height:1.6}.mono{font-family:var(--mono);font-size:12px}
     .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.kpi{border:1px solid var(--border);border-radius:16px;padding:12px;background:rgba(255,255,255,.05)} .kpi b{display:block;font-size:18px} .kpi span{color:var(--muted);font-size:12px}
-    .tablewrap{overflow:auto;border-radius:14px;border:1px solid var(--border)} table{border-collapse:separate;border-spacing:0;width:100%;min-width:840px}
+    .tablewrap{overflow:auto;border-radius:14px;border:1px solid var(--border)} table{border-collapse:separate;border-spacing:0;width:100%;min-width:980px}
     thead th{position:sticky;top:0;background:rgba(12,20,36,.94);text-align:right;font-size:12px;color:var(--muted);padding:10px 12px;border-bottom:1px solid var(--border);white-space:nowrap}
+    body.light thead th{background:#f0f5ff}
     tbody td{padding:11px 12px;border-bottom:1px solid rgba(255,255,255,.07);font-size:13px;vertical-align:middle;white-space:nowrap} tbody tr:hover{background:rgba(255,255,255,.04)}
     .status{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;font-weight:800;font-size:12px;border:1px solid var(--border);background:rgba(255,255,255,.06)}
     .dot{width:8px;height:8px;border-radius:999px;background:var(--muted)} .s-good .dot{background:var(--good)} .s-warn .dot{background:var(--warn)} .s-bad .dot{background:var(--bad)} .s-neutral .dot{background:#93c5fd}
     .toast{position:fixed;inset:auto 18px 18px auto;background:rgba(16,26,46,.92);border:1px solid var(--border);border-radius:16px;padding:12px 14px;box-shadow:var(--shadow);max-width:520px;display:none;z-index:20}
-    .toast.show{display:block}.toast b{display:block;font-size:13px;margin-bottom:4px}.toast span{font-size:12px;color:var(--muted);line-height:1.5;white-space:pre-wrap}
+    body.light .toast{background:#fff}.toast.show{display:block}.toast b{display:block;font-size:13px;margin-bottom:4px}.toast span{font-size:12px;color:var(--muted);line-height:1.5;white-space:pre-wrap}
     .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.55);z-index:30;padding:18px}.modal.show{display:flex}
     .modal .box{width:min(900px,100%);border:1px solid var(--border);border-radius:22px;background:linear-gradient(180deg, rgba(16,26,46,.96), rgba(16,26,46,.74));box-shadow:0 18px 50px rgba(0,0,0,.55);overflow:hidden}
     .modal .box .hd,.modal .box .ft{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}.modal .box .ft{border-bottom:none;border-top:1px solid var(--border);justify-content:flex-start;flex-wrap:wrap}.modal .box .bd{padding:14px 16px}
     .list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;max-height:300px;overflow:auto} .list li{padding:10px 12px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.04);border-radius:14px}
-    .rtl-toggle{border:1px solid var(--border);background:rgba(255,255,255,.05);padding:8px 10px;border-radius:999px;display:flex;gap:8px;align-items:center}.rtl-toggle button{border:0;background:transparent;color:var(--muted);padding:6px 10px;border-radius:999px;cursor:pointer;font-weight:800}.rtl-toggle button.active{color:var(--text);background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.10)}
-    .split{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}@media (max-width:1100px){.split{grid-template-columns:1fr}}
+    .toggle{border:1px solid var(--border);background:rgba(255,255,255,.05);padding:8px 10px;border-radius:999px;display:flex;gap:8px;align-items:center}.toggle button{border:0;background:transparent;color:var(--muted);padding:6px 10px;border-radius:999px;cursor:pointer;font-weight:800}.toggle button.active{color:var(--text);background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.10)}
+    .split{display:grid;grid-template-columns:1.15fr .85fr;gap:16px}@media (max-width:1180px){.split{grid-template-columns:1fr}}
     .mini{font-size:11px;color:var(--muted)}
-
-    body[data-theme="light"]{
-      --bg:#eef3fb;--panel:#ffffff;--panel2:#f8fbff;--text:#0f172a;--muted:#5b6475;--border:rgba(15,23,42,.10);
-      --shadow:0 12px 30px rgba(15,23,42,.10);--chip:#e8eefb;
-      background:
-        radial-gradient(1100px 600px at 10% 10%, rgba(124,92,255,.12), transparent 60%),
-        radial-gradient(900px 500px at 90% 10%, rgba(34,197,94,.10), transparent 55%),
-        linear-gradient(180deg, #f8fbff, var(--bg));
-    }
-    body[data-theme="light"] .topbar{background:linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.86))}
-    body[data-theme="light"] .card{background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,251,255,.95))}
-    body[data-theme="light"] thead th{background:rgba(248,251,255,.98)}
-    body[data-theme="light"] .toast{background:rgba(255,255,255,.98)}
-    body[data-theme="light"] .modal{background:rgba(15,23,42,.28)}
-    body[data-theme="light"] .modal .box{background:linear-gradient(180deg, rgba(255,255,255,.99), rgba(248,251,255,.96))}
-
   </style>
 </head>
 <body>
@@ -71,13 +63,13 @@
     <div class="brand">
       <div class="logo"></div>
       <div class="title">
-        <b id="t_app">Owner Panel — Pro Max</b>
-        <span id="t_sub">إدارة الوكالات + نظام المديرين + تكامل تلغرام</span>
+        <b id="t_app">Owner Panel — Manual Managers</b>
+        <span id="t_sub">إدارة الوكالات + اختيار يدوي للحسابات للمديرين</span>
       </div>
     </div>
     <div class="actions">
-      <div class="rtl-toggle"><button id="langAR" class="active">AR</button><button id="langEN">EN</button></div>
-      <div class="rtl-toggle"><button id="themeDark" class="active">Dark</button><button id="themeLight">Light</button></div>
+      <div class="toggle"><button id="langAR" class="active">AR</button><button id="langEN">EN</button></div>
+      <div class="toggle"><button id="themeDark" class="active">Dark</button><button id="themeLight">Light</button></div>
       <span class="chip">API: <span class="mono" id="apiHost">…</span></span>
       <span class="chip">Auth: <span id="authState">Guest</span></span>
       <button class="btn ghost" id="btnPing">Ping</button>
@@ -104,10 +96,10 @@
           <div class="kpi"><b id="kpiAgencies">—</b><span id="t_kpiAg">عدد الوكالات</span></div>
           <div class="kpi"><b id="kpiAccounts">—</b><span id="t_kpiAcc">حسابات الوكالة المحددة</span></div>
           <div class="kpi"><b id="kpiManagers">—</b><span id="t_kpiManagers">عدد المديرين</span></div>
-          <div class="kpi"><b id="kpiAssigned">—</b><span id="t_kpiAssigned">إجمالي الحسابات الموزعة</span></div>
+          <div class="kpi"><b id="kpiAssigned">—</b><span id="t_kpiAssigned">إجمالي الحسابات المختارة</span></div>
         </div>
         <div style="height:1px;background:rgba(255,255,255,.08);margin:14px 0"></div>
-        <div class="muted" id="t_priv">سيتم حفظ بيانات الدخول في sessionStorage على هذا المتصفح فقط. استخدمه على جهاز موثوق.</div>
+        <div class="muted" id="t_priv">سيتم حفظ بيانات الدخول والثيم واللغة في sessionStorage على هذا المتصفح فقط.</div>
       </div>
     </div>
 
@@ -125,25 +117,18 @@
           </div>
           <div class="bd">
             <div class="row">
-              <div class="field" style="min-width:240px"><label id="t_agency">الوكالة</label><select id="selAgency" disabled></select></div>
-              <div class="field"><label id="t_search">بحث</label><input id="inSearch" placeholder="email / passport / status..." disabled /></div>
-              <div class="field" style="max-width:220px"><label id="t_filter">تصفية الحالة</label>
-                <select id="selStatusFilter" disabled>
-                  <option value="">(الكل)</option>
-                  <option value="Done">Done</option>
-                  <option value="In Progress">In Progress</option>
-                  <option value="Rejected">Rejected</option>
-                  <option value="Pending">Pending</option>
-                </select>
-              </div>
+              <div class="field"><label id="t_agency">الوكالة</label><select id="selAgency" disabled></select></div>
+              <div class="field"><label id="t_search">بحث</label><input id="inSearch" placeholder="email / passport / status" disabled /></div>
+              <div class="field"><label id="t_filter">تصفية الحالة</label><select id="selStatusFilter" disabled><option value="">All</option><option value="Done">Done</option><option value="In Progress">In Progress</option><option value="Rejected">Rejected</option><option value="Pending">Pending</option></select></div>
+              <div class="field"><label>المدير الحالي للاختيار</label><select id="selAssignManager" disabled><option value="">(اختر مدير)</option></select></div>
             </div>
             <div style="margin-top:12px" class="tablewrap">
               <table>
-                <thead><tr><th>#</th><th>Agency</th><th>Email</th><th>Password</th><th>Passport</th><th>Status</th><th>Actions</th></tr></thead>
-                <tbody id="tbody"><tr><td colspan="7" class="muted" style="padding:16px">—</td></tr></tbody>
+                <thead><tr><th>#</th><th>Agency</th><th>Email</th><th>Password</th><th>Passport</th><th>Status</th><th>Manager</th><th>Actions</th></tr></thead>
+                <tbody id="tbody"><tr><td colspan="8" class="muted" style="padding:16px">—</td></tr></tbody>
               </table>
             </div>
-            <div class="mini" style="margin-top:10px">ترتيب الحالات ثابت: Done ثم In Progress ثم Rejected ثم Pending.</div>
+            <div class="mini" style="margin-top:10px">ترتيب الحالات ثابت: Done ثم In Progress ثم Rejected ثم Pending. اختيار المدير صار يدوي فقط. الحسابات التي حالتها Done أو Rejected لا يمكن اختيارها للمديرين.</div>
           </div>
         </div>
       </div>
@@ -155,23 +140,23 @@
             <div class="bd">
               <div class="tablewrap">
                 <table>
-                  <thead><tr><th>#</th><th>ID</th><th>الاسم</th><th>الهدف</th><th>لكل وكالة</th><th>الموزع الآن</th><th>Telegram</th><th>Actions</th></tr></thead>
-                  <tbody id="managersTbody"><tr><td colspan="8" class="muted" style="padding:16px">—</td></tr></tbody>
+                  <thead><tr><th>#</th><th>ID</th><th>الاسم</th><th>الحد الأقصى</th><th>المختار الآن</th><th>Actions</th></tr></thead>
+                  <tbody id="managersTbody"><tr><td colspan="6" class="muted" style="padding:16px">—</td></tr></tbody>
                 </table>
               </div>
             </div>
           </div>
 
           <div class="card">
-            <div class="hd"><h3>قائمة المدير</h3><div class="row"><select id="selManagerView" disabled></select></div></div>
+            <div class="hd"><h3>حسابات المدير المختارة</h3><div class="row"><select id="selManagerView" disabled><option value="">(اختر مدير)</option></select></div></div>
             <div class="bd">
               <div class="tablewrap">
                 <table>
-                  <thead><tr><th>#</th><th>Agency</th><th>Email</th><th>Passport</th><th>Status</th><th>Update</th></tr></thead>
+                  <thead><tr><th>#</th><th>Agency</th><th>Email</th><th>Passport</th><th>Status</th><th>Actions</th></tr></thead>
                   <tbody id="managerQueueTbody"><tr><td colspan="6" class="muted" style="padding:16px">—</td></tr></tbody>
                 </table>
               </div>
-              <div class="mini" style="margin-top:10px">لا يوجد Refresh يدوي. عند وضع Done أو Rejected يتم التعويض تلقائياً بحساب جديد وإرسال القائمة المحدثة إلى تلغرام.</div>
+              <div class="mini" style="margin-top:10px">عند وضع Done أو Rejected يتم حذف الحساب مباشرة من قائمة المدير المختارة. لا يوجد تعويض تلقائي ولا إرسال تلغرام من نظام المديرين.</div>
             </div>
           </div>
         </div>
@@ -189,9 +174,9 @@
 
 <div class="modal" id="modalBulk"><div class="box"><div class="hd"><div><b>Bulk Paste</b><div class="muted">ألصق JSON Array ثم Preview ثم Add</div></div><button class="btn ghost" onclick="UI.closeBulk()">✕</button></div><div class="bd"><div class="row" style="align-items:flex-start"><div class="field" style="flex:1.25"><label>JSON</label><textarea id="bulkText" class="mono" placeholder='[{"email":"a@x.com","password":"123","passport":"AA1","status":"Pending"}]'></textarea></div><div class="field" style="flex:.75;min-width:260px"><label>Preview</label><div class="mono" id="bulkStats">—</div><div style="height:1px;background:rgba(255,255,255,.08);margin:14px 0"></div><ul class="list" id="bulkList"></ul></div></div></div><div class="ft"><button class="btn" onclick="UI.closeBulk()">Cancel</button><button class="btn" id="btnParse">Preview</button><button class="btn primary" id="btnBulkAdd" disabled>Add accounts</button></div></div></div>
 
-<div class="modal" id="modalManager"><div class="box"><div class="hd"><div><b id="managerTitle">مدير جديد</b><div class="muted">يمكنك تحديد عدد الحسابات المطلوبة وحد أقصى 2 من كل وكالة</div></div><button class="btn ghost" onclick="UI.closeManager()">✕</button></div><div class="bd">
+<div class="modal" id="modalManager"><div class="box"><div class="hd"><div><b id="managerTitle">مدير جديد</b><div class="muted">حدد الحد الأقصى للحسابات التي يمكن للمدير اختيارها يدوياً</div></div><button class="btn ghost" onclick="UI.closeManager()">✕</button></div><div class="bd">
   <div class="row"><div class="field"><label>ID</label><input id="mgrId" placeholder="manager-1" /></div><div class="field"><label>الاسم</label><input id="mgrName" placeholder="مدير أول" /></div></div>
-  <div style="margin-top:10px" class="row"><div class="field"><label>عدد الحسابات المطلوبة</label><input id="mgrDesired" type="number" min="1" max="200" value="8" /></div><div class="field"><label>عدد الحسابات من كل وكالة</label><input id="mgrPerAgency" type="number" min="1" max="20" value="2" /></div><div class="field"><label>Telegram Chat ID (اختياري)</label><input id="mgrChatId" placeholder="-100..." /></div></div>
+  <div style="margin-top:10px" class="row"><div class="field"><label>الحد الأقصى للحسابات</label><input id="mgrDesired" type="number" min="1" max="200" value="8" /></div></div>
 </div><div class="ft"><button class="btn" onclick="UI.closeManager()">Cancel</button><button class="btn primary" id="btnSaveManager">Save</button></div></div></div>
 
 <script>
@@ -199,18 +184,19 @@
   const API_BASE = (document.body?.dataset?.apiBase || "https://api.mehdik.site").replace(/\/$/, "");
   const OWNER_BASE = API_BASE + "/owner";
   document.getElementById("apiHost").textContent = API_BASE;
-  const STORAGE_KEY = "owner-panel-promax:v1";
+  const STORAGE_KEY = "owner-panel-manual:v1";
   const VALID_STATUSES = ["Done", "In Progress", "Rejected", "Pending"];
   const SEARCH_DEBOUNCE_MS = 180;
   const STATUS_PRIORITY = {"Done":0,"In Progress":1,"Rejected":2,"Pending":3};
 
   const I18N = {
-    ar:{ app:"Owner Panel — Pro Max", sub:"إدارة الوكالات + نظام المديرين + تكامل تلغرام", login:"تسجيل الدخول", manage:"إدارة الحسابات", agency:"الوكالة", search:"بحث", filter:"تصفية الحالة", user:"Owner User", pass:"Owner Pass", kAg:"عدد الوكالات", kAcc:"حسابات الوكالة المحددة", kMgr:"عدد المديرين", kAssign:"إجمالي الحسابات الموزعة", priv:"سيتم حفظ بيانات الدخول في sessionStorage على هذا المتصفح فقط. استخدمه على جهاز موثوق.", hint:"سيتم إرسال بيانات الدخول في Headers لكل طلب" },
-    en:{ app:"Owner Panel — Pro Max", sub:"Agencies + managers system + Telegram integration", login:"Login", manage:"Accounts", agency:"Agency", search:"Search", filter:"Status filter", user:"Owner User", pass:"Owner Pass", kAg:"# Agencies", kAcc:"Selected agency accounts", kMgr:"# Managers", kAssign:"Total assigned accounts", priv:"Credentials are saved in sessionStorage on this browser only. Use on a trusted device.", hint:"Credentials are sent in headers with each request" }
+    ar:{ app:"Owner Panel — Manual Managers", sub:"إدارة الوكالات + اختيار يدوي للحسابات للمديرين", login:"تسجيل الدخول", manage:"إدارة الحسابات", agency:"الوكالة", search:"بحث", filter:"تصفية الحالة", user:"Owner User", pass:"Owner Pass", kAg:"عدد الوكالات", kAcc:"حسابات الوكالة المحددة", kMgr:"عدد المديرين", kAssign:"إجمالي الحسابات المختارة", priv:"سيتم حفظ بيانات الدخول والثيم واللغة في sessionStorage على هذا المتصفح فقط.", hint:"سيتم إرسال بيانات الدخول في Headers لكل طلب" },
+    en:{ app:"Owner Panel — Manual Managers", sub:"Agencies + manual account selection for managers", login:"Login", manage:"Accounts", agency:"Agency", search:"Search", filter:"Status filter", user:"Owner User", pass:"Owner Pass", kAg:"# Agencies", kAcc:"Selected agency accounts", kMgr:"# Managers", kAssign:"Total selected accounts", priv:"Credentials, theme and language are saved in sessionStorage on this browser only.", hint:"Credentials are sent in headers with each request" }
   };
+
   let LANG = "ar";
   let THEME = "dark";
-  const S = { ownerUser:"", ownerPass:"", agencies:[], agencySelected:"", accounts:[], managers:[], managerSelected:"", bulkParsed:[] };
+  const S = { ownerUser:"", ownerPass:"", agencies:[], agencySelected:"", accounts:[], managers:[], managerSelected:"", assignManagerId:"", bulkParsed:[] };
 
   const $ = (id) => document.getElementById(id);
   const norm = (s) => String(s || "").trim();
@@ -224,6 +210,7 @@
   const statusClass = (st) => st === "Done" ? "s-good" : st === "Rejected" ? "s-bad" : st === "In Progress" ? "s-neutral" : "s-warn";
   const maskPassword = (p) => { const s=String(p||""); if(!s) return ""; if(s.length<=2) return "•".repeat(s.length); return "•".repeat(Math.min(10, Math.max(1,s.length-2))) + s.slice(-2); };
   const ownerHeaders = () => ({"X-Owner-User":S.ownerUser || "","X-Owner-Pass":S.ownerPass || ""});
+  const selectedManager = () => S.managers.find(m => m.id === S.assignManagerId) || null;
 
   function setLang(lang){
     LANG = lang; const d = I18N[lang] || I18N.ar; document.documentElement.lang = lang; document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
@@ -234,16 +221,16 @@
   }
 
   function setTheme(theme){
-    THEME = theme === "light" ? "light" : "dark";
-    document.body.dataset.theme = THEME;
+    THEME = theme === 'light' ? 'light' : 'dark';
+    document.body.classList.toggle('light', THEME === 'light');
     $("themeDark").classList.toggle("active", THEME === "dark");
     $("themeLight").classList.toggle("active", THEME === "light");
   }
 
   function toast(title, msg){ const t=$("toast"); $("toastTitle").textContent=title; $("toastMsg").textContent=msg; t.classList.add("show"); clearTimeout(toast._tm); toast._tm=setTimeout(()=>t.classList.remove("show"), 3500); }
-  function persistSession(){ sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ ownerUser:S.ownerUser, ownerPass:S.ownerPass, agencySelected:S.agencySelected, managerSelected:S.managerSelected, lang:LANG, theme:THEME })); }
-  function restoreSession(){ try { const raw=sessionStorage.getItem(STORAGE_KEY); if(!raw) return; const d=JSON.parse(raw); if(d.lang) setLang(d.lang); if(d.theme) setTheme(d.theme); S.ownerUser=norm(d.ownerUser); S.ownerPass=norm(d.ownerPass); S.agencySelected=norm(d.agencySelected); S.managerSelected=norm(d.managerSelected); $("inUser").value=S.ownerUser; $("inPass").value=S.ownerPass; } catch(_){} }
-  function setAuthState(authed){ $("authState").textContent = authed ? "Owner" : "Guest"; $("btnLogout").disabled=!authed; ["btnRefresh","btnBulk","btnAddOne","selAgency","inSearch","selStatusFilter","btnSendAgencyAll","btnOpenManager","selManagerView"].forEach(id=>$(id).disabled=!authed); $("pillText").textContent = authed ? (LANG === "ar" ? "متصل" : "Connected") : (LANG === "ar" ? "غير متصل" : "Disconnected"); }
+  function persistSession(){ sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ ownerUser:S.ownerUser, ownerPass:S.ownerPass, agencySelected:S.agencySelected, managerSelected:S.managerSelected, assignManagerId:S.assignManagerId, lang:LANG, theme:THEME })); }
+  function restoreSession(){ try { const raw=sessionStorage.getItem(STORAGE_KEY); if(!raw) return; const d=JSON.parse(raw); if(d.lang) setLang(d.lang); if(d.theme) setTheme(d.theme); S.ownerUser=norm(d.ownerUser); S.ownerPass=norm(d.ownerPass); S.agencySelected=norm(d.agencySelected); S.managerSelected=norm(d.managerSelected); S.assignManagerId=norm(d.assignManagerId); $("inUser").value=S.ownerUser; $("inPass").value=S.ownerPass; } catch(_){} }
+  function setAuthState(authed){ $("authState").textContent = authed ? "Owner" : "Guest"; $("btnLogout").disabled=!authed; ["btnRefresh","btnBulk","btnAddOne","selAgency","inSearch","selStatusFilter","btnSendAgencyAll","btnOpenManager","selManagerView","selAssignManager"].forEach(id=>$(id).disabled=!authed); $("pillText").textContent = authed ? (LANG === "ar" ? "متصل" : "Connected") : (LANG === "ar" ? "غير متصل" : "Disconnected"); }
   async function apiFetch(url, options={}){ const controller = new AbortController(); const timer=setTimeout(()=>controller.abort(), 15000); try{ const response = await fetch(url, {...options, headers:{...(options.headers||{})}, signal:controller.signal}); const data=await response.json().catch(()=>({})); if(!response.ok) return {ok:false,status:response.status,error:data.error||`HTTP ${response.status}`}; return data; } catch(err){ return {ok:false,error:err?.name==="AbortError"?"Request timeout":(err?.message||"Network error")}; } finally{ clearTimeout(timer);} }
 
   const API = {
@@ -259,22 +246,24 @@
     createManager:(payload)=>apiFetch(OWNER_BASE+"/manager",{method:"POST",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
     editManager:(payload)=>apiFetch(OWNER_BASE+"/manager",{method:"PUT",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
     deleteManager:(payload)=>apiFetch(OWNER_BASE+"/manager",{method:"DELETE",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
-    assignManager:(id)=>apiFetch(OWNER_BASE+"/manager/assign",{method:"POST",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify({id})}),
+    selectForManager:(payload)=>apiFetch(OWNER_BASE+"/manager/select",{method:"POST",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
+    removeFromManager:(payload)=>apiFetch(OWNER_BASE+"/manager/select",{method:"DELETE",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
     managerStatus:(payload)=>apiFetch(OWNER_BASE+"/manager/status",{method:"POST",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)})
   };
 
   function renderAgencies(){ const sel=$("selAgency"); sel.innerHTML=""; const o0=document.createElement("option"); o0.value=""; o0.textContent = LANG === "ar" ? "(اختر وكالة)" : "(Select agency)"; sel.appendChild(o0); for(const a of S.agencies){ const o=document.createElement("option"); o.value=a.agency; o.textContent=`${a.agency} (${a.count})`; sel.appendChild(o); } if(S.agencySelected) sel.value=S.agencySelected; $("kpiAgencies").textContent=String(S.agencies.length||0); }
-  function applyFilters(list){ const q=norm($("inSearch").value).toLowerCase(); const st=$("selStatusFilter").value; let out=list.slice(); if(st) out=out.filter(a=>statusValue(a.status)===st); if(q) out=out.filter(a=>[a.agency,a.email,a.passport,a.status].some(v=>String(v||"").toLowerCase().includes(q))); return out.sort((a,b)=> (STATUS_PRIORITY[statusValue(a.status)]-STATUS_PRIORITY[statusValue(b.status)]) || String(a.email).localeCompare(String(b.email))); }
-  function renderAccounts(){ const tb=$("tbody"); if(!S.agencySelected){ tb.innerHTML=`<tr><td colspan="7" class="muted" style="padding:16px">${LANG === "ar" ? "اختر وكالة أولاً" : "Select agency first"}</td></tr>`; $("kpiAccounts").textContent="0"; return; } const filtered=applyFilters(S.accounts); $("kpiAccounts").textContent=String(filtered.length||0); if(!filtered.length){ tb.innerHTML=`<tr><td colspan="7" class="muted" style="padding:16px">${LANG === "ar" ? "لا توجد بيانات" : "No data"}</td></tr>`; return; } tb.innerHTML=filtered.map((a,i)=>`<tr><td class="mono">${i+1}</td><td class="mono">${escapeHtml(a.agency||S.agencySelected)}</td><td class="mono">${escapeHtml(a.email||"")}</td><td class="mono">${escapeHtml(maskPassword(a.password||""))}</td><td class="mono">${escapeHtml(a.passport||"")}</td><td><span class="status ${statusClass(statusValue(a.status))}"><span class="dot"></span>${escapeHtml(statusValue(a.status))}</span></td><td><div class="row"><button class="btn" onclick="UI.openEdit('${encodeURIComponent(a.email||"")}','${encodeURIComponent(a.passport||"")}')">${LANG === "ar" ? "تعديل" : "Edit"}</button><button class="btn danger" onclick="UI.del('${encodeURIComponent(a.email||"")}','${encodeURIComponent(a.passport||"")}')">${LANG === "ar" ? "حذف" : "Delete"}</button></div></td></tr>`).join(""); }
-  function renderManagers(){ $("kpiManagers").textContent=String(S.managers.length||0); $("kpiAssigned").textContent=String(S.managers.reduce((n,m)=>n+(m.assignedCount||0),0)); const tb=$("managersTbody"); const sel=$("selManagerView"); sel.innerHTML='<option value="">(Select manager)</option>'; if(!S.managers.length){ tb.innerHTML='<tr><td colspan="8" class="muted" style="padding:16px">—</td></tr>'; renderManagerQueue(); return; } tb.innerHTML=S.managers.map((m,i)=>{ const tag = m.telegramChatId ? escapeHtml(m.telegramChatId) : "default"; const disabled = !m.isActive ? '<span class="tag">inactive</span>' : ''; return `<tr><td>${i+1}</td><td class="mono">${escapeHtml(m.id)}</td><td>${escapeHtml(m.name)}</td><td>${m.desiredCount}</td><td>${m.perAgencyLimit}</td><td>${m.assignedCount||0}</td><td class="mono">${tag}</td><td><div class="row"><button class="btn" onclick="UI.editManager('${encodeURIComponent(m.id)}')">Edit</button><button class="btn primary" onclick="UI.assignManager('${encodeURIComponent(m.id)}')">Reassign</button><button class="btn danger" onclick="UI.deleteManager('${encodeURIComponent(m.id)}')">Delete</button>${disabled}</div></td></tr>`; }).join(''); for(const m of S.managers){ const o=document.createElement('option'); o.value=m.id; o.textContent=`${m.name} (${m.assignedCount||0}/${m.desiredCount})`; sel.appendChild(o); } if(S.managerSelected) sel.value=S.managerSelected; renderManagerQueue(); }
-  function renderManagerQueue(){ const tb=$("managerQueueTbody"); const manager=S.managers.find(m=>m.id===S.managerSelected); if(!manager){ tb.innerHTML='<tr><td colspan="6" class="muted" style="padding:16px">اختر مديراً</td></tr>'; return; } const queue=(manager.queue||[]).slice().sort((a,b)=> (STATUS_PRIORITY[statusValue(a.status)]-STATUS_PRIORITY[statusValue(b.status)]) || String(a.agency).localeCompare(String(b.agency))); if(!queue.length){ tb.innerHTML='<tr><td colspan="6" class="muted" style="padding:16px">No assigned accounts</td></tr>'; return; } tb.innerHTML=queue.map((a,i)=>`<tr><td>${i+1}</td><td class="mono">${escapeHtml(a.agency||"")}</td><td class="mono">${escapeHtml(a.email||"")}</td><td class="mono">${escapeHtml(a.passport||"")}</td><td><span class="status ${statusClass(statusValue(a.status))}"><span class="dot"></span>${escapeHtml(statusValue(a.status))}</span></td><td><div class="row"><button class="btn" onclick="UI.managerSetStatus('${encodeURIComponent(manager.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}','Done')">Done</button><button class="btn" onclick="UI.managerSetStatus('${encodeURIComponent(manager.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}','In Progress')">In Progress</button><button class="btn" onclick="UI.managerSetStatus('${encodeURIComponent(manager.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}','Rejected')">Rejected</button><button class="btn" onclick="UI.managerSetStatus('${encodeURIComponent(manager.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}','Pending')">Pending</button></div></td></tr>`).join(''); }
+  function renderManagerSelectors(){ const sel1=$("selManagerView"), sel2=$("selAssignManager"); sel1.innerHTML='<option value="">(اختر مدير)</option>'; sel2.innerHTML='<option value="">(اختر مدير)</option>'; for(const m of S.managers){ const text=`${m.name} (${m.assignedCount||0}/${m.desiredCount})`; const o1=document.createElement('option'); o1.value=m.id; o1.textContent=text; sel1.appendChild(o1); const o2=document.createElement('option'); o2.value=m.id; o2.textContent=text; sel2.appendChild(o2); } if(S.managerSelected) sel1.value=S.managerSelected; if(S.assignManagerId) sel2.value=S.assignManagerId; }
+  function applyFilters(list){ const q=norm($("inSearch").value).toLowerCase(); const st=$("selStatusFilter").value; let out=list.slice(); if(st) out=out.filter(a=>statusValue(a.status)===st); if(q) out=out.filter(a=>[a.agency,a.email,a.passport,a.status,a.assignedManagerId].some(v=>String(v||"").toLowerCase().includes(q))); return out.sort((a,b)=> (STATUS_PRIORITY[statusValue(a.status)]-STATUS_PRIORITY[statusValue(b.status)]) || String(a.email).localeCompare(String(b.email))); }
+  function renderAccounts(){ const tb=$("tbody"); renderManagerSelectors(); if(!S.agencySelected){ tb.innerHTML=`<tr><td colspan="8" class="muted" style="padding:16px">${LANG === "ar" ? "اختر وكالة أولاً" : "Select agency first"}</td></tr>`; $("kpiAccounts").textContent="0"; return; } const filtered=applyFilters(S.accounts); $("kpiAccounts").textContent=String(filtered.length||0); if(!filtered.length){ tb.innerHTML=`<tr><td colspan="8" class="muted" style="padding:16px">${LANG === "ar" ? "لا توجد بيانات" : "No data"}</td></tr>`; return; } tb.innerHTML=filtered.map((a,i)=>{ const assigned=norm(a.assignedManagerId); const disabledAssign = !S.assignManagerId || !!assigned || !["Pending","In Progress"].includes(statusValue(a.status)); const sameAsSelected = assigned && assigned===S.assignManagerId; return `<tr><td class="mono">${i+1}</td><td class="mono">${escapeHtml(a.agency||S.agencySelected)}</td><td class="mono">${escapeHtml(a.email||"")}</td><td class="mono">${escapeHtml(maskPassword(a.password||""))}</td><td class="mono">${escapeHtml(a.passport||"")}</td><td><span class="status ${statusClass(statusValue(a.status))}"><span class="dot"></span>${escapeHtml(statusValue(a.status))}</span></td><td>${assigned?`<span class="tag mono">${escapeHtml(assigned)}</span>`:'<span class="mini">—</span>'}</td><td><div class="row"><button class="btn" onclick="UI.openEdit('${encodeURIComponent(a.email||"")}','${encodeURIComponent(a.passport||"")}')">${LANG === "ar" ? "تعديل" : "Edit"}</button><button class="btn danger" onclick="UI.del('${encodeURIComponent(a.email||"")}','${encodeURIComponent(a.passport||"")}')">${LANG === "ar" ? "حذف" : "Delete"}</button><button class="btn primary" ${disabledAssign?'disabled':''} onclick="UI.selectForManager('${encodeURIComponent(a.agency||S.agencySelected)}','${encodeURIComponent(a.email||"")}','${encodeURIComponent(a.passport||"")}')">اختيار للمدير</button>${sameAsSelected?`<button class="btn" onclick="UI.removeFromManager('${encodeURIComponent(S.assignManagerId)}','${encodeURIComponent(a.agency||S.agencySelected)}','${encodeURIComponent(a.email||"")}','${encodeURIComponent(a.passport||"")}')">إزالة من المدير</button>`:''}</div></td></tr>`; }).join(""); }
+  function renderManagers(){ $("kpiManagers").textContent=String(S.managers.length||0); $("kpiAssigned").textContent=String(S.managers.reduce((n,m)=>n+(m.assignedCount||0),0)); const tb=$("managersTbody"); renderManagerSelectors(); if(!S.managers.length){ tb.innerHTML='<tr><td colspan="6" class="muted" style="padding:16px">—</td></tr>'; renderManagerQueue(); return; } tb.innerHTML=S.managers.map((m,i)=>{ const disabled = !m.isActive ? '<span class="tag">inactive</span>' : ''; return `<tr><td>${i+1}</td><td class="mono">${escapeHtml(m.id)}</td><td>${escapeHtml(m.name)}</td><td>${m.desiredCount}</td><td>${m.assignedCount||0}</td><td><div class="row"><button class="btn" onclick="UI.editManager('${encodeURIComponent(m.id)}')">Edit</button><button class="btn" onclick="UI.viewManager('${encodeURIComponent(m.id)}')">View</button><button class="btn danger" onclick="UI.deleteManager('${encodeURIComponent(m.id)}')">Delete</button>${disabled}</div></td></tr>`; }).join(''); renderManagerQueue(); }
+  function renderManagerQueue(){ const tb=$("managerQueueTbody"); const manager=S.managers.find(m=>m.id===S.managerSelected); if(!manager){ tb.innerHTML='<tr><td colspan="6" class="muted" style="padding:16px">اختر مديراً</td></tr>'; return; } const queue=(manager.queue||[]).slice().sort((a,b)=> (STATUS_PRIORITY[statusValue(a.status)]-STATUS_PRIORITY[statusValue(b.status)]) || String(a.agency).localeCompare(String(b.agency))); if(!queue.length){ tb.innerHTML='<tr><td colspan="6" class="muted" style="padding:16px">No selected accounts</td></tr>'; return; } tb.innerHTML=queue.map((a,i)=>`<tr><td>${i+1}</td><td class="mono">${escapeHtml(a.agency||"")}</td><td class="mono">${escapeHtml(a.email||"")}</td><td class="mono">${escapeHtml(a.passport||"")}</td><td><span class="status ${statusClass(statusValue(a.status))}"><span class="dot"></span>${escapeHtml(statusValue(a.status))}</span></td><td><div class="row"><button class="btn" onclick="UI.managerSetStatus('${encodeURIComponent(manager.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}','Done')">Done</button><button class="btn" onclick="UI.managerSetStatus('${encodeURIComponent(manager.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}','In Progress')">In Progress</button><button class="btn" onclick="UI.managerSetStatus('${encodeURIComponent(manager.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}','Rejected')">Rejected</button><button class="btn" onclick="UI.managerSetStatus('${encodeURIComponent(manager.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}','Pending')">Pending</button><button class="btn danger" onclick="UI.removeFromManager('${encodeURIComponent(manager.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}')">Remove</button></div></td></tr>`).join(''); }
 
   function validateAccountForUI(account, {requirePassword=false}={}){ const email=norm(account.email), password=norm(account.password), passport=norm(account.passport), status=statusValue(account.status); if(!isValidEmail(email)) return {ok:false,error:'Invalid email'}; if(requirePassword && !password) return {ok:false,error:'Password required'}; if(!isValidPassport(passport)) return {ok:false,error:'Invalid passport'}; return {ok:true,value:{email,password,passport,status}}; }
 
   const UI = window.UI = {
     async login(){ const u=norm($("inUser").value), p=norm($("inPass").value); if(!u||!p) return toast('Login','Enter user & pass'); const res=await API.login(u,p); if(!res.ok){ setAuthState(false); return toast('Login',res.error||'Login failed'); } S.ownerUser=u; S.ownerPass=p; persistSession(); setAuthState(true); await UI.refreshAll(); toast('Login','Logged in'); },
-    logout(){ S.ownerUser=""; S.ownerPass=""; S.agencies=[]; S.accounts=[]; S.managers=[]; S.agencySelected=""; S.managerSelected=""; sessionStorage.removeItem(STORAGE_KEY); setAuthState(false); renderAgencies(); renderAccounts(); renderManagers(); toast('Logout','Logged out'); },
-    async refreshAll(){ const [a,m] = await Promise.all([API.agencies(), API.managers()]); if(!a.ok) return toast('Agencies',a.error||'Failed'); S.agencies=Array.isArray(a.agencies)?a.agencies:[]; renderAgencies(); if(m.ok) S.managers=Array.isArray(m.managers)?m.managers:[]; renderManagers(); if(S.agencySelected && $("selAgency").value !== S.agencySelected) S.agencySelected=""; if(S.agencySelected) await UI.loadAgency(S.agencySelected); else { S.accounts=[]; renderAccounts(); } },
+    logout(){ S.ownerUser=""; S.ownerPass=""; S.agencies=[]; S.accounts=[]; S.managers=[]; S.agencySelected=""; S.managerSelected=""; S.assignManagerId=""; sessionStorage.removeItem(STORAGE_KEY); $("inUser").value=''; $("inPass").value=''; setAuthState(false); renderAgencies(); renderAccounts(); renderManagers(); },
+    async refreshAll(){ const ares=await API.agencies(); if(!ares.ok) return toast('Agencies',ares.error||'Failed'); S.agencies=Array.isArray(ares.agencies)?ares.agencies:[]; renderAgencies(); await UI.loadManagers(); if(S.agencySelected) await UI.loadAgency(S.agencySelected); else { S.accounts=[]; renderAccounts(); } },
     async loadAgency(agency){ S.agencySelected=agency; persistSession(); const res=await API.accounts(agency); if(!res.ok){ S.accounts=[]; renderAccounts(); return toast('Accounts',res.error||'Failed'); } S.accounts=(Array.isArray(res.accounts)?res.accounts:[]).map(a=>({...a,agency:agency})); renderAccounts(); },
     async sendAgencyAll(){ if(!S.agencySelected) return toast('Telegram','اختر وكالة'); const res=await API.sendAgencyAll(S.agencySelected); toast('Telegram', res.ok ? `Sent ${res.count} accounts` : (res.error || 'Failed')); },
     openBulk(){ if(!S.agencySelected) return toast('Bulk','اختر وكالة'); $("bulkText").value=''; $("bulkStats").textContent='—'; $("bulkList").innerHTML=''; $("btnBulkAdd").disabled=true; S.bulkParsed=[]; $("modalBulk").classList.add('show'); },
@@ -282,29 +271,32 @@
     openAddOne(){ if(!S.agencySelected) return toast('Add','اختر وكالة'); UI._oneMode='add'; $("oneTitle").textContent='Add account'; $("oneSub").textContent=`Agency: ${S.agencySelected}`; $("oneEmail").value=''; $("onePass").value=''; $("onePassport").value=''; $("oneStatus").value='Pending'; $("modalOne").classList.add('show'); },
     openEdit(emailEnc, passportEnc){ const email=decodeURIComponent(emailEnc||''), passport=decodeURIComponent(passportEnc||''); const found=S.accounts.find(a=>normEmail(a.email)===normEmail(email) && normPassport(a.passport)===normPassport(passport)); if(!found) return toast('Edit','Account not found'); UI._oneMode='edit'; UI._match={email:found.email, passport:found.passport}; $("oneTitle").textContent='Edit account'; $("oneSub").textContent=`Agency: ${S.agencySelected}`; $("oneEmail").value=found.email||''; $("onePass").value=found.password||''; $("onePassport").value=found.passport||''; $("oneStatus").value=statusValue(found.status); $("modalOne").classList.add('show'); },
     closeOne(){ $("modalOne").classList.remove('show'); },
-    async saveOne(){ const parsed=validateAccountForUI({email:$("oneEmail").value,password:$("onePass").value,passport:$("onePassport").value,status:$("oneStatus").value},{requirePassword:UI._oneMode==='add'}); if(!parsed.ok) return toast('Save',parsed.error); const payload={agency:S.agencySelected,...parsed.value}; let res; if(UI._oneMode==='add') res=await API.createAccount(payload); else res=await API.editAccount({...payload,matchEmail:UI._match.email,matchPassport:UI._match.passport}); if(!res.ok) return toast(UI._oneMode==='add'?'Add':'Edit',res.error||'Failed'); UI.closeOne(); await UI.loadAgency(S.agencySelected); await UI.loadManagers(); toast('Save','Saved'); },
-    async del(emailEnc, passportEnc){ const email=decodeURIComponent(emailEnc||''), passport=decodeURIComponent(passportEnc||''); if(!confirm(`Delete ${email} / ${passport}?`)) return; const res=await API.deleteAccount({agency:S.agencySelected,email,passport}); if(!res.ok) return toast('Delete',res.error||'Failed'); await UI.loadAgency(S.agencySelected); await UI.loadManagers(); toast('Delete','Deleted'); },
+    async saveOne(){ const parsed=validateAccountForUI({email:$("oneEmail").value,password:$("onePass").value,passport:$("onePassport").value,status:$("oneStatus").value},{requirePassword:UI._oneMode==='add'}); if(!parsed.ok) return toast('Save',parsed.error); const payload={agency:S.agencySelected,...parsed.value}; let res; if(UI._oneMode==='add') res=await API.createAccount(payload); else res=await API.editAccount({...payload,matchEmail:UI._match.email,matchPassport:UI._match.passport}); if(!res.ok) return toast(UI._oneMode==='add'?'Add':'Edit',res.error||'Failed'); UI.closeOne(); await UI.loadManagers(); await UI.loadAgency(S.agencySelected); toast('Save','Saved'); },
+    async del(emailEnc, passportEnc){ const email=decodeURIComponent(emailEnc||''), passport=decodeURIComponent(passportEnc||''); if(!confirm(`Delete ${email} / ${passport}?`)) return; const res=await API.deleteAccount({agency:S.agencySelected,email,passport}); if(!res.ok) return toast('Delete',res.error||'Failed'); await UI.loadManagers(); await UI.loadAgency(S.agencySelected); toast('Delete','Deleted'); },
     parseBulk(){ const raw=$("bulkText").value||''; $("bulkList").innerHTML=''; $("btnBulkAdd").disabled=true; S.bulkParsed=[]; const tryParse=(txt)=>{ try{return JSON.parse(txt);}catch(_){return null;} }; let obj=tryParse(raw); if(obj==null){ const m=raw.match(/\[[\s\S]*\]/); if(m) obj=tryParse(m[0]); } let arr=null; if(Array.isArray(obj)) arr=obj; else if(obj && Array.isArray(obj.accounts)) arr=obj.accounts; else if(obj && Array.isArray(obj.data)) arr=obj.data; if(!arr){ $("bulkStats").textContent='Invalid JSON'; return; } const cleaned=arr.map(a=>({email:norm(a?.email),password:norm(a?.password),passport:norm(a?.passport),status:statusValue(a?.status)})); const dedup=uniqByKey(cleaned, x=>`${normEmail(x.email)}||${normPassport(x.passport)}`); const valid=[], invalid=[]; for(let i=0;i<dedup.length;i++){ const p=validateAccountForUI(dedup[i],{requirePassword:true}); if(p.ok) valid.push(p.value); else invalid.push({i,error:p.error,item:dedup[i]}); } $("bulkStats").textContent=`Parsed: ${dedup.length}\nValid: ${valid.length}\nInvalid: ${invalid.length}\nAgency: ${S.agencySelected}`; dedup.slice(0,40).forEach(item=>{ const li=document.createElement('li'); const p=validateAccountForUI(item,{requirePassword:true}); li.innerHTML=`<div class="mono">${escapeHtml(item.email||'(no email)')}</div><div class="mini">${escapeHtml(item.passport||'(no passport)')} — ${escapeHtml(statusValue(item.status))}</div><div class="tag">${p.ok?'ok':escapeHtml(p.error)}</div>`; $("bulkList").appendChild(li); }); S.bulkParsed=valid; $("btnBulkAdd").disabled=!valid.length; },
     async bulkAdd(){ const items=S.bulkParsed||[]; if(!items.length) return; let added=0, skipped=0, failures=0; for(const item of items){ const res=await API.createAccount({agency:S.agencySelected,...item}); if(res.ok) added++; else if(res.status===409) skipped++; else failures++; } UI.closeBulk(); await UI.loadAgency(S.agencySelected); toast('Bulk',`Added: ${added}\nSkipped: ${skipped}\nFailed: ${failures}`); },
     async loadManagers(){ const res=await API.managers(); if(res.ok){ S.managers=Array.isArray(res.managers)?res.managers:[]; renderManagers(); persistSession(); } return res; },
-    openManager(){ UI._mgrMode='add'; UI._mgrTarget=''; $("managerTitle").textContent='مدير جديد'; $("mgrId").disabled=false; $("mgrId").value=''; $("mgrName").value=''; $("mgrDesired").value='8'; $("mgrPerAgency").value='2'; $("mgrChatId").value=''; $("modalManager").classList.add('show'); },
-    editManager(idEnc){ const id=decodeURIComponent(idEnc||''); const m=S.managers.find(x=>x.id===id); if(!m) return; UI._mgrMode='edit'; UI._mgrTarget=id; $("managerTitle").textContent='تعديل مدير'; $("mgrId").disabled=true; $("mgrId").value=m.id; $("mgrName").value=m.name||''; $("mgrDesired").value=m.desiredCount||8; $("mgrPerAgency").value=m.perAgencyLimit||2; $("mgrChatId").value=m.telegramChatId||''; $("modalManager").classList.add('show'); },
+    openManager(){ UI._mgrMode='add'; $("managerTitle").textContent='مدير جديد'; $("mgrId").disabled=false; $("mgrId").value=''; $("mgrName").value=''; $("mgrDesired").value='8'; $("modalManager").classList.add('show'); },
+    editManager(idEnc){ const id=decodeURIComponent(idEnc||''); const m=S.managers.find(x=>x.id===id); if(!m) return; UI._mgrMode='edit'; $("managerTitle").textContent='تعديل مدير'; $("mgrId").disabled=true; $("mgrId").value=m.id; $("mgrName").value=m.name||''; $("mgrDesired").value=m.desiredCount||8; $("modalManager").classList.add('show'); },
+    viewManager(idEnc){ const id=decodeURIComponent(idEnc||''); S.managerSelected=id; S.assignManagerId=id; persistSession(); renderManagers(); renderAccounts(); document.querySelector('[data-tab="managersTab"]').click(); },
     closeManager(){ $("modalManager").classList.remove('show'); },
-    async saveManager(){ const payload={id:norm($("mgrId").value),name:norm($("mgrName").value),desiredCount:Number($("mgrDesired").value||0),perAgencyLimit:Number($("mgrPerAgency").value||2),telegramChatId:norm($("mgrChatId").value)}; if(!payload.id || !payload.name || payload.desiredCount<1) return toast('Manager','Missing fields'); const res = UI._mgrMode==='edit' ? await API.editManager(payload) : await API.createManager(payload); if(!res.ok) return toast('Manager',res.error||'Failed'); UI.closeManager(); await UI.loadManagers(); toast('Manager','Saved'); },
-    async deleteManager(idEnc){ const id=decodeURIComponent(idEnc||''); if(!confirm(`Delete manager ${id}?`)) return; const res=await API.deleteManager({id}); if(!res.ok) return toast('Manager',res.error||'Failed'); if(S.managerSelected===id) S.managerSelected=''; await UI.loadManagers(); toast('Manager','Deleted'); },
-    async assignManager(idEnc){ const id=decodeURIComponent(idEnc||''); const res=await API.assignManager(id); if(!res.ok) return toast('Assign',res.error||'Failed'); await UI.loadManagers(); S.managerSelected=id; renderManagers(); toast('Reassign',`Distribution rebuilt for ${id}`); },
-    async managerSetStatus(idEnc, agencyEnc, emailEnc, passportEnc, status){ const id=decodeURIComponent(idEnc||''), agency=decodeURIComponent(agencyEnc||''), email=decodeURIComponent(emailEnc||''), passport=decodeURIComponent(passportEnc||''); const res=await API.managerStatus({id,agency,email,passport,status}); if(!res.ok) return toast('Status',res.error||'Failed'); await UI.loadManagers(); if(S.agencySelected===agency) await UI.loadAgency(agency); S.managerSelected=id; renderManagers(); toast('Status', status==='Done' ? 'Marked Done and queue refreshed' : `Marked ${status}`); }
+    async saveManager(){ const payload={id:norm($("mgrId").value),name:norm($("mgrName").value),desiredCount:Number($("mgrDesired").value||0)}; if(!payload.id || !payload.name || payload.desiredCount<1) return toast('Manager','Missing fields'); const res = UI._mgrMode==='edit' ? await API.editManager(payload) : await API.createManager(payload); if(!res.ok) return toast('Manager',res.error||'Failed'); UI.closeManager(); await UI.loadManagers(); renderAccounts(); toast('Manager','Saved'); },
+    async deleteManager(idEnc){ const id=decodeURIComponent(idEnc||''); if(!confirm(`Delete manager ${id}?`)) return; const res=await API.deleteManager({id}); if(!res.ok) return toast('Manager',res.error||'Failed'); if(S.managerSelected===id) S.managerSelected=''; if(S.assignManagerId===id) S.assignManagerId=''; await UI.loadManagers(); if(S.agencySelected) await UI.loadAgency(S.agencySelected); toast('Manager','Deleted'); },
+    async selectForManager(agencyEnc,emailEnc,passportEnc){ const managerId=S.assignManagerId; if(!managerId) return toast('Manager','اختر مدير أولاً'); const agency=decodeURIComponent(agencyEnc||''), email=decodeURIComponent(emailEnc||''), passport=decodeURIComponent(passportEnc||''); const res=await API.selectForManager({id:managerId,agency,email,passport}); if(!res.ok) return toast('Manager',res.error||'Failed'); await UI.loadManagers(); if(S.agencySelected===agency) await UI.loadAgency(agency); S.managerSelected=managerId; renderManagers(); toast('Manager','تم اختيار الحساب للمدير'); },
+    async removeFromManager(idEnc, agencyEnc, emailEnc, passportEnc){ const id=decodeURIComponent(idEnc||''), agency=decodeURIComponent(agencyEnc||''), email=decodeURIComponent(emailEnc||''), passport=decodeURIComponent(passportEnc||''); const res=await API.removeFromManager({id,agency,email,passport}); if(!res.ok) return toast('Manager',res.error||'Failed'); await UI.loadManagers(); if(S.agencySelected===agency) await UI.loadAgency(agency); S.managerSelected=id; renderManagers(); toast('Manager','تمت إزالة الحساب من المدير'); },
+    async managerSetStatus(idEnc, agencyEnc, emailEnc, passportEnc, status){ const id=decodeURIComponent(idEnc||''), agency=decodeURIComponent(agencyEnc||''), email=decodeURIComponent(emailEnc||''), passport=decodeURIComponent(passportEnc||''); const res=await API.managerStatus({id,agency,email,passport,status}); if(!res.ok) return toast('Status',res.error||'Failed'); await UI.loadManagers(); if(S.agencySelected===agency) await UI.loadAgency(agency); S.managerSelected=id; renderManagers(); toast('Status', (status==='Done' || status==='Rejected') ? `Marked ${status} and removed from manager` : `Marked ${status}`); }
   };
 
   $("btnLogin").onclick=UI.login; $("btnLogout").onclick=UI.logout; $("btnPing").onclick=async()=>{ const r=await API.ping(); toast('Ping',r.ok?'OK':(r.error||'Failed')); }; $("btnRefresh").onclick=UI.refreshAll; $("btnBulk").onclick=UI.openBulk; $("btnAddOne").onclick=UI.openAddOne; $("btnParse").onclick=UI.parseBulk; $("btnBulkAdd").onclick=UI.bulkAdd; $("btnSaveOne").onclick=UI.saveOne; $("btnSendAgencyAll").onclick=UI.sendAgencyAll; $("btnOpenManager").onclick=UI.openManager; $("btnSaveManager").onclick=UI.saveManager;
   $("selAgency").addEventListener('change', async (e)=>{ const v=e.target.value||''; if(!v){ S.agencySelected=''; S.accounts=[]; persistSession(); renderAccounts(); return; } await UI.loadAgency(v); });
   $("selManagerView").addEventListener('change', (e)=>{ S.managerSelected=e.target.value||''; persistSession(); renderManagerQueue(); });
+  $("selAssignManager").addEventListener('change', (e)=>{ S.assignManagerId=e.target.value||''; persistSession(); renderAccounts(); });
   let searchTimer=null; $("inSearch").addEventListener('input',()=>{ clearTimeout(searchTimer); searchTimer=setTimeout(renderAccounts, SEARCH_DEBOUNCE_MS); }); $("selStatusFilter").addEventListener('change', renderAccounts); $("inPass").addEventListener('keydown',(e)=>{ if(e.key==='Enter') UI.login(); });
   document.querySelectorAll('.tabbtn').forEach(btn=>btn.addEventListener('click',()=>{ document.querySelectorAll('.tabbtn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.querySelectorAll('.tabpane').forEach(p=>p.classList.add('hidden')); $(btn.dataset.tab).classList.remove('hidden'); }));
   $("langAR").onclick=()=>{ setLang('ar'); persistSession(); }; $("langEN").onclick=()=>{ setLang('en'); persistSession(); };
   $("themeDark").onclick=()=>{ setTheme('dark'); persistSession(); }; $("themeLight").onclick=()=>{ setTheme('light'); persistSession(); };
 
-  setTheme(THEME); restoreSession(); setLang(LANG); setAuthState(Boolean(S.ownerUser && S.ownerPass)); renderAgencies(); renderAccounts(); renderManagers(); if(S.ownerUser && S.ownerPass) UI.refreshAll();
+  restoreSession(); setLang(LANG); setTheme(THEME); setAuthState(Boolean(S.ownerUser && S.ownerPass)); renderAgencies(); renderAccounts(); renderManagers(); if(S.ownerUser && S.ownerPass) UI.refreshAll();
 })();
 </script>
 </body>
