@@ -3,151 +3,108 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Owner Control Center</title>
+  <title>Owner Panel</title>
   <style>
     :root{
       --bg:#f3f6fb;
-      --surface:#ffffff;
-      --surface-2:#f8fbff;
-      --surface-3:#eef4fb;
+      --panel:#ffffff;
+      --line:#e5eaf2;
       --text:#0f172a;
       --muted:#64748b;
-      --line:#dbe6f3;
-      --line-strong:#c8d8ea;
       --brand:#2563eb;
-      --brand-soft:#eaf2ff;
+      --brand-2:#eff6ff;
       --good:#16a34a;
       --warn:#d97706;
       --bad:#dc2626;
-      --shadow:0 14px 44px rgba(15,23,42,.08);
-      --shadow-soft:0 8px 24px rgba(15,23,42,.05);
-      --radius:24px;
-      --radius-sm:16px;
+      --radius:20px;
+      --shadow:0 18px 40px rgba(15,23,42,.07);
       --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
       --sans:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,"Noto Sans Arabic","Noto Sans",sans-serif;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{margin:0;font-family:var(--sans);background:
-      radial-gradient(circle at top right, rgba(37,99,235,.08), transparent 22%),
-      radial-gradient(circle at top left, rgba(59,130,246,.08), transparent 20%),
-      linear-gradient(180deg,#f7faff,#eff4fa 52%,#eef3f8 100%);
-      color:var(--text)}
+    body{margin:0;background:linear-gradient(180deg,#f8fbff 0%,#eef3f9 100%);color:var(--text);font-family:var(--sans)}
     button,input,select,textarea{font:inherit}
-    .app{max-width:1580px;margin:0 auto;padding:24px}
-    .shell{display:grid;grid-template-columns:320px minmax(0,1fr);gap:20px;align-items:start}
+    .app{max-width:1560px;margin:0 auto;padding:20px}
+    .shell{display:grid;grid-template-columns:300px 1fr;gap:18px;min-height:calc(100vh - 40px)}
     @media (max-width:1200px){.shell{grid-template-columns:1fr}}
-    .panel{background:rgba(255,255,255,.86);backdrop-filter:blur(12px);border:1px solid rgba(201,214,231,.9);border-radius:var(--radius);box-shadow:var(--shadow)}
-    .sidebar{position:sticky;top:20px;padding:20px}
-    @media (max-width:1200px){.sidebar{position:static}}
-    .brand{display:flex;align-items:center;gap:14px;padding-bottom:18px;border-bottom:1px solid var(--line)}
-    .brand-mark{width:52px;height:52px;border-radius:18px;background:linear-gradient(135deg,#1d4ed8,#60a5fa);box-shadow:inset 0 1px 0 rgba(255,255,255,.55), 0 12px 24px rgba(37,99,235,.22)}
-    .brand-text{display:flex;flex-direction:column;gap:4px}
-    .brand-text strong{font-size:18px;letter-spacing:.2px}
-    .brand-text span{font-size:12px;color:var(--muted)}
-    .auth-box{display:grid;gap:12px;padding:18px 0}
-    .field{display:grid;gap:8px;min-width:0}
-    .field label{font-size:12px;font-weight:700;color:var(--muted)}
-    .control, textarea{
-      width:100%;border:1px solid var(--line);background:#fff;color:var(--text);
-      min-height:46px;padding:12px 14px;border-radius:16px;outline:none;
-      transition:border-color .18s ease, box-shadow .18s ease, transform .18s ease;
-      box-shadow:0 1px 0 rgba(255,255,255,.6) inset;
-    }
-    textarea{min-height:170px;resize:vertical}
-    .control:focus, textarea:focus{border-color:#93c5fd;box-shadow:0 0 0 4px rgba(59,130,246,.12)}
-    .btn{
-      border:1px solid var(--line);background:#fff;color:var(--text);min-height:44px;padding:0 14px;
-      border-radius:14px;display:inline-flex;align-items:center;justify-content:center;gap:10px;
-      cursor:pointer;font-weight:800;transition:transform .16s ease, border-color .16s ease, background .16s ease, box-shadow .16s ease;
-      box-shadow:var(--shadow-soft);
-    }
-    .btn:hover{transform:translateY(-1px);border-color:var(--line-strong)}
-    .btn:disabled{opacity:.55;cursor:not-allowed;transform:none;box-shadow:none}
-    .btn.primary{background:linear-gradient(180deg,#2f7df6,#2563eb);color:#fff;border-color:#2563eb}
-    .btn.primary:hover{border-color:#1d4ed8}
+    .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .sidebar{padding:18px;display:flex;flex-direction:column;gap:16px;position:sticky;top:20px;height:fit-content}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:46px;height:46px;border-radius:16px;background:linear-gradient(135deg,#60a5fa,#2563eb);box-shadow:0 10px 22px rgba(37,99,235,.22)}
+    .brand h1{margin:0;font-size:20px}
+    .brand p{margin:4px 0 0;color:var(--muted);font-size:13px}
+    .stack{display:flex;flex-direction:column;gap:10px}
+    .field{display:flex;flex-direction:column;gap:7px}
+    .field label{font-size:12px;color:var(--muted)}
+    .input, .select, .textarea{width:100%;border:1px solid var(--line);background:#fff;border-radius:16px;padding:12px 14px;outline:none;color:var(--text)}
+    .textarea{min-height:220px;resize:vertical;font-family:var(--mono);font-size:12px;direction:ltr;text-align:left}
+    .input:focus,.select:focus,.textarea:focus{border-color:#93c5fd;box-shadow:0 0 0 4px rgba(37,99,235,.08)}
+    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .btn{border:1px solid var(--line);background:#fff;color:var(--text);border-radius:16px;padding:11px 14px;cursor:pointer;font-weight:700;transition:.16s ease;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+    .btn:hover{transform:translateY(-1px)}
+    .btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+    .btn.soft{background:var(--brand-2);border-color:#bfdbfe;color:#1d4ed8}
     .btn.good{background:#f0fdf4;border-color:#bbf7d0;color:#166534}
     .btn.warn{background:#fff7ed;border-color:#fed7aa;color:#c2410c}
     .btn.danger{background:#fef2f2;border-color:#fecaca;color:#b91c1c}
-    .btn.soft{background:var(--surface-2)}
     .btn.block{width:100%}
-    .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;font-size:12px;color:var(--muted);font-weight:700}
-    .dot{width:8px;height:8px;border-radius:50%;background:#94a3b8}
-    .status-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;font-size:12px;font-weight:900;border:1px solid var(--line);background:#fff}
-    .s-good .dot{background:var(--good)}
-    .s-bad .dot{background:var(--bad)}
-    .s-neutral .dot{background:var(--brand)}
-    .s-warn .dot{background:var(--warn)}
-    .meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding-top:18px;border-top:1px solid var(--line)}
-    .mini-card{padding:14px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,#fff,#f9fbff)}
-    .mini-card strong{display:block;font-size:22px;line-height:1.1;margin-bottom:4px}
-    .mini-card span{font-size:12px;color:var(--muted);font-weight:700}
-    .stack{display:grid;gap:10px}
-    .content{display:grid;gap:20px}
-    .topbar{padding:18px 20px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px}
-    .topbar-left{display:flex;align-items:center;gap:14px;min-width:0}
-    .headline{display:flex;flex-direction:column;gap:6px;min-width:0}
-    .headline h1{margin:0;font-size:22px;letter-spacing:.2px}
-    .headline p{margin:0;font-size:13px;color:var(--muted)}
-    .topbar-right{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
-    .segmented{display:flex;gap:8px;padding:6px;background:var(--surface-3);border-radius:16px;border:1px solid var(--line)}
-    .segmented button{border:0;background:transparent;color:var(--muted);padding:10px 16px;border-radius:12px;font-weight:900;cursor:pointer}
-    .segmented button.active{background:#fff;color:var(--text);box-shadow:var(--shadow-soft)}
-    .hero{padding:0 20px 20px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-    @media (max-width:1100px){.hero{grid-template-columns:repeat(2,minmax(0,1fr))}}
-    @media (max-width:640px){.hero{grid-template-columns:1fr}}
-    .hero-card{position:relative;overflow:hidden;padding:18px;border:1px solid var(--line);border-radius:22px;background:linear-gradient(180deg,#fff,#f7fbff)}
-    .hero-card::after{content:"";position:absolute;inset:auto -22px -22px auto;width:88px;height:88px;border-radius:50%;background:rgba(37,99,235,.08)}
-    .hero-card span{display:block;font-size:12px;color:var(--muted);font-weight:800;margin-bottom:8px}
-    .hero-card strong{display:block;font-size:30px;line-height:1;font-weight:900}
-    .workspace{padding:0 20px 20px;display:grid;gap:20px}
-    .toolbar{display:grid;grid-template-columns:1.1fr 1fr 220px 240px auto;gap:12px;align-items:end}
-    @media (max-width:1380px){.toolbar{grid-template-columns:1fr 1fr 220px 240px}}
-    @media (max-width:960px){.toolbar{grid-template-columns:1fr 1fr}}
-    @media (max-width:640px){.toolbar{grid-template-columns:1fr}}
-    .toolbar-actions{display:flex;flex-wrap:wrap;gap:10px}
-    .section-card{padding:16px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(180deg,#fff,#fbfdff)}
-    .section-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;padding-bottom:14px;border-bottom:1px solid var(--line);margin-bottom:16px}
-    .section-head h2{margin:0;font-size:16px}
-    .section-head .meta{display:flex;flex-wrap:wrap;gap:10px}
-    .table-shell{overflow:auto;border:1px solid var(--line);border-radius:20px;background:#fff}
+    .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+    .statgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .stat{padding:14px;border:1px solid var(--line);border-radius:18px;background:#fafcff}
+    .stat b{display:block;font-size:24px}
+    .stat span{font-size:12px;color:var(--muted)}
+    .nav{display:flex;gap:10px}
+    .nav button{flex:1}
+    .nav .active{background:#0f172a;border-color:#0f172a;color:#fff}
+    .badge{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 10px;color:var(--muted);font-size:12px}
+    .dot{width:8px;height:8px;border-radius:999px;background:#cbd5e1}
+    .main{display:flex;flex-direction:column;gap:18px}
+    .toolbar{padding:18px;display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap}
+    .toolbar h2{margin:0;font-size:20px}
+    .toolbar p{margin:4px 0 0;color:var(--muted);font-size:13px}
+    .toolbar .right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .content{padding:18px}
+    .section{display:none}
+    .section.active{display:block}
+    .filters{display:grid;grid-template-columns:260px 1fr 200px 260px;gap:10px;margin-bottom:14px}
+    @media (max-width:1300px){.filters{grid-template-columns:1fr 1fr}}
+    @media (max-width:760px){.filters{grid-template-columns:1fr}}
+    .tablebox{overflow:auto;border:1px solid var(--line);border-radius:20px;background:#fff}
     table{width:100%;border-collapse:separate;border-spacing:0;min-width:980px}
-    thead th{position:sticky;top:0;background:#f8fbff;color:var(--muted);font-size:12px;font-weight:900;padding:14px 12px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
-    tbody td{padding:14px 12px;border-bottom:1px solid #edf2f7;font-size:13px;vertical-align:middle;white-space:nowrap}
-    tbody tr:hover{background:#fbfdff}
-    .mono{font-family:var(--mono);font-size:12px}
-    .actions-row{display:flex;flex-wrap:wrap;gap:8px}
-    .muted{color:var(--muted)}
-    .empty{padding:30px 18px;text-align:center;color:var(--muted);font-weight:800}
-    .layout-two{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(360px,.8fr);gap:20px}
-    @media (max-width:1280px){.layout-two{grid-template-columns:1fr}}
-    .manager-list{display:grid;gap:12px}
-    .manager-card{padding:16px;border:1px solid var(--line);border-radius:20px;background:#fff;display:grid;gap:14px}
-    .manager-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
-    .manager-top strong{display:block;font-size:15px}
-    .manager-top span{display:block;margin-top:4px;font-size:12px;color:var(--muted)}
-    .manager-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-    .manager-stats .box{padding:12px;border-radius:16px;background:var(--surface-2);border:1px solid var(--line)}
-    .manager-stats .box b{display:block;font-size:18px}
-    .queue-shell{display:grid;gap:14px}
-    .select-top{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:end}
-    @media (max-width:720px){.select-top{grid-template-columns:1fr}}
-    .toast{position:fixed;left:18px;bottom:18px;min-width:280px;max-width:520px;padding:14px 16px;border-radius:18px;background:rgba(15,23,42,.95);color:#fff;display:none;z-index:50;box-shadow:0 18px 60px rgba(15,23,42,.4)}
-    .toast.show{display:block}
-    .toast b{display:block;margin-bottom:4px;font-size:13px}
-    .toast span{display:block;font-size:12px;line-height:1.65;white-space:pre-wrap;color:rgba(255,255,255,.82)}
-    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(15,23,42,.42);backdrop-filter:blur(8px);padding:20px;z-index:60}
+    thead th{position:sticky;top:0;background:#f8fafc;border-bottom:1px solid var(--line);padding:13px 12px;text-align:right;font-size:12px;color:var(--muted);white-space:nowrap}
+    tbody td{padding:13px 12px;border-bottom:1px solid #edf2f7;font-size:13px;white-space:nowrap;vertical-align:middle}
+    tbody tr:hover{background:#fafcff}
+    .status{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:800;border:1px solid var(--line);background:#fff}
+    .status.done{background:#f0fdf4;border-color:#bbf7d0;color:#166534}.status.done .dot{background:var(--good)}
+    .status.progress{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8}.status.progress .dot{background:#2563eb}
+    .status.rejected{background:#fef2f2;border-color:#fecaca;color:#991b1b}.status.rejected .dot{background:var(--bad)}
+    .status.pending{background:#fff7ed;border-color:#fed7aa;color:#9a3412}.status.pending .dot{background:var(--warn)}
+    .mono{font-family:var(--mono);direction:ltr;text-align:left;display:inline-block}
+    .managergrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+    .manager{border:1px solid var(--line);border-radius:22px;padding:16px;background:linear-gradient(180deg,#fff,#fbfdff)}
+    .managerhead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}
+    .manager h3{margin:0;font-size:16px}.manager small{color:var(--muted)}
+    .managerstats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+    .managerstats div{border:1px solid var(--line);border-radius:16px;padding:10px;background:#fff;text-align:center}
+    .managerstats b{display:block;font-size:18px}.managerstats span{font-size:11px;color:var(--muted)}
+    .queue{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:#fff}
+    .queueitem{display:flex;justify-content:space-between;gap:10px;padding:12px;border-bottom:1px solid #edf2f7}
+    .queueitem:last-child{border-bottom:none}
+    .queueitem strong{display:block;font-size:13px}.queueitem small{color:var(--muted)}
+    .empty{padding:30px 18px;text-align:center;color:var(--muted)}
+    .modal{position:fixed;inset:0;background:rgba(15,23,42,.34);display:none;align-items:center;justify-content:center;padding:18px;z-index:50}
     .modal.show{display:flex}
-    .modal-box{width:min(860px,100%);background:#fff;border:1px solid var(--line);border-radius:28px;box-shadow:0 30px 80px rgba(15,23,42,.25);overflow:hidden}
-    .modal-head,.modal-foot{padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line)}
-    .modal-foot{border-bottom:0;border-top:1px solid var(--line);justify-content:flex-start;flex-wrap:wrap}
-    .modal-body{padding:20px;display:grid;gap:16px}
-    .modal-title{display:grid;gap:4px}
-    .modal-title strong{font-size:18px}
-    .modal-title span{font-size:12px;color:var(--muted)}
-    .preview-list{margin:0;padding:0;list-style:none;display:grid;gap:8px;max-height:320px;overflow:auto}
-    .preview-list li{padding:10px 12px;border:1px solid var(--line);border-radius:14px;background:var(--surface-2)}
-    .hidden{display:none!important}
+    .dialog{width:min(760px,100%);background:#fff;border:1px solid var(--line);border-radius:26px;box-shadow:0 25px 80px rgba(15,23,42,.22);overflow:hidden}
+    .dialog .head,.dialog .foot{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .dialog .foot{border-bottom:none;border-top:1px solid var(--line);justify-content:flex-start;flex-wrap:wrap}
+    .dialog .body{padding:18px}
+    .dialog h3{margin:0;font-size:18px}
+    .split2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media (max-width:760px){.split2{grid-template-columns:1fr}}
+    .toast{position:fixed;left:20px;bottom:20px;background:#111827;color:#fff;padding:14px 16px;border-radius:18px;box-shadow:0 18px 50px rgba(0,0,0,.3);display:none;z-index:80;max-width:420px}
+    .toast.show{display:block}
+    .toast b{display:block;font-size:13px;margin-bottom:4px}.toast div{font-size:12px;line-height:1.6;color:#cbd5e1;white-space:pre-wrap}
   </style>
 </head>
 <body>
@@ -155,670 +112,655 @@
     <div class="shell">
       <aside class="panel sidebar">
         <div class="brand">
-          <div class="brand-mark"></div>
-          <div class="brand-text">
-            <strong>Owner Control</strong>
-            <span id="apiHost">…</span>
-          </div>
-        </div>
-
-        <div class="auth-box">
-          <div class="field">
-            <label>Owner User</label>
-            <input id="inUser" class="control" autocomplete="username" />
-          </div>
-          <div class="field">
-            <label>Owner Pass</label>
-            <input id="inPass" class="control" type="password" autocomplete="current-password" />
-          </div>
-          <div class="stack">
-            <button id="btnLogin" class="btn primary block">Login</button>
-            <div class="actions-row">
-              <button id="btnPing" class="btn soft" style="flex:1">Ping</button>
-              <button id="btnLogout" class="btn danger" style="flex:1" disabled>Logout</button>
-            </div>
+          <div class="logo"></div>
+          <div>
+            <h1>Owner Panel</h1>
+            <p id="apiHost">...</p>
           </div>
         </div>
 
         <div class="stack">
-          <div class="pill"><span class="dot"></span><span id="authState">Guest</span></div>
-          <div class="pill"><span class="dot"></span><span id="pillText">غير متصل</span></div>
+          <div class="field"><label>Owner User</label><input id="inUser" class="input" autocomplete="username" /></div>
+          <div class="field"><label>Owner Pass</label><input id="inPass" class="input" type="password" autocomplete="current-password" /></div>
+          <div class="row">
+            <button id="btnLogin" class="btn primary block">Login</button>
+            <button id="btnLogout" class="btn danger block" disabled>Logout</button>
+          </div>
         </div>
 
-        <div class="meta-grid">
-          <div class="mini-card"><strong id="kpiAgencies">—</strong><span>Agencies</span></div>
-          <div class="mini-card"><strong id="kpiAccounts">—</strong><span>Accounts</span></div>
-          <div class="mini-card"><strong id="kpiManagers">—</strong><span>Managers</span></div>
-          <div class="mini-card"><strong id="kpiAssigned">—</strong><span>Selected</span></div>
+        <div class="statgrid">
+          <div class="stat"><b id="statAgencies">0</b><span>Agencies</span></div>
+          <div class="stat"><b id="statAccounts">0</b><span>Accounts</span></div>
+          <div class="stat"><b id="statManagers">0</b><span>Managers</span></div>
+          <div class="stat"><b id="statSelected">0</b><span>Selected</span></div>
+        </div>
+
+        <div class="nav">
+          <button class="btn active" data-section="accounts">Accounts</button>
+          <button class="btn" data-section="managers">Managers</button>
+        </div>
+
+        <div class="stack">
+          <div class="badge"><span class="dot" id="authDot"></span><span id="authState">Guest</span></div>
+          <button id="btnRefreshAll" class="btn soft" disabled>Refresh</button>
+          <button id="btnPing" class="btn" disabled>Ping</button>
         </div>
       </aside>
 
-      <main class="content">
-        <section class="panel">
-          <div class="topbar">
-            <div class="topbar-left">
-              <div class="headline">
-                <h1>لوحة التحكم</h1>
-                <p>Accounts · Managers · Agency Delivery · Visits</p>
-              </div>
+      <main class="main">
+        <section class="panel section active" id="section-accounts">
+          <div class="toolbar">
+            <div>
+              <h2>Accounts</h2>
+              <p id="selectedAgencyLabel">—</p>
             </div>
-            <div class="topbar-right">
-              <div class="segmented">
-                <button class="tabbtn active" data-tab="accountsTab">Accounts</button>
-                <button class="tabbtn" data-tab="managersTab">Managers</button>
-              </div>
+            <div class="right">
+              <button id="btnSendAgency" class="btn" disabled>Send Agency → Telegram</button>
+              <button id="btnBulk" class="btn" disabled>Bulk</button>
+              <button id="btnNewAccount" class="btn primary" disabled>New Account</button>
             </div>
           </div>
-
-          <div class="hero">
-            <div class="hero-card"><span>Agencies</span><strong id="heroAgencies">—</strong></div>
-            <div class="hero-card"><span>Agency Accounts</span><strong id="heroAccounts">—</strong></div>
-            <div class="hero-card"><span>Managers</span><strong id="heroManagers">—</strong></div>
-            <div class="hero-card"><span>Selected</span><strong id="heroAssigned">—</strong></div>
+          <div class="content">
+            <div class="filters">
+              <div class="field">
+                <label>Agency</label>
+                <select id="selAgency" class="select" disabled></select>
+              </div>
+              <div class="field">
+                <label>Search</label>
+                <input id="inSearch" class="input" disabled />
+              </div>
+              <div class="field">
+                <label>Status</label>
+                <select id="selStatus" class="select" disabled>
+                  <option value="">All</option>
+                  <option value="Done">Done</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Rejected">Rejected</option>
+                  <option value="Pending">Pending</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Manager</label>
+                <select id="selManager" class="select" disabled></select>
+              </div>
+            </div>
+            <div class="tablebox">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Email</th>
+                    <th>Password</th>
+                    <th>Passport</th>
+                    <th>Status</th>
+                    <th>Manager</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="accountsBody"></tbody>
+              </table>
+            </div>
           </div>
+        </section>
 
-          <div class="workspace">
-            <section id="accountsTab" class="tabpane">
-              <div class="section-card">
-                <div class="section-head">
-                  <div>
-                    <h2>Accounts</h2>
-                  </div>
-                  <div class="meta actions-row">
-                    <button class="btn soft" id="btnRefresh" disabled>Refresh</button>
-                    <button class="btn soft" id="btnSendAgencyAll" disabled>Send Agency → Telegram</button>
-                    <button class="btn soft" id="btnBulk" disabled>Bulk</button>
-                    <button class="btn primary" id="btnAddOne" disabled>Add</button>
-                  </div>
-                </div>
-
-                <div class="toolbar">
-                  <div class="field">
-                    <label>Agency</label>
-                    <select id="selAgency" class="control" disabled></select>
-                  </div>
-                  <div class="field">
-                    <label>Search</label>
-                    <input id="inSearch" class="control" disabled />
-                  </div>
-                  <div class="field">
-                    <label>Status</label>
-                    <select id="selStatusFilter" class="control" disabled>
-                      <option value="">All</option>
-                      <option value="Done">Done</option>
-                      <option value="In Progress">In Progress</option>
-                      <option value="Rejected">Rejected</option>
-                      <option value="Pending">Pending</option>
-                    </select>
-                  </div>
-                  <div class="field">
-                    <label>Manager</label>
-                    <select id="selManagerAssign" class="control" disabled></select>
-                  </div>
-                </div>
-
-                <div class="table-shell" style="margin-top:16px">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>Agency</th>
-                        <th>Email</th>
-                        <th>Password</th>
-                        <th>Passport</th>
-                        <th>Status</th>
-                        <th>Manager</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody id="tbody"><tr><td colspan="8" class="empty">—</td></tr></tbody>
-                  </table>
-                </div>
-              </div>
-            </section>
-
-            <section id="managersTab" class="tabpane hidden">
-              <div class="layout-two">
-                <div class="section-card">
-                  <div class="section-head">
-                    <div><h2>Managers</h2></div>
-                    <div class="actions-row"><button class="btn primary" id="btnOpenManager" disabled>New</button></div>
-                  </div>
-                  <div id="managerCards" class="manager-list"></div>
-                </div>
-
-                <div class="section-card queue-shell">
-                  <div class="select-top">
-                    <div class="field">
-                      <label>Manager Queue</label>
-                      <select id="selManagerView" class="control" disabled></select>
-                    </div>
-                  </div>
-
-                  <div class="table-shell">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>Agency</th>
-                          <th>Email</th>
-                          <th>Passport</th>
-                          <th>Status</th>
-                          <th>Update</th>
-                        </tr>
-                      </thead>
-                      <tbody id="managerQueueTbody"><tr><td colspan="6" class="empty">—</td></tr></tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </section>
+        <section class="panel section" id="section-managers">
+          <div class="toolbar">
+            <div>
+              <h2>Managers</h2>
+              <p id="managerTitleSub">—</p>
+            </div>
+            <div class="right">
+              <button id="btnNewManager" class="btn primary" disabled>New Manager</button>
+            </div>
+          </div>
+          <div class="content">
+            <div id="managerGrid" class="managergrid"></div>
           </div>
         </section>
       </main>
     </div>
   </div>
 
-  <div class="toast" id="toast"><b id="toastTitle">—</b><span id="toastMsg">—</span></div>
-
-  <div class="modal" id="modalOne">
-    <div class="modal-box">
-      <div class="modal-head">
-        <div class="modal-title">
-          <strong id="oneTitle">Account</strong>
-          <span id="oneSub">—</span>
-        </div>
-        <button class="btn soft" onclick="UI.closeOne()">✕</button>
+  <div class="modal" id="accountModal">
+    <div class="dialog">
+      <div class="head">
+        <h3 id="accountModalTitle">Account</h3>
+        <button class="btn" onclick="closeAccountModal()">Close</button>
       </div>
-      <div class="modal-body">
-        <div class="toolbar" style="grid-template-columns:1fr 1fr">
-          <div class="field"><label>Email</label><input id="oneEmail" class="control" /></div>
-          <div class="field"><label>Password</label><input id="onePass" class="control" /></div>
-          <div class="field"><label>Passport</label><input id="onePassport" class="control" /></div>
-          <div class="field"><label>Status</label><select id="oneStatus" class="control"><option>Done</option><option>In Progress</option><option>Rejected</option><option selected>Pending</option></select></div>
+      <div class="body">
+        <div class="split2">
+          <div class="field"><label>Email</label><input id="accEmail" class="input" /></div>
+          <div class="field"><label>Password</label><input id="accPassword" class="input" /></div>
+          <div class="field"><label>Passport</label><input id="accPassport" class="input" /></div>
+          <div class="field"><label>Status</label>
+            <select id="accStatus" class="select">
+              <option value="Pending">Pending</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Rejected">Rejected</option>
+              <option value="Done">Done</option>
+            </select>
+          </div>
         </div>
       </div>
-      <div class="modal-foot">
-        <button class="btn soft" onclick="UI.closeOne()">Cancel</button>
-        <button class="btn primary" id="btnSaveOne">Save</button>
+      <div class="foot">
+        <button id="btnSaveAccount" class="btn primary">Save</button>
       </div>
     </div>
   </div>
 
-  <div class="modal" id="modalBulk">
-    <div class="modal-box">
-      <div class="modal-head">
-        <div class="modal-title">
-          <strong>Bulk</strong>
-          <span id="bulkStats">—</span>
-        </div>
-        <button class="btn soft" onclick="UI.closeBulk()">✕</button>
+  <div class="modal" id="bulkModal">
+    <div class="dialog">
+      <div class="head">
+        <h3>Bulk</h3>
+        <button class="btn" onclick="closeBulkModal()">Close</button>
       </div>
-      <div class="modal-body">
-        <div class="layout-two" style="grid-template-columns:minmax(0,1.2fr) 360px">
-          <div class="field"><label>JSON</label><textarea id="bulkText" class="mono"></textarea></div>
-          <div class="field"><label>Preview</label><ul id="bulkList" class="preview-list"></ul></div>
+      <div class="body">
+        <div class="field">
+          <label>accounts</label>
+          <textarea id="bulkText" class="textarea" placeholder="email;password;passport&#10;email;password;passport"></textarea>
         </div>
       </div>
-      <div class="modal-foot">
-        <button class="btn soft" onclick="UI.closeBulk()">Cancel</button>
-        <button class="btn soft" id="btnParse">Preview</button>
-        <button class="btn primary" id="btnBulkAdd" disabled>Save</button>
+      <div class="foot">
+        <button id="btnBulkCheck" class="btn">Check</button>
+        <button id="btnBulkSave" class="btn primary">Save</button>
       </div>
     </div>
   </div>
 
-  <div class="modal" id="modalManager">
-    <div class="modal-box">
-      <div class="modal-head">
-        <div class="modal-title">
-          <strong id="managerTitle">Manager</strong>
-          <span id="managerSub">Settings</span>
-        </div>
-        <button class="btn soft" onclick="UI.closeManager()">✕</button>
+  <div class="modal" id="managerModal">
+    <div class="dialog">
+      <div class="head">
+        <h3 id="managerModalTitle">Manager</h3>
+        <button class="btn" onclick="closeManagerModal()">Close</button>
       </div>
-      <div class="modal-body">
-        <div class="toolbar" style="grid-template-columns:1fr 1fr 220px">
-          <div class="field"><label>ID</label><input id="mgrId" class="control" /></div>
-          <div class="field"><label>Name</label><input id="mgrName" class="control" /></div>
-          <div class="field"><label>Limit</label><input id="mgrDesired" class="control" type="number" min="1" max="200" value="8" /></div>
+      <div class="body">
+        <div class="split2">
+          <div class="field"><label>ID</label><input id="mgrId" class="input" /></div>
+          <div class="field"><label>Name</label><input id="mgrName" class="input" /></div>
+          <div class="field"><label>Limit</label><input id="mgrLimit" class="input" type="number" min="1" max="200" /></div>
+          <div class="field"><label>State</label>
+            <select id="mgrActive" class="select">
+              <option value="true">Active</option>
+              <option value="false">Inactive</option>
+            </select>
+          </div>
         </div>
       </div>
-      <div class="modal-foot">
-        <button class="btn soft" onclick="UI.closeManager()">Cancel</button>
-        <button class="btn primary" id="btnSaveManager">Save</button>
+      <div class="foot">
+        <button id="btnSaveManager" class="btn primary">Save</button>
       </div>
     </div>
   </div>
 
-<script>
-(() => {
-  const API_BASE = (document.body?.dataset?.apiBase || "https://api.mehdik.site").replace(/\/$/, "");
-  const OWNER_BASE = API_BASE + "/owner";
-  const STORAGE_KEY = "owner-panel-rebuilt-pro:v1";
-  const VALID_STATUSES = ["Done","In Progress","Rejected","Pending"];
-  const STATUS_PRIORITY = {"Done":0,"In Progress":1,"Rejected":2,"Pending":3};
-  const S = { ownerUser:"", ownerPass:"", agencies:[], agencySelected:"", accounts:[], managers:[], managerSelected:"", managerAssignSelected:"", bulkParsed:[] };
+  <div id="toast" class="toast"><b id="toastTitle"></b><div id="toastText"></div></div>
 
-  const $ = (id) => document.getElementById(id);
-  const norm = (s) => String(s || "").trim();
-  const normEmail = (s) => norm(s).toLowerCase();
-  const normPassport = (s) => norm(s).toUpperCase();
-  const statusValue = (s) => VALID_STATUSES.includes(norm(s)) ? norm(s) : "Pending";
-  const escapeHtml = (x) => String(x ?? "").replace(/[&<>"']/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normEmail(email));
-  const isValidPassport = (passport) => /^[A-Z0-9][A-Z0-9\-]{2,19}$/.test(normPassport(passport));
-  const statusClass = (st) => st === "Done" ? "s-good" : st === "Rejected" ? "s-bad" : st === "In Progress" ? "s-neutral" : "s-warn";
-  const maskPassword = (p) => { const s=String(p||""); if(!s) return ""; if(s.length<=2) return "•".repeat(s.length); return "•".repeat(Math.min(10, Math.max(1,s.length-2))) + s.slice(-2); };
-  const ownerHeaders = () => ({ "X-Owner-User": S.ownerUser || "", "X-Owner-Pass": S.ownerPass || "" });
+  <script>
+    const API_BASE = (() => {
+      const q = new URLSearchParams(location.search).get('api');
+      if (q) return q.replace(/\/$/, '');
+      const stored = sessionStorage.getItem('owner_api_base');
+      if (stored) return stored;
+      return location.origin.replace(/\/$/, '');
+    })();
+    sessionStorage.setItem('owner_api_base', API_BASE);
+    const OWNER_BASE = API_BASE + '/owner';
+    const STORE_KEY = 'owner_rebuilt_session_v1';
 
-  $("apiHost").textContent = API_BASE;
+    const S = {
+      user:'', pass:'', agencies:[], accounts:[], managers:[], assigned:{}, selectedAgency:'', selectedManager:'', accountMode:'add', managerMode:'add', editMatch:null
+    };
 
-  function toast(title, msg){ const t=$("toast"); $("toastTitle").textContent=title; $("toastMsg").textContent=msg; t.classList.add("show"); clearTimeout(toast._tm); toast._tm=setTimeout(()=>t.classList.remove("show"), 3600); }
-  function persistSession(){ sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ ownerUser:S.ownerUser, ownerPass:S.ownerPass, agencySelected:S.agencySelected, managerSelected:S.managerSelected, managerAssignSelected:S.managerAssignSelected })); }
-  function restoreSession(){ try{ const raw=sessionStorage.getItem(STORAGE_KEY); if(!raw) return; const d=JSON.parse(raw); S.ownerUser=norm(d.ownerUser); S.ownerPass=norm(d.ownerPass); S.agencySelected=norm(d.agencySelected); S.managerSelected=norm(d.managerSelected); S.managerAssignSelected=norm(d.managerAssignSelected); $("inUser").value=S.ownerUser; $("inPass").value=S.ownerPass; }catch(_){} }
-  function setAuthState(authed){
-    $("authState").textContent = authed ? "Owner" : "Guest";
-    $("pillText").textContent = authed ? "Connected" : "Offline";
-    ["btnLogout","btnRefresh","btnSendAgencyAll","btnBulk","btnAddOne","selAgency","inSearch","selStatusFilter","selManagerView","selManagerAssign","btnOpenManager"].forEach(id => $(id).disabled = !authed);
-  }
-  function syncHero(){
-    $("heroAgencies").textContent = $("kpiAgencies").textContent;
-    $("heroAccounts").textContent = $("kpiAccounts").textContent;
-    $("heroManagers").textContent = $("kpiManagers").textContent;
-    $("heroAssigned").textContent = $("kpiAssigned").textContent;
-  }
+    const $ = (id) => document.getElementById(id);
+    const esc = (v) => String(v ?? '').replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+    const clean = (v) => String(v ?? '').trim();
+    const nEmail = (v) => clean(v).toLowerCase();
+    const nPassport = (v) => clean(v).toUpperCase();
+    const nAgency = (v) => clean(v).toLowerCase();
+    const accId = (agency,email,passport) => `${nAgency(agency)}||${nEmail(email)}||${nPassport(passport)}`;
 
-  async function apiFetch(url, options={}){
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 15000);
-    try{
-      const response = await fetch(url, { ...options, signal: controller.signal });
-      const data = await response.json().catch(() => ({ ok:false, error:"Invalid server response" }));
-      if(!response.ok && typeof data.ok === "undefined") data.ok = false;
+    function toast(title, text){
+      $('toastTitle').textContent = title;
+      $('toastText').textContent = text;
+      $('toast').classList.add('show');
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => $('toast').classList.remove('show'), 3200);
+    }
+
+    function persist(){
+      sessionStorage.setItem(STORE_KEY, JSON.stringify({ user:S.user, pass:S.pass, selectedAgency:S.selectedAgency, selectedManager:S.selectedManager }));
+    }
+
+    function restore(){
+      try{
+        const x = JSON.parse(sessionStorage.getItem(STORE_KEY) || '{}');
+        S.user = clean(x.user); S.pass = clean(x.pass); S.selectedAgency = clean(x.selectedAgency); S.selectedManager = clean(x.selectedManager);
+      }catch{}
+      $('inUser').value = S.user;
+      $('inPass').value = S.pass;
+    }
+
+    function authHeaders(){ return { 'X-Owner-User': S.user, 'X-Owner-Pass': S.pass }; }
+
+    async function apiFetch(url, opts={}){
+      const res = await fetch(url, opts).catch(() => null);
+      if (!res) return { ok:false, error:'Network error' };
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) return { ok:false, error:data.error || ('HTTP ' + res.status), ...data };
       return data;
-    }catch(err){
-      return { ok:false, error: err?.name === "AbortError" ? "Request timeout" : (err?.message || "Request failed") };
-    }finally{ clearTimeout(timer); }
-  }
-
-  const API = {
-    ping:()=>apiFetch(OWNER_BASE+"/ping",{headers:ownerHeaders()}),
-    login:(user,pass)=>apiFetch(OWNER_BASE+"/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user,pass})}),
-    agencies:()=>apiFetch(OWNER_BASE+"/agencies",{headers:ownerHeaders()}),
-    accounts:(agency)=>apiFetch(OWNER_BASE+"/accounts?agency="+encodeURIComponent(agency),{headers:ownerHeaders()}),
-    addAccount:(payload)=>apiFetch(OWNER_BASE+"/account",{method:"POST",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
-    editAccount:(payload)=>apiFetch(OWNER_BASE+"/account",{method:"PUT",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
-    delAccount:(payload)=>apiFetch(OWNER_BASE+"/account",{method:"DELETE",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
-    sendAgencyAll:(agency)=>apiFetch(OWNER_BASE+"/agency/send-all",{method:"POST",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify({agency})}),
-    managers:()=>apiFetch(OWNER_BASE+"/managers",{headers:ownerHeaders()}),
-    createManager:(payload)=>apiFetch(OWNER_BASE+"/manager",{method:"POST",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
-    editManager:(payload)=>apiFetch(OWNER_BASE+"/manager",{method:"PUT",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
-    deleteManager:(payload)=>apiFetch(OWNER_BASE+"/manager",{method:"DELETE",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
-    managerSelect:(payload)=>apiFetch(OWNER_BASE+"/manager/select",{method:"POST",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
-    managerUnselect:(payload)=>apiFetch(OWNER_BASE+"/manager/unselect",{method:"POST",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
-    managerStatus:(payload)=>apiFetch(OWNER_BASE+"/manager/status",{method:"POST",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)})
-  };
-
-  function applyFilters(list){
-    const q = norm($("inSearch").value).toLowerCase();
-    const sf = norm($("selStatusFilter").value);
-    return (Array.isArray(list)?list:[]).filter(a => {
-      const okQ = !q || [a.agency,a.email,a.passport,a.status].join(" ").toLowerCase().includes(q);
-      const okS = !sf || statusValue(a.status) === sf;
-      return okQ && okS;
-    }).sort((a,b)=> (STATUS_PRIORITY[statusValue(a.status)] - STATUS_PRIORITY[statusValue(b.status)]) || String(a.email).localeCompare(String(b.email)));
-  }
-
-  function managerByAccount(agency,email,passport){
-    for(const m of S.managers){
-      if((m.queue||[]).some(a => norm(a.agency).toLowerCase()===norm(agency).toLowerCase() && normEmail(a.email)===normEmail(email) && normPassport(a.passport)===normPassport(passport))) return m;
     }
-    return null;
-  }
 
-  function renderAgencies(){
-    $("kpiAgencies").textContent = String(S.agencies.length || 0);
-    const sel = $("selAgency");
-    sel.innerHTML = '<option value="">Select agency</option>';
-    for(const a of S.agencies){
-      const o=document.createElement('option');
-      o.value=a.agency;
-      o.textContent=`${a.agency} (${a.count||0})`;
-      sel.appendChild(o);
+    const api = {
+      login:(user,pass)=>apiFetch(OWNER_BASE+'/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user,pass})}),
+      ping:()=>apiFetch(OWNER_BASE+'/ping',{headers:authHeaders()}),
+      agencies:()=>apiFetch(OWNER_BASE+'/agencies',{headers:authHeaders()}),
+      accounts:(agency)=>apiFetch(OWNER_BASE+'/accounts?agency='+encodeURIComponent(agency),{headers:authHeaders()}),
+      createAccount:(payload)=>apiFetch(OWNER_BASE+'/account',{method:'POST',headers:{...authHeaders(),'Content-Type':'application/json'},body:JSON.stringify(payload)}),
+      updateAccount:(payload)=>apiFetch(OWNER_BASE+'/account',{method:'PUT',headers:{...authHeaders(),'Content-Type':'application/json'},body:JSON.stringify(payload)}),
+      deleteAccount:(payload)=>apiFetch(OWNER_BASE+'/account',{method:'DELETE',headers:{...authHeaders(),'Content-Type':'application/json'},body:JSON.stringify(payload)}),
+      sendAgency:(agency)=>apiFetch(OWNER_BASE+'/agency/send-all',{method:'POST',headers:{...authHeaders(),'Content-Type':'application/json'},body:JSON.stringify({agency})}),
+      managers:()=>apiFetch(OWNER_BASE+'/managers',{headers:authHeaders()}),
+      createManager:(payload)=>apiFetch(OWNER_BASE+'/manager',{method:'POST',headers:{...authHeaders(),'Content-Type':'application/json'},body:JSON.stringify(payload)}),
+      updateManager:(payload)=>apiFetch(OWNER_BASE+'/manager',{method:'PUT',headers:{...authHeaders(),'Content-Type':'application/json'},body:JSON.stringify(payload)}),
+      deleteManager:(payload)=>apiFetch(OWNER_BASE+'/manager',{method:'DELETE',headers:{...authHeaders(),'Content-Type':'application/json'},body:JSON.stringify(payload)}),
+      managerSelect:(payload)=>apiFetch(OWNER_BASE+'/manager/select',{method:'POST',headers:{...authHeaders(),'Content-Type':'application/json'},body:JSON.stringify(payload)}),
+      managerUnselect:(payload)=>apiFetch(OWNER_BASE+'/manager/unselect',{method:'POST',headers:{...authHeaders(),'Content-Type':'application/json'},body:JSON.stringify(payload)}),
+      managerStatus:(payload)=>apiFetch(OWNER_BASE+'/manager/status',{method:'POST',headers:{...authHeaders(),'Content-Type':'application/json'},body:JSON.stringify(payload)}),
+      bulkCheck:(agency,accounts)=>{
+        const fd = new FormData(); fd.set('formType','agency'); fd.set('firma',agency); fd.set('action','check'); fd.set('molti','1'); fd.set('accounts',accounts);
+        return apiFetch(API_BASE,{method:'POST',headers:authHeaders(),body:fd});
+      },
+      bulkSave:(agency,accounts)=>{
+        const fd = new FormData(); fd.set('formType','agency'); fd.set('firma',agency); fd.set('action','add'); fd.set('molti','1'); fd.set('accounts',accounts);
+        return apiFetch(API_BASE,{method:'POST',headers:authHeaders(),body:fd});
+      }
+    };
+
+    function setAuth(on){
+      $('authState').textContent = on ? S.user : 'Guest';
+      $('authDot').style.background = on ? '#16a34a' : '#cbd5e1';
+      ['btnLogout','btnRefreshAll','btnPing','selAgency','inSearch','selStatus','selManager','btnSendAgency','btnBulk','btnNewAccount','btnNewManager'].forEach(id => $(id).disabled = !on);
+      $('btnLogin').disabled = false;
     }
-    if(S.agencySelected) sel.value = S.agencySelected;
-    syncHero();
-  }
 
-  function renderManagersSelectors(){
-    $("kpiManagers").textContent = String(S.managers.length || 0);
-    $("kpiAssigned").textContent = String(S.managers.reduce((n,m)=>n+(m.assignedCount||0),0));
-    ["selManagerView","selManagerAssign"].forEach(id => {
-      const sel=$(id);
-      sel.innerHTML='<option value="">Select manager</option>';
-      for(const m of S.managers){
-        const o=document.createElement('option');
-        o.value=m.id;
-        o.textContent=`${m.name} (${m.assignedCount||0}/${m.desiredCount})`;
+    function statusClass(status){
+      if (status === 'Done') return 'done';
+      if (status === 'In Progress') return 'progress';
+      if (status === 'Rejected') return 'rejected';
+      return 'pending';
+    }
+
+    function sortStatus(list){
+      const p = {Done:0,'In Progress':1,Rejected:2,Pending:3};
+      return list.slice().sort((a,b)=>{
+        const x=(p[a.status] ?? 99)-(p[b.status] ?? 99);
+        if (x) return x;
+        return accId(a.agency || S.selectedAgency, a.email, a.passport).localeCompare(accId(b.agency || S.selectedAgency, b.email, b.passport));
+      });
+    }
+
+    function rebuildAssigned(){
+      S.assigned = {};
+      for (const m of S.managers) {
+        for (const q of (m.queue || [])) S.assigned[accId(q.agency, q.email, q.passport)] = m.id;
+      }
+    }
+
+    function renderAgencies(){
+      const sel = $('selAgency');
+      sel.innerHTML = '<option value="">Select agency</option>';
+      S.agencies.forEach(a => {
+        const o = document.createElement('option');
+        o.value = a.agency;
+        o.textContent = `${a.agency} (${a.count})`;
         sel.appendChild(o);
-      }
-    });
-    if(S.managerSelected) $("selManagerView").value=S.managerSelected;
-    if(S.managerAssignSelected) $("selManagerAssign").value=S.managerAssignSelected;
-    syncHero();
-  }
-
-  function renderManagers(){
-    renderManagersSelectors();
-    const wrap = $("managerCards");
-    if(!S.managers.length){ wrap.innerHTML='<div class="empty panel" style="padding:24px;border-radius:20px">—</div>'; renderManagerQueue(); return; }
-    wrap.innerHTML = S.managers.map((m) => `
-      <div class="manager-card">
-        <div class="manager-top">
-          <div>
-            <strong>${escapeHtml(m.name || m.id)}</strong>
-            <span class="mono">${escapeHtml(m.id)}</span>
-          </div>
-          <div class="actions-row">
-            <button class="btn soft" onclick="UI.editManager('${encodeURIComponent(m.id)}')">Edit</button>
-            <button class="btn danger" onclick="UI.deleteManager('${encodeURIComponent(m.id)}')">Delete</button>
-          </div>
-        </div>
-        <div class="manager-stats">
-          <div class="box"><span class="muted">Limit</span><b>${Number(m.desiredCount||0)}</b></div>
-          <div class="box"><span class="muted">Selected</span><b>${Number(m.assignedCount||0)}</b></div>
-        </div>
-      </div>
-    `).join('');
-    renderManagerQueue();
-  }
-
-  function renderAccounts(){
-    const tb=$("tbody");
-    if(!S.agencySelected){ tb.innerHTML='<tr><td colspan="8" class="empty">Select agency</td></tr>'; $("kpiAccounts").textContent='0'; syncHero(); return; }
-    const filtered = applyFilters(S.accounts);
-    $("kpiAccounts").textContent = String(filtered.length || 0);
-    syncHero();
-    if(!filtered.length){ tb.innerHTML='<tr><td colspan="8" class="empty">No data</td></tr>'; return; }
-    const selectedManagerId = S.managerAssignSelected;
-    tb.innerHTML = filtered.map((a,i) => {
-      const assigned = managerByAccount(a.agency || S.agencySelected, a.email, a.passport);
-      const assignedBadge = assigned ? `<span class="pill">${escapeHtml(assigned.name)}</span>` : '<span class="muted">—</span>';
-      let managerAction = '<span class="muted">—</span>';
-      if(assigned){
-        if(assigned.id === selectedManagerId){
-          managerAction = `<button class="btn danger" onclick="UI.managerUnselect('${encodeURIComponent(assigned.id)}','${encodeURIComponent(a.agency||S.agencySelected)}','${encodeURIComponent(a.email||"")}','${encodeURIComponent(a.passport||"")}')">Remove</button>`;
-        }else{
-          managerAction = `<span class="pill">Locked</span>`;
-        }
-      }else if(selectedManagerId){
-        const st = statusValue(a.status);
-        if(st === 'Done' || st === 'Rejected') managerAction = `<span class="pill">Unavailable</span>`;
-        else managerAction = `<button class="btn good" onclick="UI.managerSelect('${encodeURIComponent(selectedManagerId)}','${encodeURIComponent(a.agency||S.agencySelected)}','${encodeURIComponent(a.email||"")}','${encodeURIComponent(a.passport||"")}')">Select</button>`;
-      }
-      return `
-        <tr>
-          <td class="mono">${i+1}</td>
-          <td class="mono">${escapeHtml(a.agency||S.agencySelected)}</td>
-          <td class="mono">${escapeHtml(a.email||"")}</td>
-          <td class="mono">${escapeHtml(maskPassword(a.password||""))}</td>
-          <td class="mono">${escapeHtml(a.passport||"")}</td>
-          <td><span class="status-chip ${statusClass(statusValue(a.status))}"><span class="dot"></span>${escapeHtml(statusValue(a.status))}</span></td>
-          <td>${assignedBadge}</td>
-          <td><div class="actions-row">
-            <button class="btn soft" onclick="UI.openEdit('${encodeURIComponent(a.email||"")}','${encodeURIComponent(a.passport||"")}')">Edit</button>
-            <button class="btn danger" onclick="UI.del('${encodeURIComponent(a.email||"")}','${encodeURIComponent(a.passport||"")}')">Delete</button>
-            ${managerAction}
-          </div></td>
-        </tr>
-      `;
-    }).join('');
-  }
-
-  function renderManagerQueue(){
-    const tb=$("managerQueueTbody");
-    const manager=S.managers.find(m=>m.id===S.managerSelected);
-    if(!manager){ tb.innerHTML='<tr><td colspan="6" class="empty">Select manager</td></tr>'; return; }
-    const queue=(manager.queue||[]).slice().sort((a,b)=> (STATUS_PRIORITY[statusValue(a.status)]-STATUS_PRIORITY[statusValue(b.status)]) || String(a.agency).localeCompare(String(b.agency)));
-    if(!queue.length){ tb.innerHTML='<tr><td colspan="6" class="empty">No selected accounts</td></tr>'; return; }
-    tb.innerHTML = queue.map((a,i)=>`
-      <tr>
-        <td>${i+1}</td>
-        <td class="mono">${escapeHtml(a.agency||"")}</td>
-        <td class="mono">${escapeHtml(a.email||"")}</td>
-        <td class="mono">${escapeHtml(a.passport||"")}</td>
-        <td><span class="status-chip ${statusClass(statusValue(a.status))}"><span class="dot"></span>${escapeHtml(statusValue(a.status))}</span></td>
-        <td><div class="actions-row">
-          <button class="btn soft" onclick="UI.managerSetStatus('${encodeURIComponent(manager.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}','In Progress')">In Progress</button>
-          <button class="btn warn" onclick="UI.managerSetStatus('${encodeURIComponent(manager.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}','Pending')">Pending</button>
-          <button class="btn good" onclick="UI.managerSetStatus('${encodeURIComponent(manager.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}','Done')">Done</button>
-          <button class="btn danger" onclick="UI.managerSetStatus('${encodeURIComponent(manager.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}','Rejected')">Rejected</button>
-          <button class="btn danger" onclick="UI.managerUnselect('${encodeURIComponent(manager.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}')">Remove</button>
-        </div></td>
-      </tr>
-    `).join('');
-  }
-
-  const UI = {
-    _oneMode:"add",
-    _oneMatch:{email:"",passport:""},
-    _mgrMode:"add",
-
-    logout(){
-      S.ownerUser=""; S.ownerPass=""; S.agencies=[]; S.accounts=[]; S.managers=[]; S.agencySelected=""; S.managerSelected=""; S.managerAssignSelected="";
-      sessionStorage.removeItem(STORAGE_KEY);
-      $("inUser").value=""; $("inPass").value="";
-      setAuthState(false);
-      renderAgencies(); renderManagers(); renderAccounts();
-      toast('Logout','Done');
-    },
-
-    async login(){
-      const user=norm($("inUser").value), pass=norm($("inPass").value);
-      if(!user || !pass) return toast('Login','Missing credentials');
-      const res=await API.login(user,pass);
-      if(!res.ok) return toast('Login',res.error||'Unauthorized');
-      S.ownerUser=user; S.ownerPass=pass; persistSession(); setAuthState(true);
-      await UI.refreshAll();
-      toast('Login','Success');
-    },
-
-    async refreshAll(){
-      const [a,m] = await Promise.all([API.agencies(), API.managers()]);
-      if(!a.ok) return toast('Agencies',a.error||'Failed');
-      S.agencies=Array.isArray(a.agencies)?a.agencies:[];
-      S.managers=Array.isArray(m.managers)?m.managers:[];
-      renderAgencies(); renderManagers();
-      if(S.agencySelected) await UI.loadAgency(S.agencySelected); else { S.accounts=[]; renderAccounts(); }
-      persistSession();
-    },
-
-    async loadAgency(agency){
-      S.agencySelected=agency||''; persistSession(); renderAgencies();
-      if(!S.agencySelected){ S.accounts=[]; renderAccounts(); return; }
-      const res=await API.accounts(S.agencySelected);
-      if(!res.ok) return toast('Accounts',res.error||'Failed');
-      S.accounts=Array.isArray(res.accounts)?res.accounts:[];
-      renderAccounts();
-    },
-
-    async loadManagers(){
-      const res=await API.managers();
-      if(!res.ok) return toast('Managers',res.error||'Failed');
-      S.managers=Array.isArray(res.managers)?res.managers:[];
-      renderManagers(); renderAccounts(); persistSession();
-    },
-
-    openAddOne(){
-      if(!S.agencySelected) return toast('Account','Select agency');
-      UI._oneMode='add'; UI._oneMatch={email:'',passport:''};
-      $("oneTitle").textContent='Add Account'; $("oneSub").textContent=S.agencySelected;
-      $("oneEmail").value=''; $("onePass").value=''; $("onePassport").value=''; $("oneStatus").value='Pending';
-      $("modalOne").classList.add('show');
-    },
-
-    openEdit(emailEnc, passportEnc){
-      const email=decodeURIComponent(emailEnc||''), passport=decodeURIComponent(passportEnc||'');
-      const a=S.accounts.find(x=>normEmail(x.email)===normEmail(email)&&normPassport(x.passport)===normPassport(passport));
-      if(!a) return;
-      UI._oneMode='edit'; UI._oneMatch={email:a.email,passport:a.passport};
-      $("oneTitle").textContent='Edit Account'; $("oneSub").textContent=S.agencySelected;
-      $("oneEmail").value=a.email||''; $("onePass").value=a.password||''; $("onePassport").value=a.passport||''; $("oneStatus").value=statusValue(a.status);
-      $("modalOne").classList.add('show');
-    },
-
-    closeOne(){ $("modalOne").classList.remove('show'); },
-
-    async saveOne(){
-      if(!S.agencySelected) return toast('Account','Select agency');
-      const payload={agency:S.agencySelected,email:norm($("oneEmail").value),password:norm($("onePass").value),passport:norm($("onePassport").value),status:$("oneStatus").value};
-      if(!isValidEmail(payload.email)) return toast('Account','Invalid email');
-      if(!isValidPassport(payload.passport)) return toast('Account','Invalid passport');
-      let res;
-      if(UI._oneMode==='add') res=await API.addAccount(payload);
-      else res=await API.editAccount({...payload,matchEmail:UI._oneMatch.email,matchPassport:UI._oneMatch.passport});
-      if(!res.ok) return toast('Account',res.error||'Failed');
-      UI.closeOne(); await UI.refreshAll(); await UI.loadAgency(S.agencySelected); toast('Account','Saved');
-    },
-
-    async del(emailEnc, passportEnc){
-      if(!S.agencySelected) return;
-      const email=decodeURIComponent(emailEnc||''), passport=decodeURIComponent(passportEnc||'');
-      if(!confirm(`Delete ${email}?`)) return;
-      const res=await API.delAccount({agency:S.agencySelected,email,passport});
-      if(!res.ok) return toast('Delete',res.error||'Failed');
-      await UI.refreshAll(); await UI.loadAgency(S.agencySelected); toast('Delete','Deleted');
-    },
-
-    openBulk(){
-      if(!S.agencySelected) return toast('Bulk','Select agency');
-      $("bulkText").value=''; $("bulkStats").textContent='—'; $("bulkList").innerHTML=''; $("btnBulkAdd").disabled=true; S.bulkParsed=[];
-      $("modalBulk").classList.add('show');
-    },
-
-    closeBulk(){ $("modalBulk").classList.remove('show'); },
-
-    parseBulk(){
-      let arr=[];
-      try{ arr=JSON.parse($("bulkText").value||'[]'); }catch(_){ return toast('Bulk','Invalid JSON'); }
-      if(!Array.isArray(arr)) return toast('Bulk','JSON must be array');
-      const parsed=[], bad=[];
-      for(const item of arr){
-        const a={ email:norm(item.email), password:norm(item.password), passport:norm(item.passport), status:statusValue(item.status) };
-        if(!isValidEmail(a.email)||!isValidPassport(a.passport)||!a.password){ bad.push(item); continue; }
-        parsed.push(a);
-      }
-      S.bulkParsed=parsed;
-      $("bulkStats").textContent=`Valid ${parsed.length} · Invalid ${bad.length}`;
-      $("bulkList").innerHTML=parsed.slice(0,60).map(a=>`<li class="mono">${escapeHtml(a.email)} · ${escapeHtml(a.passport)} · ${escapeHtml(a.status)}</li>`).join('');
-      $("btnBulkAdd").disabled=!parsed.length;
-    },
-
-    async bulkAdd(){
-      let ok=0, fail=0;
-      for(const item of S.bulkParsed){ const res=await API.addAccount({agency:S.agencySelected,...item}); if(res.ok) ok++; else fail++; }
-      await UI.loadAgency(S.agencySelected); await UI.refreshAll(); UI.closeBulk(); toast('Bulk',`Added ${ok} · Failed ${fail}`);
-    },
-
-    async sendAgencyAll(){
-      if(!S.agencySelected) return toast('Telegram','Select agency');
-      const res=await API.sendAgencyAll(S.agencySelected);
-      if(!res.ok) return toast('Telegram',res.error||'Failed');
-      toast('Telegram',`Sent ${res.count||0}`);
-    },
-
-    openManager(){
-      UI._mgrMode='add';
-      $("managerTitle").textContent='New Manager';
-      $("mgrId").disabled=false; $("mgrId").value=''; $("mgrName").value=''; $("mgrDesired").value='8';
-      $("modalManager").classList.add('show');
-    },
-
-    editManager(idEnc){
-      const id=decodeURIComponent(idEnc||''); const m=S.managers.find(x=>x.id===id); if(!m) return;
-      UI._mgrMode='edit';
-      $("managerTitle").textContent='Edit Manager';
-      $("mgrId").disabled=true; $("mgrId").value=m.id; $("mgrName").value=m.name||''; $("mgrDesired").value=m.desiredCount||8;
-      $("modalManager").classList.add('show');
-    },
-
-    closeManager(){ $("modalManager").classList.remove('show'); },
-
-    async saveManager(){
-      const payload={id:norm($("mgrId").value),name:norm($("mgrName").value),desiredCount:Number($("mgrDesired").value||8)};
-      if(!payload.id) return toast('Manager','Missing ID');
-      const res = UI._mgrMode==='add' ? await API.createManager(payload) : await API.editManager(payload);
-      if(!res.ok) return toast('Manager',res.error||'Failed');
-      UI.closeManager(); await UI.loadManagers(); toast('Manager','Saved');
-    },
-
-    async deleteManager(idEnc){
-      const id=decodeURIComponent(idEnc||'');
-      if(!confirm(`Delete manager ${id}?`)) return;
-      const res=await API.deleteManager({id});
-      if(!res.ok) return toast('Manager',res.error||'Failed');
-      if(S.managerSelected===id) S.managerSelected='';
-      if(S.managerAssignSelected===id) S.managerAssignSelected='';
-      await UI.loadManagers(); renderAccounts(); toast('Manager','Deleted');
-    },
-
-    async managerSelect(idEnc, agencyEnc, emailEnc, passportEnc){
-      const id=decodeURIComponent(idEnc||''), agency=decodeURIComponent(agencyEnc||''), email=decodeURIComponent(emailEnc||''), passport=decodeURIComponent(passportEnc||'');
-      const res=await API.managerSelect({id,agency,email,passport});
-      if(!res.ok) return toast('Manager',res.error||'Failed');
-      S.managerSelected=id; await UI.loadManagers(); if(S.agencySelected===agency) await UI.loadAgency(agency); toast('Manager','Selected');
-    },
-
-    async managerUnselect(idEnc, agencyEnc, emailEnc, passportEnc){
-      const id=decodeURIComponent(idEnc||''), agency=decodeURIComponent(agencyEnc||''), email=decodeURIComponent(emailEnc||''), passport=decodeURIComponent(passportEnc||'');
-      const res=await API.managerUnselect({id,agency,email,passport});
-      if(!res.ok) return toast('Manager',res.error||'Failed');
-      await UI.loadManagers(); if(S.agencySelected===agency) await UI.loadAgency(agency); S.managerSelected=id; toast('Manager','Removed');
-    },
-
-    async managerSetStatus(idEnc, agencyEnc, emailEnc, passportEnc, status){
-      const id=decodeURIComponent(idEnc||''), agency=decodeURIComponent(agencyEnc||''), email=decodeURIComponent(emailEnc||''), passport=decodeURIComponent(passportEnc||'');
-      const res=await API.managerStatus({id,agency,email,passport,status});
-      if(!res.ok) return toast('Status',res.error||'Failed');
-      await UI.loadManagers(); if(S.agencySelected===agency) await UI.loadAgency(agency); S.managerSelected=id; renderManagers();
-      toast('Status', status === 'Done' || status === 'Rejected' ? `${status} · Removed from queue` : status);
+      });
+      if (S.selectedAgency) sel.value = S.selectedAgency;
+      $('statAgencies').textContent = S.agencies.length;
+      $('selectedAgencyLabel').textContent = S.selectedAgency || '—';
     }
-  };
 
-  window.UI = UI;
+    function renderManagerSelect(){
+      const sel = $('selManager');
+      sel.innerHTML = '<option value="">No manager</option>';
+      S.managers.forEach(m => {
+        const o = document.createElement('option');
+        o.value = m.id;
+        o.textContent = `${m.name} (${m.assignedCount || 0}/${m.desiredCount})`;
+        sel.appendChild(o);
+      });
+      if (S.selectedManager) sel.value = S.selectedManager;
+      $('statManagers').textContent = S.managers.length;
+      $('statSelected').textContent = Object.keys(S.assigned).length;
+      $('managerTitleSub').textContent = `${S.managers.length} managers`;
+    }
 
-  $("btnLogin").onclick=UI.login;
-  $("btnLogout").onclick=UI.logout;
-  $("btnPing").onclick=async()=>{ const r=await API.ping(); toast('Ping',r.ok?'OK':(r.error||'Failed')); };
-  $("btnRefresh").onclick=UI.refreshAll;
-  $("btnSendAgencyAll").onclick=UI.sendAgencyAll;
-  $("btnBulk").onclick=UI.openBulk;
-  $("btnAddOne").onclick=UI.openAddOne;
-  $("btnParse").onclick=UI.parseBulk;
-  $("btnBulkAdd").onclick=UI.bulkAdd;
-  $("btnSaveOne").onclick=UI.saveOne;
-  $("btnOpenManager").onclick=UI.openManager;
-  $("btnSaveManager").onclick=UI.saveManager;
-  $("selAgency").addEventListener('change', (e)=>UI.loadAgency(e.target.value||''));
-  $("inSearch").addEventListener('input', renderAccounts);
-  $("selStatusFilter").addEventListener('change', renderAccounts);
-  $("selManagerView").addEventListener('change', (e)=>{ S.managerSelected=e.target.value||''; persistSession(); renderManagerQueue(); });
-  $("selManagerAssign").addEventListener('change', (e)=>{ S.managerAssignSelected=e.target.value||''; persistSession(); renderAccounts(); });
-  document.querySelectorAll('.tabbtn').forEach(btn=>btn.addEventListener('click',()=>{
-    document.querySelectorAll('.tabbtn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    document.querySelectorAll('.tabpane').forEach(p=>p.classList.add('hidden'));
-    document.getElementById(btn.dataset.tab).classList.remove('hidden');
-  }));
+    function filteredAccounts(){
+      let list = sortStatus(S.accounts);
+      const q = clean($('inSearch').value).toLowerCase();
+      const st = $('selStatus').value;
+      if (st) list = list.filter(a => a.status === st);
+      if (q) list = list.filter(a => [a.email,a.password,a.passport,a.status].some(v => String(v||'').toLowerCase().includes(q)));
+      return list;
+    }
 
-  restoreSession();
-  setAuthState(false);
-  renderAgencies();
-  renderManagers();
-  renderAccounts();
-  if(S.ownerUser && S.ownerPass){ setAuthState(true); UI.refreshAll().catch(()=>{}); }
-})();
-</script>
+    function accountActions(a){
+      const id = accId(S.selectedAgency, a.email, a.passport);
+      const selectedBy = S.assigned[id];
+      const selectedManager = clean($('selManager').value);
+      const canSelect = selectedManager && (a.status === 'Pending' || a.status === 'In Progress');
+      let managerCell = '<span class="badge">—</span>';
+      if (selectedBy) {
+        const m = S.managers.find(x => x.id === selectedBy);
+        managerCell = `<span class="badge">${esc(m?.name || selectedBy)}</span>`;
+      }
+      let pick = '<span class="badge">—</span>';
+      if (selectedBy && selectedManager && selectedBy === selectedManager) {
+        pick = `<button class="btn danger" onclick="unselectAccount('${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}')">Remove</button>`;
+      } else if (selectedBy) {
+        pick = '<span class="badge">Locked</span>';
+      } else if (canSelect) {
+        pick = `<button class="btn soft" onclick="selectAccount('${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}')">Select</button>`;
+      }
+      return { managerCell, pick };
+    }
+
+    function renderAccounts(){
+      const body = $('accountsBody');
+      const list = filteredAccounts();
+      $('statAccounts').textContent = list.length;
+      if (!S.selectedAgency) {
+        body.innerHTML = '<tr><td colspan="7" class="empty">Select agency</td></tr>';
+        return;
+      }
+      if (!list.length) {
+        body.innerHTML = '<tr><td colspan="7" class="empty">Empty</td></tr>';
+        return;
+      }
+      body.innerHTML = list.map((a,i) => {
+        const act = accountActions(a);
+        return `<tr>
+          <td>${i+1}</td>
+          <td class="mono">${esc(a.email)}</td>
+          <td class="mono">${esc(a.password || '')}</td>
+          <td class="mono">${esc(a.passport)}</td>
+          <td><span class="status ${statusClass(a.status)}"><span class="dot"></span>${esc(a.status)}</span></td>
+          <td>${act.managerCell}</td>
+          <td>
+            <div class="row">
+              ${act.pick}
+              <button class="btn" onclick="openEditAccount('${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}')">Edit</button>
+              <button class="btn danger" onclick="removeAccount('${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}')">Delete</button>
+            </div>
+          </td>
+        </tr>`;
+      }).join('');
+    }
+
+    function renderManagers(){
+      const wrap = $('managerGrid');
+      if (!S.managers.length) {
+        wrap.innerHTML = '<div class="panel empty">Empty</div>';
+        return;
+      }
+      wrap.innerHTML = S.managers.map(m => {
+        const queue = sortStatus(m.queue || []);
+        const items = queue.length ? queue.map(q => `
+          <div class="queueitem">
+            <div>
+              <strong>${esc(q.agency)}</strong>
+              <small class="mono">${esc(q.email)}</small><br>
+              <small class="mono">${esc(q.passport)}</small>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+              <span class="status ${statusClass(q.status)}"><span class="dot"></span>${esc(q.status)}</span>
+              <div class="row">
+                <button class="btn good" onclick="managerSetStatus('${escJs(m.id)}','${escJs(q.agency)}','${encodeURIComponent(q.email)}','${encodeURIComponent(q.passport)}','Done')">Done</button>
+                <button class="btn warn" onclick="managerSetStatus('${escJs(m.id)}','${escJs(q.agency)}','${encodeURIComponent(q.email)}','${encodeURIComponent(q.passport)}','In Progress')">In Progress</button>
+                <button class="btn danger" onclick="managerSetStatus('${escJs(m.id)}','${escJs(q.agency)}','${encodeURIComponent(q.email)}','${encodeURIComponent(q.passport)}','Rejected')">Rejected</button>
+              </div>
+            </div>
+          </div>`).join('') : '<div class="empty">Empty</div>';
+        return `<div class="manager">
+          <div class="managerhead">
+            <div><h3>${esc(m.name)}</h3><small>${esc(m.id)}</small></div>
+            <div class="row">
+              <button class="btn" onclick="openEditManager('${escJs(m.id)}')">Edit</button>
+              <button class="btn danger" onclick="deleteManager('${escJs(m.id)}')">Delete</button>
+            </div>
+          </div>
+          <div class="managerstats">
+            <div><b>${Number(m.assignedCount || queue.length)}</b><span>Selected</span></div>
+            <div><b>${Number(m.desiredCount || 0)}</b><span>Limit</span></div>
+            <div><b>${m.isActive === false ? 'Off' : 'On'}</b><span>State</span></div>
+          </div>
+          <div class="queue">${items}</div>
+        </div>`;
+      }).join('');
+    }
+
+    function escJs(v){ return String(v).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
+
+    async function loadManagers(){
+      const res = await api.managers();
+      if (!res.ok) { toast('Managers', res.error); return false; }
+      S.managers = Array.isArray(res.managers) ? res.managers : [];
+      rebuildAssigned();
+      renderManagerSelect();
+      renderManagers();
+      return true;
+    }
+
+    async function loadAccounts(agency){
+      if (!agency) { S.accounts = []; renderAccounts(); return true; }
+      const res = await api.accounts(agency);
+      if (!res.ok) { toast('Accounts', res.error); return false; }
+      S.accounts = Array.isArray(res.accounts) ? res.accounts : [];
+      renderAccounts();
+      return true;
+    }
+
+    async function refreshAll(){
+      const ag = await api.agencies();
+      if (!ag.ok) { toast('Agencies', ag.error); return; }
+      S.agencies = Array.isArray(ag.agencies) ? ag.agencies : [];
+      renderAgencies();
+      await loadManagers();
+      if (S.selectedAgency && S.agencies.some(a => a.agency === S.selectedAgency)) await loadAccounts(S.selectedAgency);
+      else if (S.agencies[0]) { S.selectedAgency = S.agencies[0].agency; $('selAgency').value = S.selectedAgency; await loadAccounts(S.selectedAgency); }
+      else { S.accounts = []; renderAccounts(); }
+      persist();
+    }
+
+    async function doLogin(){
+      const user = clean($('inUser').value), pass = clean($('inPass').value);
+      if (!user || !pass) return toast('Login','Missing data');
+      const res = await api.login(user, pass);
+      if (!res.ok) return toast('Login', res.error || 'Failed');
+      S.user = user; S.pass = pass; persist(); setAuth(true); await refreshAll(); toast('Login','Success');
+    }
+
+    function logout(){
+      S.user=''; S.pass=''; S.agencies=[]; S.accounts=[]; S.managers=[]; S.selectedAgency=''; S.selectedManager=''; rebuildAssigned();
+      sessionStorage.removeItem(STORE_KEY);
+      $('inUser').value=''; $('inPass').value='';
+      setAuth(false); renderAgencies(); renderManagerSelect(); renderAccounts(); renderManagers();
+      $('selectedAgencyLabel').textContent='—';
+    }
+
+    function openSection(name){
+      document.querySelectorAll('.nav .btn').forEach(b => b.classList.toggle('active', b.dataset.section === name));
+      document.querySelectorAll('.section').forEach(s => s.classList.toggle('active', s.id === 'section-' + name));
+    }
+
+    function openAccountModal(mode, a=null){
+      S.accountMode = mode;
+      S.editMatch = a ? { email:a.email, passport:a.passport } : null;
+      $('accountModalTitle').textContent = mode === 'add' ? 'New Account' : 'Edit Account';
+      $('accEmail').value = a?.email || '';
+      $('accPassword').value = a?.password || '';
+      $('accPassport').value = a?.passport || '';
+      $('accStatus').value = a?.status || 'Pending';
+      $('accountModal').classList.add('show');
+    }
+    function closeAccountModal(){ $('accountModal').classList.remove('show'); }
+    function closeBulkModal(){ $('bulkModal').classList.remove('show'); }
+    function openBulkModal(){ $('bulkText').value=''; $('bulkModal').classList.add('show'); }
+    function openManagerModal(mode, m=null){
+      S.managerMode = mode;
+      $('managerModalTitle').textContent = mode === 'add' ? 'New Manager' : 'Edit Manager';
+      $('mgrId').disabled = mode !== 'add';
+      $('mgrId').value = m?.id || '';
+      $('mgrName').value = m?.name || '';
+      $('mgrLimit').value = m?.desiredCount || 8;
+      $('mgrActive').value = String(m?.isActive !== false);
+      $('managerModal').classList.add('show');
+    }
+    function closeManagerModal(){ $('managerModal').classList.remove('show'); }
+
+    async function saveAccount(){
+      if (!S.selectedAgency) return toast('Account','Select agency');
+      const payload = { agency:S.selectedAgency, email:clean($('accEmail').value), password:clean($('accPassword').value), passport:clean($('accPassport').value), status:$('accStatus').value };
+      const res = S.accountMode === 'add'
+        ? await api.createAccount(payload)
+        : await api.updateAccount({ ...payload, matchEmail:S.editMatch.email, matchPassport:S.editMatch.passport });
+      if (!res.ok) return toast('Account', res.error || 'Failed');
+      closeAccountModal();
+      await refreshAll();
+      toast('Account','Saved');
+    }
+
+    async function removeAccount(emailEnc, passportEnc){
+      const email = decodeURIComponent(emailEnc), passport = decodeURIComponent(passportEnc);
+      if (!confirm(email + '\n' + passport)) return;
+      const res = await api.deleteAccount({ agency:S.selectedAgency, email, passport });
+      if (!res.ok) return toast('Delete', res.error || 'Failed');
+      await refreshAll();
+      toast('Delete','Done');
+    }
+
+    function openEditAccount(emailEnc, passportEnc){
+      const email = decodeURIComponent(emailEnc), passport = decodeURIComponent(passportEnc);
+      const found = S.accounts.find(a => nEmail(a.email) === nEmail(email) && nPassport(a.passport) === nPassport(passport));
+      if (!found) return;
+      openAccountModal('edit', found);
+    }
+
+    async function bulkCheck(){
+      if (!S.selectedAgency) return toast('Bulk','Select agency');
+      const res = await api.bulkCheck(S.selectedAgency, $('bulkText').value);
+      if (!res.ok) return toast('Bulk', res.error || 'Failed');
+      toast('Bulk', `duplicates: ${Array.isArray(res.duplicates)?res.duplicates.length:0}\ninvalid: ${Array.isArray(res.invalid)?res.invalid.length:0}`);
+    }
+
+    async function bulkSave(){
+      if (!S.selectedAgency) return toast('Bulk','Select agency');
+      const res = await api.bulkSave(S.selectedAgency, $('bulkText').value);
+      if (!res.ok) return toast('Bulk', res.error || 'Failed');
+      closeBulkModal();
+      await refreshAll();
+      toast('Bulk', `added: ${res.added || 0}`);
+    }
+
+    async function sendAgencyTelegram(){
+      if (!S.selectedAgency) return toast('Telegram','Select agency');
+      const res = await api.sendAgency(S.selectedAgency);
+      if (!res.ok) return toast('Telegram', res.error || 'Failed');
+      toast('Telegram', `sent: ${res.count || 0}`);
+    }
+
+    async function saveManager(){
+      const payload = { id:clean($('mgrId').value), name:clean($('mgrName').value), desiredCount:Number($('mgrLimit').value || 0), isActive:$('mgrActive').value === 'true' };
+      const res = S.managerMode === 'add' ? await api.createManager(payload) : await api.updateManager(payload);
+      if (!res.ok) return toast('Manager', res.error || 'Failed');
+      closeManagerModal();
+      await refreshAll();
+      toast('Manager','Saved');
+    }
+
+    function openEditManager(id){
+      const m = S.managers.find(x => x.id === id);
+      if (!m) return;
+      openManagerModal('edit', m);
+    }
+
+    async function deleteManager(id){
+      if (!confirm(id)) return;
+      const res = await api.deleteManager({ id });
+      if (!res.ok) return toast('Manager', res.error || 'Failed');
+      if (S.selectedManager === id) S.selectedManager = '';
+      await refreshAll();
+      toast('Manager','Deleted');
+    }
+
+    async function selectAccount(emailEnc, passportEnc){
+      const id = clean($('selManager').value);
+      if (!id) return toast('Select','Choose manager');
+      const email = decodeURIComponent(emailEnc), passport = decodeURIComponent(passportEnc);
+      const res = await api.managerSelect({ id, agency:S.selectedAgency, email, passport });
+      if (!res.ok) return toast('Select', res.error || 'Failed');
+      S.selectedManager = id; persist();
+      await refreshAll();
+      toast('Select','Done');
+    }
+
+    async function unselectAccount(emailEnc, passportEnc){
+      const id = clean($('selManager').value);
+      if (!id) return toast('Remove','Choose manager');
+      const email = decodeURIComponent(emailEnc), passport = decodeURIComponent(passportEnc);
+      const res = await api.managerUnselect({ id, agency:S.selectedAgency, email, passport });
+      if (!res.ok) return toast('Remove', res.error || 'Failed');
+      await refreshAll();
+      toast('Remove','Done');
+    }
+
+    async function managerSetStatus(id, agency, emailEnc, passportEnc, status){
+      const email = decodeURIComponent(emailEnc), passport = decodeURIComponent(passportEnc);
+      const res = await api.managerStatus({ id, agency, email, passport, status });
+      if (!res.ok) return toast('Status', res.error || 'Failed');
+      if (S.selectedAgency === agency) await loadAccounts(agency);
+      await loadManagers();
+      renderAccounts();
+      toast('Status', status);
+    }
+
+    document.querySelectorAll('.nav .btn').forEach(btn => btn.addEventListener('click', () => openSection(btn.dataset.section)));
+    $('btnLogin').onclick = doLogin;
+    $('btnLogout').onclick = logout;
+    $('btnRefreshAll').onclick = refreshAll;
+    $('btnPing').onclick = async () => { const r = await api.ping(); toast('Ping', r.ok ? 'OK' : (r.error || 'Failed')); };
+    $('selAgency').onchange = async e => { S.selectedAgency = e.target.value; persist(); $('selectedAgencyLabel').textContent = S.selectedAgency || '—'; await loadAccounts(S.selectedAgency); renderAccounts(); };
+    $('selManager').onchange = e => { S.selectedManager = e.target.value; persist(); renderAccounts(); };
+    $('inSearch').oninput = renderAccounts;
+    $('selStatus').onchange = renderAccounts;
+    $('btnNewAccount').onclick = () => openAccountModal('add');
+    $('btnSaveAccount').onclick = saveAccount;
+    $('btnBulk').onclick = openBulkModal;
+    $('btnBulkCheck').onclick = bulkCheck;
+    $('btnBulkSave').onclick = bulkSave;
+    $('btnSendAgency').onclick = sendAgencyTelegram;
+    $('btnNewManager').onclick = () => openManagerModal('add');
+    $('btnSaveManager').onclick = saveManager;
+    $('apiHost').textContent = API_BASE;
+
+    window.closeAccountModal = closeAccountModal;
+    window.closeBulkModal = closeBulkModal;
+    window.closeManagerModal = closeManagerModal;
+    window.openEditAccount = openEditAccount;
+    window.removeAccount = removeAccount;
+    window.selectAccount = selectAccount;
+    window.unselectAccount = unselectAccount;
+    window.managerSetStatus = managerSetStatus;
+    window.openEditManager = openEditManager;
+    window.deleteManager = deleteManager;
+
+    restore();
+    setAuth(Boolean(S.user && S.pass));
+    renderAgencies();
+    renderManagerSelect();
+    renderAccounts();
+    renderManagers();
+    if (S.user && S.pass) refreshAll();
+  </script>
 </body>
 </html>
