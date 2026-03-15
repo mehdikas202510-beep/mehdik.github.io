@@ -31,6 +31,7 @@ button,input,select,textarea{font:inherit}
 .brand p{margin:4px 0 0;color:var(--muted);font-size:12px}
 .badgeRow{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
 .chip,.pill,.tag{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:12px;color:var(--muted)}
+.tag.good{background:#f0fdf4;color:#166534;border-color:#bbf7d0}
 .dot{width:9px;height:9px;border-radius:999px;background:#94a3b8}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .grid4{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
@@ -72,8 +73,7 @@ tbody td{padding:13px 12px;border-bottom:1px solid #eef2f7;font-size:13px;vertic
 tbody tr:hover{background:#fbfdff}
 .status{display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border-radius:999px;font-size:12px;font-weight:800;border:1px solid var(--line);background:#fff}
 .s-good{background:#f0fdf4;color:#166534;border-color:#bbf7d0}.s-bad{background:#fef2f2;color:#991b1b;border-color:#fecaca}.s-neutral{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}.s-warn{background:#fff7ed;color:#b45309;border-color:#fed7aa}
-.sectionGrid{display:grid;grid-template-columns:1fr .95fr;gap:18px}
-@media (max-width:1200px){.sectionGrid{grid-template-columns:1fr}}
+.sectionGrid{display:grid;grid-template-columns:1fr;gap:18px}
 .stack{display:grid;gap:18px}
 .subcard{padding:18px}
 .subHead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
@@ -126,13 +126,6 @@ tbody tr:hover{background:#fbfdff}
     </aside>
 
     <main>
-      <div class="kpis">
-        <div class="card kpi"><b id="kpiAgencies">—</b><span>Agencies</span></div>
-        <div class="card kpi"><b id="kpiAccounts">—</b><span>Accounts</span></div>
-        <div class="card kpi"><b id="kpiManagers">—</b><span>Managers</span></div>
-        <div class="card kpi"><b id="kpiAssigned">—</b><span>Assigned</span></div>
-      </div>
-
       <div class="card topbar">
         <div class="tabs">
           <button class="tabbtn active" data-tab="accountsTab">الحسابات</button>
@@ -147,7 +140,7 @@ tbody tr:hover{background:#fbfdff}
       <section id="accountsTab" class="tabpane">
         <div class="card panel">
           <div class="panelHead">
-            <h2>الحسابات</h2>
+            <div></div>
             <div class="actions">
               <button class="btn" id="btnBulk" disabled>Bulk Paste</button>
               <button class="btn primary" id="btnAddOne" disabled>Add Account</button>
@@ -192,7 +185,7 @@ tbody tr:hover{background:#fbfdff}
         <div class="sectionGrid">
           <div class="card subcard">
             <div class="subHead">
-              <h3>المديرين</h3>
+              <div></div>
               <button class="btn primary" id="btnOpenManager" disabled>Add Manager</button>
             </div>
             <div class="tablewrap">
@@ -204,20 +197,18 @@ tbody tr:hover{background:#fbfdff}
               </table>
             </div>
           </div>
-          <div class="stack">
-            <div class="card subcard">
-              <div class="subHead">
-                <h3>القائمة</h3>
-                <select id="selManagerView" disabled style="max-width:260px"></select>
-              </div>
-              <div class="tablewrap">
-                <table>
-                  <thead>
-                    <tr><th>#</th><th>Agency</th><th>Email</th><th>Passport</th><th>Status</th><th>Actions</th></tr>
-                  </thead>
-                  <tbody id="managerQueueTbody"><tr><td colspan="6" class="empty">—</td></tr></tbody>
-                </table>
-              </div>
+          <div class="card subcard">
+            <div class="subHead">
+              <div></div>
+              <select id="selManagerView" disabled style="max-width:260px"></select>
+            </div>
+            <div class="tablewrap">
+              <table>
+                <thead>
+                  <tr><th>#</th><th>Agency</th><th>Email</th><th>Passport</th><th>Status</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="managerQueueTbody"><tr><td colspan="6" class="empty">—</td></tr></tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -367,15 +358,12 @@ tbody tr:hover{background:#fbfdff}
   }
 
   function renderAgencies(){
-    $("kpiAgencies").textContent = String(S.agencies.length||0);
     const sel = $("selAgency"); sel.innerHTML = '<option value="">(اختر وكالة)</option>';
     for(const a of S.agencies){ const o=document.createElement('option'); o.value=a.agency; o.textContent=`${a.agency} (${a.count||0})`; sel.appendChild(o); }
     if(S.agencySelected) sel.value = S.agencySelected;
   }
 
   function renderManagersSelectors(){
-    $("kpiManagers").textContent = String(S.managers.length||0);
-    $("kpiAssigned").textContent = String(S.managers.reduce((n,m)=>n+(m.assignedCount||0),0));
     for(const id of ["selManagerView","selManagerAssign"]){
       const sel=$(id); sel.innerHTML='<option value="">(اختر مدير)</option>';
       for(const m of S.managers){ const o=document.createElement('option'); o.value=m.id; o.textContent=`${m.name} (${m.assignedCount||0}/${m.desiredCount})`; sel.appendChild(o); }
@@ -404,13 +392,13 @@ tbody tr:hover{background:#fbfdff}
 
   function renderAccounts(){
     const tb=$("tbody");
-    if(!S.agencySelected){ tb.innerHTML='<tr><td colspan="8" class="muted" style="padding:16px">اختر وكالة أولاً</td></tr>'; $("kpiAccounts").textContent="0"; return; }
-    const filtered=applyFilters(S.accounts); $("kpiAccounts").textContent=String(filtered.length||0);
+    if(!S.agencySelected){ tb.innerHTML='<tr><td colspan="8" class="muted" style="padding:16px">اختر وكالة أولاً</td></tr>'; return; }
+    const filtered=applyFilters(S.accounts);
     if(!filtered.length){ tb.innerHTML='<tr><td colspan="8" class="muted" style="padding:16px">لا توجد بيانات</td></tr>'; return; }
     const selectedManagerId = S.managerAssignSelected;
     tb.innerHTML=filtered.map((a,i)=>{
       const assigned = managerByAccount(a.agency||S.agencySelected,a.email,a.passport);
-      const assignedBadge = assigned ? `<span class="tag ${assigned.id===selectedManagerId ? 'good':''}">${escapeHtml(assigned.name)}</span>` : '<span class="muted">—</span>';
+      const assignedBadge = assigned ? `<span class="tag good">${escapeHtml(assigned.name)}</span>` : '<span class="muted">—</span>'; 
       let managerAction = '<span class="muted">اختر مديراً</span>';
       if(assigned){
         if(assigned.id===selectedManagerId){
