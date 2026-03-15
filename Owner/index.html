@@ -3,164 +3,195 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Owner Panel Pro — Manual Managers</title>
-    <style>
+  <title>Owner Panel — Pro UI</title>
+  <style>
     :root{
-      --bg:#eef4fb;--bg2:#f8fbff;--panel:rgba(255,255,255,.92);--panel2:#f8fbfd;--panel3:#f2f7ff;--text:#0f172a;--muted:#64748b;
-      --border:#d7e3f1;--border-strong:#bfd3ea;--shadow:0 18px 45px rgba(15,23,42,.08);--shadow-soft:0 10px 25px rgba(37,99,235,.08);
-      --brand:#2563eb;--brand-2:#1d4ed8;--brand-soft:#eff6ff;--good:#16a34a;--warn:#d97706;--bad:#dc2626;--chip:#eef2ff;
+      --bg:#f3f7fb;--bg2:#eef4fb;--panel:#ffffff;--panel-soft:#f8fbff;--text:#0f172a;--muted:#64748b;--muted-2:#94a3b8;
+      --border:#dbe7f3;--border-strong:#c7d8ea;--brand:#2563eb;--brand-2:#1d4ed8;--good:#16a34a;--warn:#d97706;--bad:#dc2626;
+      --info:#0ea5e9;--shadow:0 12px 30px rgba(15,23,42,.08);--shadow-lg:0 18px 55px rgba(15,23,42,.12);--r:22px;
       --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
       --sans:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,"Noto Sans Arabic","Noto Sans",sans-serif;
-      --r:22px;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0;font-family:var(--sans);color:var(--text);
       background:
-        radial-gradient(circle at top right, rgba(96,165,250,.16), transparent 28%),
-        radial-gradient(circle at top left, rgba(37,99,235,.08), transparent 22%),
-        linear-gradient(180deg,var(--bg2),var(--bg));
+        radial-gradient(circle at top right, rgba(37,99,235,.12), transparent 28%),
+        radial-gradient(circle at left 20%, rgba(14,165,233,.10), transparent 22%),
+        linear-gradient(180deg,var(--bg),var(--bg2));
     }
-    .wrap{max-width:1540px;margin:0 auto;padding:24px}
+    .wrap{max-width:1520px;margin:0 auto;padding:26px}
     .hidden{display:none!important}
+
     .topbar{
-      display:flex;gap:14px;align-items:center;justify-content:space-between;padding:16px 18px;border:1px solid var(--border);
-      border-radius:28px;background:var(--panel);backdrop-filter:blur(10px);box-shadow:var(--shadow);position:sticky;top:14px;z-index:20
+      position:sticky;top:14px;z-index:30;
+      display:flex;align-items:center;justify-content:space-between;gap:16px;
+      padding:16px 18px;border:1px solid rgba(255,255,255,.65);border-radius:28px;
+      background:rgba(255,255,255,.82);backdrop-filter:blur(16px);
+      box-shadow:var(--shadow-lg)
     }
-    .brand{display:flex;align-items:center;gap:14px}
+    .brand{display:flex;align-items:center;gap:14px;min-width:0}
     .logo{
-      width:46px;height:46px;border-radius:16px;
-      background:
-        radial-gradient(circle at 30% 30%, rgba(255,255,255,.9), transparent 34%),
-        linear-gradient(135deg,#60a5fa,#2563eb 55%,#1d4ed8);
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.55), 0 10px 25px rgba(37,99,235,.24)
+      width:48px;height:48px;border-radius:18px;
+      background:linear-gradient(135deg,#60a5fa,#2563eb 60%,#1d4ed8);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.5), 0 10px 24px rgba(37,99,235,.22);
+      position:relative;flex:0 0 auto
     }
-    .title{display:flex;flex-direction:column;gap:4px}
-    .title b{font-size:16px}
+    .logo:before,.logo:after{content:"";position:absolute;border-radius:999px;background:rgba(255,255,255,.9)}
+    .logo:before{width:20px;height:20px;right:7px;top:7px;opacity:.95}
+    .logo:after{width:10px;height:10px;left:8px;bottom:8px;opacity:.7}
+    .title{display:flex;flex-direction:column;gap:3px;min-width:0}
+    .title b{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .title span{font-size:12px;color:var(--muted)}
     .actions,.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .actions{justify-content:flex-end}
+
     .hero{
-      margin-top:18px;border:1px solid var(--border);border-radius:30px;padding:22px;background:
-      linear-gradient(135deg,rgba(239,246,255,.96),rgba(255,255,255,.96));
-      box-shadow:var(--shadow);display:grid;grid-template-columns:1.1fr .9fr;gap:18px;overflow:hidden;position:relative
+      margin-top:18px;display:grid;grid-template-columns:1.2fr .8fr;gap:18px
     }
-    .hero:before{
-      content:"";position:absolute;left:-80px;bottom:-80px;width:220px;height:220px;border-radius:50%;
-      background:radial-gradient(circle, rgba(37,99,235,.14), transparent 60%)
+    .hero-card,.hero-side{
+      border:1px solid var(--border);border-radius:30px;background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.82));
+      box-shadow:var(--shadow);overflow:hidden
     }
-    .hero h1{margin:0 0 8px;font-size:28px;line-height:1.2}
-    .hero p{margin:0;color:var(--muted);line-height:1.9;font-size:13px;max-width:760px}
-    .hero-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-content:start}
-    .hero-stat{
-      border:1px solid var(--border);background:rgba(255,255,255,.9);border-radius:20px;padding:16px;box-shadow:var(--shadow-soft)
+    .hero-card{padding:22px}
+    .hero-title{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+    .hero-title h1{margin:0;font-size:26px;line-height:1.2}
+    .hero-title p{margin:8px 0 0;color:var(--muted);font-size:14px;line-height:1.8}
+    .hero-badges{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+    .hero-side{padding:18px}
+    .side-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;height:100%}
+
+    .metric{
+      border:1px solid var(--border);border-radius:20px;padding:14px 16px;background:var(--panel-soft);
+      min-height:92px;display:flex;flex-direction:column;justify-content:space-between
     }
-    .hero-stat b{display:block;font-size:20px;margin-bottom:4px}
-    .hero-stat span{font-size:12px;color:var(--muted)}
-    .tabs{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+    .metric .label{font-size:12px;color:var(--muted)}
+    .metric b{font-size:26px;line-height:1}
+    .metric .sub{font-size:11px;color:var(--muted-2)}
+
+    .tabs-wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:20px}
+    .tabs{display:flex;gap:10px;flex-wrap:wrap}
     .tabbtn,.btn{
-      border:1px solid var(--border);background:#fff;color:var(--text);padding:10px 14px;border-radius:14px;cursor:pointer;
-      font-weight:800;display:inline-flex;gap:8px;align-items:center;transition:.18s ease;box-shadow:0 1px 0 rgba(255,255,255,.65) inset
+      border:1px solid var(--border);background:#fff;color:var(--text);padding:11px 14px;border-radius:16px;cursor:pointer;
+      font-weight:800;display:inline-flex;gap:8px;align-items:center;transition:.18s ease;box-shadow:0 2px 8px rgba(15,23,42,.03)
     }
     .tabbtn:hover,.btn:hover{transform:translateY(-1px);border-color:var(--border-strong)}
-    .tabbtn.active,.btn.primary{border-color:#93c5fd;background:#eff6ff;color:#1d4ed8}
-    .btn.danger{border-color:#fecaca;background:#fef2f2;color:#b91c1c}
+    .tabbtn.active,.btn.primary{border-color:#bfdbfe;background:#eff6ff;color:var(--brand-2);box-shadow:0 8px 18px rgba(37,99,235,.10)}
     .btn.good{border-color:#bbf7d0;background:#f0fdf4;color:#15803d}
     .btn.warn{border-color:#fed7aa;background:#fff7ed;color:#c2410c}
+    .btn.danger{border-color:#fecaca;background:#fef2f2;color:#b91c1c}
     .btn.ghost{background:transparent}
-    .btn[disabled]{opacity:.5;cursor:not-allowed;transform:none!important}
+    .btn[disabled]{opacity:.55;cursor:not-allowed;transform:none}
+
     .chip,.pill,.tag{
-      font-size:12px;padding:7px 11px;border-radius:999px;background:#fff;border:1px solid var(--border);color:var(--muted);display:inline-flex;gap:8px;align-items:center
+      font-size:12px;padding:7px 11px;border-radius:999px;background:rgba(255,255,255,.84);border:1px solid var(--border);
+      color:var(--muted);display:inline-flex;gap:8px;align-items:center
     }
-    .chip.strong{background:var(--brand-soft);color:var(--brand-2);border-color:#bfdbfe}
     .tag.good{background:#f0fdf4;color:#166534;border-color:#bbf7d0}
     .tag.bad{background:#fef2f2;color:#991b1b;border-color:#fecaca}
+
     .grid{display:grid;grid-template-columns:360px 1fr;gap:18px;margin-top:18px}
-    @media (max-width:1180px){.grid,.hero{grid-template-columns:1fr}.topbar{position:static}.hero-metrics{grid-template-columns:repeat(2,1fr)}}
-    @media (max-width:760px){.wrap{padding:14px}.hero h1{font-size:22px}.hero-metrics{grid-template-columns:1fr}.actions{width:100%}}
-    .stack{display:flex;flex-direction:column;gap:18px}
+    @media (max-width:1180px){.grid,.hero{grid-template-columns:1fr}.topbar{position:static}}
+    @media (max-width:700px){.wrap{padding:16px} .hero-title h1{font-size:22px} .side-grid{grid-template-columns:1fr 1fr}}
+
     .card{
-      border:1px solid var(--border);border-radius:var(--r);background:var(--panel);box-shadow:var(--shadow);overflow:hidden;backdrop-filter:blur(10px)
+      border:1px solid var(--border);border-radius:var(--r);background:linear-gradient(180deg,#fff,#fcfdff);
+      box-shadow:var(--shadow);overflow:hidden
     }
     .card .hd{
       padding:16px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;
-      background:linear-gradient(180deg,rgba(248,250,252,.82),rgba(255,255,255,.9))
+      background:linear-gradient(180deg,#ffffff,#fbfdff)
     }
+    .card .hd .hd-left{display:flex;flex-direction:column;gap:4px}
+    .card .hd h3{margin:0;font-size:15px}
+    .card .hd p{margin:0;font-size:12px;color:var(--muted)}
     .card .bd{padding:16px 18px}
-    .card .hd h3{margin:0;font-size:14px}
-    .subhead{display:flex;flex-direction:column;gap:4px}
-    .subhead small{color:var(--muted);font-size:12px}
+
+    .panel-stack{display:flex;flex-direction:column;gap:18px}
+    .auth-panel{position:sticky;top:108px}
+    @media (max-width:1180px){.auth-panel{position:static}}
+
     .field{display:flex;flex-direction:column;gap:7px;flex:1;min-width:160px}
     label{font-size:12px;color:var(--muted);font-weight:700}
     input,select,textarea{
-      width:100%;border:1px solid var(--border);background:#fff;color:var(--text);padding:11px 12px;border-radius:14px;outline:none;font-family:var(--sans);
-      transition:border-color .15s ease, box-shadow .15s ease, background .15s ease
+      width:100%;border:1px solid var(--border);background:#fff;color:var(--text);
+      padding:11px 13px;border-radius:15px;outline:none;font-family:var(--sans);transition:border-color .16s ease, box-shadow .16s ease, transform .16s ease
     }
-    input:focus,select:focus,textarea:focus{border-color:#93c5fd;box-shadow:0 0 0 4px rgba(147,197,253,.18);background:#fff}
-    textarea{min-height:150px;resize:vertical}
+    input:focus,select:focus,textarea:focus{border-color:#93c5fd;box-shadow:0 0 0 4px rgba(59,130,246,.10)}
+    textarea{min-height:170px;resize:vertical}
     .muted{color:var(--muted);font-size:12px;line-height:1.7}
     .mono{font-family:var(--mono);font-size:12px}
-    .login-card .bd{display:flex;flex-direction:column;gap:14px}
+
     .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
     .kpi{
-      border:1px solid var(--border);border-radius:18px;padding:14px;background:linear-gradient(180deg,var(--panel2),#fff);
-      box-shadow:var(--shadow-soft)
+      border:1px solid var(--border);border-radius:18px;padding:14px;background:linear-gradient(180deg,#f8fbff,#ffffff);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.6)
     }
-    .kpi b{display:block;font-size:22px}
-    .kpi span{color:var(--muted);font-size:12px}
-    .mini-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
-    .mini-stat{
-      border:1px solid var(--border);border-radius:18px;padding:14px;background:linear-gradient(180deg,#ffffff,#f8fbff)
-    }
-    .mini-stat b{display:block;font-size:20px;margin-bottom:4px}
-    .mini-stat span{font-size:12px;color:var(--muted)}
-    @media (max-width:900px){.mini-grid{grid-template-columns:repeat(2,1fr)}}
+    .kpi b{display:block;font-size:24px;margin-bottom:6px}
+    .kpi span{display:block;color:var(--muted);font-size:12px}
+    .kpi small{display:block;color:var(--muted-2);margin-top:6px;font-size:11px}
+
     .toolbar{
-      display:flex;justify-content:space-between;gap:14px;align-items:flex-end;flex-wrap:wrap;
-      padding:14px;border:1px solid var(--border);background:linear-gradient(180deg,#fbfdff,#f4f8fd);border-radius:18px;margin-bottom:14px
+      display:grid;grid-template-columns:1.05fr 1fr 220px 260px;gap:12px;align-items:end
     }
-    .toolbar .group{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    @media (max-width:1180px){.toolbar{grid-template-columns:1fr 1fr}}
+    @media (max-width:760px){.toolbar{grid-template-columns:1fr}}
+
+    .table-headline{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+    .table-headline .info{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
     .tablewrap{
-      overflow:auto;border-radius:18px;border:1px solid var(--border);background:#fff;
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.8)
+      overflow:auto;border-radius:18px;border:1px solid var(--border);background:#fff
     }
-    table{border-collapse:separate;border-spacing:0;width:100%;min-width:920px}
+    table{border-collapse:separate;border-spacing:0;width:100%;min-width:980px}
     thead th{
-      position:sticky;top:0;background:linear-gradient(180deg,#f8fbff,#f4f8fd);text-align:right;font-size:12px;color:var(--muted);
+      position:sticky;top:0;background:linear-gradient(180deg,#f8fbff,#f6faff);text-align:right;font-size:12px;color:var(--muted);
       padding:12px;border-bottom:1px solid var(--border);white-space:nowrap;z-index:1
     }
-    tbody td{padding:12px;border-bottom:1px solid #eef2f7;font-size:13px;vertical-align:middle;white-space:nowrap}
+    tbody td{padding:12px;border-bottom:1px solid #edf2f8;font-size:13px;vertical-align:middle;white-space:nowrap}
     tbody tr:hover{background:#f8fbff}
+
     .status{
-      display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;font-weight:800;font-size:12px;border:1px solid var(--border);background:#fff
+      display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border-radius:999px;font-weight:800;font-size:12px;
+      border:1px solid var(--border);background:#fff
     }
     .dot{width:8px;height:8px;border-radius:999px;background:var(--muted)}
-    .s-good .dot{background:var(--good)} .s-warn .dot{background:var(--warn)} .s-bad .dot{background:var(--bad)} .s-neutral .dot{background:#2563eb}
-    .note{
-      padding:12px 14px;border:1px dashed var(--border-strong);background:#f8fbff;border-radius:16px;color:var(--muted);font-size:12px;line-height:1.8
+    .s-good .dot{background:var(--good)} .s-warn .dot{background:var(--warn)} .s-bad .dot{background:var(--bad)} .s-neutral .dot{background:var(--info)}
+
+    .section-grid{display:grid;grid-template-columns:1fr;gap:18px}
+    .manager-top{display:grid;grid-template-columns:1fr;gap:18px}
+    .mini{font-size:11px;color:var(--muted);line-height:1.7}
+    .empty{
+      padding:28px 18px;text-align:center;color:var(--muted)
     }
+    .empty b{display:block;color:var(--text);font-size:14px;margin-bottom:6px}
+
     .toast{
-      position:fixed;inset:auto 18px 18px auto;background:#fff;border:1px solid var(--border);border-radius:16px;padding:12px 14px;box-shadow:var(--shadow);max-width:520px;display:none;z-index:30
+      position:fixed;inset:auto 18px 18px auto;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);
+      border:1px solid var(--border);border-radius:18px;padding:13px 14px;box-shadow:var(--shadow-lg);max-width:520px;display:none;z-index:50
     }
     .toast.show{display:block}
     .toast b{display:block;font-size:13px;margin-bottom:4px}
-    .toast span{font-size:12px;color:var(--muted);line-height:1.5;white-space:pre-wrap}
-    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(15,23,42,.35);z-index:40;padding:18px}
+    .toast span{font-size:12px;color:var(--muted);line-height:1.6;white-space:pre-wrap}
+
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(15,23,42,.42);z-index:70;padding:18px}
     .modal.show{display:flex}
     .modal .box{
-      width:min(920px,100%);border:1px solid var(--border);border-radius:24px;background:#fff;
-      box-shadow:0 24px 70px rgba(15,23,42,.24);overflow:hidden
+      width:min(940px,100%);border:1px solid var(--border);border-radius:26px;background:#fff;box-shadow:0 25px 80px rgba(15,23,42,.28);overflow:hidden
     }
     .modal .box .hd,.modal .box .ft{
       padding:16px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px
     }
-    .modal .box .ft{border-bottom:none;border-top:1px solid var(--border);justify-content:flex-start;flex-wrap:wrap;background:#fafcff}
+    .modal .box .ft{border-bottom:none;border-top:1px solid var(--border);justify-content:flex-start;flex-wrap:wrap}
     .modal .box .bd{padding:18px}
-    .list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;max-height:300px;overflow:auto}
-    .list li{padding:10px 12px;border:1px solid var(--border);background:#f8fafc;border-radius:14px}
-    .split{display:grid;grid-template-columns:1.08fr .92fr;gap:16px}
+
+    .list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;max-height:320px;overflow:auto}
+    .list li{padding:11px 12px;border:1px solid var(--border);background:#f8fbff;border-radius:14px}
+    .split{display:grid;grid-template-columns:1.15fr .85fr;gap:16px}
     @media (max-width:1100px){.split{grid-template-columns:1fr}}
-    .mini{font-size:11px;color:var(--muted)}
+
+    .soft{background:var(--panel-soft)}
+    .divider{height:1px;background:#edf2f8;margin:16px 0}
   </style>
 </head>
 <body>
@@ -169,83 +200,96 @@
     <div class="brand">
       <div class="logo"></div>
       <div class="title">
-        <b>Owner Panel — Manual Managers</b>
-        <span>نظام يدوي: المدير يختار الحسابات بنفسه ولا يتم التعويض تلقائياً</span>
+        <b>Owner Panel — Advanced Manual Managers</b>
+        <span>واجهة مطورة لإدارة الوكالات والحسابات والمديرين بشكل أوضح وأسرع وأكثر احترافية</span>
       </div>
     </div>
     <div class="actions">
-      <span class="chip">API: <span class="mono" id="apiHost">…</span></span>
-      <span class="chip">Auth: <span id="authState">Guest</span></span>
-      <button class="btn" id="btnPing">Ping</button>
+      <span class="chip">API <span class="mono" id="apiHost">…</span></span>
+      <span class="chip">الحالة <span id="authState">Guest</span></span>
+      <button class="btn ghost" id="btnPing">Ping</button>
       <button class="btn danger" id="btnLogout" disabled>Logout</button>
     </div>
   </div>
 
   <div class="hero">
-    <div>
-      <span class="chip strong">Professional Manual Management</span>
-      <h1>لوحة إدارة متقدمة للحسابات والمديرين</h1>
-      <p>
-        واجهة محسنة بصرياً لإدارة الوكالات والحسابات وتوزيع الاختيار اليدوي للمديرين بشكل واضح ومرتب.
-        تم الإبقاء على المنطق الحالي: اختيار يدوي للحسابات، حذف مباشر من قائمة المدير عند Done أو Rejected، وإرسال وكالة كاملة إلى تلغرام عند الطلب.
-      </p>
+    <div class="hero-card">
+      <div class="hero-title">
+        <div>
+          <h1>لوحة تحكم متقدمة لإدارة الحسابات والمديرين</h1>
+          <p>
+            تصميم أحدث مع تنظيم أفضل للأدوات والجداول، مع بقاء المنطق الحالي كما هو:
+            المدير يختار الحسابات يدويًا، وعند وضع Done أو Rejected يُحذف الحساب مباشرة من قائمته.
+          </p>
+        </div>
+        <span class="pill"><span class="dot"></span><span id="pillText">غير متصل</span></span>
+      </div>
+      <div class="hero-badges">
+        <span class="chip">اختيار يدوي للمديرين</span>
+        <span class="chip">Send Agency → Telegram فقط</span>
+        <span class="chip">Visits Bot مفصول</span>
+        <span class="chip">ترتيب Status احترافي</span>
+      </div>
     </div>
-    <div class="hero-metrics">
-      <div class="hero-stat"><b id="heroAgencies">—</b><span>Agencies</span></div>
-      <div class="hero-stat"><b id="heroManagers">—</b><span>Managers</span></div>
-      <div class="hero-stat"><b id="heroAssigned">—</b><span>Assigned Accounts</span></div>
+    <div class="hero-side">
+      <div class="side-grid">
+        <div class="metric"><span class="label">عدد الوكالات</span><b id="heroAgencies">—</b><span class="sub">جميع الوكالات المتاحة</span></div>
+        <div class="metric"><span class="label">حسابات الوكالة</span><b id="heroAccounts">—</b><span class="sub">بحسب الوكالة المحددة</span></div>
+        <div class="metric"><span class="label">عدد المديرين</span><b id="heroManagers">—</b><span class="sub">المديرون المسجلون بالنظام</span></div>
+        <div class="metric"><span class="label">الحسابات المختارة</span><b id="heroAssigned">—</b><span class="sub">إجمالي ما تم إسناده</span></div>
+      </div>
     </div>
   </div>
 
-  <div class="tabs">
-    <button class="tabbtn active" data-tab="accountsTab">الحسابات</button>
-    <button class="tabbtn" data-tab="managersTab">المديرين</button>
+  <div class="tabs-wrap">
+    <div class="tabs">
+      <button class="tabbtn active" data-tab="accountsTab">الحسابات</button>
+      <button class="tabbtn" data-tab="managersTab">المديرين</button>
+    </div>
+    <div class="actions">
+      <span class="chip">واجهة Light احترافية</span>
+      <span class="chip">Responsive</span>
+    </div>
   </div>
 
   <div class="grid">
-    <div class="stack">
-    <div class="card login-card">
-      <div class="hd"><h3>تسجيل الدخول</h3><span class="pill"><span class="dot"></span><span id="pillText">غير متصل</span></span></div>
-      <div class="bd">
-        <div class="row">
-          <div class="field"><label>Owner User</label><input id="inUser" placeholder="admin" /></div>
-          <div class="field"><label>Owner Pass</label><input id="inPass" type="password" placeholder="••••••••" /></div>
+    <div class="panel-stack">
+      <div class="card auth-panel">
+        <div class="hd">
+          <div class="hd-left">
+            <h3>الدخول والإحصاءات</h3>
+            <p>تسجيل الدخول وإدارة الجلسة الحالية محليًا داخل المتصفح</p>
+          </div>
+          <span class="pill">Owner Access</span>
         </div>
-        <div style="margin-top:12px" class="row"><button class="btn primary" id="btnLogin">Login</button><span class="muted">يتم حفظ بيانات الدخول محلياً في هذا المتصفح فقط.</span></div>
-        <div style="height:1px;background:#eef2f7;margin:14px 0"></div>
-        <div class="kpis">
-          <div class="kpi"><b id="kpiAgencies">—</b><span>عدد الوكالات</span></div>
-          <div class="kpi"><b id="kpiAccounts">—</b><span>حسابات الوكالة المحددة</span></div>
-          <div class="kpi"><b id="kpiManagers">—</b><span>عدد المديرين</span></div>
-          <div class="kpi"><b id="kpiAssigned">—</b><span>الحسابات المختارة للمديرين</span></div>
+        <div class="bd">
+          <div class="row">
+            <div class="field"><label>Owner User</label><input id="inUser" placeholder="admin" /></div>
+            <div class="field"><label>Owner Pass</label><input id="inPass" type="password" placeholder="••••••••" /></div>
+          </div>
+          <div style="margin-top:12px" class="row">
+            <button class="btn primary" id="btnLogin">Login</button>
+            <span class="muted">يتم حفظ الجلسة محليًا في هذا المتصفح فقط لتسريع العمل.</span>
+          </div>
+          <div class="divider"></div>
+          <div class="kpis">
+            <div class="kpi"><b id="kpiAgencies">—</b><span>عدد الوكالات</span><small>الوكالات المتصلة بالنظام</small></div>
+            <div class="kpi"><b id="kpiAccounts">—</b><span>حسابات الوكالة المحددة</span><small>بعد الفلاتر والترتيب</small></div>
+            <div class="kpi"><b id="kpiManagers">—</b><span>عدد المديرين</span><small>الإدارات المضافة حاليًا</small></div>
+            <div class="kpi"><b id="kpiAssigned">—</b><span>الحسابات المختارة للمديرين</span><small>جميع الحسابات المسندة يدويًا</small></div>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="card">
-      <div class="hd">
-        <div class="subhead">
-          <h3>دليل سريع</h3>
-          <small>كيف تستخدم اللوحة بشكل أوضح</small>
-        </div>
-      </div>
-      <div class="bd">
-        <div class="note">
-          1) سجّل الدخول ثم اختر الوكالة.<br>
-          2) اختر المدير من قائمة التحديد اليدوي ثم اضغط Select على الحساب المناسب.<br>
-          3) الحسابات ذات الحالة Done و Rejected غير قابلة للاختيار.<br>
-          4) من تبويب المديرين يمكنك تحديث حالة الحساب أو حذفه من قائمة المدير مباشرة.
-        </div>
-      </div>
-    </div>
-    </div>
-
-    <div>
-
+    <div class="section-grid">
       <div id="accountsTab" class="tabpane">
         <div class="card">
           <div class="hd">
-            <h3>إدارة الحسابات</h3>
+            <div class="hd-left">
+              <h3>إدارة الحسابات</h3>
+              <p>إضافة وتعديل وحذف الحسابات، مع تحديد يدوي للمدير وإرسال جميع حسابات الوكالة إلى تلغرام</p>
+            </div>
             <div class="row">
               <button class="btn" id="btnRefresh" disabled>Refresh</button>
               <button class="btn" id="btnSendAgencyAll" disabled>Send Agency → Telegram</button>
@@ -254,17 +298,10 @@
             </div>
           </div>
           <div class="bd">
-            <div class="mini-grid">
-              <div class="mini-stat"><b id="statFiltered">0</b><span>الحسابات الظاهرة</span></div>
-              <div class="mini-stat"><b id="statDone">0</b><span>Done</span></div>
-              <div class="mini-stat"><b id="statInProgress">0</b><span>In Progress</span></div>
-              <div class="mini-stat"><b id="statPendingRejected">0</b><span>Pending + Rejected</span></div>
-            </div>
             <div class="toolbar">
-              <div class="group">
-              <div class="field" style="min-width:220px"><label>الوكالة</label><select id="selAgency" disabled></select></div>
               <div class="field"><label>بحث</label><input id="inSearch" placeholder="email / passport / status..." disabled /></div>
-              <div class="field" style="max-width:220px"><label>الحالة</label>
+              <div class="field"><label>الوكالة</label><select id="selAgency" disabled></select></div>
+              <div class="field"><label>الحالة</label>
                 <select id="selStatusFilter" disabled>
                   <option value="">(الكل)</option>
                   <option value="Done">Done</option>
@@ -273,48 +310,64 @@
                   <option value="Pending">Pending</option>
                 </select>
               </div>
-              <div class="field" style="min-width:240px"><label>المدير المختار للتحديد اليدوي</label><select id="selManagerAssign" disabled></select></div>
+              <div class="field"><label>المدير المختار للتحديد اليدوي</label><select id="selManagerAssign" disabled></select></div>
             </div>
-              <div class="group">
-                <span class="chip">ترتيب الحالة: Done → In Progress → Rejected → Pending</span>
+
+            <div class="table-headline" style="margin-top:14px">
+              <div class="info">
+                <span class="chip">عرض الحسابات بحسب الفلاتر الحالية</span>
+                <span class="chip">الحسابات Done و Rejected غير قابلة للاختيار</span>
               </div>
+              <div class="muted">الترتيب: Done ثم In Progress ثم Rejected ثم Pending</div>
             </div>
+
             <div class="tablewrap">
               <table>
-                <thead><tr><th>#</th><th>Agency</th><th>Email</th><th>Password</th><th>Passport</th><th>Status</th><th>Manager</th><th>Actions</th></tr></thead>
-                <tbody id="tbody"><tr><td colspan="8" class="muted" style="padding:16px">—</td></tr></tbody>
+                <thead>
+                  <tr><th>#</th><th>Agency</th><th>Email</th><th>Password</th><th>Passport</th><th>Status</th><th>Manager</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="tbody"><tr><td colspan="8" class="empty"><b>لا توجد بيانات بعد</b>قم بتسجيل الدخول ثم اختر وكالة لعرض الحسابات.</td></tr></tbody>
               </table>
             </div>
-            <div class="note" style="margin-top:12px">الترتيب ثابت: Done ثم In Progress ثم Rejected ثم Pending. لا يمكن اختيار Done أو Rejected للمديرين، والحساب المحجوز لمدير آخر يظهر بوضوح داخل الجدول.</div>
           </div>
         </div>
       </div>
 
-      <div id="managersTab" class="tabpane hidden">
-        <div class="split">
-          <div class="card">
-            <div class="hd"><div class="subhead"><h3>المديرين</h3><small>إدارة بيانات المديرين وحدودهم القصوى</small></div><div class="row"><button class="btn primary" id="btnOpenManager" disabled>+ مدير جديد</button></div></div>
-            <div class="bd">
-              <div class="tablewrap">
-                <table>
-                  <thead><tr><th>#</th><th>ID</th><th>الاسم</th><th>الحد الأقصى</th><th>المختار الآن</th><th>Actions</th></tr></thead>
-                  <tbody id="managersTbody"><tr><td colspan="6" class="muted" style="padding:16px">—</td></tr></tbody>
-                </table>
-              </div>
+      <div id="managersTab" class="tabpane hidden manager-top">
+        <div class="card">
+          <div class="hd">
+            <div class="hd-left">
+              <h3>المديرين</h3>
+              <p>إنشاء المديرين وتعديلهم مع تحديد الحد الأقصى للحسابات المختارة يدويًا</p>
+            </div>
+            <div class="row"><button class="btn primary" id="btnOpenManager" disabled>+ مدير جديد</button></div>
+          </div>
+          <div class="bd">
+            <div class="tablewrap">
+              <table>
+                <thead><tr><th>#</th><th>ID</th><th>الاسم</th><th>الحد الأقصى</th><th>المختار الآن</th><th>Actions</th></tr></thead>
+                <tbody id="managersTbody"><tr><td colspan="6" class="empty"><b>لا يوجد مديرون بعد</b>أضف مديرًا جديدًا للبدء.</td></tr></tbody>
+              </table>
             </div>
           </div>
+        </div>
 
-          <div class="card">
-            <div class="hd"><div class="subhead"><h3>قائمة المدير</h3><small>الحسابات المختارة يدوياً لكل مدير</small></div><div class="row"><select id="selManagerView" disabled></select></div></div>
-            <div class="bd">
-              <div class="tablewrap">
-                <table>
-                  <thead><tr><th>#</th><th>Agency</th><th>Email</th><th>Passport</th><th>Status</th><th>Update</th></tr></thead>
-                  <tbody id="managerQueueTbody"><tr><td colspan="6" class="muted" style="padding:16px">—</td></tr></tbody>
-                </table>
-              </div>
-              <div class="note" style="margin-top:12px">عند وضع Done أو Rejected ينحذف الحساب مباشرة من قائمة المدير بدون تعويض تلقائي، مع بقاء الإدارة يدوية بالكامل.</div>
+        <div class="card">
+          <div class="hd">
+            <div class="hd-left">
+              <h3>قائمة المدير</h3>
+              <p>يمكن تحديث الحالة من هنا، وعند وضع Done أو Rejected يُحذف الحساب مباشرة من القائمة</p>
             </div>
+            <div class="row"><select id="selManagerView" disabled></select></div>
+          </div>
+          <div class="bd">
+            <div class="tablewrap">
+              <table>
+                <thead><tr><th>#</th><th>Agency</th><th>Email</th><th>Passport</th><th>Status</th><th>Update</th></tr></thead>
+                <tbody id="managerQueueTbody"><tr><td colspan="6" class="empty"><b>اختر مديرًا</b>ستظهر هنا جميع الحسابات المختارة للمدير المحدد.</td></tr></tbody>
+              </table>
+            </div>
+            <div class="mini" style="margin-top:10px">النظام يدوي بالكامل: لا يوجد تعويض تلقائي، والتحكم بالحسابات يتم من خلال اختيار المدير أو إزالة الحساب من قائمته.</div>
           </div>
         </div>
       </div>
@@ -329,14 +382,15 @@
   <div style="margin-top:10px" class="row"><div class="field"><label>Passport</label><input id="onePassport" placeholder="AA123456" /></div><div class="field"><label>Status</label><select id="oneStatus"><option>Done</option><option>In Progress</option><option>Rejected</option><option selected>Pending</option></select></div></div>
 </div><div class="ft"><button class="btn" onclick="UI.closeOne()">Cancel</button><button class="btn primary" id="btnSaveOne">Save</button></div></div></div>
 
-<div class="modal" id="modalBulk"><div class="box"><div class="hd"><div><b>Bulk Paste</b><div class="muted">ألصق JSON Array ثم Preview ثم Add</div></div><button class="btn" onclick="UI.closeBulk()">✕</button></div><div class="bd"><div class="row" style="align-items:flex-start"><div class="field" style="flex:1.25"><label>JSON</label><textarea id="bulkText" class="mono" placeholder='[{"email":"a@x.com","password":"123","passport":"AA1","status":"Pending"}]'></textarea></div><div class="field" style="flex:.75;min-width:260px"><label>Preview</label><div class="mono" id="bulkStats">—</div><div style="height:1px;background:#eef2f7;margin:14px 0"></div><ul class="list" id="bulkList"></ul></div></div></div><div class="ft"><button class="btn" onclick="UI.closeBulk()">Cancel</button><button class="btn" id="btnParse">Preview</button><button class="btn primary" id="btnBulkAdd" disabled>Add accounts</button></div></div></div>
+<div class="modal" id="modalBulk"><div class="box"><div class="hd"><div><b>Bulk Paste</b><div class="muted">ألصق JSON Array ثم Preview ثم Add</div></div><button class="btn" onclick="UI.closeBulk()">✕</button></div><div class="bd"><div class="split"><div class="field"><label>JSON</label><textarea id="bulkText" class="mono" placeholder='[{"email":"a@x.com","password":"123","passport":"AA1","status":"Pending"}]'></textarea></div><div class="field"><label>Preview</label><div class="mono soft" id="bulkStats" style="padding:12px;border:1px solid var(--border);border-radius:14px;min-height:56px">—</div><ul class="list" id="bulkList" style="margin-top:12px"></ul></div></div></div><div class="ft"><button class="btn" onclick="UI.closeBulk()">Cancel</button><button class="btn" id="btnParse">Preview</button><button class="btn primary" id="btnBulkAdd" disabled>Add accounts</button></div></div></div>
 
-<div class="modal" id="modalManager"><div class="box"><div class="hd"><div><b id="managerTitle">مدير جديد</b><div class="muted">هذا الحد الأقصى فقط، والاختيار يتم يدوياً.</div></div><button class="btn" onclick="UI.closeManager()">✕</button></div><div class="bd">
+<div class="modal" id="modalManager"><div class="box"><div class="hd"><div><b id="managerTitle">مدير جديد</b><div class="muted">هذا الحد الأقصى فقط، والاختيار يتم يدويًا من جدول الحسابات.</div></div><button class="btn" onclick="UI.closeManager()">✕</button></div><div class="bd">
   <div class="row"><div class="field"><label>ID</label><input id="mgrId" placeholder="manager-1" /></div><div class="field"><label>الاسم</label><input id="mgrName" placeholder="مدير أول" /></div></div>
   <div style="margin-top:10px" class="row"><div class="field"><label>الحد الأقصى للحسابات</label><input id="mgrDesired" type="number" min="1" max="200" value="8" /></div></div>
 </div><div class="ft"><button class="btn" onclick="UI.closeManager()">Cancel</button><button class="btn primary" id="btnSaveManager">Save</button></div></div></div>
 
 <script>
+
 (() => {
   const API_BASE = (document.body?.dataset?.apiBase || "https://api.mehdik.site").replace(/\/$/, "");
   const OWNER_BASE = API_BASE + "/owner";
@@ -361,12 +415,7 @@
   function toast(title, msg){ const t=$("toast"); $("toastTitle").textContent=title; $("toastMsg").textContent=msg; t.classList.add("show"); clearTimeout(toast._tm); toast._tm=setTimeout(()=>t.classList.remove("show"), 3500); }
   function persistSession(){ sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ ownerUser:S.ownerUser, ownerPass:S.ownerPass, agencySelected:S.agencySelected, managerSelected:S.managerSelected, managerAssignSelected:S.managerAssignSelected })); }
   function restoreSession(){ try { const raw=sessionStorage.getItem(STORAGE_KEY); if(!raw) return; const d=JSON.parse(raw); S.ownerUser=norm(d.ownerUser); S.ownerPass=norm(d.ownerPass); S.agencySelected=norm(d.agencySelected); S.managerSelected=norm(d.managerSelected); S.managerAssignSelected=norm(d.managerAssignSelected); $("inUser").value=S.ownerUser; $("inPass").value=S.ownerPass; } catch(_){} }
-  function setAuthState(authed){
-      $("authState").textContent = authed ? "Owner" : "Guest";
-      $("btnLogout").disabled=!authed;
-      ["btnRefresh","btnBulk","btnAddOne","selAgency","inSearch","selStatusFilter","btnSendAgencyAll","btnOpenManager","selManagerView","selManagerAssign"].forEach(id=>$(id).disabled=!authed);
-      $("pillText").textContent = authed ? "متصل" : "غير متصل";
-    }
+  function setAuthState(authed){ $("authState").textContent = authed ? "Owner" : "Guest"; $("btnLogout").disabled=!authed; ["btnRefresh","btnBulk","btnAddOne","selAgency","inSearch","selStatusFilter","btnSendAgencyAll","btnOpenManager","selManagerView","selManagerAssign"].forEach(id=>$(id).disabled=!authed); $("pillText").textContent = authed ? "متصل" : "غير متصل"; }
 
   async function apiFetch(url, options={}){
     const controller = new AbortController(); const timer = setTimeout(()=>controller.abort(), 15000);
@@ -416,23 +465,14 @@
 
   function renderAgencies(){
     $("kpiAgencies").textContent = String(S.agencies.length||0);
-    refreshHeroStats();
     const sel = $("selAgency"); sel.innerHTML = '<option value="">(اختر وكالة)</option>';
     for(const a of S.agencies){ const o=document.createElement('option'); o.value=a.agency; o.textContent=`${a.agency} (${a.count||0})`; sel.appendChild(o); }
     if(S.agencySelected) sel.value = S.agencySelected;
   }
 
-
-  function refreshHeroStats(){
-    $("heroAgencies").textContent = String(S.agencies.length||0);
-    $("heroManagers").textContent = String(S.managers.length||0);
-    $("heroAssigned").textContent = String(S.managers.reduce((n,m)=>n+(m.assignedCount||0),0));
-  }
-
   function renderManagersSelectors(){
     $("kpiManagers").textContent = String(S.managers.length||0);
     $("kpiAssigned").textContent = String(S.managers.reduce((n,m)=>n+(m.assignedCount||0),0));
-    refreshHeroStats();
     for(const id of ["selManagerView","selManagerAssign"]){
       const sel=$(id); sel.innerHTML='<option value="">(اختر مدير)</option>';
       for(const m of S.managers){ const o=document.createElement('option'); o.value=m.id; o.textContent=`${m.name} (${m.assignedCount||0}/${m.desiredCount})`; sel.appendChild(o); }
@@ -461,15 +501,8 @@
 
   function renderAccounts(){
     const tb=$("tbody");
-    if(!S.agencySelected){ tb.innerHTML='<tr><td colspan="8" class="muted" style="padding:16px">اختر وكالة أولاً</td></tr>'; $("kpiAccounts").textContent="0"; $("statFiltered").textContent="0"; $("statDone").textContent="0"; $("statInProgress").textContent="0"; $("statPendingRejected").textContent="0"; return; }
+    if(!S.agencySelected){ tb.innerHTML='<tr><td colspan="8" class="muted" style="padding:16px">اختر وكالة أولاً</td></tr>'; $("kpiAccounts").textContent="0"; return; }
     const filtered=applyFilters(S.accounts); $("kpiAccounts").textContent=String(filtered.length||0);
-    const doneCount = filtered.filter(a=>statusValue(a.status)==="Done").length;
-    const progressCount = filtered.filter(a=>statusValue(a.status)==="In Progress").length;
-    const pendingRejectedCount = filtered.filter(a=>["Pending","Rejected"].includes(statusValue(a.status))).length;
-    $("statFiltered").textContent=String(filtered.length||0);
-    $("statDone").textContent=String(doneCount);
-    $("statInProgress").textContent=String(progressCount);
-    $("statPendingRejected").textContent=String(pendingRejectedCount);
     if(!filtered.length){ tb.innerHTML='<tr><td colspan="8" class="muted" style="padding:16px">لا توجد بيانات</td></tr>'; return; }
     const selectedManagerId = S.managerAssignSelected;
     tb.innerHTML=filtered.map((a,i)=>{
@@ -646,9 +679,26 @@
   $("selManagerAssign").addEventListener('change', (e)=>{ S.managerAssignSelected=e.target.value||''; persistSession(); renderAccounts(); });
   document.querySelectorAll('.tabbtn').forEach(btn=>btn.addEventListener('click',()=>{ document.querySelectorAll('.tabbtn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.querySelectorAll('.tabpane').forEach(p=>p.classList.add('hidden')); document.getElementById(btn.dataset.tab).classList.remove('hidden'); }));
 
+
+  const mirrorKpis = () => {
+    const pairs = [["kpiAgencies","heroAgencies"],["kpiAccounts","heroAccounts"],["kpiManagers","heroManagers"],["kpiAssigned","heroAssigned"]];
+    for(const [a,b] of pairs){
+      const sa=document.getElementById(a), sb=document.getElementById(b);
+      if(sa && sb) sb.textContent = sa.textContent || "—";
+    }
+  };
+  const __oldRenderAgencies = renderAgencies;
+  renderAgencies = function(){ __oldRenderAgencies(); mirrorKpis(); };
+  const __oldRenderManagersSelectors = renderManagersSelectors;
+  renderManagersSelectors = function(){ __oldRenderManagersSelectors(); mirrorKpis(); };
+  const __oldRenderAccounts = renderAccounts;
+  renderAccounts = function(){ __oldRenderAccounts(); mirrorKpis(); };
+  mirrorKpis();
+
   restoreSession(); setAuthState(false);
   if(S.ownerUser && S.ownerPass){ setAuthState(true); UI.refreshAll().catch(()=>{}); }
 })();
+
 </script>
 </body>
 </html>
