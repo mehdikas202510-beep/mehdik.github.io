@@ -40,13 +40,13 @@
     }
     label{display:block;font-weight:650;margin:12px 6px 6px;font-size:.92rem}
     .req{opacity:.9}
-    input[type=text],input[type=tel],input[type=date],select{
+    input[type=text],input[type=tel],input[type=date],input[type=password],select{
       width:100%;padding:10px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.28);
       outline:none;background:rgba(5,28,70,.5);color:#fff;font-size:.95rem;transition:all .2s ease
     }
     input::placeholder{color:rgba(255,255,255,.55)}
     select{cursor:pointer}
-    input[type=text]:focus,input[type=tel]:focus,input[type=date]:focus,select:focus{
+    input[type=text]:focus,input[type=tel]:focus,input[type=date]:focus,input[type=password]:focus,select:focus{
       border-color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.55);background:rgba(5,28,70,.75)
     }
     input[readonly]{opacity:.92}
@@ -91,6 +91,13 @@
   </div>
 
   <form id="reg-form" novalidate>
+    <input type="hidden" id="requestVerificationToken" name="__RequestVerificationToken" value="" />
+    <input type="hidden" name="Nation" value="221" />
+    <input type="hidden" name="Prefix" value="216" />
+    <input type="hidden" name="OtherMailOrPhone" value="" />
+    <input type="hidden" name="Consulate" value="7" />
+    <input type="hidden" name="PersonalDataAgreement" value="true" />
+    <input type="hidden" name="PersonalDataAgreement" value="false" />
     <div class="sectionTitle" data-i18n="sec_personal">Dati Personali</div>
 
     <div class="row">
@@ -126,6 +133,19 @@
         <input id="email" name="email" type="text" placeholder="nome.cognome01@outlook.com" readonly required />
         <div id="errEmail" class="error" data-i18n="err_email">Email non valida.</div>
         <div class="hint" data-i18n="hint_email">L'email viene generata automaticamente da Nome e Cognome.</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="password">Password <span class="req">*</span></label>
+        <input id="password" name="Password" type="text" placeholder="Password" required />
+        <div id="errPassword" class="error">Inserisci una password valida (min 6 caratteri).</div>
+      </div>
+      <div>
+        <label for="confirmPassword">Confirm Password <span class="req">*</span></label>
+        <input id="confirmPassword" name="ConfirmPassword" type="text" placeholder="Confirm Password" required />
+        <div id="errConfirmPassword" class="error">Le password non coincidono.</div>
       </div>
     </div>
 
@@ -218,6 +238,9 @@
     const nomeInput = document.getElementById("nome");
     const cognomeInput = document.getElementById("cognome");
     const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const confirmPasswordInput = document.getElementById("confirmPassword");
+    const requestVerificationTokenInput = document.getElementById("requestVerificationToken");
 
     const luogoInput = document.getElementById("luogoNascita");
     const dataInput = document.getElementById("dataNascita");
@@ -239,6 +262,8 @@
     const errLuogo = document.getElementById("errLuogo");
     const errData = document.getElementById("errData");
     const errEmail = document.getElementById("errEmail");
+    const errPassword = document.getElementById("errPassword");
+    const errConfirmPassword = document.getElementById("errConfirmPassword");
     const errIndirizzo = document.getElementById("errIndirizzo");
     const errCap = document.getElementById("errCap");
     const errCitta = document.getElementById("errCitta");
@@ -294,6 +319,10 @@
 
     function validateEmail(val){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val); }
 
+    function makeToken(){
+      return Math.random().toString(36).slice(2) + Date.now().toString(36);
+    }
+
     let valid = true;
     function validate(){
       valid = true;
@@ -303,6 +332,8 @@
       clearInvalid(luogoInput, errLuogo);
       clearInvalid(dataInput, errData);
       clearInvalid(emailInput, errEmail);
+      clearInvalid(passwordInput, errPassword);
+      clearInvalid(confirmPasswordInput, errConfirmPassword);
       clearInvalid(indirizzoInput, errIndirizzo);
       clearInvalid(capInput, errCap);
       clearInvalid(cittaInput, errCitta);
@@ -326,6 +357,12 @@
       updateEmail();
       const email = (emailInput.value||"").trim();
       if(!email || !validateEmail(email)) setInvalid(emailInput, errEmail);
+
+      const password = (passwordInput.value||"").trim();
+      if(password.length < 6) setInvalid(passwordInput, errPassword);
+
+      const confirmPassword = (confirmPasswordInput.value||"").trim();
+      if(!confirmPassword || confirmPassword !== password) setInvalid(confirmPasswordInput, errConfirmPassword);
 
       const indirizzo = (indirizzoInput.value||"").trim();
       if(indirizzo.length < 5) setInvalid(indirizzoInput, errIndirizzo);
@@ -365,10 +402,30 @@
     async function sendToServer(formEl){
       const fd = new FormData(formEl);
 
-      // رقم كامل: prefisso + telefono
-      const pref = (prefissoInput.value||"").trim();
       const tel = (telefonoInput.value||"").trim().replace(/\s+/g,"");
-      fd.append("fullPhone", pref + " " + tel);
+      if(!requestVerificationTokenInput.value){
+        requestVerificationTokenInput.value = makeToken();
+      }
+
+      fd.set("__RequestVerificationToken", requestVerificationTokenInput.value);
+      fd.set("Name", (nomeInput.value||"").trim());
+      fd.set("Surname", (cognomeInput.value||"").trim());
+      fd.set("BirthPlace", (luogoInput.value||"").trim());
+      fd.set("BirthDate", (dataInput.value||"").trim());
+      fd.set("Email", (emailInput.value||"").trim());
+      fd.set("Password", (passwordInput.value||"").trim());
+      fd.set("ConfirmPassword", (confirmPasswordInput.value||"").trim());
+      fd.set("HomeAddress", (indirizzoInput.value||"").trim());
+      fd.set("CAP", (capInput.value||"").trim());
+      fd.set("Town", (cittaInput.value||"").trim());
+      fd.set("Nation", "221");
+      fd.set("Prefix", "216");
+      fd.set("PhoneNumber", tel);
+      fd.set("OtherMailOrPhone", "");
+      fd.set("Consulate", "7");
+      fd.delete("PersonalDataAgreement");
+      fd.append("PersonalDataAgreement", "true");
+      fd.append("PersonalDataAgreement", "false");
 
       const res = await fetch(API_ENDPOINT, { method:"POST", body: fd });
 
@@ -395,6 +452,7 @@
         showToast(currentLang === "ar" ? "✅ تم التسجيل بنجاح." : "✅ Registrazione completata.");
         form.reset();
         updateEmail();
+        requestVerificationTokenInput.value = makeToken();
         prefissoInput.value = "+216";
         consolatoInput.value = "TUNISIA TUNISI AMBASCIATA D'ITALIA";
         statoInput.value = "";
@@ -509,6 +567,7 @@
     document.getElementById("btnAR").addEventListener("click", ()=>applyLanguage("ar"));
 
     applyLanguage("it");
+    requestVerificationTokenInput.value = makeToken();
     updateEmail();
   </script>
 </body>
