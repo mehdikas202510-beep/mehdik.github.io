@@ -32,6 +32,9 @@ button,input,select,textarea{font:inherit}
 .badgeRow{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
 .chip,.pill,.tag{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:12px;color:var(--muted)}
 .tag.good{background:#f0fdf4;color:#166534;border-color:#bbf7d0}
+.tag.bad{background:#fef2f2;color:#991b1b;border-color:#fecaca}
+.tag.blue{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
+.tag.waiting{background:#fff7ed;color:#b45309;border-color:#fed7aa}
 .dot{width:9px;height:9px;border-radius:999px;background:#94a3b8}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .grid4{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
@@ -173,9 +176,9 @@ tbody tr:hover{background:#fbfdff}
           <div class="tablewrap">
             <table>
               <thead>
-                <tr><th>#</th><th>Agency</th><th>Email</th><th>Password</th><th>Passport</th><th>Status</th><th>Manager</th><th>Actions</th></tr>
+                <tr><th>#</th><th>Agency</th><th>Email</th><th>Password</th><th>Passport</th><th>Status</th><th>Type</th><th>Manager</th><th>Actions</th></tr>
               </thead>
-              <tbody id="tbody"><tr><td colspan="8" class="empty">—</td></tr></tbody>
+              <tbody id="tbody"><tr><td colspan="9" class="empty">—</td></tr></tbody>
             </table>
           </div>
         </div>
@@ -392,13 +395,17 @@ tbody tr:hover{background:#fbfdff}
 
   function renderAccounts(){
     const tb=$("tbody");
-    if(!S.agencySelected){ tb.innerHTML='<tr><td colspan="8" class="muted" style="padding:16px">اختر وكالة أولاً</td></tr>'; return; }
+    if(!S.agencySelected){ tb.innerHTML='<tr><td colspan="9" class="muted" style="padding:16px">اختر وكالة أولاً</td></tr>'; return; }
     const filtered=applyFilters(S.accounts);
-    if(!filtered.length){ tb.innerHTML='<tr><td colspan="8" class="muted" style="padding:16px">لا توجد بيانات</td></tr>'; return; }
+    if(!filtered.length){ tb.innerHTML='<tr><td colspan="9" class="muted" style="padding:16px">لا توجد بيانات</td></tr>'; return; }
     const selectedManagerId = S.managerAssignSelected;
     tb.innerHTML=filtered.map((a,i)=>{
+      const typeValue = String(a.type || '').trim().toLowerCase() === 'appointment' ? 'Appointment' : 'Waiting list';
+      const typeBadgeClass = typeValue === 'Appointment' ? 'blue' : 'waiting';
       const assigned = managerByAccount(a.agency||S.agencySelected,a.email,a.passport);
-      const assignedBadge = assigned ? `<span class="tag good">${escapeHtml(assigned.name)}</span>` : '<span class="muted">—</span>'; 
+      const assignedBadge = assigned
+        ? `<span class="tag ${typeValue === 'Appointment' ? 'blue' : 'good'}">${escapeHtml(assigned.name)}</span>`
+        : '<span class="muted">—</span>'; 
       let managerAction = '<span class="muted">اختر مديراً</span>';
       if(assigned){
         if(assigned.id===selectedManagerId){
@@ -418,6 +425,7 @@ tbody tr:hover{background:#fbfdff}
         <td class="mono">${escapeHtml(maskPassword(a.password||""))}</td>
         <td class="mono">${escapeHtml(a.passport||"")}</td>
         <td><span class="status ${statusClass(statusValue(a.status))}"><span class="dot"></span>${escapeHtml(statusValue(a.status))}</span></td>
+        <td><span class="tag ${typeBadgeClass}">${escapeHtml(typeValue)}</span></td>
         <td>${assignedBadge}</td>
         <td><div class="row">
           <button class="btn" onclick="UI.openEdit('${encodeURIComponent(a.email||"")}','${encodeURIComponent(a.passport||"")}')">Edit</button>
