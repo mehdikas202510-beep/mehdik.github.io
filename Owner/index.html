@@ -31,7 +31,10 @@ button,input,select,textarea{font:inherit}
 .brand p{margin:4px 0 0;color:var(--muted);font-size:12px}
 .badgeRow{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
 .chip,.pill,.tag{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:12px;color:var(--muted)}
-.tag.good{background:#f0fdf4;color:#166534;border-color:#bbf7d0}.tag.bad{background:#fef2f2;color:#991b1b;border-color:#fecaca}.tag.info{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}.tag.warn{background:#fff7ed;color:#b45309;border-color:#fed7aa}
+.tag.good{background:#f0fdf4;color:#166534;border-color:#bbf7d0}
+.tag.bad{background:#fef2f2;color:#991b1b;border-color:#fecaca}
+.tag.info{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
+.tag.wait{background:#fff7ed;color:#b45309;border-color:#fed7aa}
 .dot{width:9px;height:9px;border-radius:999px;background:#94a3b8}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .grid4{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
@@ -159,78 +162,57 @@ tbody tr:hover{background:#fbfdff}
               <label class="label">Status</label>
               <select id="selStatusFilter" disabled>
                 <option value="">All</option>
-                <option>Pending</option>
-                <option>In Progress</option>
-                <option>Done</option>
-                <option>Rejected</option>
+                <option value="Done">Done</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Rejected">Rejected</option>
+                <option value="Pending">Pending</option>
               </select>
             </div>
             <div>
-              <label class="label">Type</label>
-              <select id="selTypeFilter" disabled>
-                <option value="">All</option>
-                <option>Appointment</option>
-                <option>Waiting list</option>
-              </select>
+              <label class="label">Manager</label>
+              <select id="selManagerAssign" disabled></select>
             </div>
           </div>
-
-          <div class="kpis">
-            <div class="kpi"><b id="kpiAgencies">0</b><span>Agencies</span></div>
-            <div class="kpi"><b id="kpiAccounts">0</b><span>Accounts</span></div>
-            <div class="kpi"><b id="kpiManagers">0</b><span>Managers</span></div>
-            <div class="kpi"><b id="kpiPending">0</b><span>Pending / In Progress</span></div>
-          </div>
-
           <div class="tablewrap">
             <table>
               <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Agency</th>
-                  <th>Email</th>
-                  <th>Password</th>
-                  <th>Passport</th>
-                  <th>Status</th>
-                  <th>Type</th>
-                  <th>Manager</th>
-                  <th>Actions</th>
-                </tr>
+                <tr><th>#</th><th>Agency</th><th>Email</th><th>Password</th><th>Passport</th><th>Status</th><th>Type</th><th>Manager</th><th>Actions</th></tr>
               </thead>
-              <tbody id="accountsBody">
-                <tr><td colspan="9" class="empty">سجّل الدخول لعرض الحسابات</td></tr>
-              </tbody>
+              <tbody id="tbody"><tr><td colspan="8" class="empty">—</td></tr></tbody>
             </table>
           </div>
         </div>
       </section>
 
       <section id="managersTab" class="tabpane hidden">
-        <div class="card panel">
-          <div class="panelHead">
-            <h2>المديرين</h2>
-            <div class="actions">
-              <button class="btn primary" id="btnAddManager" disabled>Add Manager</button>
+        <div class="sectionGrid">
+          <div class="card subcard">
+            <div class="subHead">
+              <div></div>
+              <button class="btn primary" id="btnOpenManager" disabled>Add Manager</button>
+            </div>
+            <div class="tablewrap">
+              <table>
+                <thead>
+                  <tr><th>#</th><th>ID</th><th>Name</th><th>Limit</th><th>Selected</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="managersTbody"><tr><td colspan="6" class="empty">—</td></tr></tbody>
+              </table>
             </div>
           </div>
-
-          <div class="tablewrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Name</th>
-                  <th>ID</th>
-                  <th>Desired</th>
-                  <th>Assigned</th>
-                  <th>Active</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="managersBody">
-                <tr><td colspan="7" class="empty">لا يوجد مديرون</td></tr>
-              </tbody>
-            </table>
+          <div class="card subcard">
+            <div class="subHead">
+              <div></div>
+              <select id="selManagerView" disabled style="max-width:260px"></select>
+            </div>
+            <div class="tablewrap">
+              <table>
+                <thead>
+                  <tr><th>#</th><th>Agency</th><th>Email</th><th>Passport</th><th>Status</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="managerQueueTbody"><tr><td colspan="6" class="empty">—</td></tr></tbody>
+              </table>
+            </div>
           </div>
         </div>
       </section>
@@ -238,53 +220,28 @@ tbody tr:hover{background:#fbfdff}
   </div>
 </div>
 
-<div class="toast" id="toast"><b id="toastTitle"></b><span id="toastMsg"></span></div>
+<div class="toast" id="toast"><b id="toastTitle">—</b><span id="toastMsg">—</span></div>
 
-<div class="modal" id="modalAccount">
+<div class="modal" id="modalOne">
   <div class="box">
     <div class="modalHd">
-      <strong id="modalAccountTitle">Add Account</strong>
-      <button class="btn" data-close="modalAccount">Close</button>
+      <div><b id="oneTitle">Account</b><div id="oneSub" style="color:var(--muted);font-size:13px;margin-top:4px">—</div></div>
+      <button class="btn" onclick="UI.closeOne()">✕</button>
     </div>
     <div class="modalBd">
       <div class="grid2">
-        <div class="field">
-          <label class="label">Agency</label>
-          <select id="mAgency"></select>
-        </div>
-        <div class="field">
-          <label class="label">Status</label>
-          <select id="mStatus">
-            <option>Pending</option>
-            <option>In Progress</option>
-            <option>Done</option>
-            <option>Rejected</option>
-          </select>
-        </div>
-        <div class="field">
-          <label class="label">Type</label>
-          <select id="mType">
-            <option>Waiting list</option>
-            <option>Appointment</option>
-          </select>
-        </div>
-        <div class="field">
-          <label class="label">Email</label>
-          <input id="mEmail" placeholder="name@email.com" />
-        </div>
-        <div class="field">
-          <label class="label">Password</label>
-          <input id="mPassword" placeholder="password" />
-        </div>
-        <div class="field">
-          <label class="label">Passport</label>
-          <input id="mPassport" placeholder="AB123456" />
-        </div>
+        <div class="field"><label class="label">Email</label><input id="oneEmail" placeholder="name@example.com" /></div>
+        <div class="field"><label class="label">Password</label><input id="onePass" placeholder="password" /></div>
       </div>
+      <div class="grid2">
+        <div class="field"><label class="label">Passport</label><input id="onePassport" placeholder="AA123456" /></div>
+        <div class="field"><label class="label">Status</label><select id="oneStatus"><option>Done</option><option>In Progress</option><option>Rejected</option><option selected>Pending</option></select></div>
+      </div>
+      <div class="field"><label class="label">Type</label><select id="oneType"><option>Appointment</option><option selected>Waiting list</option></select></div>
     </div>
     <div class="modalFt">
-      <button class="btn primary" id="btnSaveAccount">Save</button>
-      <button class="btn" data-close="modalAccount">Cancel</button>
+      <button class="btn" onclick="UI.closeOne()">Cancel</button>
+      <button class="btn primary" id="btnSaveOne">Save</button>
     </div>
   </div>
 </div>
@@ -292,661 +249,343 @@ tbody tr:hover{background:#fbfdff}
 <div class="modal" id="modalBulk">
   <div class="box">
     <div class="modalHd">
-      <strong>Bulk Paste</strong>
-      <button class="btn" data-close="modalBulk">Close</button>
+      <div><b>Bulk Paste</b></div>
+      <button class="btn" onclick="UI.closeBulk()">✕</button>
     </div>
     <div class="modalBd">
-      <div class="grid2">
-        <div class="field">
-          <label class="label">Agency</label>
-          <select id="bulkAgency"></select>
+      <div class="sectionGrid">
+        <div class="field"><label class="label">JSON</label><textarea id="bulkText" class="mono" placeholder='[{"email":"a@x.com","password":"123","passport":"AA1","status":"Pending","type":"Waiting list"}]'></textarea></div>
+        <div class="stack">
+          <div class="card" style="padding:16px;background:#fbfdff;border-radius:18px;border:1px solid var(--line)"><div class="mono" id="bulkStats">—</div></div>
+          <ul class="list" id="bulkList"></ul>
         </div>
-        <div class="field">
-          <label class="label">Default Status</label>
-          <select id="bulkStatus">
-            <option>Pending</option>
-            <option>In Progress</option>
-            <option>Done</option>
-            <option>Rejected</option>
-          </select>
-        </div>
-        <div class="field">
-          <label class="label">Default Type</label>
-          <select id="bulkType">
-            <option>Waiting list</option>
-            <option>Appointment</option>
-          </select>
-        </div>
-      </div>
-      <div class="field">
-        <label class="label">Paste lines: email;password;passport;status;type</label>
-        <textarea id="bulkText" placeholder="a@x.com;123;AB123456;Pending;Appointment"></textarea>
       </div>
     </div>
     <div class="modalFt">
-      <button class="btn primary" id="btnSaveBulk">Save Bulk</button>
-      <button class="btn" data-close="modalBulk">Cancel</button>
+      <button class="btn" onclick="UI.closeBulk()">Cancel</button>
+      <button class="btn" id="btnParse">Preview</button>
+      <button class="btn primary" id="btnBulkAdd" disabled>Add</button>
     </div>
   </div>
 </div>
 
 <div class="modal" id="modalManager">
-  <div class="box">
+  <div class="box" style="width:min(620px,100%)">
     <div class="modalHd">
-      <strong id="modalManagerTitle">Add Manager</strong>
-      <button class="btn" data-close="modalManager">Close</button>
+      <div><b id="managerTitle">Manager</b></div>
+      <button class="btn" onclick="UI.closeManager()">✕</button>
     </div>
     <div class="modalBd">
       <div class="grid2">
-        <div class="field">
-          <label class="label">Name</label>
-          <input id="mgName" placeholder="Manager name" />
-        </div>
-        <div class="field">
-          <label class="label">ID</label>
-          <input id="mgId" placeholder="manager01" />
-        </div>
-        <div class="field">
-          <label class="label">Desired Count</label>
-          <input id="mgDesired" type="number" min="1" value="8" />
-        </div>
-        <div class="field">
-          <label class="label">Active</label>
-          <select id="mgActive">
-            <option value="true">Yes</option>
-            <option value="false">No</option>
-          </select>
-        </div>
+        <div class="field"><label class="label">ID</label><input id="mgrId" placeholder="manager-1" /></div>
+        <div class="field"><label class="label">Name</label><input id="mgrName" placeholder="Manager" /></div>
       </div>
+      <div class="field"><label class="label">Limit</label><input id="mgrDesired" type="number" min="1" max="200" value="8" /></div>
     </div>
     <div class="modalFt">
+      <button class="btn" onclick="UI.closeManager()">Cancel</button>
       <button class="btn primary" id="btnSaveManager">Save</button>
-      <button class="btn" data-close="modalManager">Cancel</button>
     </div>
   </div>
 </div>
-
 <script>
-const API_BASE = "https://mehdik.site/";
-const $ = (s) => document.querySelector(s);
-const $$ = (s) => [...document.querySelectorAll(s)];
+(() => {
+  const API_BASE = (document.body?.dataset?.apiBase || "https://api.mehdik.site").replace(/\/$/, "");
+  const OWNER_BASE = API_BASE + "/owner";
+  document.getElementById("apiHost").textContent = API_BASE;
+  const STORAGE_KEY = "owner-panel-manual-managers:v1";
+  const VALID_STATUSES = ["Done","In Progress","Rejected","Pending"];
+  const STATUS_PRIORITY = {"Done":0,"In Progress":1,"Rejected":2,"Pending":3};
+  const S = { ownerUser:"", ownerPass:"", agencies:[], agencySelected:"", accounts:[], managers:[], managerSelected:"", managerAssignSelected:"", bulkParsed:[] };
 
-const state = {
-  user: "",
-  pass: "",
-  authed: false,
-  agencies: [],
-  accounts: [],
-  managers: [],
-  selectedAgency: "",
-  search: "",
-  statusFilter: "",
-  typeFilter: "",
-  editing: null,
-  editingManager: null,
-};
-
-const apiHost = $("#apiHost");
-const pillText = $("#pillText");
-const authState = $("#authState");
-
-const inUser = $("#inUser");
-const inPass = $("#inPass");
-const btnLogin = $("#btnLogin");
-const btnLogout = $("#btnLogout");
-const btnPing = $("#btnPing");
-const btnRefresh = $("#btnRefresh");
-const btnBulk = $("#btnBulk");
-const btnAddOne = $("#btnAddOne");
-const btnSendAgencyAll = $("#btnSendAgencyAll");
-const btnAddManager = $("#btnAddManager");
-
-const selAgency = $("#selAgency");
-const inSearch = $("#inSearch");
-const selStatusFilter = $("#selStatusFilter");
-const selTypeFilter = $("#selTypeFilter");
-
-const accountsBody = $("#accountsBody");
-const managersBody = $("#managersBody");
-
-const kpiAgencies = $("#kpiAgencies");
-const kpiAccounts = $("#kpiAccounts");
-const kpiManagers = $("#kpiManagers");
-const kpiPending = $("#kpiPending");
-
-const modalAccount = $("#modalAccount");
-const modalBulk = $("#modalBulk");
-const modalManager = $("#modalManager");
-
-const mAgency = $("#mAgency");
-const mStatus = $("#mStatus");
-const mType = $("#mType");
-const mEmail = $("#mEmail");
-const mPassword = $("#mPassword");
-const mPassport = $("#mPassport");
-const modalAccountTitle = $("#modalAccountTitle");
-const btnSaveAccount = $("#btnSaveAccount");
-
-const bulkAgency = $("#bulkAgency");
-const bulkStatus = $("#bulkStatus");
-const bulkType = $("#bulkType");
-const bulkText = $("#bulkText");
-const btnSaveBulk = $("#btnSaveBulk");
-
-const mgName = $("#mgName");
-const mgId = $("#mgId");
-const mgDesired = $("#mgDesired");
-const mgActive = $("#mgActive");
-const modalManagerTitle = $("#modalManagerTitle");
-const btnSaveManager = $("#btnSaveManager");
-
-const toast = $("#toast");
-const toastTitle = $("#toastTitle");
-const toastMsg = $("#toastMsg");
-
-apiHost.textContent = API_BASE;
-
-function showToast(title, msg){
-  toastTitle.textContent = title || "Notice";
-  toastMsg.textContent = msg || "";
-  toast.classList.add("show");
-  clearTimeout(showToast._t);
-  showToast._t = setTimeout(() => toast.classList.remove("show"), 2600);
-}
-
-function esc(v){
-  return String(v ?? "").replace(/[&<>"']/g, (m) => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-  })[m]);
-}
-
-function headers(){
-  return {
-    "Content-Type":"application/json",
-    "X-Owner-User": state.user,
-    "X-Owner-Pass": state.pass
+  const $ = (id) => document.getElementById(id);
+  const norm = (s) => String(s || "").trim();
+  const normEmail = (s) => norm(s).toLowerCase();
+  const normPassport = (s) => norm(s).toUpperCase();
+  const statusValue = (s) => VALID_STATUSES.includes(norm(s)) ? norm(s) : "Pending";
+  const typeValue = (s) => {
+    const v = norm(s).toLowerCase();
+    if(v === "appointment") return "Appointment";
+    if(v === "waiting list" || v === "waitinglist" || v === "waiting") return "Waiting list";
+    return "Waiting list";
   };
-}
+  const typeBadgeClass = (t) => typeValue(t) === "Appointment" ? "info" : "wait";
+  const escapeHtml = (x) => String(x ?? "").replace(/[&<>"']/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normEmail(email));
+  const isValidPassport = (passport) => /^[A-Z0-9][A-Z0-9\-]{2,19}$/.test(normPassport(passport));
+  const statusClass = (st) => st === "Done" ? "s-good" : st === "Rejected" ? "s-bad" : st === "In Progress" ? "s-neutral" : "s-warn";
+  const maskPassword = (p) => { const s=String(p||""); if(!s) return ""; if(s.length<=2) return "•".repeat(s.length); return "•".repeat(Math.min(10, Math.max(1,s.length-2))) + s.slice(-2); };
+  const ownerHeaders = () => ({ "X-Owner-User": S.ownerUser || "", "X-Owner-Pass": S.ownerPass || "" });
 
-function setAuthUI(ok){
-  state.authed = !!ok;
-  authState.textContent = ok ? "Logged In" : "Guest";
-  pillText.textContent = ok ? "متصل" : "غير متصل";
-  btnLogout.disabled = !ok;
-  btnRefresh.disabled = !ok;
-  btnBulk.disabled = !ok;
-  btnAddOne.disabled = !ok;
-  btnAddManager.disabled = !ok;
-  selAgency.disabled = !ok;
-  inSearch.disabled = !ok;
-  selStatusFilter.disabled = !ok;
-  selTypeFilter.disabled = !ok;
-  btnSendAgencyAll.disabled = !ok || !state.selectedAgency;
-}
+  function toast(title, msg){ const t=$("toast"); $("toastTitle").textContent=title; $("toastMsg").textContent=msg; t.classList.add("show"); clearTimeout(toast._tm); toast._tm=setTimeout(()=>t.classList.remove("show"), 3500); }
+  function persistSession(){ sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ ownerUser:S.ownerUser, ownerPass:S.ownerPass, agencySelected:S.agencySelected, managerSelected:S.managerSelected, managerAssignSelected:S.managerAssignSelected })); }
+  function restoreSession(){ try { const raw=sessionStorage.getItem(STORAGE_KEY); if(!raw) return; const d=JSON.parse(raw); S.ownerUser=norm(d.ownerUser); S.ownerPass=norm(d.ownerPass); S.agencySelected=norm(d.agencySelected); S.managerSelected=norm(d.managerSelected); S.managerAssignSelected=norm(d.managerAssignSelected); $("inUser").value=S.ownerUser; $("inPass").value=S.ownerPass; } catch(_){} }
+  function setAuthState(authed){ $("authState").textContent = authed ? "Owner" : "Guest"; $("btnLogout").disabled=!authed; ["btnRefresh","btnBulk","btnAddOne","selAgency","inSearch","selStatusFilter","btnSendAgencyAll","btnOpenManager","selManagerView","selManagerAssign"].forEach(id=>$(id).disabled=!authed); $("pillText").textContent = authed ? "متصل" : "غير متصل"; }
 
-async function api(path, opts = {}){
-  const res = await fetch(API_BASE + path, {
-    ...opts,
-    headers: { ...(opts.headers || {}), ...(state.authed ? headers() : {}) }
-  });
-  const data = await res.json().catch(() => ({}));
-  if(!res.ok) throw new Error(data?.error || ("HTTP " + res.status));
-  return data;
-}
-
-function badgeClassByStatus(status){
-  switch((status || "").trim()){
-    case "Done": return "s-good";
-    case "Rejected": return "s-bad";
-    case "In Progress": return "s-neutral";
-    default: return "s-warn";
-  }
-}
-
-function typeBadgeClass(type){
-  return (type || "").trim() === "Appointment" ? "tag info" : "tag warn";
-}
-
-function managerBadgeClass(type){
-  return (type || "").trim() === "Appointment" ? "tag info" : "tag";
-}
-
-function renderAgencies(){
-  const opts = state.agencies.map(a => `<option value="${esc(a.agency)}">${esc(a.agency)} (${a.count})</option>`).join("");
-  selAgency.innerHTML = `<option value="">Select agency</option>` + opts;
-  mAgency.innerHTML = `<option value="">Select agency</option>` + opts;
-  bulkAgency.innerHTML = `<option value="">Select agency</option>` + opts;
-
-  if(state.selectedAgency && state.agencies.some(a => a.agency === state.selectedAgency)){
-    selAgency.value = state.selectedAgency;
-  } else {
-    state.selectedAgency = "";
-    selAgency.value = "";
-  }
-  btnSendAgencyAll.disabled = !state.authed || !state.selectedAgency;
-}
-
-function filteredAccounts(){
-  return state.accounts.filter(a => {
-    const s = (state.search || "").trim().toLowerCase();
-    const okSearch = !s || [a.agency,a.email,a.password,a.passport,a.status,a.manager,a.type].some(v => String(v || "").toLowerCase().includes(s));
-    const okStatus = !state.statusFilter || a.status === state.statusFilter;
-    const okType = !state.typeFilter || (a.type || "Waiting list") === state.typeFilter;
-    return okSearch && okStatus && okType;
-  });
-}
-
-function renderAccounts(){
-  const rows = filteredAccounts();
-  kpiAccounts.textContent = state.accounts.length;
-  kpiPending.textContent = state.accounts.filter(a => ["Pending","In Progress"].includes(a.status)).length;
-
-  if(!rows.length){
-    accountsBody.innerHTML = `<tr><td colspan="9" class="empty">لا توجد بيانات</td></tr>`;
-    return;
-  }
-
-  accountsBody.innerHTML = rows.map((a, i) => `
-    <tr>
-      <td>${i + 1}</td>
-      <td>${esc(a.agency || "")}</td>
-      <td>${esc(a.email || "")}</td>
-      <td class="mono">${esc(a.password || "")}</td>
-      <td class="mono">${esc(a.passport || "")}</td>
-      <td><span class="status ${badgeClassByStatus(a.status)}">${esc(a.status || "Pending")}</span></td>
-      <td><span class="${typeBadgeClass(a.type)}">${esc(a.type || "Waiting list")}</span></td>
-      <td><span class="${managerBadgeClass(a.type)}">${esc(a.manager || "-")}</span></td>
-      <td>
-        <div class="actions">
-          <button class="btn" onclick='editAccount(${JSON.stringify(i)})'>Edit</button>
-          <button class="btn danger" onclick='removeAccount(${JSON.stringify(i)})'>Delete</button>
-        </div>
-      </td>
-    </tr>
-  `).join("");
-}
-
-function renderManagers(){
-  kpiManagers.textContent = state.managers.length;
-
-  if(!state.managers.length){
-    managersBody.innerHTML = `<tr><td colspan="7" class="empty">لا يوجد مديرون</td></tr>`;
-    return;
-  }
-
-  managersBody.innerHTML = state.managers.map((m, i) => `
-    <tr>
-      <td>${i + 1}</td>
-      <td>${esc(m.name || "")}</td>
-      <td class="mono">${esc(m.id || "")}</td>
-      <td>${esc(m.desiredCount || 0)}</td>
-      <td>${esc(m.assignedCount || 0)}</td>
-      <td><span class="${m.isActive ? 'tag good' : 'tag bad'}">${m.isActive ? 'Yes' : 'No'}</span></td>
-      <td>
-        <div class="actions">
-          <button class="btn" onclick='editManager(${JSON.stringify(i)})'>Edit</button>
-          <button class="btn danger" onclick='removeManager(${JSON.stringify(i)})'>Delete</button>
-        </div>
-      </td>
-    </tr>
-  `).join("");
-}
-
-async function loadAgencies(){
-  const data = await api("/owner/agencies");
-  state.agencies = data.agencies || [];
-  kpiAgencies.textContent = state.agencies.length;
-  renderAgencies();
-}
-
-async function loadAccounts(){
-  if(!state.selectedAgency){
-    state.accounts = [];
-    renderAccounts();
-    return;
-  }
-  const data = await api("/owner/accounts?agency=" + encodeURIComponent(state.selectedAgency));
-  state.accounts = (data.accounts || []).map(a => ({
-    ...a,
-    type: a.type || "Waiting list",
-    manager: a.manager || "-"
-  }));
-  renderAccounts();
-}
-
-async function loadManagers(){
-  const data = await api("/owner/managers");
-  state.managers = data.managers || [];
-  renderManagers();
-}
-
-async function refreshAll(){
-  if(!state.authed) return;
-  await loadAgencies();
-  await Promise.all([loadAccounts(), loadManagers()]);
-}
-
-function openModal(id){ $("#" + id).classList.add("show"); }
-function closeModal(id){ $("#" + id).classList.remove("show"); }
-
-$$("[data-close]").forEach(btn => {
-  btn.addEventListener("click", () => closeModal(btn.dataset.close));
-});
-
-$$(".tabbtn").forEach(btn => {
-  btn.addEventListener("click", () => {
-    $$(".tabbtn").forEach(x => x.classList.remove("active"));
-    btn.classList.add("active");
-    $$(".tabpane").forEach(x => x.classList.add("hidden"));
-    $("#" + btn.dataset.tab).classList.remove("hidden");
-  });
-});
-
-btnPing.addEventListener("click", async () => {
-  try{
-    await fetch(API_BASE + "/owner/ping");
-    showToast("Ping", "API reachable");
-  }catch{
-    showToast("Ping", "API not reachable");
-  }
-});
-
-btnLogin.addEventListener("click", async () => {
-  try{
-    state.user = inUser.value.trim();
-    state.pass = inPass.value.trim();
-    const data = await fetch(API_BASE + "/owner/login", {
-      method:"POST",
-      headers:{ "Content-Type":"application/json" },
-      body: JSON.stringify({ user: state.user, pass: state.pass })
-    }).then(r => r.json().then(d => ({ ok:r.ok, data:d })));
-
-    if(!data.ok || !data.data.ok) throw new Error("Login failed");
-
-    setAuthUI(true);
-    await refreshAll();
-    showToast("Login", "Success");
-  }catch(err){
-    setAuthUI(false);
-    showToast("Login failed", err.message || "Invalid credentials");
-  }
-});
-
-btnLogout.addEventListener("click", () => {
-  state.user = "";
-  state.pass = "";
-  state.accounts = [];
-  state.managers = [];
-  state.agencies = [];
-  state.selectedAgency = "";
-  setAuthUI(false);
-  renderAccounts();
-  renderManagers();
-  renderAgencies();
-  kpiAgencies.textContent = "0";
-  kpiAccounts.textContent = "0";
-  kpiManagers.textContent = "0";
-  kpiPending.textContent = "0";
-  showToast("Logout", "Done");
-});
-
-btnRefresh.addEventListener("click", async () => {
-  try{
-    await refreshAll();
-    showToast("Refresh", "Updated");
-  }catch(err){
-    showToast("Refresh failed", err.message || "Error");
-  }
-});
-
-selAgency.addEventListener("change", async () => {
-  state.selectedAgency = selAgency.value;
-  btnSendAgencyAll.disabled = !state.authed || !state.selectedAgency;
-  try{
-    await loadAccounts();
-  }catch(err){
-    showToast("Load accounts failed", err.message || "Error");
-  }
-});
-
-inSearch.addEventListener("input", () => {
-  state.search = inSearch.value;
-  renderAccounts();
-});
-
-selStatusFilter.addEventListener("change", () => {
-  state.statusFilter = selStatusFilter.value;
-  renderAccounts();
-});
-
-selTypeFilter.addEventListener("change", () => {
-  state.typeFilter = selTypeFilter.value;
-  renderAccounts();
-});
-
-btnAddOne.addEventListener("click", () => {
-  state.editing = null;
-  modalAccountTitle.textContent = "Add Account";
-  mAgency.value = state.selectedAgency || "";
-  mStatus.value = "Pending";
-  mType.value = "Waiting list";
-  mEmail.value = "";
-  mPassword.value = "";
-  mPassport.value = "";
-  openModal("modalAccount");
-});
-
-window.editAccount = function(index){
-  const row = filteredAccounts()[index];
-  if(!row) return;
-  state.editing = row;
-  modalAccountTitle.textContent = "Edit Account";
-  mAgency.value = row.agency || "";
-  mStatus.value = row.status || "Pending";
-  mType.value = row.type || "Waiting list";
-  mEmail.value = row.email || "";
-  mPassword.value = row.password || "";
-  mPassport.value = row.passport || "";
-  openModal("modalAccount");
-};
-
-window.removeAccount = async function(index){
-  const row = filteredAccounts()[index];
-  if(!row) return;
-  if(!confirm(`Delete ${row.email}?`)) return;
-
-  try{
-    await api("/owner/account", {
-      method:"DELETE",
-      headers: headers(),
-      body: JSON.stringify({
-        agency: row.agency,
-        email: row.email,
-        passport: row.passport
-      })
-    });
-    await loadAccounts();
-    await loadAgencies();
-    showToast("Deleted", row.email);
-  }catch(err){
-    showToast("Delete failed", err.message || "Error");
-  }
-};
-
-btnSaveAccount.addEventListener("click", async () => {
-  const payload = {
-    agency: mAgency.value.trim(),
-    email: mEmail.value.trim(),
-    password: mPassword.value.trim(),
-    passport: mPassport.value.trim(),
-    status: mStatus.value,
-    type: mType.value
-  };
-
-  try{
-    if(state.editing){
-      payload.matchEmail = state.editing.email;
-      payload.matchPassport = state.editing.passport;
-      await api("/owner/account", {
-        method:"PUT",
-        headers: headers(),
-        body: JSON.stringify(payload)
-      });
-      showToast("Updated", payload.email);
-    } else {
-      await api("/owner/account", {
-        method:"POST",
-        headers: headers(),
-        body: JSON.stringify(payload)
-      });
-      showToast("Added", payload.email);
-    }
-    closeModal("modalAccount");
-    state.selectedAgency = payload.agency;
-    await loadAgencies();
-    await loadAccounts();
-  }catch(err){
-    showToast("Save failed", err.message || "Error");
-  }
-});
-
-btnBulk.addEventListener("click", () => {
-  bulkAgency.value = state.selectedAgency || "";
-  bulkStatus.value = "Pending";
-  bulkType.value = "Waiting list";
-  bulkText.value = "";
-  openModal("modalBulk");
-});
-
-btnSaveBulk.addEventListener("click", async () => {
-  const agency = bulkAgency.value.trim();
-  const lines = bulkText.value.split(/\r?\n/).map(x => x.trim()).filter(Boolean);
-
-  if(!agency || !lines.length){
-    showToast("Bulk", "Agency or lines missing");
-    return;
-  }
-
-  let ok = 0, fail = 0;
-  for(const line of lines){
-    const parts = line.split(";").map(x => x.trim());
-    const payload = {
-      agency,
-      email: parts[0] || "",
-      password: parts[1] || "",
-      passport: parts[2] || "",
-      status: parts[3] || bulkStatus.value,
-      type: parts[4] || bulkType.value
-    };
+  async function apiFetch(url, options={}){
+    const controller = new AbortController(); const timer = setTimeout(()=>controller.abort(), 15000);
     try{
-      await api("/owner/account", {
-        method:"POST",
-        headers: headers(),
-        body: JSON.stringify(payload)
-      });
-      ok++;
-    }catch{
-      fail++;
-    }
+      const response = await fetch(url, { ...options, signal:controller.signal });
+      const data = await response.json().catch(()=>({ ok:false, error:"Invalid server response" }));
+      if(!response.ok && data && typeof data.ok === "undefined") data.ok = false;
+      return data;
+    }catch(err){ return { ok:false, error: err?.name === "AbortError" ? "Request timeout" : (err?.message || "Request failed") }; }
+    finally{ clearTimeout(timer); }
   }
 
-  closeModal("modalBulk");
-  state.selectedAgency = agency;
-  await loadAgencies();
-  await loadAccounts();
-  showToast("Bulk result", `Saved: ${ok}\nFailed: ${fail}`);
-});
-
-btnSendAgencyAll.addEventListener("click", async () => {
-  if(!state.selectedAgency) return;
-  try{
-    const data = await api("/owner/agency/send-all", {
-      method:"POST",
-      headers: headers(),
-      body: JSON.stringify({ agency: state.selectedAgency })
-    });
-    showToast("Telegram", `Sent ${data.count || 0} accounts`);
-  }catch(err){
-    showToast("Telegram failed", err.message || "Error");
-  }
-});
-
-btnAddManager.addEventListener("click", () => {
-  state.editingManager = null;
-  modalManagerTitle.textContent = "Add Manager";
-  mgName.value = "";
-  mgId.value = "";
-  mgDesired.value = 8;
-  mgActive.value = "true";
-  openModal("modalManager");
-});
-
-window.editManager = function(index){
-  const row = state.managers[index];
-  if(!row) return;
-  state.editingManager = row;
-  modalManagerTitle.textContent = "Edit Manager";
-  mgName.value = row.name || "";
-  mgId.value = row.id || "";
-  mgDesired.value = row.desiredCount || 8;
-  mgActive.value = String(row.isActive !== false);
-  openModal("modalManager");
-};
-
-window.removeManager = async function(index){
-  const row = state.managers[index];
-  if(!row) return;
-  if(!confirm(`Delete manager ${row.name}?`)) return;
-
-  try{
-    await api("/owner/manager", {
-      method:"DELETE",
-      headers: headers(),
-      body: JSON.stringify({ id: row.id })
-    });
-    await loadManagers();
-    showToast("Deleted", row.name);
-  }catch(err){
-    showToast("Delete manager failed", err.message || "Error");
-  }
-};
-
-btnSaveManager.addEventListener("click", async () => {
-  const payload = {
-    name: mgName.value.trim(),
-    id: mgId.value.trim(),
-    desiredCount: Number(mgDesired.value || 8),
-    isActive: mgActive.value === "true"
+  const API = {
+    ping:()=>apiFetch(OWNER_BASE+"/ping",{headers:ownerHeaders()}),
+    login:(user,pass)=>apiFetch(OWNER_BASE+"/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user,pass})}),
+    agencies:()=>apiFetch(OWNER_BASE+"/agencies",{headers:ownerHeaders()}),
+    accounts:(agency)=>apiFetch(OWNER_BASE+"/accounts?agency="+encodeURIComponent(agency),{headers:ownerHeaders()}),
+    addAccount:(payload)=>apiFetch(OWNER_BASE+"/account",{method:"POST",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
+    editAccount:(payload)=>apiFetch(OWNER_BASE+"/account",{method:"PUT",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
+    delAccount:(payload)=>apiFetch(OWNER_BASE+"/account",{method:"DELETE",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
+    sendAgencyAll:(agency)=>apiFetch(OWNER_BASE+"/agency/send-all",{method:"POST",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify({agency})}),
+    managers:()=>apiFetch(OWNER_BASE+"/managers",{headers:ownerHeaders()}),
+    createManager:(payload)=>apiFetch(OWNER_BASE+"/manager",{method:"POST",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
+    editManager:(payload)=>apiFetch(OWNER_BASE+"/manager",{method:"PUT",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
+    deleteManager:(payload)=>apiFetch(OWNER_BASE+"/manager",{method:"DELETE",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
+    managerSelect:(payload)=>apiFetch(OWNER_BASE+"/manager/select",{method:"POST",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
+    managerUnselect:(payload)=>apiFetch(OWNER_BASE+"/manager/unselect",{method:"POST",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
+    managerStatus:(payload)=>apiFetch(OWNER_BASE+"/manager/status",{method:"POST",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)})
   };
 
-  try{
-    if(state.editingManager){
-      payload.matchId = state.editingManager.id;
-      await api("/owner/manager", {
-        method:"PUT",
-        headers: headers(),
-        body: JSON.stringify(payload)
-      });
-      showToast("Updated", payload.name);
-    } else {
-      await api("/owner/manager", {
-        method:"POST",
-        headers: headers(),
-        body: JSON.stringify(payload)
-      });
-      showToast("Added", payload.name);
-    }
-    closeModal("modalManager");
-    await loadManagers();
-  }catch(err){
-    showToast("Save manager failed", err.message || "Error");
+  function applyFilters(list){
+    const q = norm($("inSearch").value).toLowerCase();
+    const sf = norm($("selStatusFilter").value);
+    return (Array.isArray(list)?list:[]).filter(a => {
+      const okQ = !q || [a.agency,a.email,a.passport,a.status,a.type].join(" ").toLowerCase().includes(q);
+      const okS = !sf || statusValue(a.status) === sf;
+      return okQ && okS;
+    }).sort((a,b)=> (STATUS_PRIORITY[statusValue(a.status)]-STATUS_PRIORITY[statusValue(b.status)]) || String(a.email).localeCompare(String(b.email)));
   }
-});
 
-setAuthUI(false);
-renderAccounts();
-renderManagers();
-renderAgencies();
+  function managerByAccount(agency,email,passport){
+    for(const m of S.managers){
+      if((m.queue||[]).some(a => norm(a.agency).toLowerCase()===norm(agency).toLowerCase() && normEmail(a.email)===normEmail(email) && normPassport(a.passport)===normPassport(passport))) return m;
+    }
+    return null;
+  }
+
+  function renderAgencies(){
+    const sel = $("selAgency"); sel.innerHTML = '<option value="">(اختر وكالة)</option>';
+    for(const a of S.agencies){ const o=document.createElement('option'); o.value=a.agency; o.textContent=`${a.agency} (${a.count||0})`; sel.appendChild(o); }
+    if(S.agencySelected) sel.value = S.agencySelected;
+  }
+
+  function renderManagersSelectors(){
+    for(const id of ["selManagerView","selManagerAssign"]){
+      const sel=$(id); sel.innerHTML='<option value="">(اختر مدير)</option>';
+      for(const m of S.managers){ const o=document.createElement('option'); o.value=m.id; o.textContent=`${m.name} (${m.assignedCount||0}/${m.desiredCount})`; sel.appendChild(o); }
+    }
+    if(S.managerSelected) $("selManagerView").value=S.managerSelected;
+    if(S.managerAssignSelected) $("selManagerAssign").value=S.managerAssignSelected;
+  }
+
+  function renderManagers(){
+    renderManagersSelectors();
+    const tb=$("managersTbody");
+    if(!S.managers.length){ tb.innerHTML='<tr><td colspan="6" class="muted" style="padding:16px">—</td></tr>'; renderManagerQueue(); return; }
+    tb.innerHTML=S.managers.map((m,i)=>`<tr>
+      <td>${i+1}</td>
+      <td class="mono">${escapeHtml(m.id)}</td>
+      <td>${escapeHtml(m.name)}</td>
+      <td>${m.desiredCount}</td>
+      <td>${m.assignedCount||0}</td>
+      <td><div class="row">
+        <button class="btn" onclick="UI.editManager('${encodeURIComponent(m.id)}')">Edit</button>
+        <button class="btn danger" onclick="UI.deleteManager('${encodeURIComponent(m.id)}')">Delete</button>
+      </div></td>
+    </tr>`).join("");
+    renderManagerQueue();
+  }
+
+  function renderAccounts(){
+    const tb=$("tbody");
+    if(!S.agencySelected){ tb.innerHTML='<tr><td colspan="9" class="muted" style="padding:16px">اختر وكالة أولاً</td></tr>'; return; }
+    const filtered=applyFilters(S.accounts);
+    if(!filtered.length){ tb.innerHTML='<tr><td colspan="9" class="muted" style="padding:16px">لا توجد بيانات</td></tr>'; return; }
+    const selectedManagerId = S.managerAssignSelected;
+    tb.innerHTML=filtered.map((a,i)=>{
+      const assigned = managerByAccount(a.agency||S.agencySelected,a.email,a.passport);
+      const assignedBadge = assigned ? `<span class="tag good">${escapeHtml(assigned.name)}</span>` : '<span class="muted">—</span>'; 
+      let managerAction = '<span class="muted">اختر مديراً</span>';
+      if(assigned){
+        if(assigned.id===selectedManagerId){
+          managerAction = `<button class="btn danger" onclick="UI.managerUnselect('${encodeURIComponent(assigned.id)}','${encodeURIComponent(a.agency||S.agencySelected)}','${encodeURIComponent(a.email||"")}','${encodeURIComponent(a.passport||"")}')">Remove</button>`;
+        }else{
+          managerAction = `<span class="tag bad">محجوز لمدير آخر</span>`;
+        }
+      }else if(selectedManagerId){
+        const st=statusValue(a.status);
+        if(st==="Done"||st==="Rejected") managerAction = `<span class="tag bad">غير قابل للاختيار</span>`;
+        else managerAction = `<button class="btn good" onclick="UI.managerSelect('${encodeURIComponent(selectedManagerId)}','${encodeURIComponent(a.agency||S.agencySelected)}','${encodeURIComponent(a.email||"")}','${encodeURIComponent(a.passport||"")}')">Select</button>`;
+      }
+      const rowType = typeValue(a.type);
+      return `<tr>
+        <td class="mono">${i+1}</td>
+        <td class="mono">${escapeHtml(a.agency||S.agencySelected)}</td>
+        <td class="mono">${escapeHtml(a.email||"")}</td>
+        <td class="mono">${escapeHtml(maskPassword(a.password||""))}</td>
+        <td class="mono">${escapeHtml(a.passport||"")}</td>
+        <td><span class="status ${statusClass(statusValue(a.status))}"><span class="dot"></span>${escapeHtml(statusValue(a.status))}</span></td>
+        <td><span class="tag ${typeBadgeClass(rowType)}">${escapeHtml(rowType)}</span></td>
+        <td>${assignedBadge}</td>
+        <td><div class="row">
+          <button class="btn" onclick="UI.openEdit('${encodeURIComponent(a.email||"")}','${encodeURIComponent(a.passport||"")}')">Edit</button>
+          <button class="btn danger" onclick="UI.del('${encodeURIComponent(a.email||"")}','${encodeURIComponent(a.passport||"")}')">Delete</button>
+          ${managerAction}
+        </div></td>
+      </tr>`;
+    }).join("");
+  }
+
+  function renderManagerQueue(){
+    const tb=$("managerQueueTbody");
+    const manager=S.managers.find(m=>m.id===S.managerSelected);
+    if(!manager){ tb.innerHTML='<tr><td colspan="6" class="muted" style="padding:16px">اختر مديراً</td></tr>'; return; }
+    const queue=(manager.queue||[]).slice().sort((a,b)=> (STATUS_PRIORITY[statusValue(a.status)]-STATUS_PRIORITY[statusValue(b.status)]) || String(a.agency).localeCompare(String(b.agency)));
+    if(!queue.length){ tb.innerHTML='<tr><td colspan="6" class="muted" style="padding:16px">لا توجد حسابات مختارة</td></tr>'; return; }
+    tb.innerHTML=queue.map((a,i)=>`<tr>
+      <td>${i+1}</td>
+      <td class="mono">${escapeHtml(a.agency||"")}</td>
+      <td class="mono">${escapeHtml(a.email||"")}</td>
+      <td class="mono">${escapeHtml(a.passport||"")}</td>
+      <td><span class="status ${statusClass(statusValue(a.status))}"><span class="dot"></span>${escapeHtml(statusValue(a.status))}</span></td>
+      <td><div class="row">
+        <button class="btn" onclick="UI.managerSetStatus('${encodeURIComponent(manager.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}','In Progress')">In Progress</button>
+        <button class="btn warn" onclick="UI.managerSetStatus('${encodeURIComponent(manager.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}','Pending')">Pending</button>
+        <button class="btn good" onclick="UI.managerSetStatus('${encodeURIComponent(manager.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}','Done')">Done</button>
+        <button class="btn danger" onclick="UI.managerSetStatus('${encodeURIComponent(manager.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}','Rejected')">Rejected</button>
+        <button class="btn danger" onclick="UI.managerUnselect('${encodeURIComponent(manager.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}')">Remove</button>
+      </div></td>
+    </tr>`).join('');
+  }
+
+  const UI = {
+    _oneMode:"add", _oneMatch:{email:"",passport:""}, _mgrMode:"add",
+    logout(){ S.ownerUser=""; S.ownerPass=""; S.agencies=[]; S.accounts=[]; S.managers=[]; S.agencySelected=""; S.managerSelected=""; S.managerAssignSelected=""; sessionStorage.removeItem(STORAGE_KEY); setAuthState(false); renderAgencies(); renderAccounts(); renderManagers(); toast('Logout','Logged out'); },
+    async login(){
+      const user=norm($("inUser").value), pass=norm($("inPass").value);
+      if(!user || !pass) return toast('Login','أدخل بيانات الدخول');
+      const res=await API.login(user,pass); if(!res.ok) return toast('Login',res.error||'Unauthorized');
+      S.ownerUser=user; S.ownerPass=pass; setAuthState(true); persistSession(); await UI.refreshAll(); toast('Login','تم تسجيل الدخول');
+    },
+    async refreshAll(){
+      const [a,m] = await Promise.all([API.agencies(), API.managers()]);
+      if(!a.ok) return toast('Agencies',a.error||'Failed');
+      S.agencies=Array.isArray(a.agencies)?a.agencies:[];
+      S.managers=Array.isArray(m.managers)?m.managers:[];
+      renderAgencies(); renderManagers();
+      if(S.agencySelected) await UI.loadAgency(S.agencySelected); else { S.accounts=[]; renderAccounts(); }
+      persistSession();
+    },
+    async loadAgency(agency){
+      S.agencySelected=agency||''; persistSession(); renderAgencies();
+      if(!S.agencySelected){ S.accounts=[]; renderAccounts(); return; }
+      const res=await API.accounts(S.agencySelected); if(!res.ok) return toast('Accounts',res.error||'Failed');
+      S.accounts=Array.isArray(res.accounts)?res.accounts:[];
+      renderAccounts();
+    },
+    async loadManagers(){
+      const res=await API.managers(); if(!res.ok) return toast('Managers',res.error||'Failed');
+      S.managers=Array.isArray(res.managers)?res.managers:[];
+      renderManagers(); renderAccounts(); persistSession();
+    },
+    openAddOne(){ if(!S.agencySelected) return toast('Account','اختر وكالة أولاً'); UI._oneMode="add"; UI._oneMatch={email:"",passport:""}; $("oneTitle").textContent='Add Account'; $("oneSub").textContent=S.agencySelected; $("oneEmail").value=''; $("onePass").value=''; $("onePassport").value=''; $("oneStatus").value='Pending'; $("oneType").value='Waiting list'; $("modalOne").classList.add('show'); },
+    openEdit(emailEnc, passportEnc){
+      const email=decodeURIComponent(emailEnc||''), passport=decodeURIComponent(passportEnc||'');
+      const a=S.accounts.find(x=>normEmail(x.email)===normEmail(email)&&normPassport(x.passport)===normPassport(passport)); if(!a) return;
+      UI._oneMode="edit"; UI._oneMatch={email:a.email,passport:a.passport}; $("oneTitle").textContent='Edit Account'; $("oneSub").textContent=S.agencySelected; $("oneEmail").value=a.email||''; $("onePass").value=a.password||''; $("onePassport").value=a.passport||''; $("oneStatus").value=statusValue(a.status); $("oneType").value=typeValue(a.type); $("modalOne").classList.add('show');
+    },
+    closeOne(){ $("modalOne").classList.remove('show'); },
+    async saveOne(){
+      if(!S.agencySelected) return toast('Account','اختر وكالة أولاً');
+      const payload={agency:S.agencySelected,email:norm($("oneEmail").value),password:norm($("onePass").value),passport:norm($("onePassport").value),status:$("oneStatus").value,type:typeValue($("oneType").value)};
+      if(!isValidEmail(payload.email)) return toast('Account','Email غير صالح');
+      if(!isValidPassport(payload.passport)) return toast('Account','Passport غير صالح');
+      let res;
+      if(UI._oneMode==="add") res=await API.addAccount(payload);
+      else res=await API.editAccount({...payload,matchEmail:UI._oneMatch.email,matchPassport:UI._oneMatch.passport});
+      if(!res.ok) return toast('Account',res.error||'Failed');
+      UI.closeOne(); await UI.refreshAll(); await UI.loadAgency(S.agencySelected); toast('Account','تم الحفظ');
+    },
+    async del(emailEnc, passportEnc){
+      if(!S.agencySelected) return;
+      const email=decodeURIComponent(emailEnc||''), passport=decodeURIComponent(passportEnc||'');
+      if(!confirm(`Delete ${email}?`)) return;
+      const res=await API.delAccount({agency:S.agencySelected,email,passport}); if(!res.ok) return toast('Delete',res.error||'Failed');
+      await UI.refreshAll(); await UI.loadAgency(S.agencySelected); toast('Delete','تم الحذف');
+    },
+    openBulk(){ if(!S.agencySelected) return toast('Bulk','اختر وكالة أولاً'); $("bulkText").value=''; $("bulkStats").textContent='—'; $("bulkList").innerHTML=''; $("btnBulkAdd").disabled=true; S.bulkParsed=[]; $("modalBulk").classList.add('show'); },
+    closeBulk(){ $("modalBulk").classList.remove('show'); },
+    parseBulk(){
+      let arr=[]; try{ arr=JSON.parse($("bulkText").value||'[]'); }catch(_){ return toast('Bulk','JSON غير صالح'); }
+      if(!Array.isArray(arr)) return toast('Bulk','JSON يجب أن يكون Array');
+      const parsed=[], bad=[];
+      for(const item of arr){
+        const a={ email:norm(item.email), password:norm(item.password), passport:norm(item.passport), status:statusValue(item.status), type:typeValue(item.type) };
+        if(!isValidEmail(a.email)||!isValidPassport(a.passport)||!a.password) { bad.push(JSON.stringify(item)); continue; }
+        parsed.push(a);
+      }
+      S.bulkParsed=parsed; $("bulkStats").textContent=`Valid: ${parsed.length}\nInvalid: ${bad.length}`; $("bulkList").innerHTML=parsed.slice(0,50).map(a=>`<li>${escapeHtml(a.email)} — ${escapeHtml(a.passport)} — ${escapeHtml(a.status)} — ${escapeHtml(typeValue(a.type))}</li>`).join(''); $("btnBulkAdd").disabled=!parsed.length;
+    },
+    async bulkAdd(){
+      let ok=0, fail=0;
+      for(const item of S.bulkParsed){ const res=await API.addAccount({agency:S.agencySelected,...item}); if(res.ok) ok++; else fail++; }
+      await UI.loadAgency(S.agencySelected); await UI.refreshAll(); toast('Bulk',`Added: ${ok} | Failed: ${fail}`); UI.closeBulk();
+    },
+    async sendAgencyAll(){
+      if(!S.agencySelected) return toast('Telegram','اختر وكالة أولاً');
+      const res=await API.sendAgencyAll(S.agencySelected); if(!res.ok) return toast('Telegram',res.error||'Failed');
+      toast('Telegram',`تم الإرسال: ${res.count||0} حساب`);
+    },
+    openManager(){ UI._mgrMode='add'; $("managerTitle").textContent='مدير جديد'; $("mgrId").disabled=false; $("mgrId").value=''; $("mgrName").value=''; $("mgrDesired").value='8'; $("modalManager").classList.add('show'); },
+    editManager(idEnc){ const id=decodeURIComponent(idEnc||''); const m=S.managers.find(x=>x.id===id); if(!m) return; UI._mgrMode='edit'; $("managerTitle").textContent='تعديل مدير'; $("mgrId").disabled=true; $("mgrId").value=m.id; $("mgrName").value=m.name||''; $("mgrDesired").value=m.desiredCount||8; $("modalManager").classList.add('show'); },
+    closeManager(){ $("modalManager").classList.remove('show'); },
+    async saveManager(){
+      const payload={id:norm($("mgrId").value),name:norm($("mgrName").value),desiredCount:Number($("mgrDesired").value||8)};
+      if(!payload.id) return toast('Manager','ID مطلوب');
+      let res = UI._mgrMode==='add' ? await API.createManager(payload) : await API.editManager(payload);
+      if(!res.ok) return toast('Manager',res.error||'Failed');
+      UI.closeManager(); await UI.loadManagers(); toast('Manager','تم الحفظ');
+    },
+    async deleteManager(idEnc){
+      const id=decodeURIComponent(idEnc||''); if(!confirm(`Delete manager ${id}?`)) return;
+      const res=await API.deleteManager({id}); if(!res.ok) return toast('Manager',res.error||'Failed');
+      if(S.managerSelected===id) S.managerSelected=''; if(S.managerAssignSelected===id) S.managerAssignSelected='';
+      await UI.loadManagers(); renderAccounts(); toast('Manager','تم الحذف');
+    },
+    async managerSelect(idEnc, agencyEnc, emailEnc, passportEnc){
+      const id=decodeURIComponent(idEnc||''), agency=decodeURIComponent(agencyEnc||''), email=decodeURIComponent(emailEnc||''), passport=decodeURIComponent(passportEnc||'');
+      const res=await API.managerSelect({id,agency,email,passport}); if(!res.ok) return toast('Manager',res.error||'Failed');
+      S.managerSelected=id; await UI.loadManagers(); if(S.agencySelected===agency) await UI.loadAgency(agency); toast('Manager','تمت إضافة الحساب لقائمة المدير');
+    },
+    async managerUnselect(idEnc, agencyEnc, emailEnc, passportEnc){
+      const id=decodeURIComponent(idEnc||''), agency=decodeURIComponent(agencyEnc||''), email=decodeURIComponent(emailEnc||''), passport=decodeURIComponent(passportEnc||'');
+      const res=await API.managerUnselect({id,agency,email,passport}); if(!res.ok) return toast('Manager',res.error||'Failed');
+      await UI.loadManagers(); if(S.agencySelected===agency) await UI.loadAgency(agency); S.managerSelected=id; toast('Manager','تم حذف الحساب من قائمة المدير');
+    },
+    async managerSetStatus(idEnc, agencyEnc, emailEnc, passportEnc, status){
+      const id=decodeURIComponent(idEnc||''), agency=decodeURIComponent(agencyEnc||''), email=decodeURIComponent(emailEnc||''), passport=decodeURIComponent(passportEnc||'');
+      const res=await API.managerStatus({id,agency,email,passport,status}); if(!res.ok) return toast('Status',res.error||'Failed');
+      await UI.loadManagers(); if(S.agencySelected===agency) await UI.loadAgency(agency); S.managerSelected=id; renderManagers();
+      toast('Status', (status==='Done'||status==='Rejected') ? `تم وضع ${status} وحذف الحساب من قائمة المدير` : `تم وضع ${status}`);
+    }
+  };
+
+  window.UI = UI;
+  $("btnLogin").onclick=UI.login; $("btnLogout").onclick=UI.logout; $("btnPing").onclick=async()=>{ const r=await API.ping(); toast('Ping',r.ok?'OK':(r.error||'Failed')); };
+  $("btnRefresh").onclick=UI.refreshAll; $("btnBulk").onclick=UI.openBulk; $("btnAddOne").onclick=UI.openAddOne; $("btnParse").onclick=UI.parseBulk; $("btnBulkAdd").onclick=UI.bulkAdd; $("btnSaveOne").onclick=UI.saveOne; $("btnSendAgencyAll").onclick=UI.sendAgencyAll; $("btnOpenManager").onclick=UI.openManager; $("btnSaveManager").onclick=UI.saveManager;
+  $("selAgency").addEventListener('change', (e)=>UI.loadAgency(e.target.value||'')); $("inSearch").addEventListener('input', renderAccounts); $("selStatusFilter").addEventListener('change', renderAccounts);
+  $("selManagerView").addEventListener('change', (e)=>{ S.managerSelected=e.target.value||''; persistSession(); renderManagerQueue(); });
+  $("selManagerAssign").addEventListener('change', (e)=>{ S.managerAssignSelected=e.target.value||''; persistSession(); renderAccounts(); });
+  document.querySelectorAll('.tabbtn').forEach(btn=>btn.addEventListener('click',()=>{ document.querySelectorAll('.tabbtn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.querySelectorAll('.tabpane').forEach(p=>p.classList.add('hidden')); document.getElementById(btn.dataset.tab).classList.remove('hidden'); }));
+
+  restoreSession(); setAuthState(false);
+  if(S.ownerUser && S.ownerPass){ setAuthState(true); UI.refreshAll().catch(()=>{}); }
+})();
 </script>
 </body>
 </html>
