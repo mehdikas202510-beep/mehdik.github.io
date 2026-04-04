@@ -8,99 +8,37 @@
 :root{
   --bg:#f3f6fb;--card:#ffffff;--card2:#f8fbff;--text:#0f172a;--muted:#64748b;--line:#e2e8f0;
   --primary:#2563eb;--primarySoft:#eff6ff;--success:#16a34a;--successSoft:#f0fdf4;--danger:#dc2626;--dangerSoft:#fef2f2;--warning:#d97706;--warningSoft:#fff7ed;
-  --shadow:0 16px 40px rgba(15,23,42,.08);--radius:22px;--radiusSm:16px;
-  --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+  --shadow:0 16px 40px rgba(15,23,42,.08);--radius:22px;--radiusSm:16px;--mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
   --sans:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,"Noto Sans Arabic","Noto Sans",sans-serif;
 }
 *{box-sizing:border-box}
-html,body{height:100%;margin:0}
-body{font-family:var(--sans);color:var(--text);background:
-  radial-gradient(circle at top right,rgba(37,99,235,.08),transparent 28%),
-  radial-gradient(circle at top left,rgba(14,165,233,.06),transparent 24%),
-  linear-gradient(180deg,#f8fbff 0%,#f2f5fa 100%)}
+html,body{height:100%}
+body{margin:0;font-family:var(--sans);color:var(--text);background:
+radial-gradient(circle at top right, rgba(37,99,235,.08), transparent 28%),
+radial-gradient(circle at top left, rgba(14,165,233,.06), transparent 24%),
+linear-gradient(180deg,#f8fbff 0%,#f2f5fa 100%)}
 button,input,select,textarea{font:inherit}
 .hidden{display:none!important}
-
-/* ─── Auth overlays ──────────────────────────────────────── */
-.authOverlay{
-  position:fixed;inset:0;z-index:100;
-  display:flex;align-items:center;justify-content:center;padding:20px;
-  background:
-    radial-gradient(circle at 70% 15%,rgba(37,99,235,.14),transparent 36%),
-    radial-gradient(circle at 20% 85%,rgba(14,165,233,.11),transparent 36%),
-    linear-gradient(155deg,#eef4ff 0%,#e8f0fe 55%,#f0f6ff 100%);
-}
-.authCard{
-  width:min(420px,100%);
-  background:rgba(255,255,255,.96);
-  backdrop-filter:blur(20px);
-  border:1px solid rgba(226,232,240,.9);
-  border-radius:28px;
-  box-shadow:0 28px 64px rgba(15,23,42,.14);
-  padding:36px 32px;
-}
-.authBrand{display:flex;align-items:center;gap:14px;margin-bottom:10px}
-.authLogo{
-  width:52px;height:52px;border-radius:20px;flex-shrink:0;
-  background:linear-gradient(135deg,#0ea5e9,#2563eb 55%,#4338ca);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 12px 28px rgba(37,99,235,.25);
-  display:flex;align-items:center;justify-content:center;
-  font-size:24px;color:#fff;user-select:none;
-}
-.authBrand h1{margin:0;font-size:20px;line-height:1.2}
-.authBrand p{margin:3px 0 0;color:var(--muted);font-size:12px}
-.authDivider{height:1px;background:var(--line);margin:22px 0}
-.authTitle{font-size:17px;font-weight:800;margin:0 0 4px}
-.authSub{font-size:13px;color:var(--muted);margin:0 0 20px;line-height:1.6}
-.authFootnote{text-align:center;margin-top:18px;font-size:12px;color:var(--muted);line-height:1.7}
-.otpCenter{text-align:center;margin-bottom:20px}
-.otpIcon{font-size:44px;margin-bottom:8px}
-.otpCenter b{display:block;font-size:15px;margin-bottom:4px}
-.otpCenter p{margin:0;color:var(--muted);font-size:13px;line-height:1.5}
-.attemptsBar{display:flex;gap:8px;justify-content:center;margin-top:14px}
-.attemptDot{width:11px;height:11px;border-radius:999px;background:#e2e8f0;transition:.3s background}
-.attemptDot.ok{background:#86efac}
-.attemptDot.used{background:var(--danger)}
-
-/* ─── App shell ──────────────────────────────────────────── */
 .app{max-width:1500px;margin:0 auto;padding:24px}
-.shell{display:grid;grid-template-columns:280px 1fr;gap:20px;align-items:start}
-@media(max-width:1150px){.shell{grid-template-columns:1fr}}
+.shell{display:grid;grid-template-columns:300px 1fr;gap:20px;align-items:start}
+@media (max-width:1150px){.shell{grid-template-columns:1fr}}
 .card{background:rgba(255,255,255,.88);backdrop-filter:blur(12px);border:1px solid rgba(226,232,240,.9);border-radius:var(--radius);box-shadow:var(--shadow)}
 .sidebar{position:sticky;top:20px;padding:18px}
-@media(max-width:1150px){.sidebar{position:static}}
+@media (max-width:1150px){.sidebar{position:static}}
 .brand{display:flex;align-items:center;gap:14px;padding:6px 2px 18px}
 .logo{width:48px;height:48px;border-radius:18px;background:linear-gradient(135deg,#0ea5e9,#2563eb 55%,#4338ca);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 16px 30px rgba(37,99,235,.22)}
 .brand h1{margin:0;font-size:20px}
 .brand p{margin:4px 0 0;color:var(--muted);font-size:12px}
-.badgeRow{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+.badgeRow{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
 .chip,.pill,.tag{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:12px;color:var(--muted)}
-.tag.good{background:#f0fdf4;color:#166534;border-color:#bbf7d0}
-.tag.bad{background:#fef2f2;color:#991b1b;border-color:#fecaca}
-.tag.manager-appointment{background:#1e3a8a;color:#fff;border-color:#1e40af}
-.tag.type-appointment{background:#eff6ff;color:#1e3a8a;border-color:#93c5fd}
-.tag.type-waiting{background:#fff7ed;color:#9a3412;border-color:#fdba74}
+.tag.good{background:#f0fdf4;color:#166534;border-color:#bbf7d0}.tag.bad{background:#fef2f2;color:#991b1b;border-color:#fecaca}.tag.manager-appointment{background:#1e3a8a;color:#fff;border-color:#1e40af}.tag.type-appointment{background:#eff6ff;color:#1e3a8a;border-color:#93c5fd}.tag.type-waiting{background:#fff7ed;color:#9a3412;border-color:#fdba74}
 .dot{width:9px;height:9px;border-radius:999px;background:#94a3b8}
-
-/* Session timer */
-.timerBox{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:10px 14px;border-radius:14px;margin-bottom:14px;
-  background:var(--primarySoft);border:1px solid #bfdbfe;
-  transition:.3s background,.3s border;
-}
-.timerBox span{font-size:12px;color:#1d4ed8}
-.timerBox b{font-size:17px;font-weight:800;font-family:var(--mono);color:#1d4ed8;letter-spacing:2px}
-.timerBox.warn{background:var(--warningSoft);border-color:#fed7aa}
-.timerBox.warn span,.timerBox.warn b{color:#b45309}
-.timerBox.alert{background:var(--dangerSoft);border-color:#fecaca}
-.timerBox.alert span,.timerBox.alert b{color:#b91c1c}
-
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid4{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .label{display:block;margin:0 0 8px;font-size:12px;color:var(--muted)}
 .field{margin-bottom:12px}
-input,select,textarea{width:100%;border:1px solid var(--line);background:#fff;padding:12px 14px;border-radius:16px;outline:none;color:var(--text);transition:.18s border,.18s box-shadow}
-input:focus,select:focus,textarea:focus{border-color:#93c5fd;box-shadow:0 0 0 4px rgba(59,130,246,.12)}
+.input,select,textarea,input{width:100%;border:1px solid var(--line);background:#fff;padding:12px 14px;border-radius:16px;outline:none;color:var(--text);transition:.18s border,.18s box-shadow,.18s transform}
+.input:focus,select:focus,textarea:focus,input:focus{border-color:#93c5fd;box-shadow:0 0 0 4px rgba(59,130,246,.12)}
 textarea{min-height:180px;resize:vertical}
 .actions{display:flex;gap:10px;flex-wrap:wrap}
 .btn{border:1px solid var(--line);background:#fff;color:var(--text);padding:11px 14px;border-radius:15px;font-weight:700;cursor:pointer;transition:.18s transform,.18s box-shadow,.18s border,.18s background;display:inline-flex;align-items:center;justify-content:center;gap:8px}
@@ -111,42 +49,40 @@ textarea{min-height:180px;resize:vertical}
 .btn.warn{background:var(--warningSoft);border-color:#fed7aa;color:#b45309}
 .btn[disabled]{opacity:.55;cursor:not-allowed;transform:none;box-shadow:none}
 .sideActions{display:grid;gap:10px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+@media (max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}}
+.kpi{padding:18px;border-radius:20px;background:linear-gradient(180deg,#fff,#f9fbff);border:1px solid var(--line)}
+.kpi b{display:block;font-size:28px;line-height:1;margin-bottom:8px}
+.kpi span{font-size:13px;color:var(--muted)}
 .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px;padding:18px}
-@media(max-width:900px){.topbar{flex-direction:column;align-items:stretch}}
+@media (max-width:900px){.topbar{flex-direction:column;align-items:stretch}}
 .tabs{display:flex;gap:10px;flex-wrap:wrap}
 .tabbtn{border:1px solid var(--line);background:#fff;color:var(--text);padding:11px 16px;border-radius:14px;font-weight:800;cursor:pointer}
 .tabbtn.active{background:var(--primarySoft);border-color:#bfdbfe;color:#1d4ed8}
 .panel{padding:18px}
 .panelHead{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px}
-@media(max-width:900px){.panelHead{flex-direction:column;align-items:stretch}}
+@media (max-width:900px){.panelHead{flex-direction:column;align-items:stretch}}
 .panelHead h2{margin:0;font-size:18px}
 .panelHead .actions{justify-content:flex-end}
 .filters{display:grid;grid-template-columns:1.1fr 1fr .7fr .9fr;gap:12px;margin-bottom:14px}
-@media(max-width:1100px){.filters{grid-template-columns:1fr 1fr}}
-@media(max-width:700px){.filters{grid-template-columns:1fr}}
+@media (max-width:1100px){.filters{grid-template-columns:1fr 1fr}} @media (max-width:700px){.filters{grid-template-columns:1fr}}
 .tablewrap{border:1px solid var(--line);border-radius:20px;overflow:auto;background:#fff}
 table{width:100%;border-collapse:separate;border-spacing:0;min-width:900px}
 thead th{position:sticky;top:0;background:#f8fbff;color:var(--muted);font-size:12px;font-weight:800;text-align:right;padding:14px 12px;border-bottom:1px solid var(--line)}
 tbody td{padding:13px 12px;border-bottom:1px solid #eef2f7;font-size:13px;vertical-align:middle;white-space:nowrap}
 tbody tr:hover{background:#fbfdff}
 .status{display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border-radius:999px;font-size:12px;font-weight:800;border:1px solid var(--line);background:#fff}
-.s-good{background:#f0fdf4;color:#166534;border-color:#bbf7d0}
-.s-bad{background:#fef2f2;color:#991b1b;border-color:#fecaca}
-.s-neutral{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
-.s-warn{background:#fff7ed;color:#b45309;border-color:#fed7aa}
+.s-good{background:#f0fdf4;color:#166534;border-color:#bbf7d0}.s-bad{background:#fef2f2;color:#991b1b;border-color:#fecaca}.s-neutral{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}.s-warn{background:#fff7ed;color:#b45309;border-color:#fed7aa}
 .sectionGrid{display:grid;grid-template-columns:1fr;gap:18px}
 .stack{display:grid;gap:18px}
 .subcard{padding:18px}
 .subHead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
 .subHead h3{margin:0;font-size:16px}
 .empty{padding:26px 18px;text-align:center;color:var(--muted)}
-.row{display:flex;gap:8px;flex-wrap:wrap}
-.mono{font-family:var(--mono)}
-.toast{position:fixed;left:20px;bottom:20px;max-width:360px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);border-radius:18px;padding:14px 16px;display:none;z-index:200}
+.toast{position:fixed;left:20px;bottom:20px;max-width:360px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);border-radius:18px;padding:14px 16px;display:none;z-index:60}
 .toast.show{display:block}
-.toast b{display:block;margin-bottom:5px}
-.toast span{color:var(--muted);font-size:13px;line-height:1.6;white-space:pre-wrap}
-.modal{position:fixed;inset:0;background:rgba(15,23,42,.38);display:none;align-items:center;justify-content:center;padding:20px;z-index:150}
+.toast b{display:block;margin-bottom:5px}.toast span{color:var(--muted);font-size:13px;line-height:1.6;white-space:pre-wrap}
+.modal{position:fixed;inset:0;background:rgba(15,23,42,.38);display:none;align-items:center;justify-content:center;padding:20px;z-index:70}
 .modal.show{display:flex}
 .box{width:min(920px,100%);background:#fff;border:1px solid var(--line);border-radius:28px;box-shadow:0 20px 60px rgba(15,23,42,.22);overflow:hidden}
 .modalHd,.modalFt{padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line)}
@@ -154,87 +90,12 @@ tbody tr:hover{background:#fbfdff}
 .modalBd{padding:20px}
 .list{list-style:none;margin:0;padding:0;display:grid;gap:10px;max-height:320px;overflow:auto}
 .list li{padding:12px 14px;border:1px solid var(--line);border-radius:16px;background:#fbfdff}
+.mono{font-family:var(--mono)}
 </style>
 </head>
 <body>
-
-<!-- ══════════════════════════════════════════════════════════
-     شاشة 1 — تسجيل الدخول (User + Password)
-══════════════════════════════════════════════════════════ -->
-<div id="loginScreen" class="authOverlay">
-  <div class="authCard">
-    <div class="authBrand">
-      <div class="authLogo">⚙</div>
-      <div>
-        <h1>Owner Panel</h1>
-        <p id="apiHostLogin">…</p>
-      </div>
-    </div>
-    <div class="authDivider"></div>
-    <p class="authTitle">تسجيل الدخول</p>
-    <p class="authSub">أدخل بيانات الدخول للمتابعة إلى لوحة التحكم</p>
-    <div class="field">
-      <label class="label">اسم المستخدم</label>
-      <input id="inUser" placeholder="admin" autocomplete="username" />
-    </div>
-    <div class="field">
-      <label class="label">كلمة المرور</label>
-      <input id="inPass" type="password" placeholder="••••••••" autocomplete="current-password" />
-    </div>
-    <button class="btn primary" id="btnLogin" style="width:100%;margin-top:4px;padding:13px">
-      إرسال رمز OTP
-    </button>
-    <p class="authFootnote">🔒 سيتم إرسال رمز التحقق عبر تيليغرام<br>مدة الجلسة 20 دقيقة تلقائياً</p>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════════════════════
-     شاشة 2 — التحقق بخطوتين (OTP)
-══════════════════════════════════════════════════════════ -->
-<div id="otpScreen" class="authOverlay hidden">
-  <div class="authCard">
-    <div class="authBrand">
-      <div class="authLogo">🔐</div>
-      <div>
-        <h1>التحقق بخطوتين</h1>
-        <p>Owner Panel</p>
-      </div>
-    </div>
-    <div class="authDivider"></div>
-    <div class="otpCenter">
-      <div class="otpIcon">📱</div>
-      <b id="otpUserLabel">—</b>
-      <p>تم إرسال رمز التحقق إلى تيليغرام<br>الرمز صالح لمدة 5 دقائق</p>
-    </div>
-    <div class="field" id="otpWrap">
-      <label class="label">رمز OTP</label>
-      <input id="inOtp" inputmode="numeric" maxlength="6" placeholder="123456"
-             style="font-size:26px;letter-spacing:10px;text-align:center;padding:14px" />
-    </div>
-    <div style="display:grid;gap:10px;margin-top:4px">
-      <button class="btn primary" id="btnVerifyOtp" style="width:100%;padding:13px">
-        ✔ تحقق من الرمز
-      </button>
-      <button class="btn" id="btnCancelOtp" style="width:100%">
-        ← العودة للخلف
-      </button>
-    </div>
-    <div class="attemptsBar" id="attemptsBar">
-      <div class="attemptDot ok" id="dot1"></div>
-      <div class="attemptDot ok" id="dot2"></div>
-      <div class="attemptDot ok" id="dot3"></div>
-    </div>
-    <p class="authFootnote">3 محاولات كحد أقصى · حظر IP لمدة 30 دقيقة عند الإخفاق</p>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════════════════════
-     شاشة 3 — لوحة التحكم الرئيسية (مخفية حتى تسجيل الدخول)
-══════════════════════════════════════════════════════════ -->
-<div id="appShell" class="app hidden">
+<div class="app">
   <div class="shell">
-
-    <!-- Sidebar -->
     <aside class="card sidebar">
       <div class="brand">
         <div class="logo"></div>
@@ -247,14 +108,21 @@ tbody tr:hover{background:#fbfdff}
         <span class="pill"><span class="dot"></span><span id="pillText">غير متصل</span></span>
         <span class="chip">Auth: <b id="authState">Guest</b></span>
       </div>
-
-      <!-- عداد الجلسة التنازلي -->
-      <div class="timerBox" id="timerBox">
-        <span>⏱ الجلسة تنتهي بعد</span>
-        <b id="sessionTimer">--:--</b>
+      <div class="field">
+        <label class="label">User</label>
+        <input id="inUser" placeholder="admin" />
       </div>
-
+      <div class="field">
+        <label class="label">Password</label>
+        <input id="inPass" type="password" placeholder="••••••••" />
+      </div>
+      <div class="field hidden" id="otpWrap">
+        <label class="label">OTP</label>
+        <input id="inOtp" inputmode="numeric" maxlength="6" placeholder="123456" />
+      </div>
       <div class="sideActions">
+        <button class="btn primary" id="btnLogin">Send OTP</button>
+        <button class="btn primary hidden" id="btnVerifyOtp">Verify OTP</button>
         <div class="grid2">
           <button class="btn" id="btnPing">Ping</button>
           <button class="btn danger" id="btnLogout" disabled>Logout</button>
@@ -262,7 +130,6 @@ tbody tr:hover{background:#fbfdff}
       </div>
     </aside>
 
-    <!-- Main -->
     <main>
       <div class="card topbar">
         <div class="tabs">
@@ -313,7 +180,7 @@ tbody tr:hover{background:#fbfdff}
               <thead>
                 <tr><th>#</th><th>Agency</th><th>Email</th><th>Password</th><th>Passport</th><th>Status</th><th>Type</th><th>Manager</th><th>Actions</th></tr>
               </thead>
-              <tbody id="tbody"><tr><td colspan="9" class="empty">—</td></tr></tbody>
+              <tbody id="tbody"><tr><td colspan="8" class="empty">—</td></tr></tbody>
             </table>
           </div>
         </div>
@@ -354,12 +221,9 @@ tbody tr:hover{background:#fbfdff}
     </main>
   </div>
 </div>
-<!-- /appShell -->
 
-<!-- Toast -->
 <div class="toast" id="toast"><b id="toastTitle">—</b><span id="toastMsg">—</span></div>
 
-<!-- Modal: Account -->
 <div class="modal" id="modalOne">
   <div class="box">
     <div class="modalHd">
@@ -384,7 +248,6 @@ tbody tr:hover{background:#fbfdff}
   </div>
 </div>
 
-<!-- Modal: Bulk -->
 <div class="modal" id="modalBulk">
   <div class="box">
     <div class="modalHd">
@@ -408,7 +271,6 @@ tbody tr:hover{background:#fbfdff}
   </div>
 </div>
 
-<!-- Modal: Manager -->
 <div class="modal" id="modalManager">
   <div class="box" style="width:min(620px,100%)">
     <div class="modalHd">
@@ -428,255 +290,173 @@ tbody tr:hover{background:#fbfdff}
     </div>
   </div>
 </div>
-
 <script>
 (() => {
-  const API_BASE   = (document.body?.dataset?.apiBase || "https://api.mehdik.site").replace(/\/$/, "");
+  const API_BASE = (document.body?.dataset?.apiBase || "https://api.mehdik.site").replace(/\/$/, "");
   const OWNER_BASE = API_BASE + "/owner";
-
-  document.getElementById("apiHostLogin").textContent = API_BASE;
-  document.getElementById("apiHost").textContent      = API_BASE;
-
-  const STORAGE_KEY    = "owner-panel-safe-ui:v2";
+  document.getElementById("apiHost").textContent = API_BASE;
+  const STORAGE_KEY = "owner-panel-safe-ui:v2";
   const VALID_STATUSES = ["Done","In Progress","Rejected","Pending"];
   const STATUS_PRIORITY = {"Done":0,"In Progress":1,"Rejected":2,"Pending":3};
-
-  const S = {
-    authenticated: false, csrfToken: "", pendingChallengeId: "", loginUser: "",
-    agencies: [], agencySelected: "", accounts: [], managers: [],
-    managerSelected: "", managerAssignSelected: "", bulkParsed: [],
-    sessionExpiresAt: 0,
-    failedAttempts: 0,
-  };
+  const S = { authenticated:false, csrfToken:"", pendingChallengeId:"", loginUser:"", agencies:[], agencySelected:"", accounts:[], managers:[], managerSelected:"", managerAssignSelected:"", bulkParsed:[] };
 
   const $ = (id) => document.getElementById(id);
-  const norm         = (s) => String(s || "").trim();
-  const normEmail    = (s) => norm(s).toLowerCase();
+  const norm = (s) => String(s || "").trim();
+  const normEmail = (s) => norm(s).toLowerCase();
   const normPassport = (s) => norm(s).toUpperCase();
-  const statusValue  = (s) => VALID_STATUSES.includes(norm(s)) ? norm(s) : "Pending";
-  const typeValue    = (t) => {
-    const v = norm(t).toLowerCase();
-    if(v==="appointment") return "Appointment";
-    if(v==="waiting list"||v==="waitinglist") return "Waiting list";
-    return "";
-  };
-  const escapeHtml   = (x) => String(x ?? "").replace(/[&<>"']/g, (m)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  const isValidEmail = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normEmail(e));
-  const isValidPassport = (p) => /^[A-Z0-9][A-Z0-9\-]{2,19}$/.test(normPassport(p));
-  const statusClass  = (st) => st==="Done"?"s-good":st==="Rejected"?"s-bad":st==="In Progress"?"s-neutral":"s-warn";
-  const maskPassword = (p) => {
-    const s=String(p||""); if(!s) return "";
-    if(s.length<=2) return "•".repeat(s.length);
-    return "•".repeat(Math.min(10,Math.max(1,s.length-2)))+s.slice(-2);
-  };
+  const statusValue = (s) => VALID_STATUSES.includes(norm(s)) ? norm(s) : "Pending";
+  const typeValue = (t) => { const v = norm(t).toLowerCase(); if(v === "appointment") return "Appointment"; if(v === "waiting list" || v === "waitinglist") return "Waiting list"; return ""; };
+  const escapeHtml = (x) => String(x ?? "").replace(/[&<>"']/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normEmail(email));
+  const isValidPassport = (passport) => /^[A-Z0-9][A-Z0-9\-]{2,19}$/.test(normPassport(passport));
+  const statusClass = (st) => st === "Done" ? "s-good" : st === "Rejected" ? "s-bad" : st === "In Progress" ? "s-neutral" : "s-warn";
 
-  /* ── Toast ────────────────────────────────────────────────── */
-  function toast(title, msg){
-    const t=$("toast");
-    $("toastTitle").textContent=title;
-    $("toastMsg").textContent=msg;
-    t.classList.add("show");
-    clearTimeout(toast._t);
-    toast._t=setTimeout(()=>t.classList.remove("show"),3800);
-  }
+const maskPassword = (p) => { const s=String(p||""); if(!s) return ""; if(s.length<=2) return "•".repeat(s.length); return "•".repeat(Math.min(10, Math.max(1,s.length-2))) + s.slice(-2); };
 
-  /* ── Persist UI state ─────────────────────────────────────── */
-  function persistUiState(){
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
-      agencySelected:S.agencySelected, managerSelected:S.managerSelected,
-      managerAssignSelected:S.managerAssignSelected, loginUser:S.loginUser,
-    }));
+function toast(title, msg){ const t=$("toast"); $("toastTitle").textContent=title; $("toastMsg").textContent=msg; t.classList.add("show"); clearTimeout(toast._tm); toast._tm=setTimeout(()=>t.classList.remove("show"), 3500); }
+function persistUiState(){ sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ agencySelected:S.agencySelected, managerSelected:S.managerSelected, managerAssignSelected:S.managerAssignSelected, loginUser:S.loginUser })); }
+function restoreUiState(){ try { const raw=sessionStorage.getItem(STORAGE_KEY); if(!raw) return; const d=JSON.parse(raw); S.agencySelected=norm(d.agencySelected); S.managerSelected=norm(d.managerSelected); S.managerAssignSelected=norm(d.managerAssignSelected); S.loginUser=norm(d.loginUser); $("inUser").value=S.loginUser; } catch(_){} }
+function resetLoginFlow(clearCreds=false){
+  S.pendingChallengeId="";
+  $("otpWrap").classList.add("hidden");
+  $("btnVerifyOtp").classList.add("hidden");
+  $("btnLogin").classList.remove("hidden");
+  $("btnLogin").textContent="Send OTP";
+  $("inOtp").value="";
+  if(clearCreds){ $("inPass").value=""; }
+}
+function setAuthState(authed){
+  S.authenticated = !!authed;
+  $("authState").textContent = authed ? "Owner" : "Guest";
+  $("btnLogout").disabled=!authed;
+  ["btnRefresh","btnBulk","btnAddOne","selAgency","inSearch","selStatusFilter","btnSendAgencyAll","btnOpenManager","selManagerView","selManagerAssign"].forEach(id=>$(id).disabled=!authed);
+  $("pillText").textContent = authed ? "متصل" : "غير متصل";
+  if(authed){
+    $("btnLogin").classList.add("hidden");
+    $("btnVerifyOtp").classList.add("hidden");
+    $("otpWrap").classList.add("hidden");
+    $("inPass").disabled = true;
+    $("inUser").disabled = true;
+  }else{
+    $("btnLogin").classList.remove("hidden");
+    $("btnLogin").textContent = "Send OTP";
+    $("btnVerifyOtp").classList.add("hidden");
+    $("otpWrap").classList.add("hidden");
+    $("inPass").disabled = false;
+    $("inUser").disabled = false;
   }
-  function restoreUiState(){
-    try{
-      const d=JSON.parse(sessionStorage.getItem(STORAGE_KEY)||"{}");
-      S.agencySelected        = norm(d.agencySelected);
-      S.managerSelected       = norm(d.managerSelected);
-      S.managerAssignSelected = norm(d.managerAssignSelected);
-      S.loginUser             = norm(d.loginUser);
-      $("inUser").value       = S.loginUser;
-    }catch(_){}
-  }
+}
 
-  /* ── OTP attempt dots ─────────────────────────────────────── */
-  function resetAttemptDots(){
-    S.failedAttempts=0;
-    [$("dot1"),$("dot2"),$("dot3")].forEach(d=>{
-      d.classList.remove("used"); d.classList.add("ok");
-    });
-  }
-  function markFailedAttempt(){
-    S.failedAttempts=Math.min(S.failedAttempts+1,3);
-    const dots=[$("dot1"),$("dot2"),$("dot3")];
-    dots.forEach((d,i)=>{
-      if(i<S.failedAttempts){ d.classList.remove("ok"); d.classList.add("used"); }
-      else { d.classList.remove("used"); d.classList.add("ok"); }
-    });
-  }
 
-  /* ── Session countdown timer ──────────────────────────────── */
-  let _timerIv=null;
-  function startSessionTimer(){
-    clearInterval(_timerIv);
-    _timerIv=setInterval(()=>{
-      const rem=S.sessionExpiresAt-Date.now();
-      const box=$("timerBox"), el=$("sessionTimer");
-      if(rem<=0){
-        clearInterval(_timerIv);
-        if(el) el.textContent="00:00";
-        toast("⏰ الجلسة","انتهت الجلسة تلقائياً — سيتم تسجيل الخروج");
-        setTimeout(()=>{ if(S.authenticated) UI.logout(); },2000);
-        return;
-      }
-      const m=Math.floor(rem/60000), s=Math.floor((rem%60000)/1000);
-      if(el) el.textContent=`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
-      if(box){
-        box.classList.remove("warn","alert");
-        if(rem<2*60*1000) box.classList.add("alert");
-        else if(rem<5*60*1000) box.classList.add("warn");
-      }
-    },1000);
-  }
-  function stopSessionTimer(){
-    clearInterval(_timerIv); _timerIv=null;
-    const el=$("sessionTimer"), box=$("timerBox");
-    if(el) el.textContent="--:--";
-    if(box) box.classList.remove("warn","alert");
-  }
-
-  /* ── Login/OTP flow helpers ───────────────────────────────── */
-  function resetLoginFlow(clearCreds=false){
-    S.pendingChallengeId="";
-    $("inOtp").value="";
-    resetAttemptDots();
-    if(clearCreds) $("inPass").value="";
-    // Only switch screens back if not currently authenticated
-    if(!S.authenticated){
-      $("loginScreen").classList.remove("hidden");
-      $("otpScreen").classList.add("hidden");
+async function apiFetch(url, options={}){
+  const controller = new AbortController(); const timer = setTimeout(()=>controller.abort(), 15000);
+  try{
+    const headers = new Headers(options.headers || {});
+    const method = String(options.method || "GET").toUpperCase();
+    if(!["GET","HEAD","OPTIONS"].includes(method) && S.csrfToken){
+      headers.set("X-CSRF-Token", S.csrfToken);
     }
-  }
+    const response = await fetch(url, { ...options, headers, credentials:"include", signal:controller.signal });
+    const data = await response.json().catch(()=>({ ok:false, error:"Invalid server response" }));
+    if(!response.ok && data && typeof data.ok === "undefined") data.ok = false;
+    return data;
+  }catch(err){ return { ok:false, error: err?.name === "AbortError" ? "Request timeout" : (err?.message || "Request failed") }; }
+  finally{ clearTimeout(timer); }
+}
 
-  function setAuthState(authed){
-    S.authenticated=!!authed;
-    $("authState").textContent = authed ? "Owner" : "Guest";
-    $("btnLogout").disabled    = !authed;
-    ["btnRefresh","btnBulk","btnAddOne","selAgency","inSearch","selStatusFilter",
-     "btnSendAgencyAll","btnOpenManager","selManagerView","selManagerAssign"]
-      .forEach(id=>$(id).disabled=!authed);
-    $("pillText").textContent = authed ? "متصل" : "غير متصل";
-    if(authed){
-      $("loginScreen").classList.add("hidden");
-      $("otpScreen").classList.add("hidden");
-      $("appShell").classList.remove("hidden");
-      startSessionTimer();
-    }else{
-      $("loginScreen").classList.remove("hidden");
-      $("otpScreen").classList.add("hidden");
-      $("appShell").classList.add("hidden");
-      stopSessionTimer();
-    }
-  }
-
-  /* ── API fetch ────────────────────────────────────────────── */
-  async function apiFetch(url, options={}){
-    const ctrl=new AbortController();
-    const t=setTimeout(()=>ctrl.abort(),15000);
-    try{
-      const headers=new Headers(options.headers||{});
-      const method=String(options.method||"GET").toUpperCase();
-      if(!["GET","HEAD","OPTIONS"].includes(method)&&S.csrfToken)
-        headers.set("X-CSRF-Token",S.csrfToken);
-      const res=await fetch(url,{...options,headers,credentials:"include",signal:ctrl.signal});
-      const data=await res.json().catch(()=>({ok:false,error:"Invalid server response"}));
-      if(!res.ok&&data&&typeof data.ok==="undefined") data.ok=false;
-      return data;
-    }catch(err){
-      return {ok:false,error:err?.name==="AbortError"?"Request timeout":(err?.message||"Request failed")};
-    }finally{ clearTimeout(t); }
-  }
-
-  /* ── API methods ──────────────────────────────────────────── */
-  const API={
-    ping:          ()=>apiFetch(OWNER_BASE+"/ping"),
-    startAuth:     (u,p)=>apiFetch(OWNER_BASE+"/auth/start",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user:u,pass:p})}),
-    verifyOtp:     (cid,otp)=>apiFetch(OWNER_BASE+"/auth/verify",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({challengeId:cid,otp})}),
-    session:       ()=>apiFetch(OWNER_BASE+"/session"),
-    logout:        ()=>apiFetch(OWNER_BASE+"/logout",{method:"POST"}),
-    agencies:      ()=>apiFetch(OWNER_BASE+"/agencies"),
-    accounts:      (ag)=>apiFetch(OWNER_BASE+"/accounts?agency="+encodeURIComponent(ag)),
-    addAccount:    (pl)=>apiFetch(OWNER_BASE+"/account",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(pl)}),
-    editAccount:   (pl)=>apiFetch(OWNER_BASE+"/account",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(pl)}),
-    delAccount:    (pl)=>apiFetch(OWNER_BASE+"/account",{method:"DELETE",headers:{"Content-Type":"application/json"},body:JSON.stringify(pl)}),
-    sendAgencyAll: (ag)=>apiFetch(OWNER_BASE+"/agency/send-all",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({agency:ag})}),
-    managers:      ()=>apiFetch(OWNER_BASE+"/managers"),
-    createManager: (pl)=>apiFetch(OWNER_BASE+"/manager",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(pl)}),
-    editManager:   (pl)=>apiFetch(OWNER_BASE+"/manager",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(pl)}),
-    deleteManager: (pl)=>apiFetch(OWNER_BASE+"/manager",{method:"DELETE",headers:{"Content-Type":"application/json"},body:JSON.stringify(pl)}),
-    managerSelect: (pl)=>apiFetch(OWNER_BASE+"/manager/select",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(pl)}),
-    managerUnselect:(pl)=>apiFetch(OWNER_BASE+"/manager/unselect",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(pl)}),
-    managerStatus: (pl)=>apiFetch(OWNER_BASE+"/manager/status",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(pl)}),
+const API = {
+    ping:()=>apiFetch(OWNER_BASE+"/ping"),
+    startAuth:(user,pass)=>apiFetch(OWNER_BASE+"/auth/start",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user,pass})}),
+    verifyOtp:(challengeId,otp)=>apiFetch(OWNER_BASE+"/auth/verify",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({challengeId,otp})}),
+    session:()=>apiFetch(OWNER_BASE+"/session"),
+    logout:()=>apiFetch(OWNER_BASE+"/logout",{method:"POST"}),
+    agencies:()=>apiFetch(OWNER_BASE+"/agencies"),
+    accounts:(agency)=>apiFetch(OWNER_BASE+"/accounts?agency="+encodeURIComponent(agency)),
+    addAccount:(payload)=>apiFetch(OWNER_BASE+"/account",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),
+    editAccount:(payload)=>apiFetch(OWNER_BASE+"/account",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),
+    delAccount:(payload)=>apiFetch(OWNER_BASE+"/account",{method:"DELETE",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),
+    sendAgencyAll:(agency)=>apiFetch(OWNER_BASE+"/agency/send-all",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({agency})}),
+    managers:()=>apiFetch(OWNER_BASE+"/managers"),
+    createManager:(payload)=>apiFetch(OWNER_BASE+"/manager",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),
+    editManager:(payload)=>apiFetch(OWNER_BASE+"/manager",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),
+    deleteManager:(payload)=>apiFetch(OWNER_BASE+"/manager",{method:"DELETE",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),
+    managerSelect:(payload)=>apiFetch(OWNER_BASE+"/manager/select",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),
+    managerUnselect:(payload)=>apiFetch(OWNER_BASE+"/manager/unselect",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),
+    managerStatus:(payload)=>apiFetch(OWNER_BASE+"/manager/status",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)})
   };
 
-  /* ── Renders ──────────────────────────────────────────────── */
   function applyFilters(list){
-    const q=norm($("inSearch").value).toLowerCase(), sf=norm($("selStatusFilter").value);
-    return (Array.isArray(list)?list:[]).filter(a=>{
-      const okQ=!q||[a.agency,a.email,a.passport,a.status,a.type].join(" ").toLowerCase().includes(q);
-      const okS=!sf||statusValue(a.status)===sf;
-      return okQ&&okS;
-    }).sort((a,b)=>(STATUS_PRIORITY[statusValue(a.status)]-STATUS_PRIORITY[statusValue(b.status)])||String(a.email).localeCompare(String(b.email)));
+    const q = norm($("inSearch").value).toLowerCase();
+    const sf = norm($("selStatusFilter").value);
+    return (Array.isArray(list)?list:[]).filter(a => {
+      const okQ = !q || [a.agency,a.email,a.passport,a.status,a.type].join(" ").toLowerCase().includes(q);
+      const okS = !sf || statusValue(a.status) === sf;
+      return okQ && okS;
+    }).sort((a,b)=> (STATUS_PRIORITY[statusValue(a.status)]-STATUS_PRIORITY[statusValue(b.status)]) || String(a.email).localeCompare(String(b.email)));
   }
+
   function managerByAccount(agency,email,passport){
-    for(const m of S.managers)
-      if((m.queue||[]).some(a=>norm(a.agency).toLowerCase()===norm(agency).toLowerCase()&&normEmail(a.email)===normEmail(email)&&normPassport(a.passport)===normPassport(passport))) return m;
+    for(const m of S.managers){
+      if((m.queue||[]).some(a => norm(a.agency).toLowerCase()===norm(agency).toLowerCase() && normEmail(a.email)===normEmail(email) && normPassport(a.passport)===normPassport(passport))) return m;
+    }
     return null;
   }
+
   function renderAgencies(){
-    const sel=$("selAgency"); sel.innerHTML='<option value="">(اختر وكالة)</option>';
-    for(const a of S.agencies){ const o=document.createElement("option"); o.value=a.agency; o.textContent=`${a.agency} (${a.count||0})`; sel.appendChild(o); }
-    if(S.agencySelected) sel.value=S.agencySelected;
+    const sel = $("selAgency"); sel.innerHTML = '<option value="">(اختر وكالة)</option>';
+    for(const a of S.agencies){ const o=document.createElement('option'); o.value=a.agency; o.textContent=`${a.agency} (${a.count||0})`; sel.appendChild(o); }
+    if(S.agencySelected) sel.value = S.agencySelected;
   }
+
   function renderManagersSelectors(){
     for(const id of ["selManagerView","selManagerAssign"]){
       const sel=$(id); sel.innerHTML='<option value="">(اختر مدير)</option>';
-      for(const m of S.managers){ const o=document.createElement("option"); o.value=m.id; o.textContent=`${m.name} (${m.assignedCount||0}/${m.desiredCount})`; sel.appendChild(o); }
+      for(const m of S.managers){ const o=document.createElement('option'); o.value=m.id; o.textContent=`${m.name} (${m.assignedCount||0}/${m.desiredCount})`; sel.appendChild(o); }
     }
     if(S.managerSelected) $("selManagerView").value=S.managerSelected;
     if(S.managerAssignSelected) $("selManagerAssign").value=S.managerAssignSelected;
   }
+
   function renderManagers(){
     renderManagersSelectors();
     const tb=$("managersTbody");
-    if(!S.managers.length){ tb.innerHTML='<tr><td colspan="6" style="padding:16px;color:var(--muted)">—</td></tr>'; renderManagerQueue(); return; }
+    if(!S.managers.length){ tb.innerHTML='<tr><td colspan="6" class="muted" style="padding:16px">—</td></tr>'; renderManagerQueue(); return; }
     tb.innerHTML=S.managers.map((m,i)=>`<tr>
-      <td>${i+1}</td><td class="mono">${escapeHtml(m.id)}</td><td>${escapeHtml(m.name)}</td>
-      <td>${m.desiredCount}</td><td>${m.assignedCount||0}</td>
+      <td>${i+1}</td>
+      <td class="mono">${escapeHtml(m.id)}</td>
+      <td>${escapeHtml(m.name)}</td>
+      <td>${m.desiredCount}</td>
+      <td>${m.assignedCount||0}</td>
       <td><div class="row">
         <button class="btn" onclick="UI.editManager('${encodeURIComponent(m.id)}')">Edit</button>
         <button class="btn danger" onclick="UI.deleteManager('${encodeURIComponent(m.id)}')">Delete</button>
-      </div></td></tr>`).join("");
+      </div></td>
+    </tr>`).join("");
     renderManagerQueue();
   }
+
   function renderAccounts(){
     const tb=$("tbody");
-    if(!S.agencySelected){ tb.innerHTML='<tr><td colspan="9" style="padding:16px;color:var(--muted)">اختر وكالة أولاً</td></tr>'; return; }
+    if(!S.agencySelected){ tb.innerHTML='<tr><td colspan="9" class="muted" style="padding:16px">اختر وكالة أولاً</td></tr>'; return; }
     const filtered=applyFilters(S.accounts);
-    if(!filtered.length){ tb.innerHTML='<tr><td colspan="9" style="padding:16px;color:var(--muted)">لا توجد بيانات</td></tr>'; return; }
-    const smId=S.managerAssignSelected;
+    if(!filtered.length){ tb.innerHTML='<tr><td colspan="9" class="muted" style="padding:16px">لا توجد بيانات</td></tr>'; return; }
+    const selectedManagerId = S.managerAssignSelected;
     tb.innerHTML=filtered.map((a,i)=>{
-      const assigned=managerByAccount(a.agency||S.agencySelected,a.email,a.passport);
-      const accountType=typeValue(a.type);
-      const typeBadge=accountType?`<span class="tag ${accountType==="Appointment"?"type-appointment":"type-waiting"}">${escapeHtml(accountType)}</span>`:'<span style="color:var(--muted)">—</span>';
-      const assignedBadge=assigned?`<span class="tag ${accountType==="Appointment"?"manager-appointment":"good"}">${escapeHtml(assigned.name)}</span>`:'<span style="color:var(--muted)">—</span>';
-      let mAction='<span style="color:var(--muted)">اختر مديراً</span>';
+      const assigned = managerByAccount(a.agency||S.agencySelected,a.email,a.passport);
+      const accountType = typeValue(a.type);
+      const typeBadge = accountType ? `<span class="tag ${accountType==='Appointment' ? 'type-appointment' : 'type-waiting'}">${escapeHtml(accountType)}</span>` : '<span class="muted">—</span>';
+      const assignedBadge = assigned ? `<span class="tag ${accountType==='Appointment' ? 'manager-appointment' : 'good'}">${escapeHtml(assigned.name)}</span>` : '<span class="muted">—</span>'; 
+      let managerAction = '<span class="muted">اختر مديراً</span>';
       if(assigned){
-        if(assigned.id===smId) mAction=`<button class="btn danger" onclick="UI.managerUnselect('${encodeURIComponent(assigned.id)}','${encodeURIComponent(a.agency||S.agencySelected)}','${encodeURIComponent(a.email||"")}','${encodeURIComponent(a.passport||"")}')">Remove</button>`;
-        else mAction=`<span class="tag bad">محجوز لمدير آخر</span>`;
-      }else if(smId){
+        if(assigned.id===selectedManagerId){
+          managerAction = `<button class="btn danger" onclick="UI.managerUnselect('${encodeURIComponent(assigned.id)}','${encodeURIComponent(a.agency||S.agencySelected)}','${encodeURIComponent(a.email||"")}','${encodeURIComponent(a.passport||"")}')">Remove</button>`;
+        }else{
+          managerAction = `<span class="tag bad">محجوز لمدير آخر</span>`;
+        }
+      }else if(selectedManagerId){
         const st=statusValue(a.status);
-        if(st==="Done"||st==="Rejected") mAction=`<span class="tag bad">غير قابل للاختيار</span>`;
-        else mAction=`<button class="btn good" onclick="UI.managerSelect('${encodeURIComponent(smId)}','${encodeURIComponent(a.agency||S.agencySelected)}','${encodeURIComponent(a.email||"")}','${encodeURIComponent(a.passport||"")}')">Select</button>`;
+        if(st==="Done"||st==="Rejected") managerAction = `<span class="tag bad">غير قابل للاختيار</span>`;
+        else managerAction = `<button class="btn good" onclick="UI.managerSelect('${encodeURIComponent(selectedManagerId)}','${encodeURIComponent(a.agency||S.agencySelected)}','${encodeURIComponent(a.email||"")}','${encodeURIComponent(a.passport||"")}')">Select</button>`;
       }
       return `<tr>
         <td class="mono">${i+1}</td>
@@ -685,20 +465,23 @@ tbody tr:hover{background:#fbfdff}
         <td class="mono">${escapeHtml(maskPassword(a.password||""))}</td>
         <td class="mono">${escapeHtml(a.passport||"")}</td>
         <td><span class="status ${statusClass(statusValue(a.status))}"><span class="dot"></span>${escapeHtml(statusValue(a.status))}</span></td>
-        <td>${typeBadge}</td><td>${assignedBadge}</td>
+        <td>${typeBadge}</td>
+        <td>${assignedBadge}</td>
         <td><div class="row">
           <button class="btn" onclick="UI.openEdit('${encodeURIComponent(a.email||"")}','${encodeURIComponent(a.passport||"")}')">Edit</button>
           <button class="btn danger" onclick="UI.del('${encodeURIComponent(a.email||"")}','${encodeURIComponent(a.passport||"")}')">Delete</button>
-          ${mAction}
-        </div></td></tr>`;
+          ${managerAction}
+        </div></td>
+      </tr>`;
     }).join("");
   }
+
   function renderManagerQueue(){
     const tb=$("managerQueueTbody");
-    const mgr=S.managers.find(m=>m.id===S.managerSelected);
-    if(!mgr){ tb.innerHTML='<tr><td colspan="6" style="padding:16px;color:var(--muted)">اختر مديراً</td></tr>'; return; }
-    const queue=(mgr.queue||[]).slice().sort((a,b)=>(STATUS_PRIORITY[statusValue(a.status)]-STATUS_PRIORITY[statusValue(b.status)])||String(a.agency).localeCompare(String(b.agency)));
-    if(!queue.length){ tb.innerHTML='<tr><td colspan="6" style="padding:16px;color:var(--muted)">لا توجد حسابات</td></tr>'; return; }
+    const manager=S.managers.find(m=>m.id===S.managerSelected);
+    if(!manager){ tb.innerHTML='<tr><td colspan="6" class="muted" style="padding:16px">اختر مديراً</td></tr>'; return; }
+    const queue=(manager.queue||[]).slice().sort((a,b)=> (STATUS_PRIORITY[statusValue(a.status)]-STATUS_PRIORITY[statusValue(b.status)]) || String(a.agency).localeCompare(String(b.agency)));
+    if(!queue.length){ tb.innerHTML='<tr><td colspan="6" class="muted" style="padding:16px">لا توجد حسابات مختارة</td></tr>'; return; }
     tb.innerHTML=queue.map((a,i)=>`<tr>
       <td>${i+1}</td>
       <td class="mono">${escapeHtml(a.agency||"")}</td>
@@ -706,148 +489,174 @@ tbody tr:hover{background:#fbfdff}
       <td class="mono">${escapeHtml(a.passport||"")}</td>
       <td><span class="status ${statusClass(statusValue(a.status))}"><span class="dot"></span>${escapeHtml(statusValue(a.status))}</span></td>
       <td><div class="row">
-        <button class="btn" onclick="UI.managerSetStatus('${encodeURIComponent(mgr.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}','In Progress')">In Progress</button>
-        <button class="btn warn" onclick="UI.managerSetStatus('${encodeURIComponent(mgr.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}','Pending')">Pending</button>
-        <button class="btn good" onclick="UI.managerSetStatus('${encodeURIComponent(mgr.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}','Done')">Done</button>
-        <button class="btn danger" onclick="UI.managerSetStatus('${encodeURIComponent(mgr.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}','Rejected')">Rejected</button>
-        <button class="btn danger" onclick="UI.managerUnselect('${encodeURIComponent(mgr.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}')">Remove</button>
-      </div></td></tr>`).join("");
+        <button class="btn" onclick="UI.managerSetStatus('${encodeURIComponent(manager.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}','In Progress')">In Progress</button>
+        <button class="btn warn" onclick="UI.managerSetStatus('${encodeURIComponent(manager.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}','Pending')">Pending</button>
+        <button class="btn good" onclick="UI.managerSetStatus('${encodeURIComponent(manager.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}','Done')">Done</button>
+        <button class="btn danger" onclick="UI.managerSetStatus('${encodeURIComponent(manager.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}','Rejected')">Rejected</button>
+        <button class="btn danger" onclick="UI.managerUnselect('${encodeURIComponent(manager.id)}','${encodeURIComponent(a.agency)}','${encodeURIComponent(a.email)}','${encodeURIComponent(a.passport)}')">Remove</button>
+      </div></td>
+    </tr>`).join('');
   }
 
-  /* ── UI object ────────────────────────────────────────────── */
-  const UI={
+  const UI = {
     _oneMode:"add", _oneMatch:{email:"",passport:""}, _mgrMode:"add",
-
     async logout(){
       await API.logout();
-      Object.assign(S,{csrfToken:"",pendingChallengeId:"",loginUser:norm($("inUser").value),
-        agencies:[],accounts:[],managers:[],agencySelected:"",managerSelected:"",
-        managerAssignSelected:"",sessionExpiresAt:0,failedAttempts:0});
+      S.csrfToken=""; S.pendingChallengeId=""; S.loginUser=norm($("inUser").value); S.agencies=[]; S.accounts=[]; S.managers=[]; S.agencySelected=""; S.managerSelected=""; S.managerAssignSelected="";
       sessionStorage.removeItem(STORAGE_KEY);
-      setAuthState(false); resetLoginFlow(true);
-      renderAgencies(); renderAccounts(); renderManagers();
-      toast("Logout","تم تسجيل الخروج بنجاح");
+      setAuthState(false); resetLoginFlow(true); renderAgencies(); renderAccounts(); renderManagers(); toast('Logout','Logged out');
     },
-
     async beginLogin(){
       const user=norm($("inUser").value), pass=norm($("inPass").value);
-      if(!user||!pass) return toast("Login","أدخل بيانات الدخول");
-      const btn=$("btnLogin");
-      btn.disabled=true; btn.textContent="جاري الإرسال...";
+      if(!user || !pass) return toast('Login','أدخل بيانات الدخول');
       const res=await API.startAuth(user,pass);
-      btn.disabled=false; btn.textContent="إرسال رمز OTP";
-      if(!res.ok) return toast("Login",res.error||"بيانات غير صحيحة");
-      S.pendingChallengeId=norm(res.challengeId);
-      S.loginUser=user; persistUiState();
-      $("otpUserLabel").textContent=user;
-      resetAttemptDots();
-      $("loginScreen").classList.add("hidden");
-      $("otpScreen").classList.remove("hidden");
+      if(!res.ok) return toast('Login',res.error||'Unauthorized');
+      S.pendingChallengeId = norm(res.challengeId);
+      S.loginUser = user;
+      persistUiState();
+      $("otpWrap").classList.remove("hidden");
+      $("btnVerifyOtp").classList.remove("hidden");
+      $("btnLogin").classList.add("hidden");
       $("inOtp").focus();
-      toast("OTP","✅ تم إرسال الرمز إلى تيليغرام");
+      toast('OTP','تم إرسال الرمز إلى تيليغرام');
     },
-
     async verifyOtp(){
       const otp=norm($("inOtp").value);
-      if(!S.pendingChallengeId) return toast("OTP","ابدأ تسجيل الدخول أولاً");
-      if(!/^\d{6}$/.test(otp)) return toast("OTP","الرمز يجب أن يكون 6 أرقام");
-      const btn=$("btnVerifyOtp");
-      btn.disabled=true; btn.textContent="جاري التحقق...";
-      const res=await API.verifyOtp(S.pendingChallengeId,otp);
-      btn.disabled=false; btn.textContent="✔ تحقق من الرمز";
-      if(!res.ok){
-        markFailedAttempt();
-        $("inOtp").value=""; $("inOtp").focus();
-        return toast("OTP",res.error||"رمز OTP غير صحيح");
-      }
-      S.csrfToken=norm(res.csrfToken);
-      S.sessionExpiresAt=Date.now()+(Number(res.expiresIn)||1200)*1000;
+      if(!S.pendingChallengeId) return toast('OTP','ابدأ تسجيل الدخول أولاً');
+      if(!/^\d{6}$/.test(otp)) return toast('OTP','الرمز يجب أن يكون 6 أرقام');
+      const res=await API.verifyOtp(S.pendingChallengeId, otp);
+      if(!res.ok) return toast('OTP',res.error||'OTP غير صحيح');
+      S.csrfToken = norm(res.csrfToken);
       setAuthState(true);
-      resetLoginFlow(true); // clear fields (won't show loginScreen because S.authenticated=true)
+      resetLoginFlow(true);
       await UI.refreshAll();
-      toast("Login","✅ تم تسجيل الدخول — الجلسة 20 دقيقة");
+      toast('Login','تم تسجيل الدخول');
     },
-
     async restoreAuth(){
       const res=await API.session();
-      if(!res.ok||!res.authenticated){ setAuthState(false); return; }
-      S.csrfToken=norm(res.csrfToken);
-      S.loginUser=norm(res.user);
-      S.sessionExpiresAt=Number(res.expiresAt)||0;
-      $("inUser").value=S.loginUser;
+      if(!res.ok || !res.authenticated){
+        setAuthState(false);
+        return;
+      }
+      S.csrfToken = norm(res.csrfToken);
+      S.loginUser = norm(res.user);
+      $("inUser").value = S.loginUser;
       setAuthState(true);
       await UI.refreshAll();
     },
-
     async refreshAll(){
-      const res=await API.agencies(); if(!res.ok) return toast("Agencies",res.error||"Failed");
+      const res=await API.agencies(); if(!res.ok) return toast('Agencies',res.error||'Failed');
       S.agencies=Array.isArray(res.agencies)?res.agencies:[];
       renderAgencies(); renderManagers();
-      if(S.agencySelected) await UI.loadAgency(S.agencySelected);
-      else { S.accounts=[]; renderAccounts(); }
+      if(S.agencySelected) await UI.loadAgency(S.agencySelected); else { S.accounts=[]; renderAccounts(); }
       persistUiState();
     },
-
     async loadAgency(agency){
-      S.agencySelected=agency||""; persistUiState(); renderAgencies();
+      S.agencySelected=agency||''; persistUiState(); renderAgencies();
       if(!S.agencySelected){ S.accounts=[]; renderAccounts(); return; }
-      const res=await API.accounts(S.agencySelected);
-      if(!res.ok) return toast("Accounts",res.error||"Failed");
+      const res=await API.accounts(S.agencySelected); if(!res.ok) return toast('Accounts',res.error||'Failed');
       S.accounts=Array.isArray(res.accounts)?res.accounts:[];
       renderAccounts();
     },
-
     async loadManagers(){
-      const res=await API.managers(); if(!res.ok) return toast("Managers",res.error||"Failed");
+      const res=await API.managers(); if(!res.ok) return toast('Managers',res.error||'Failed');
       S.managers=Array.isArray(res.managers)?res.managers:[];
       renderManagers(); renderAccounts(); persistUiState();
     },
-
-    openAddOne(){ if(!S.agencySelected) return toast("Account","اختر وكالة أولاً"); UI._oneMode="add"; UI._oneMatch={email:"",passport:""}; $("oneTitle").textContent="Add Account"; $("oneSub").textContent=S.agencySelected; $("oneEmail").value=""; $("onePass").value=""; $("onePassport").value=""; $("oneStatus").value="Pending"; $("oneType").value=""; $("modalOne").classList.add("show"); },
-    openEdit(emailEnc,passportEnc){ const email=decodeURIComponent(emailEnc||""),passport=decodeURIComponent(passportEnc||""); const a=S.accounts.find(x=>normEmail(x.email)===normEmail(email)&&normPassport(x.passport)===normPassport(passport)); if(!a) return; UI._oneMode="edit"; UI._oneMatch={email:a.email,passport:a.passport}; $("oneTitle").textContent="Edit Account"; $("oneSub").textContent=S.agencySelected; $("oneEmail").value=a.email||""; $("onePass").value=a.password||""; $("onePassport").value=a.passport||""; $("oneStatus").value=statusValue(a.status); $("oneType").value=typeValue(a.type); $("modalOne").classList.add("show"); },
-    closeOne(){ $("modalOne").classList.remove("show"); },
+    openAddOne(){ if(!S.agencySelected) return toast('Account','اختر وكالة أولاً'); UI._oneMode="add"; UI._oneMatch={email:"",passport:""}; $("oneTitle").textContent='Add Account'; $("oneSub").textContent=S.agencySelected; $("oneEmail").value=''; $("onePass").value=''; $("onePassport").value=''; $("oneStatus").value='Pending'; $("oneType").value=''; $("modalOne").classList.add('show'); },
+    openEdit(emailEnc, passportEnc){
+      const email=decodeURIComponent(emailEnc||''), passport=decodeURIComponent(passportEnc||'');
+      const a=S.accounts.find(x=>normEmail(x.email)===normEmail(email)&&normPassport(x.passport)===normPassport(passport)); if(!a) return;
+      UI._oneMode="edit"; UI._oneMatch={email:a.email,passport:a.passport}; $("oneTitle").textContent='Edit Account'; $("oneSub").textContent=S.agencySelected; $("oneEmail").value=a.email||''; $("onePass").value=a.password||''; $("onePassport").value=a.passport||''; $("oneStatus").value=statusValue(a.status); $("oneType").value=typeValue(a.type); $("modalOne").classList.add('show');
+    },
+    closeOne(){ $("modalOne").classList.remove('show'); },
     async saveOne(){
-      if(!S.agencySelected) return toast("Account","اختر وكالة أولاً");
-      const pl={agency:S.agencySelected,email:norm($("oneEmail").value),password:norm($("onePass").value),passport:norm($("onePassport").value),status:$("oneStatus").value,type:typeValue($("oneType").value)};
-      if(!isValidEmail(pl.email)) return toast("Account","Email غير صالح");
-      if(!isValidPassport(pl.passport)) return toast("Account","Passport غير صالح");
+      if(!S.agencySelected) return toast('Account','اختر وكالة أولاً');
+      const payload={agency:S.agencySelected,email:norm($("oneEmail").value),password:norm($("onePass").value),passport:norm($("onePassport").value),status:$("oneStatus").value,type:typeValue($("oneType").value)};
+      if(!isValidEmail(payload.email)) return toast('Account','Email غير صالح');
+      if(!isValidPassport(payload.passport)) return toast('Account','Passport غير صالح');
       let res;
-      if(UI._oneMode==="add") res=await API.addAccount(pl);
-      else res=await API.editAccount({...pl,matchEmail:UI._oneMatch.email,matchPassport:UI._oneMatch.passport});
-      if(!res.ok) return toast("Account",res.error||"Failed");
-      UI.closeOne(); await UI.refreshAll(); await UI.loadAgency(S.agencySelected); toast("Account","تم الحفظ");
+      if(UI._oneMode==="add") res=await API.addAccount(payload);
+      else res=await API.editAccount({...payload,matchEmail:UI._oneMatch.email,matchPassport:UI._oneMatch.passport});
+      if(!res.ok) return toast('Account',res.error||'Failed');
+      UI.closeOne(); await UI.refreshAll(); await UI.loadAgency(S.agencySelected); toast('Account','تم الحفظ');
     },
-    async del(emailEnc,passportEnc){
+    async del(emailEnc, passportEnc){
       if(!S.agencySelected) return;
-      const email=decodeURIComponent(emailEnc||""),passport=decodeURIComponent(passportEnc||"");
+      const email=decodeURIComponent(emailEnc||''), passport=decodeURIComponent(passportEnc||'');
       if(!confirm(`Delete ${email}?`)) return;
-      const res=await API.delAccount({agency:S.agencySelected,email,passport}); if(!res.ok) return toast("Delete",res.error||"Failed");
-      await UI.refreshAll(); await UI.loadAgency(S.agencySelected); toast("Delete","تم الحذف");
+      const res=await API.delAccount({agency:S.agencySelected,email,passport}); if(!res.ok) return toast('Delete',res.error||'Failed');
+      await UI.refreshAll(); await UI.loadAgency(S.agencySelected); toast('Delete','تم الحذف');
     },
-    openBulk(){ if(!S.agencySelected) return toast("Bulk","اختر وكالة أولاً"); $("bulkText").value=""; $("bulkStats").textContent="—"; $("bulkList").innerHTML=""; $("btnBulkAdd").disabled=true; S.bulkParsed=[]; $("modalBulk").classList.add("show"); },
-    closeBulk(){ $("modalBulk").classList.remove("show"); },
+    openBulk(){ if(!S.agencySelected) return toast('Bulk','اختر وكالة أولاً'); $("bulkText").value=''; $("bulkStats").textContent='—'; $("bulkList").innerHTML=''; $("btnBulkAdd").disabled=true; S.bulkParsed=[]; $("modalBulk").classList.add('show'); },
+    closeBulk(){ $("modalBulk").classList.remove('show'); },
     parseBulk(){
-      let arr=[]; try{ arr=JSON.parse($("bulkText").value||"[]"); }catch(_){ return toast("Bulk","JSON غير صالح"); }
-      if(!Array.isArray(arr)) return toast("Bulk","JSON يجب أن يكون Array");
-      const parsed=[],bad=[];
-      for(const item of arr){ const a={email:norm(item.email),password:norm(item.password),passport:norm(item.passport),status:statusValue(item.status),type:typeValue(item.type)}; if(!isValidEmail(a.email)||!isValidPassport(a.passport)||!a.password){bad.push(JSON.stringify(item));continue;} parsed.push(a); }
-      S.bulkParsed=parsed; $("bulkStats").textContent=`Valid: ${parsed.length}\nInvalid: ${bad.length}`; $("bulkList").innerHTML=parsed.slice(0,50).map(a=>`<li>${escapeHtml(a.email)} — ${escapeHtml(a.passport)} — ${escapeHtml(a.status)}${a.type?` — ${escapeHtml(a.type)}`:""}</li>`).join(""); $("btnBulkAdd").disabled=!parsed.length;
+      let arr=[]; try{ arr=JSON.parse($("bulkText").value||'[]'); }catch(_){ return toast('Bulk','JSON غير صالح'); }
+      if(!Array.isArray(arr)) return toast('Bulk','JSON يجب أن يكون Array');
+      const parsed=[], bad=[];
+      for(const item of arr){
+        const a={ email:norm(item.email), password:norm(item.password), passport:norm(item.passport), status:statusValue(item.status), type:typeValue(item.type) };
+        if(!isValidEmail(a.email)||!isValidPassport(a.passport)||!a.password) { bad.push(JSON.stringify(item)); continue; }
+        parsed.push(a);
+      }
+      S.bulkParsed=parsed; $("bulkStats").textContent=`Valid: ${parsed.length}\nInvalid: ${bad.length}`; $("bulkList").innerHTML=parsed.slice(0,50).map(a=>`<li>${escapeHtml(a.email)} — ${escapeHtml(a.passport)} — ${escapeHtml(a.status)}${a.type?` — ${escapeHtml(a.type)}`:""}</li>`).join(''); $("btnBulkAdd").disabled=!parsed.length;
     },
     async bulkAdd(){
-      let ok=0,fail=0;
+      let ok=0, fail=0;
       for(const item of S.bulkParsed){ const res=await API.addAccount({agency:S.agencySelected,...item}); if(res.ok) ok++; else fail++; }
-      await UI.loadAgency(S.agencySelected); await UI.refreshAll(); toast("Bulk",`Added: ${ok} | Failed: ${fail}`); UI.closeBulk();
+      await UI.loadAgency(S.agencySelected); await UI.refreshAll(); toast('Bulk',`Added: ${ok} | Failed: ${fail}`); UI.closeBulk();
     },
-    async sendAgencyAll(){ if(!S.agencySelected) return toast("Telegram","اختر وكالة أولاً"); const res=await API.sendAgencyAll(S.agencySelected); if(!res.ok) return toast("Telegram",res.error||"Failed"); toast("Telegram",`تم الإرسال: ${res.count||0} حساب`); },
-    openManager(){ UI._mgrMode="add"; $("managerTitle").textContent="مدير جديد"; $("mgrId").disabled=false; $("mgrId").value=""; $("mgrName").value=""; $("mgrDesired").value="8"; $("modalManager").classList.add("show"); },
-    editManager(idEnc){ const id=decodeURIComponent(idEnc||""); const m=S.managers.find(x=>x.id===id); if(!m) return; UI._mgrMode="edit"; $("managerTitle").textContent="تعديل مدير"; $("mgrId").disabled=true; $("mgrId").value=m.id; $("mgrName").value=m.name||""; $("mgrDesired").value=m.desiredCount||8; $("modalManager").classList.add("show"); },
-    closeManager(){ $("modalManager").classList.remove("show"); },
+    async sendAgencyAll(){
+      if(!S.agencySelected) return toast('Telegram','اختر وكالة أولاً');
+      const res=await API.sendAgencyAll(S.agencySelected); if(!res.ok) return toast('Telegram',res.error||'Failed');
+      toast('Telegram',`تم الإرسال: ${res.count||0} حساب`);
+    },
+    openManager(){ UI._mgrMode='add'; $("managerTitle").textContent='مدير جديد'; $("mgrId").disabled=false; $("mgrId").value=''; $("mgrName").value=''; $("mgrDesired").value='8'; $("modalManager").classList.add('show'); },
+    editManager(idEnc){ const id=decodeURIComponent(idEnc||''); const m=S.managers.find(x=>x.id===id); if(!m) return; UI._mgrMode='edit'; $("managerTitle").textContent='تعديل مدير'; $("mgrId").disabled=true; $("mgrId").value=m.id; $("mgrName").value=m.name||''; $("mgrDesired").value=m.desiredCount||8; $("modalManager").classList.add('show'); },
+    closeManager(){ $("modalManager").classList.remove('show'); },
     async saveManager(){
-      const pl={id:norm($("mgrId").value),name:norm($("mgrName").value),desiredCount:Number($("mgrDesired").value||8)};
-      if(!pl.id) return toast("Manager","ID مطلوب");
-      const res=UI._mgrMode==="add"?await API.createManager(pl):await API.editManager(pl);
-      if(!res.ok) return toast("Manager",res.error||"Failed");
-      UI.closeManager(); await UI.loadManagers(); toast("Manager","تم الحفظ");
+      const payload={id:norm($("mgrId").value),name:norm($("mgrName").value),desiredCount:Number($("mgrDesired").value||8)};
+      if(!payload.id) return toast('Manager','ID مطلوب');
+      let res = UI._mgrMode==='add' ? await API.createManager(payload) : await API.editManager(payload);
+      if(!res.ok) return toast('Manager',res.error||'Failed');
+      UI.closeManager(); await UI.loadManagers(); toast('Manager','تم الحفظ');
     },
-    async deleteManager(idEnc){ const id=decodeURIComponent(idEnc||""); if(!confirm(`Delete manager ${id}?`)) return; const res=await API.deleteManager({id}); if(!res.ok) return toast("Manager",res.error||"Failed"); if(S.managerSelected===id) S.managerSelected=""; if(S.managerAssignSelected===id) S.managerAssignSelected=""; await UI.loadManagers(); renderAccounts(); toast("Manager","تم الحذف"); },
-    async managerSelect(idEnc,agencyEnc,emailEnc
+    async deleteManager(idEnc){
+      const id=decodeURIComponent(idEnc||''); if(!confirm(`Delete manager ${id}?`)) return;
+      const res=await API.deleteManager({id}); if(!res.ok) return toast('Manager',res.error||'Failed');
+      if(S.managerSelected===id) S.managerSelected=''; if(S.managerAssignSelected===id) S.managerAssignSelected='';
+      await UI.loadManagers(); renderAccounts(); toast('Manager','تم الحذف');
+    },
+    async managerSelect(idEnc, agencyEnc, emailEnc, passportEnc){
+      const id=decodeURIComponent(idEnc||''), agency=decodeURIComponent(agencyEnc||''), email=decodeURIComponent(emailEnc||''), passport=decodeURIComponent(passportEnc||'');
+      const res=await API.managerSelect({id,agency,email,passport}); if(!res.ok) return toast('Manager',res.error||'Failed');
+      S.managerSelected=id; await UI.loadManagers(); if(S.agencySelected===agency) await UI.loadAgency(agency); toast('Manager','تمت إضافة الحساب لقائمة المدير');
+    },
+    async managerUnselect(idEnc, agencyEnc, emailEnc, passportEnc){
+      const id=decodeURIComponent(idEnc||''), agency=decodeURIComponent(agencyEnc||''), email=decodeURIComponent(emailEnc||''), passport=decodeURIComponent(passportEnc||'');
+      const res=await API.managerUnselect({id,agency,email,passport}); if(!res.ok) return toast('Manager',res.error||'Failed');
+      await UI.loadManagers(); if(S.agencySelected===agency) await UI.loadAgency(agency); S.managerSelected=id; toast('Manager','تم حذف الحساب من قائمة المدير');
+    },
+    async managerSetStatus(idEnc, agencyEnc, emailEnc, passportEnc, status){
+      const id=decodeURIComponent(idEnc||''), agency=decodeURIComponent(agencyEnc||''), email=decodeURIComponent(emailEnc||''), passport=decodeURIComponent(passportEnc||'');
+      const res=await API.managerStatus({id,agency,email,passport,status}); if(!res.ok) return toast('Status',res.error||'Failed');
+      await UI.loadManagers(); if(S.agencySelected===agency) await UI.loadAgency(agency); S.managerSelected=id; renderManagers();
+      toast('Status', (status==='Done'||status==='Rejected') ? `تم وضع ${status} وحذف الحساب من قائمة المدير` : `تم وضع ${status}`);
+    }
+  };
+
+  window.UI = UI;
+  $("btnLogin").onclick=UI.beginLogin; $("btnVerifyOtp").onclick=UI.verifyOtp; $("btnLogout").onclick=UI.logout; $("btnPing").onclick=async()=>{ const r=await API.ping(); toast('Ping',r.ok?'OK':(r.error||'Failed')); };
+  $("inOtp").addEventListener('keydown', (e)=>{ if(e.key==="Enter") UI.verifyOtp(); });
+  $("inPass").addEventListener('keydown', (e)=>{ if(e.key==="Enter") UI.beginLogin(); });
+  $("btnRefresh").onclick=UI.refreshAll; $("btnBulk").onclick=UI.openBulk; $("btnAddOne").onclick=UI.openAddOne; $("btnParse").onclick=UI.parseBulk; $("btnBulkAdd").onclick=UI.bulkAdd; $("btnSaveOne").onclick=UI.saveOne; $("btnSendAgencyAll").onclick=UI.sendAgencyAll; $("btnOpenManager").onclick=UI.openManager; $("btnSaveManager").onclick=UI.saveManager;
+  $("selAgency").addEventListener('change', (e)=>UI.loadAgency(e.target.value||'')); $("inSearch").addEventListener('input', renderAccounts); $("selStatusFilter").addEventListener('change', renderAccounts);
+  $("selManagerView").addEventListener('change', (e)=>{ S.managerSelected=e.target.value||''; persistUiState(); renderManagerQueue(); });
+  $("selManagerAssign").addEventListener('change', (e)=>{ S.managerAssignSelected=e.target.value||''; persistUiState(); renderAccounts(); });
+  document.querySelectorAll('.tabbtn').forEach(btn=>btn.addEventListener('click',()=>{ document.querySelectorAll('.tabbtn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.querySelectorAll('.tabpane').forEach(p=>p.classList.add('hidden')); document.getElementById(btn.dataset.tab).classList.remove('hidden'); }));
+
+  restoreUiState(); setAuthState(false); resetLoginFlow(false); UI.restoreAuth().catch(()=>{});
+})();
+</script>
+</body>
+</html>
