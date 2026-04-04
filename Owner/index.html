@@ -91,101 +91,93 @@ tbody tr:hover{background:#fbfdff}
 .list{list-style:none;margin:0;padding:0;display:grid;gap:10px;max-height:320px;overflow:auto}
 .list li{padding:12px 14px;border:1px solid var(--line);border-radius:16px;background:#fbfdff}
 .mono{font-family:var(--mono)}
-.authPage{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}.authCard{width:min(460px,100%);padding:24px}.authTitle{margin:0 0 6px;font-size:28px}.authSub{margin:0 0 18px;color:var(--muted);font-size:14px;line-height:1.7}.authActions{display:grid;gap:10px}.authNote{margin-top:10px;color:var(--muted);font-size:12px}.centerActions{display:grid;gap:10px}.centerActions .btn{width:100%}
+.authGate{min-height:calc(100vh - 48px);display:flex;align-items:center;justify-content:center;padding:24px 0}
+.authShell{width:min(460px,100%)}
+.authCard{padding:26px}
+.authTitle{margin:0 0 8px;font-size:28px}
+.authSub{margin:0 0 18px;color:var(--muted);font-size:14px;line-height:1.8}
+.authStep{display:none}
+.authStep.active{display:block}
+.authMeta{margin-top:10px;font-size:12px;color:var(--muted)}
+#appShell.hidden{display:none!important}
 </style>
 </head>
 <body>
-<div class="authPage" id="authPage">
-  <div class="card authCard">
-    <div id="loginStep">
-      <div class="brand">
-        <div class="logo"></div>
-        <div>
-          <h1 class="authTitle">Owner Panel</h1>
-          <p id="apiHost">…</p>
+<div class="app">
+  <section id="authGate" class="authGate">
+    <div class="authShell">
+      <div class="card authCard">
+        <div class="brand">
+          <div class="logo"></div>
+          <div>
+            <h1 class="authTitle">Owner Panel</h1>
+            <p id="apiHost">…</p>
+          </div>
+        </div>
+        <div class="badgeRow">
+          <span class="pill"><span class="dot"></span><span id="pillText">غير متصل</span></span>
+          <span class="chip">Auth: <b id="authState">Guest</b></span>
+        </div>
+
+        <div id="loginStep" class="authStep active">
+          <p class="authSub">أدخل بيانات Owner لإرسال رمز تحقق إلى تيليغرام. لن تظهر اللوحة الداخلية قبل نجاح التحقق.</p>
+          <div class="field">
+            <label class="label">User</label>
+            <input id="inUser" placeholder="admin" autocomplete="username" />
+          </div>
+          <div class="field">
+            <label class="label">Password</label>
+            <input id="inPass" type="password" placeholder="••••••••" autocomplete="current-password" />
+          </div>
+          <div class="sideActions">
+            <button class="btn primary" id="btnLogin">Send OTP</button>
+            <button class="btn" id="btnPing">Ping</button>
+          </div>
+        </div>
+
+        <div id="otpStep" class="authStep">
+          <p class="authSub">أدخل رمز OTP المرسل إلى تيليغرام لإكمال تسجيل الدخول. بعد 3 محاولات خاطئة سيتم حظر IP مؤقتًا.</p>
+          <div class="field">
+            <label class="label">OTP</label>
+            <input id="inOtp" inputmode="numeric" maxlength="6" placeholder="123456" />
+          </div>
+          <div class="sideActions">
+            <button class="btn primary" id="btnVerifyOtp">Verify OTP</button>
+            <button class="btn" id="btnBackToLogin">Back</button>
+          </div>
+          <div class="authMeta">Session expires after 20 minutes or when you log out.</div>
         </div>
       </div>
-      <p class="authSub">سجل الدخول أولاً. لن تظهر لوحة التحكم قبل نجاح التحقق.</p>
-      <div class="badgeRow">
-        <span class="pill"><span class="dot"></span><span id="pillText">غير متصل</span></span>
-        <span class="chip">Auth: <b id="authState">Guest</b></span>
-      </div>
-      <div class="field">
-        <label class="label">User</label>
-        <input id="inUser" placeholder="admin" />
-      </div>
-      <div class="field">
-        <label class="label">Password</label>
-        <input id="inPass" type="password" placeholder="••••••••" />
-      </div>
-      <div class="authActions">
-        <button class="btn primary" id="btnLogin">Send OTP</button>
-        <button class="btn" id="btnPing">Ping</button>
-      </div>
-      <div class="authNote">بعد إرسال الرمز ستنتقل إلى شاشة التحقق.</div>
     </div>
+  </section>
 
-    <div id="verifyStep" class="hidden">
-      <div class="brand">
-        <div class="logo"></div>
-        <div>
-          <h1 class="authTitle">OTP Verification</h1>
-          <p>تحقق من الرمز المرسل إلى تيليغرام</p>
-        </div>
-      </div>
-      <p class="authSub">أدخل رمز OTP لإكمال تسجيل الدخول. الجلسة ستنتهي بعد 20 دقيقة أو عند تسجيل الخروج.</p>
-      <div class="badgeRow">
-        <span class="pill"><span class="dot"></span><span id="otpUserLabel">—</span></span>
-      </div>
-      <div class="field">
-        <label class="label">OTP</label>
-        <input id="inOtp" inputmode="numeric" maxlength="6" placeholder="123456" />
-      </div>
-      <div class="centerActions">
-        <button class="btn primary" id="btnVerifyOtp">Verify OTP</button>
-        <button class="btn" id="btnBackToLogin">Back</button>
-      </div>
-      <div class="authNote">بعد 3 محاولات OTP فاشلة سيتم حظر عنوان IP مؤقتًا.</div>
-    </div>
-  </div>
-</div>
-
-<div class="app hidden" id="ownerApp">
-  <div class="shell">
+  <div id="appShell" class="shell hidden">
     <aside class="card sidebar">
       <div class="brand">
         <div class="logo"></div>
         <div>
           <h1>Owner Panel</h1>
-          <p id="apiHostMirror">…</p>
+          <p>جلسة مفعلة</p>
         </div>
       </div>
       <div class="badgeRow">
-        <span class="pill"><span class="dot"></span><span id="ownerPillText">متصل</span></span>
-        <span class="chip">Auth: <b id="ownerAuthState">Owner</b></span>
-      </div>
-      <div class="field">
-        <label class="label">Session</label>
-        <input id="sessionUser" readonly />
+        <span class="pill"><span class="dot"></span><span>متصل</span></span>
+        <span class="chip">Auth: <b>Owner</b></span>
       </div>
       <div class="sideActions">
-        <div class="grid2">
-          <button class="btn" id="btnRefresh" disabled>Refresh</button>
-          <button class="btn danger" id="btnLogout" disabled>Logout</button>
-        </div>
+        <button class="btn" id="btnRefresh" disabled>Refresh</button>
+        <button class="btn" id="btnSendAgencyAll" disabled>Send Agency → Telegram</button>
+        <button class="btn danger" id="btnLogout" disabled>Logout</button>
       </div>
     </aside>
 
-    <main id="ownerMain">
+    <main>
       <div class="card topbar">
         <div class="tabs">
           <button class="tabbtn active" data-tab="accountsTab">الحسابات</button>
           <button class="tabbtn" data-tab="managersTab">المديرين</button>
         </div>
-        <div class="actions">
-          <button class="btn" id="btnRefresh" disabled>Refresh</button>
-          <button class="btn" id="btnSendAgencyAll" disabled>Send Agency → Telegram</button>
-        </div>
+        <div class="actions"></div>
       </div>
 
       <section id="accountsTab" class="tabpane">
@@ -264,7 +256,6 @@ tbody tr:hover{background:#fbfdff}
           </div>
         </div>
       </section>
-    
     </main>
   </div>
 </div>
@@ -345,7 +336,7 @@ tbody tr:hover{background:#fbfdff}
   const STORAGE_KEY = "owner-panel-safe-ui:v2";
   const VALID_STATUSES = ["Done","In Progress","Rejected","Pending"];
   const STATUS_PRIORITY = {"Done":0,"In Progress":1,"Rejected":2,"Pending":3};
-  const S = { authenticated:false, csrfToken:"", pendingChallengeId:"", loginUser:"", agencies:[], agencySelected:"", accounts:[], managers:[], managerSelected:"", managerAssignSelected:"", bulkParsed:[], sessionUser:"" };
+  const S = { authenticated:false, csrfToken:"", pendingChallengeId:"", loginUser:"", agencies:[], agencySelected:"", accounts:[], managers:[], managerSelected:"", managerAssignSelected:"", bulkParsed:[] };
 
   const $ = (id) => document.getElementById(id);
   const norm = (s) => String(s || "").trim();
@@ -362,33 +353,32 @@ const maskPassword = (p) => { const s=String(p||""); if(!s) return ""; if(s.leng
 
 function toast(title, msg){ const t=$("toast"); $("toastTitle").textContent=title; $("toastMsg").textContent=msg; t.classList.add("show"); clearTimeout(toast._tm); toast._tm=setTimeout(()=>t.classList.remove("show"), 3500); }
 function persistUiState(){ sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ agencySelected:S.agencySelected, managerSelected:S.managerSelected, managerAssignSelected:S.managerAssignSelected, loginUser:S.loginUser })); }
-function restoreUiState(){ try { const raw=sessionStorage.getItem(STORAGE_KEY); if(!raw) return; const d=JSON.parse(raw); S.agencySelected=norm(d.agencySelected); S.managerSelected=norm(d.managerSelected); S.managerAssignSelected=norm(d.managerAssignSelected); S.loginUser=norm(d.loginUser); if($("inUser")) $("inUser").value=S.loginUser; } catch(_){} }
-function showLoginStep(){ $("loginStep").classList.remove("hidden"); $("verifyStep").classList.add("hidden"); }
-function showVerifyStep(){ $("loginStep").classList.add("hidden"); $("verifyStep").classList.remove("hidden"); }
+function restoreUiState(){ try { const raw=sessionStorage.getItem(STORAGE_KEY); if(!raw) return; const d=JSON.parse(raw); S.agencySelected=norm(d.agencySelected); S.managerSelected=norm(d.managerSelected); S.managerAssignSelected=norm(d.managerAssignSelected); S.loginUser=norm(d.loginUser); $("inUser").value=S.loginUser; } catch(_){} }
+function showLoginStep(){
+  $("loginStep").classList.add("active");
+  $("otpStep").classList.remove("active");
+}
+function showOtpStep(){
+  $("loginStep").classList.remove("active");
+  $("otpStep").classList.add("active");
+}
 function resetLoginFlow(clearCreds=false){
   S.pendingChallengeId="";
-  $("inOtp").value="";
-  $("otpUserLabel").textContent="—";
   showLoginStep();
+  $("inOtp").value="";
   if(clearCreds){ $("inPass").value=""; }
 }
 function setAuthState(authed){
   S.authenticated = !!authed;
   $("authState").textContent = authed ? "Owner" : "Guest";
+  ["btnRefresh","btnBulk","btnAddOne","selAgency","inSearch","selStatusFilter","btnSendAgencyAll","btnOpenManager","selManagerView","selManagerAssign","btnLogout"].forEach(id=>$(id).disabled=!authed);
   $("pillText").textContent = authed ? "متصل" : "غير متصل";
-  $("btnLogout").disabled=!authed;
-  ["btnRefresh","btnBulk","btnAddOne","selAgency","inSearch","selStatusFilter","btnSendAgencyAll","btnOpenManager","selManagerView","selManagerAssign"].forEach(id=>$(id).disabled=!authed);
+  $("authGate").classList.toggle("hidden", authed);
+  $("appShell").classList.toggle("hidden", !authed);
   if(authed){
-    $("authPage").classList.add("hidden");
-    $("ownerApp").classList.remove("hidden");
-    $("ownerPillText").textContent = "متصل";
-    $("ownerAuthState").textContent = "Owner";
-    $("sessionUser").value = S.sessionUser || S.loginUser || "Owner";
-    $("apiHostMirror").textContent = $("apiHost").textContent;
+    $("inPass").value = "";
+    $("inOtp").value = "";
   }else{
-    $("ownerApp").classList.add("hidden");
-    $("authPage").classList.remove("hidden");
-    $("sessionUser").value = "";
     showLoginStep();
   }
 }
@@ -550,7 +540,7 @@ const API = {
       await API.logout();
       S.csrfToken=""; S.pendingChallengeId=""; S.loginUser=norm($("inUser").value); S.agencies=[]; S.accounts=[]; S.managers=[]; S.agencySelected=""; S.managerSelected=""; S.managerAssignSelected="";
       sessionStorage.removeItem(STORAGE_KEY);
-      setAuthState(false); resetLoginFlow(true); renderAgencies(); renderAccounts(); renderManagers(); toast('Logout','Logged out');
+      setAuthState(false); resetLoginFlow(true); renderAgencies(); renderAccounts(); renderManagers(); $("inOtp").value=""; toast('Logout','Logged out');
     },
     async beginLogin(){
       const user=norm($("inUser").value), pass=norm($("inPass").value);
@@ -560,8 +550,7 @@ const API = {
       S.pendingChallengeId = norm(res.challengeId);
       S.loginUser = user;
       persistUiState();
-      $("otpUserLabel").textContent = user || 'Owner';
-      showVerifyStep();
+      showOtpStep();
       $("inOtp").focus();
       toast('OTP','تم إرسال الرمز إلى تيليغرام');
     },
@@ -572,7 +561,6 @@ const API = {
       const res=await API.verifyOtp(S.pendingChallengeId, otp);
       if(!res.ok) return toast('OTP',res.error||'OTP غير صحيح');
       S.csrfToken = norm(res.csrfToken);
-      S.sessionUser = norm(res.user || S.loginUser || 'Owner');
       setAuthState(true);
       resetLoginFlow(true);
       await UI.refreshAll();
@@ -581,14 +569,11 @@ const API = {
     async restoreAuth(){
       const res=await API.session();
       if(!res.ok || !res.authenticated){
-        S.csrfToken = "";
-        S.sessionUser = "";
         setAuthState(false);
         return;
       }
       S.csrfToken = norm(res.csrfToken);
       S.loginUser = norm(res.user);
-      S.sessionUser = S.loginUser;
       $("inUser").value = S.loginUser;
       setAuthState(true);
       await UI.refreshAll();
@@ -704,7 +689,7 @@ const API = {
   $("selManagerAssign").addEventListener('change', (e)=>{ S.managerAssignSelected=e.target.value||''; persistUiState(); renderAccounts(); });
   document.querySelectorAll('.tabbtn').forEach(btn=>btn.addEventListener('click',()=>{ document.querySelectorAll('.tabbtn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.querySelectorAll('.tabpane').forEach(p=>p.classList.add('hidden')); document.getElementById(btn.dataset.tab).classList.remove('hidden'); }));
 
-  $("apiHost").textContent = OWNER_BASE; if($("apiHostMirror")) $("apiHostMirror").textContent = OWNER_BASE; restoreUiState(); setAuthState(false); resetLoginFlow(false); UI.restoreAuth().catch(()=>{});
+  restoreUiState(); setAuthState(false); resetLoginFlow(false); UI.restoreAuth().catch(()=>{});
 })();
 </script>
 </body>
