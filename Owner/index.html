@@ -92,196 +92,118 @@ tbody tr:hover{background:#fbfdff}
 .list li{padding:12px 14px;border:1px solid var(--line);border-radius:16px;background:#fbfdff}
 .mono{font-family:var(--mono)}
 
-.authLayout{
-  min-height:calc(100vh - 48px);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:30px 0;
-}
-.authGate{width:min(1120px,100%)}
-.authShell{display:grid;grid-template-columns:1.08fr .92fr;gap:22px;align-items:stretch}
-@media (max-width:980px){.authShell{grid-template-columns:1fr}}
-.authShowcase{
-  padding:34px;min-height:640px;position:relative;overflow:hidden;
-  background:
-    radial-gradient(circle at top right, rgba(37,99,235,.22), transparent 32%),
-    radial-gradient(circle at bottom left, rgba(14,165,233,.18), transparent 28%),
-    linear-gradient(145deg,#0f172a 0%,#172554 48%,#1d4ed8 100%);
-  color:#fff
-}
-.authShowcase:before{content:"";position:absolute;inset:auto -10% -20% auto;width:320px;height:320px;border-radius:999px;background:rgba(255,255,255,.08);filter:blur(18px)}
-.authEyebrow{display:inline-flex;align-items:center;gap:10px;padding:8px 14px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(255,255,255,.08);font-size:12px;font-weight:800;backdrop-filter:blur(8px)}
-.authHeroTitle{margin:18px 0 12px;font-size:40px;line-height:1.1}
-.authHeroText{margin:0 0 22px;color:rgba(255,255,255,.82);line-height:1.9;font-size:15px;max-width:520px}
-.authPoints{display:grid;gap:12px;margin-top:28px}
-.authPoint{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border:1px solid rgba(255,255,255,.12);border-radius:18px;background:rgba(255,255,255,.06)}
-.authPointIcon{flex:none;width:38px;height:38px;border-radius:14px;display:grid;place-items:center;background:rgba(255,255,255,.12);font-weight:900}
-.authPoint b{display:block;margin-bottom:4px}
-.authPoint span{color:rgba(255,255,255,.74);font-size:13px;line-height:1.7}
-.authPanel{padding:28px;display:flex;flex-direction:column;justify-content:center;min-height:640px}
-.authTopRow{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:20px}
-.authTitle{margin:0 0 8px;font-size:30px;line-height:1.2}
-.authSub{margin:0;color:var(--muted);line-height:1.9;font-size:14px}
-.authMini{font-size:12px;color:var(--muted)}
-.authStep{display:none;animation:fadeSlide .25s ease}
-.authStep.active{display:block}
-@keyframes fadeSlide{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.authField{margin-bottom:14px}
-.authActions{display:grid;gap:10px;margin-top:8px}
-.authFooter{margin-top:22px;padding-top:18px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-.authOtpBox{display:grid;gap:14px}
-.otpInput{text-align:center;letter-spacing:.35em;font-size:28px;font-weight:900}
-.authHintBox{padding:14px 16px;border-radius:18px;border:1px solid var(--line);background:linear-gradient(180deg,#f8fbff 0%,#f2f7ff 100%)}
-.authHintBox b{display:block;margin-bottom:6px}
-.authHintBox span{font-size:13px;color:var(--muted);line-height:1.8}
-.authStatusRow{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0 0}
-.authBadge{display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;font-size:12px;color:var(--muted)}
-.authBadge strong{color:var(--text)}
-.authCountdown{font-variant-numeric:tabular-nums}
-#appShell.hidden,#authGate.hidden{display:none!important}
-.sessionMeta{display:grid;gap:10px;margin:18px 0}
-.sessionCard{border:1px solid var(--line);border-radius:18px;padding:14px 15px;background:linear-gradient(180deg,#fff,#f9fbff)}
-.sessionCard b{display:block;font-size:13px;margin-bottom:4px}
-.sessionCard span{font-size:12px;color:var(--muted);word-break:break-word}
-.sidebarCompact .sideActions{margin-top:8px}
-@media (max-width:700px){
-  .authLayout{padding:16px 0}
-  .authShowcase,.authPanel{min-height:auto}
-  .authShowcase{padding:24px}
-  .authPanel{padding:22px}
-  .authHeroTitle{font-size:32px}
-}
+.auth-shell{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.auth-shell.hidden{display:none!important}
+.auth-wrap{width:min(460px,100%)}
+.auth-card{padding:28px;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border:1px solid rgba(226,232,240,.95);border-radius:28px;box-shadow:0 24px 60px rgba(15,23,42,.10)}
+.auth-brand{display:flex;align-items:center;gap:14px;margin-bottom:24px}
+.auth-brand .logo{width:56px;height:56px;border-radius:20px}
+.auth-brand h1{margin:0;font-size:24px}
+.auth-brand p{margin:6px 0 0;color:var(--muted);font-size:13px}
+.auth-stack{display:grid;gap:14px}
+.auth-actions{display:grid;gap:10px;margin-top:8px}
+.auth-card .btn{width:100%;justify-content:center;min-height:48px}
+.auth-meta{display:flex;justify-content:center;margin-top:14px}
+.auth-status{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--muted);font-size:12px}
+.app.hidden{display:none!important}
+.sidebarMeta{display:grid;gap:12px}
+.sidebarStat{padding:14px 16px;border-radius:18px;border:1px solid var(--line);background:linear-gradient(180deg,#fff,#f9fbff)}
+.sidebarStat b{display:block;font-size:22px;line-height:1.1;margin-bottom:6px}
+.sidebarStat span{font-size:12px;color:var(--muted)}
+.sessionBox{display:grid;gap:10px;margin-top:8px}
+.sessionLine{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:16px;background:#fff}
+.sessionLine span{font-size:12px;color:var(--muted)}
+.sessionLine b{font-size:13px}
 
 </style>
 </head>
 <body>
-<div class="app">
-  <section id="authGate" class="authLayout">
-    <div class="authGate">
-      <div class="authShell">
-        <section class="card authShowcase">
-          <span class="authEyebrow">Secure Access · OTP Session</span>
-          <h1 class="authHeroTitle">Owner Panel<br/>Protected Login</h1>
-          <p class="authHeroText">
-            واجهة دخول احترافية ومحمية. تسجيل الدخول يتم على مرحلتين:
-            التحقق من User و Password أولاً، ثم إرسال OTP إلى تيليغرام قبل فتح لوحة الإدارة.
-          </p>
-          <div class="authPoints">
-            <div class="authPoint">
-              <div class="authPointIcon">01</div>
-              <div><b>20 دقيقة فقط</b><span>الجلسة تنتهي تلقائيًا بعد 20 دقيقة أو مباشرة عند تسجيل الخروج.</span></div>
-            </div>
-            <div class="authPoint">
-              <div class="authPointIcon">02</div>
-              <div><b>حماية OTP</b><span>بعد 3 محاولات OTP فاشلة يتم حظر الـ IP مؤقتًا لمدة 20 دقيقة.</span></div>
-            </div>
-            <div class="authPoint">
-              <div class="authPointIcon">03</div>
-              <div><b>لوحة مخفية بالكامل</b><span>لا يظهر أي جزء من لوحة Owner قبل نجاح التحقق وامتلاك Session صالحة.</span></div>
-            </div>
-          </div>
-        </section>
 
-        <section class="card authPanel">
-          <div class="authTopRow">
-            <div>
-              <h2 class="authTitle">Owner Panel</h2>
-              <p class="authSub">تسجيل دخول خاص بالإدارة فقط عبر OTP على تيليغرام.</p>
-              <div class="authMini" id="apiHost">…</div>
-            </div>
-            <div class="badgeRow" style="margin:0">
-              <span class="pill"><span class="dot"></span><span id="pillText">غير متصل</span></span>
-              <span class="chip">Auth: <b id="authState">Guest</b></span>
-            </div>
-          </div>
-
-          <div id="loginStep" class="authStep active">
-            <div class="authField">
-              <label class="label">Owner User</label>
-              <input id="inUser" class="input" placeholder="admin" autocomplete="username" />
-            </div>
-            <div class="authField">
-              <label class="label">Owner Password</label>
-              <input id="inPass" class="input" type="password" placeholder="••••••••" autocomplete="current-password" />
-            </div>
-            <div class="authActions">
-              <button class="btn primary" id="btnLogin">Continue to OTP</button>
-              <button class="btn" id="btnPing">Ping Server</button>
-            </div>
-            <div class="authFooter">
-              <span class="authMini">لن يتم عرض أي جزء من اللوحة قبل نجاح التحقق.</span>
-              <span class="authMini">Session cookie · HttpOnly · CSRF</span>
-            </div>
-          </div>
-
-          <div id="otpStep" class="authStep">
-            <div class="authHintBox">
-              <b>Verification Required</b>
-              <span>
-                تم إخفاء شاشة بيانات الدخول. أدخل رمز OTP المرسل إلى تيليغرام لإكمال تسجيل الدخول.
-                بعد 3 محاولات خاطئة سيتم حظر الـ IP مؤقتًا.
-              </span>
-            </div>
-            <div class="authStatusRow">
-              <span class="authBadge">User: <strong id="otpUserLabel">—</strong></span>
-              <span class="authBadge">Expires in: <strong id="otpCountdown" class="authCountdown">05:00</strong></span>
-            </div>
-            <div class="authOtpBox">
-              <div class="authField">
-                <label class="label">OTP Code</label>
-                <input id="inOtp" class="input otpInput" inputmode="numeric" maxlength="6" placeholder="000000" />
-              </div>
-              <div class="authActions">
-                <button class="btn primary" id="btnVerifyOtp">Verify & Open Panel</button>
-                <button class="btn" id="btnBackToLogin">Back to Login</button>
-              </div>
-            </div>
-            <div class="authFooter">
-              <span class="authMini">OTP صالح لمدة 5 دقائق.</span>
-              <span class="authMini">سيتم إنشاء Session جديدة بعد التحقق الناجح.</span>
-            </div>
-          </div>
-        </section>
+<div class="auth-shell" id="authShell">
+  <div class="auth-wrap">
+    <div class="auth-card" id="loginView">
+      <div class="auth-brand">
+        <div class="logo"></div>
+        <div>
+          <h1>Owner Panel</h1>
+          <p class="apiHost">…</p>
+        </div>
+      </div>
+      <div class="auth-stack">
+        <div class="field">
+          <label class="label">User</label>
+          <input id="inUser" class="input" placeholder="admin" autocomplete="username" />
+        </div>
+        <div class="field">
+          <label class="label">Password</label>
+          <input id="inPass" class="input" type="password" placeholder="••••••••" autocomplete="current-password" />
+        </div>
+      </div>
+      <div class="auth-actions">
+        <button class="btn primary" id="btnLogin">Continue</button>
+      </div>
+      <div class="auth-meta">
+        <span class="auth-status"><span class="dot"></span><span id="authStageLabel">Secure Access</span></span>
       </div>
     </div>
-  </section>
 
-  <div id="appShell" class="shell hidden">
-    <aside class="card sidebar sidebarCompact">
+    <div class="auth-card hidden" id="otpView">
+      <div class="auth-brand">
+        <div class="logo"></div>
+        <div>
+          <h1>Verification</h1>
+          <p id="otpUserLabel">Owner</p>
+        </div>
+      </div>
+      <div class="auth-stack">
+        <div class="field">
+          <label class="label">OTP</label>
+          <input id="inOtp" class="input" inputmode="numeric" maxlength="6" placeholder="123456" autocomplete="one-time-code" />
+        </div>
+      </div>
+      <div class="auth-actions">
+        <button class="btn primary" id="btnVerifyOtp">Verify</button>
+        <button class="btn" id="btnBackToLogin">Back</button>
+      </div>
+      <div class="auth-meta">
+        <span class="auth-status"><span class="dot"></span><span>OTP</span></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="app hidden" id="appShell">
+  <div class="shell">
+    <aside class="card sidebar">
       <div class="brand">
         <div class="logo"></div>
         <div>
           <h1>Owner Panel</h1>
-          <p>Authenticated Session</p>
+          <p class="apiHost">…</p>
         </div>
       </div>
-      <div class="badgeRow">
-        <span class="pill"><span class="dot"></span><span>Session Active</span></span>
-        <span class="chip">Auth: <b id="authUserChip">Owner</b></span>
-      </div>
-      <div class="sessionMeta">
-        <div class="sessionCard">
-          <b>Signed in as</b>
-          <span id="sessionUserText">—</span>
-        </div>
-        <div class="sessionCard">
-          <b>Session expires</b>
-          <span id="sessionExpiryText">20 minutes from login</span>
-        </div>
-      </div>
-      <div class="sideActions">
-        <button class="btn" id="btnRefresh" disabled>Refresh</button>
-        <button class="btn" id="btnSendAgencyAll" disabled>Send Agency → Telegram</button>
-        <div class="grid2">
-          <button class="btn" id="btnPingApp">Ping</button>
-          <button class="btn danger" id="btnLogout" disabled>Logout</button>
-        </div>
-      </div>
-    </aside>
+      
+<div class="badgeRow">
+  <span class="pill"><span class="dot"></span><span id="pillText">Secure Session</span></span>
+  <span class="chip">Auth: <b id="authState">Owner</b></span>
+</div>
+<div class="sidebarMeta">
+  <div class="sidebarStat">
+    <b id="sessionUser">—</b>
+    <span>User</span>
+  </div>
+  <div class="sessionBox">
+    <div class="sessionLine"><span>Session</span><b id="sessionState">Active</b></div>
+    <div class="sessionLine"><span>Expires</span><b id="sessionExpiry">20 min</b></div>
+  </div>
+  <div class="sideActions">
+    <button class="btn danger" id="btnLogout" disabled>Logout</button>
+    <button class="btn hidden" id="btnPing">Ping</button>
+  </div>
+</div>
+</aside>
 
     <main>
-
       <div class="card topbar">
         <div class="tabs">
           <button class="tabbtn active" data-tab="accountsTab">الحسابات</button>
@@ -445,11 +367,11 @@ tbody tr:hover{background:#fbfdff}
 (() => {
   const API_BASE = (document.body?.dataset?.apiBase || "https://api.mehdik.site").replace(/\/$/, "");
   const OWNER_BASE = API_BASE + "/owner";
-  document.getElementById("apiHost").textContent = API_BASE;
+  document.querySelectorAll(".apiHost").forEach((el)=>el.textContent = API_BASE);
   const STORAGE_KEY = "owner-panel-safe-ui:v2";
   const VALID_STATUSES = ["Done","In Progress","Rejected","Pending"];
   const STATUS_PRIORITY = {"Done":0,"In Progress":1,"Rejected":2,"Pending":3};
-  const S = { authenticated:false, csrfToken:"", pendingChallengeId:"", loginUser:"", otpExpiresAt:0, otpTimer:null, agencies:[], agencySelected:"", accounts:[], managers:[], managerSelected:"", managerAssignSelected:"", bulkParsed:[] };
+  const S = { authenticated:false, csrfToken:"", pendingChallengeId:"", loginUser:"", sessionExpiresAt:0, agencies:[], agencySelected:"", accounts:[], managers:[], managerSelected:"", managerAssignSelected:"", bulkParsed:[] };
 
   const $ = (id) => document.getElementById(id);
   const norm = (s) => String(s || "").trim();
@@ -467,67 +389,48 @@ const maskPassword = (p) => { const s=String(p||""); if(!s) return ""; if(s.leng
 function toast(title, msg){ const t=$("toast"); $("toastTitle").textContent=title; $("toastMsg").textContent=msg; t.classList.add("show"); clearTimeout(toast._tm); toast._tm=setTimeout(()=>t.classList.remove("show"), 3500); }
 function persistUiState(){ sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ agencySelected:S.agencySelected, managerSelected:S.managerSelected, managerAssignSelected:S.managerAssignSelected, loginUser:S.loginUser })); }
 function restoreUiState(){ try { const raw=sessionStorage.getItem(STORAGE_KEY); if(!raw) return; const d=JSON.parse(raw); S.agencySelected=norm(d.agencySelected); S.managerSelected=norm(d.managerSelected); S.managerAssignSelected=norm(d.managerAssignSelected); S.loginUser=norm(d.loginUser); $("inUser").value=S.loginUser; } catch(_){} }
-function stopOtpCountdown(){ if(S.otpTimer){ clearInterval(S.otpTimer); S.otpTimer=null; } }
-function startOtpCountdown(seconds){
-  stopOtpCountdown();
-  S.otpExpiresAt = Date.now() + Math.max(0, Number(seconds || 0)) * 1000;
-  const render = () => {
-    const remain = Math.max(0, Math.ceil((S.otpExpiresAt - Date.now()) / 1000));
-    const mm = String(Math.floor(remain / 60)).padStart(2,"0");
-    const ss = String(remain % 60).padStart(2,"0");
-    $("otpCountdown").textContent = `${mm}:${ss}`;
-    if(remain <= 0){
-      stopOtpCountdown();
-      toast('OTP','انتهت صلاحية الرمز، أعد تسجيل الدخول');
-      resetLoginFlow(false);
-    }
-  };
-  render();
-  S.otpTimer = setInterval(render, 1000);
+
+function showLoginView(clearPass=false){
+  $("authShell").classList.remove("hidden");
+  $("loginView").classList.remove("hidden");
+  $("otpView").classList.add("hidden");
+  $("authStageLabel").textContent = "Secure Access";
+  S.pendingChallengeId = "";
+  $("inOtp").value = "";
+  if(clearPass) $("inPass").value = "";
 }
-function showLoginStep(){
-  $("loginStep").classList.add("active");
-  $("otpStep").classList.remove("active");
+function showOtpView(){
+  $("authShell").classList.remove("hidden");
+  $("loginView").classList.add("hidden");
+  $("otpView").classList.remove("hidden");
+  $("otpUserLabel").textContent = S.loginUser || "Owner";
+  $("inOtp").value = "";
 }
-function showOtpStep(){
-  $("loginStep").classList.remove("active");
-  $("otpStep").classList.add("active");
-}
-function updateSessionMeta(expiryTs){
-  $("authUserChip").textContent = S.loginUser || "Owner";
-  $("sessionUserText").textContent = S.loginUser || "Owner";
-  if(!expiryTs){
-    $("sessionExpiryText").textContent = "20 minutes from login";
+function updateSessionInfo(){
+  $("sessionUser").textContent = S.loginUser || "—";
+  $("sessionState").textContent = S.authenticated ? "Active" : "Inactive";
+  if(!S.authenticated || !S.sessionExpiresAt){
+    $("sessionExpiry").textContent = "—";
     return;
   }
-  const dt = new Date(Number(expiryTs));
-  $("sessionExpiryText").textContent = dt.toLocaleString("ar-MA");
-}
-function resetLoginFlow(clearCreds=false){
-  S.pendingChallengeId="";
-  stopOtpCountdown();
-  showLoginStep();
-  $("otpUserLabel").textContent = S.loginUser || "—";
-  $("otpCountdown").textContent = "05:00";
-  $("inOtp").value="";
-  if(clearCreds){ $("inPass").value=""; }
+  const remaining = Math.max(0, Math.ceil((Number(S.sessionExpiresAt) - Date.now()) / 60000));
+  $("sessionExpiry").textContent = remaining > 0 ? `${remaining} min` : "Expired";
 }
 function setAuthState(authed){
   S.authenticated = !!authed;
+  $("btnLogout").disabled = !authed;
+  ["btnRefresh","btnBulk","btnAddOne","selAgency","inSearch","selStatusFilter","btnSendAgencyAll","btnOpenManager","selManagerView","selManagerAssign"].forEach(id=>$(id).disabled=!authed);
+  $("pillText").textContent = authed ? "Authenticated" : "Secure Session";
   $("authState").textContent = authed ? "Owner" : "Guest";
-  ["btnRefresh","btnBulk","btnAddOne","selAgency","inSearch","selStatusFilter","btnSendAgencyAll","btnOpenManager","selManagerView","selManagerAssign","btnLogout"].forEach(id=>$(id).disabled=!authed);
-  $("pillText").textContent = authed ? "متصل" : "غير متصل";
-  $("authGate").classList.toggle("hidden", authed);
   $("appShell").classList.toggle("hidden", !authed);
-  if(authed){
-    $("inPass").value = "";
-    $("inOtp").value = "";
-    stopOtpCountdown();
-  }else{
-    updateSessionMeta(null);
-    showLoginStep();
-  }
+  $("authShell").classList.toggle("hidden", authed);
+  updateSessionInfo();
+  if(!authed) showLoginView(false);
 }
+function resetLoginFlow(clearCreds=false){
+  showLoginView(clearCreds);
+}
+
 
 async function apiFetch(url, options={}){
   const controller = new AbortController(); const timer = setTimeout(()=>controller.abort(), 15000);
@@ -683,43 +586,33 @@ const API = {
     _oneMode:"add", _oneMatch:{email:"",passport:""}, _mgrMode:"add",
     async logout(){
       await API.logout();
-      S.csrfToken=""; S.pendingChallengeId=""; S.loginUser=norm($("inUser").value)||S.loginUser; S.agencies=[]; S.accounts=[]; S.managers=[]; S.agencySelected=""; S.managerSelected=""; S.managerAssignSelected="";
+      S.csrfToken=""; S.pendingChallengeId=""; S.sessionExpiresAt=0; S.agencies=[]; S.accounts=[]; S.managers=[]; S.agencySelected=""; S.managerSelected=""; S.managerAssignSelected="";
       sessionStorage.removeItem(STORAGE_KEY);
-      setAuthState(false); resetLoginFlow(true); renderAgencies(); renderAccounts(); renderManagers(); toast('Logout','تم إنهاء الجلسة بنجاح');
+      setAuthState(false); resetLoginFlow(true); renderAgencies(); renderAccounts(); renderManagers(); toast('Logout','Logged out');
     },
     async beginLogin(){
       const user=norm($("inUser").value), pass=norm($("inPass").value);
-      if(!user || !pass) return toast('Login','أدخل User و Password أولاً');
+      if(!user || !pass) return toast('Login','أدخل بيانات الدخول');
       const res=await API.startAuth(user,pass);
       if(!res.ok) return toast('Login',res.error||'Unauthorized');
       S.pendingChallengeId = norm(res.challengeId);
       S.loginUser = user;
-      $("otpUserLabel").textContent = user;
       persistUiState();
-      showOtpStep();
-      startOtpCountdown(Number(res.expiresIn||300));
-      $("inPass").value = "";
+      showOtpView();
       $("inOtp").focus();
-      toast('OTP','تم إرسال رمز التحقق إلى تيليغرام');
+      toast('OTP','Code sent');
     },
     async verifyOtp(){
       const otp=norm($("inOtp").value);
-      if(!S.pendingChallengeId) return toast('OTP','ابدأ تسجيل الدخول أولاً');
-      if(!/^\d{6}$/.test(otp)) return toast('OTP','الرمز يجب أن يكون 6 أرقام');
+      if(!S.pendingChallengeId) return toast('OTP','Start again');
+      if(!/^\d{6}$/.test(otp)) return toast('OTP','Invalid OTP');
       const res=await API.verifyOtp(S.pendingChallengeId, otp);
-      if(!res.ok){
-        if(res.blockedUntil){
-          stopOtpCountdown();
-          resetLoginFlow(false);
-        }
-        return toast('OTP',res.error||'OTP غير صحيح');
-      }
+      if(!res.ok) return toast('OTP',res.error||'OTP failed');
       S.csrfToken = norm(res.csrfToken);
+      S.sessionExpiresAt = Number(res.expiresAt || 0);
       setAuthState(true);
-      updateSessionMeta(Date.now() + Number(res.expiresIn||1200)*1000);
-      resetLoginFlow(true);
       await UI.refreshAll();
-      toast('Login','تم فتح لوحة Owner بنجاح');
+      toast('Login','Authenticated');
     },
     async restoreAuth(){
       const res=await API.session();
@@ -729,8 +622,8 @@ const API = {
       }
       S.csrfToken = norm(res.csrfToken);
       S.loginUser = norm(res.user);
+      S.sessionExpiresAt = Number(res.expiresAt || 0);
       $("inUser").value = S.loginUser;
-      updateSessionMeta(res.expiresAt);
       setAuthState(true);
       await UI.refreshAll();
     },
@@ -836,9 +729,11 @@ const API = {
   };
 
   window.UI = UI;
-  $("btnLogin").onclick=UI.beginLogin; $("btnVerifyOtp").onclick=UI.verifyOtp; $("btnBackToLogin").onclick=()=>resetLoginFlow(false); $("btnLogout").onclick=UI.logout; $("btnPing").onclick=async()=>{ const r=await API.ping(); toast('Ping',r.ok?'Server reachable':(r.error||'Failed')); }; $("btnPingApp").onclick=async()=>{ const r=await API.ping(); toast('Ping',r.ok?'Server reachable':(r.error||'Failed')); };
+  $("btnLogin").onclick=UI.beginLogin; $("btnVerifyOtp").onclick=UI.verifyOtp; $("btnLogout").onclick=UI.logout; $("btnPing").onclick=async()=>{ const r=await API.ping(); toast('Ping',r.ok?'OK':(r.error||'Failed')); };
+  $("btnBackToLogin").onclick=()=>showLoginView(true);
   $("inOtp").addEventListener('keydown', (e)=>{ if(e.key==="Enter") UI.verifyOtp(); });
   $("inPass").addEventListener('keydown', (e)=>{ if(e.key==="Enter") UI.beginLogin(); });
+  $("inUser").addEventListener('keydown', (e)=>{ if(e.key==="Enter") UI.beginLogin(); });
   $("btnRefresh").onclick=UI.refreshAll; $("btnBulk").onclick=UI.openBulk; $("btnAddOne").onclick=UI.openAddOne; $("btnParse").onclick=UI.parseBulk; $("btnBulkAdd").onclick=UI.bulkAdd; $("btnSaveOne").onclick=UI.saveOne; $("btnSendAgencyAll").onclick=UI.sendAgencyAll; $("btnOpenManager").onclick=UI.openManager; $("btnSaveManager").onclick=UI.saveManager;
   $("selAgency").addEventListener('change', (e)=>UI.loadAgency(e.target.value||'')); $("inSearch").addEventListener('input', renderAccounts); $("selStatusFilter").addEventListener('change', renderAccounts);
   $("selManagerView").addEventListener('change', (e)=>{ S.managerSelected=e.target.value||''; persistUiState(); renderManagerQueue(); });
