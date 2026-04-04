@@ -91,19 +91,21 @@ tbody tr:hover{background:#fbfdff}
 .list{list-style:none;margin:0;padding:0;display:grid;gap:10px;max-height:320px;overflow:auto}
 .list li{padding:12px 14px;border:1px solid var(--line);border-radius:16px;background:#fbfdff}
 .mono{font-family:var(--mono)}
+.authPage{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}.authCard{width:min(460px,100%);padding:24px}.authTitle{margin:0 0 6px;font-size:28px}.authSub{margin:0 0 18px;color:var(--muted);font-size:14px;line-height:1.7}.authActions{display:grid;gap:10px}.authNote{margin-top:10px;color:var(--muted);font-size:12px}.centerActions{display:grid;gap:10px}.centerActions .btn{width:100%}
 </style>
 </head>
 <body>
-<div class="app">
-  <div class="shell">
-    <aside class="card sidebar">
+<div class="authPage" id="authPage">
+  <div class="card authCard">
+    <div id="loginStep">
       <div class="brand">
         <div class="logo"></div>
         <div>
-          <h1>Owner Panel</h1>
+          <h1 class="authTitle">Owner Panel</h1>
           <p id="apiHost">…</p>
         </div>
       </div>
+      <p class="authSub">سجل الدخول أولاً. لن تظهر لوحة التحكم قبل نجاح التحقق.</p>
       <div class="badgeRow">
         <span class="pill"><span class="dot"></span><span id="pillText">غير متصل</span></span>
         <span class="chip">Auth: <b id="authState">Guest</b></span>
@@ -116,21 +118,65 @@ tbody tr:hover{background:#fbfdff}
         <label class="label">Password</label>
         <input id="inPass" type="password" placeholder="••••••••" />
       </div>
-      <div class="field hidden" id="otpWrap">
+      <div class="authActions">
+        <button class="btn primary" id="btnLogin">Send OTP</button>
+        <button class="btn" id="btnPing">Ping</button>
+      </div>
+      <div class="authNote">بعد إرسال الرمز ستنتقل إلى شاشة التحقق.</div>
+    </div>
+
+    <div id="verifyStep" class="hidden">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <h1 class="authTitle">OTP Verification</h1>
+          <p>تحقق من الرمز المرسل إلى تيليغرام</p>
+        </div>
+      </div>
+      <p class="authSub">أدخل رمز OTP لإكمال تسجيل الدخول. الجلسة ستنتهي بعد 20 دقيقة أو عند تسجيل الخروج.</p>
+      <div class="badgeRow">
+        <span class="pill"><span class="dot"></span><span id="otpUserLabel">—</span></span>
+      </div>
+      <div class="field">
         <label class="label">OTP</label>
         <input id="inOtp" inputmode="numeric" maxlength="6" placeholder="123456" />
       </div>
+      <div class="centerActions">
+        <button class="btn primary" id="btnVerifyOtp">Verify OTP</button>
+        <button class="btn" id="btnBackToLogin">Back</button>
+      </div>
+      <div class="authNote">بعد 3 محاولات OTP فاشلة سيتم حظر عنوان IP مؤقتًا.</div>
+    </div>
+  </div>
+</div>
+
+<div class="app hidden" id="ownerApp">
+  <div class="shell">
+    <aside class="card sidebar">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <h1>Owner Panel</h1>
+          <p id="apiHostMirror">…</p>
+        </div>
+      </div>
+      <div class="badgeRow">
+        <span class="pill"><span class="dot"></span><span id="ownerPillText">متصل</span></span>
+        <span class="chip">Auth: <b id="ownerAuthState">Owner</b></span>
+      </div>
+      <div class="field">
+        <label class="label">Session</label>
+        <input id="sessionUser" readonly />
+      </div>
       <div class="sideActions">
-        <button class="btn primary" id="btnLogin">Send OTP</button>
-        <button class="btn primary hidden" id="btnVerifyOtp">Verify OTP</button>
         <div class="grid2">
-          <button class="btn" id="btnPing">Ping</button>
+          <button class="btn" id="btnRefresh" disabled>Refresh</button>
           <button class="btn danger" id="btnLogout" disabled>Logout</button>
         </div>
       </div>
     </aside>
 
-    <main>
+    <main id="ownerMain">
       <div class="card topbar">
         <div class="tabs">
           <button class="tabbtn active" data-tab="accountsTab">الحسابات</button>
@@ -218,6 +264,7 @@ tbody tr:hover{background:#fbfdff}
           </div>
         </div>
       </section>
+    
     </main>
   </div>
 </div>
@@ -298,7 +345,7 @@ tbody tr:hover{background:#fbfdff}
   const STORAGE_KEY = "owner-panel-safe-ui:v2";
   const VALID_STATUSES = ["Done","In Progress","Rejected","Pending"];
   const STATUS_PRIORITY = {"Done":0,"In Progress":1,"Rejected":2,"Pending":3};
-  const S = { authenticated:false, csrfToken:"", pendingChallengeId:"", loginUser:"", agencies:[], agencySelected:"", accounts:[], managers:[], managerSelected:"", managerAssignSelected:"", bulkParsed:[] };
+  const S = { authenticated:false, csrfToken:"", pendingChallengeId:"", loginUser:"", agencies:[], agencySelected:"", accounts:[], managers:[], managerSelected:"", managerAssignSelected:"", bulkParsed:[], sessionUser:"" };
 
   const $ = (id) => document.getElementById(id);
   const norm = (s) => String(s || "").trim();
@@ -315,35 +362,34 @@ const maskPassword = (p) => { const s=String(p||""); if(!s) return ""; if(s.leng
 
 function toast(title, msg){ const t=$("toast"); $("toastTitle").textContent=title; $("toastMsg").textContent=msg; t.classList.add("show"); clearTimeout(toast._tm); toast._tm=setTimeout(()=>t.classList.remove("show"), 3500); }
 function persistUiState(){ sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ agencySelected:S.agencySelected, managerSelected:S.managerSelected, managerAssignSelected:S.managerAssignSelected, loginUser:S.loginUser })); }
-function restoreUiState(){ try { const raw=sessionStorage.getItem(STORAGE_KEY); if(!raw) return; const d=JSON.parse(raw); S.agencySelected=norm(d.agencySelected); S.managerSelected=norm(d.managerSelected); S.managerAssignSelected=norm(d.managerAssignSelected); S.loginUser=norm(d.loginUser); $("inUser").value=S.loginUser; } catch(_){} }
+function restoreUiState(){ try { const raw=sessionStorage.getItem(STORAGE_KEY); if(!raw) return; const d=JSON.parse(raw); S.agencySelected=norm(d.agencySelected); S.managerSelected=norm(d.managerSelected); S.managerAssignSelected=norm(d.managerAssignSelected); S.loginUser=norm(d.loginUser); if($("inUser")) $("inUser").value=S.loginUser; } catch(_){} }
+function showLoginStep(){ $("loginStep").classList.remove("hidden"); $("verifyStep").classList.add("hidden"); }
+function showVerifyStep(){ $("loginStep").classList.add("hidden"); $("verifyStep").classList.remove("hidden"); }
 function resetLoginFlow(clearCreds=false){
   S.pendingChallengeId="";
-  $("otpWrap").classList.add("hidden");
-  $("btnVerifyOtp").classList.add("hidden");
-  $("btnLogin").classList.remove("hidden");
-  $("btnLogin").textContent="Send OTP";
   $("inOtp").value="";
+  $("otpUserLabel").textContent="—";
+  showLoginStep();
   if(clearCreds){ $("inPass").value=""; }
 }
 function setAuthState(authed){
   S.authenticated = !!authed;
   $("authState").textContent = authed ? "Owner" : "Guest";
+  $("pillText").textContent = authed ? "متصل" : "غير متصل";
   $("btnLogout").disabled=!authed;
   ["btnRefresh","btnBulk","btnAddOne","selAgency","inSearch","selStatusFilter","btnSendAgencyAll","btnOpenManager","selManagerView","selManagerAssign"].forEach(id=>$(id).disabled=!authed);
-  $("pillText").textContent = authed ? "متصل" : "غير متصل";
   if(authed){
-    $("btnLogin").classList.add("hidden");
-    $("btnVerifyOtp").classList.add("hidden");
-    $("otpWrap").classList.add("hidden");
-    $("inPass").disabled = true;
-    $("inUser").disabled = true;
+    $("authPage").classList.add("hidden");
+    $("ownerApp").classList.remove("hidden");
+    $("ownerPillText").textContent = "متصل";
+    $("ownerAuthState").textContent = "Owner";
+    $("sessionUser").value = S.sessionUser || S.loginUser || "Owner";
+    $("apiHostMirror").textContent = $("apiHost").textContent;
   }else{
-    $("btnLogin").classList.remove("hidden");
-    $("btnLogin").textContent = "Send OTP";
-    $("btnVerifyOtp").classList.add("hidden");
-    $("otpWrap").classList.add("hidden");
-    $("inPass").disabled = false;
-    $("inUser").disabled = false;
+    $("ownerApp").classList.add("hidden");
+    $("authPage").classList.remove("hidden");
+    $("sessionUser").value = "";
+    showLoginStep();
   }
 }
 
@@ -514,9 +560,8 @@ const API = {
       S.pendingChallengeId = norm(res.challengeId);
       S.loginUser = user;
       persistUiState();
-      $("otpWrap").classList.remove("hidden");
-      $("btnVerifyOtp").classList.remove("hidden");
-      $("btnLogin").classList.add("hidden");
+      $("otpUserLabel").textContent = user || 'Owner';
+      showVerifyStep();
       $("inOtp").focus();
       toast('OTP','تم إرسال الرمز إلى تيليغرام');
     },
@@ -527,6 +572,7 @@ const API = {
       const res=await API.verifyOtp(S.pendingChallengeId, otp);
       if(!res.ok) return toast('OTP',res.error||'OTP غير صحيح');
       S.csrfToken = norm(res.csrfToken);
+      S.sessionUser = norm(res.user || S.loginUser || 'Owner');
       setAuthState(true);
       resetLoginFlow(true);
       await UI.refreshAll();
@@ -535,11 +581,14 @@ const API = {
     async restoreAuth(){
       const res=await API.session();
       if(!res.ok || !res.authenticated){
+        S.csrfToken = "";
+        S.sessionUser = "";
         setAuthState(false);
         return;
       }
       S.csrfToken = norm(res.csrfToken);
       S.loginUser = norm(res.user);
+      S.sessionUser = S.loginUser;
       $("inUser").value = S.loginUser;
       setAuthState(true);
       await UI.refreshAll();
@@ -646,7 +695,7 @@ const API = {
   };
 
   window.UI = UI;
-  $("btnLogin").onclick=UI.beginLogin; $("btnVerifyOtp").onclick=UI.verifyOtp; $("btnLogout").onclick=UI.logout; $("btnPing").onclick=async()=>{ const r=await API.ping(); toast('Ping',r.ok?'OK':(r.error||'Failed')); };
+  $("btnLogin").onclick=UI.beginLogin; $("btnVerifyOtp").onclick=UI.verifyOtp; $("btnBackToLogin").onclick=()=>resetLoginFlow(false); $("btnLogout").onclick=UI.logout; $("btnPing").onclick=async()=>{ const r=await API.ping(); toast('Ping',r.ok?'OK':(r.error||'Failed')); };
   $("inOtp").addEventListener('keydown', (e)=>{ if(e.key==="Enter") UI.verifyOtp(); });
   $("inPass").addEventListener('keydown', (e)=>{ if(e.key==="Enter") UI.beginLogin(); });
   $("btnRefresh").onclick=UI.refreshAll; $("btnBulk").onclick=UI.openBulk; $("btnAddOne").onclick=UI.openAddOne; $("btnParse").onclick=UI.parseBulk; $("btnBulkAdd").onclick=UI.bulkAdd; $("btnSaveOne").onclick=UI.saveOne; $("btnSendAgencyAll").onclick=UI.sendAgencyAll; $("btnOpenManager").onclick=UI.openManager; $("btnSaveManager").onclick=UI.saveManager;
@@ -655,7 +704,7 @@ const API = {
   $("selManagerAssign").addEventListener('change', (e)=>{ S.managerAssignSelected=e.target.value||''; persistUiState(); renderAccounts(); });
   document.querySelectorAll('.tabbtn').forEach(btn=>btn.addEventListener('click',()=>{ document.querySelectorAll('.tabbtn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.querySelectorAll('.tabpane').forEach(p=>p.classList.add('hidden')); document.getElementById(btn.dataset.tab).classList.remove('hidden'); }));
 
-  restoreUiState(); setAuthState(false); resetLoginFlow(false); UI.restoreAuth().catch(()=>{});
+  $("apiHost").textContent = OWNER_BASE; if($("apiHostMirror")) $("apiHostMirror").textContent = OWNER_BASE; restoreUiState(); setAuthState(false); resetLoginFlow(false); UI.restoreAuth().catch(()=>{});
 })();
 </script>
 </body>
