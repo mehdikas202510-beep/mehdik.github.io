@@ -514,16 +514,19 @@ const API = {
   function applyFilters(list){
     const q = norm($("inSearch").value).toLowerCase();
     const sf = norm($("selStatusFilter").value);
-    const mf = norm(S.monthFilter || $("selMonthFilter").value);
+    const mf = norm(S.monthFilter || $("selMonthFilter").value || currentMonthKey());
     const current = currentMonthKey();
-    const monthIsCurrent = !mf || mf === current;
+    const monthMode = mf === "all" ? "all" : (mf === current ? "current" : "past");
     return (Array.isArray(list)?list:[]).filter(a => {
       const itemMonth = monthKeyOf(a.updatedAt);
-      const okMonth = mf === "all" ? true : (!mf ? itemMonth === current : itemMonth === mf);
+      const okMonth = mf === "all" ? true : itemMonth === mf;
+      if(!okMonth) return false;
       const okQ = !q || [a.agency,a.email,a.passport,a.status,a.type].join(" ").toLowerCase().includes(q);
+      if(!okQ) return false;
       const st = statusValue(a.status);
-      const okS = !sf ? (monthIsCurrent ? st !== "Done" : true) : st === sf;
-      return okMonth && okQ && okS;
+      if(monthMode === "past") return st === "Done";
+      if(monthMode === "current") return sf ? st === sf : true;
+      return sf ? st === sf : true;
     }).sort((a,b)=> (STATUS_PRIORITY[statusValue(a.status)]-STATUS_PRIORITY[statusValue(b.status)]) || String(a.email).localeCompare(String(b.email)));
   }
 
@@ -689,7 +692,7 @@ const API = {
     async loadAgency(agency){
       S.agencySelected=agency||''; persistUiState(); renderAgencies();
       if(!S.agencySelected){ S.accounts=[]; renderMonthFilter(); renderAccounts(); renderManagerQueue(); return; }
-      const res=await API.accounts(S.agencySelected); if(!res.ok) return toast('Accounts',res.error||'Failed');
+      const res=await API.accounts(S.agencySelected, "all", true); if(!res.ok) return toast('Accounts',res.error||'Failed');
       S.accounts=Array.isArray(res.accounts)?res.accounts:[];
       renderMonthFilter();
       renderAccounts();
@@ -791,7 +794,7 @@ const API = {
   $("inPass").addEventListener('keydown', (e)=>{ if(e.key==="Enter") UI.beginLogin(); });
   $("inUser").addEventListener('keydown', (e)=>{ if(e.key==="Enter") UI.beginLogin(); });
   $("btnRefresh").onclick=UI.refreshAll; $("btnBulk").onclick=UI.openBulk; $("btnAddOne").onclick=UI.openAddOne; $("btnParse").onclick=UI.parseBulk; $("btnBulkAdd").onclick=UI.bulkAdd; $("btnSaveOne").onclick=UI.saveOne; $("btnSendAgencyAll").onclick=UI.sendAgencyAll; $("btnOpenManager").onclick=UI.openManager; $("btnSaveManager").onclick=UI.saveManager;
-  $("selAgency").addEventListener('change', (e)=>UI.loadAgency(e.target.value||'')); $("inSearch").addEventListener('input', renderAccounts); $("selStatusFilter").addEventListener('change', renderAccounts); $("selMonthFilter").addEventListener('change', (e)=>{ S.monthFilter=e.target.value||currentMonthKey(); persistUiState(); renderAccounts(); });
+  $("selAgency").addEventListener('change', (e)=>UI.loadAgency(e.target.value||'')); $("inSearch").addEventListener('input', renderAccounts); $("selStatusFilter").addEventListener('change', renderAccounts); $("selMonthFilter").addEventListener('change', (e)=>{ S.monthFilter=e.target.value||currentMonthKey(); if(S.monthFilter!=="all" && S.monthFilter!==currentMonthKey()) $("selStatusFilter").value=""; persistUiState(); renderAccounts(); });
   $("selManagerView").addEventListener('change', (e)=>{ S.managerSelected=e.target.value||''; persistUiState(); renderManagerQueue(); });
   $("selManagerAssign").addEventListener('change', (e)=>{ S.managerAssignSelected=e.target.value||''; persistUiState(); renderAccounts(); });
   document.querySelectorAll('.tabbtn').forEach(btn=>btn.addEventListener('click',async ()=>{ document.querySelectorAll('.tabbtn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.querySelectorAll('.tabpane').forEach(p=>p.classList.add('hidden')); document.getElementById(btn.dataset.tab).classList.remove('hidden'); if(S.authenticated && btn.dataset.tab==='managersTab'){ await UI.loadManagers(); } }));
