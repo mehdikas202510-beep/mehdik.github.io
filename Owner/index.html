@@ -116,8 +116,13 @@ tbody tr:hover{background:#fbfdff}
         <label class="label">Password</label>
         <input id="inPass" type="password" placeholder="••••••••" />
       </div>
+      <div class="field hidden" id="otpWrap">
+        <label class="label">OTP</label>
+        <input id="inOtp" inputmode="numeric" maxlength="6" placeholder="123456" />
+      </div>
       <div class="sideActions">
-        <button class="btn primary" id="btnLogin">Login</button>
+        <button class="btn primary" id="btnLogin">Send OTP</button>
+        <button class="btn primary hidden" id="btnVerifyOtp">Verify OTP</button>
         <div class="grid2">
           <button class="btn" id="btnPing">Ping</button>
           <button class="btn danger" id="btnLogout" disabled>Logout</button>
@@ -290,10 +295,10 @@ tbody tr:hover{background:#fbfdff}
   const API_BASE = (document.body?.dataset?.apiBase || "https://api.mehdik.site").replace(/\/$/, "");
   const OWNER_BASE = API_BASE + "/owner";
   document.getElementById("apiHost").textContent = API_BASE;
-  const STORAGE_KEY = "owner-panel-manual-managers:v1";
+  const STORAGE_KEY = "owner-panel-safe-ui:v2";
   const VALID_STATUSES = ["Done","In Progress","Rejected","Pending"];
   const STATUS_PRIORITY = {"Done":0,"In Progress":1,"Rejected":2,"Pending":3};
-  const S = { ownerUser:"", ownerPass:"", agencies:[], agencySelected:"", accounts:[], managers:[], managerSelected:"", managerAssignSelected:"", bulkParsed:[] };
+  const S = { authenticated:false, csrfToken:"", pendingChallengeId:"", loginUser:"", agencies:[], agencySelected:"", accounts:[], managers:[], managerSelected:"", managerAssignSelected:"", bulkParsed:[] };
 
   const $ = (id) => document.getElementById(id);
   const norm = (s) => String(s || "").trim();
@@ -305,41 +310,79 @@ tbody tr:hover{background:#fbfdff}
   const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normEmail(email));
   const isValidPassport = (passport) => /^[A-Z0-9][A-Z0-9\-]{2,19}$/.test(normPassport(passport));
   const statusClass = (st) => st === "Done" ? "s-good" : st === "Rejected" ? "s-bad" : st === "In Progress" ? "s-neutral" : "s-warn";
-  const maskPassword = (p) => { const s=String(p||""); if(!s) return ""; if(s.length<=2) return "•".repeat(s.length); return "•".repeat(Math.min(10, Math.max(1,s.length-2))) + s.slice(-2); };
-  const ownerHeaders = () => ({ "X-Owner-User": S.ownerUser || "", "X-Owner-Pass": S.ownerPass || "" });
 
-  function toast(title, msg){ const t=$("toast"); $("toastTitle").textContent=title; $("toastMsg").textContent=msg; t.classList.add("show"); clearTimeout(toast._tm); toast._tm=setTimeout(()=>t.classList.remove("show"), 3500); }
-  function persistSession(){ sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ ownerUser:S.ownerUser, ownerPass:S.ownerPass, agencySelected:S.agencySelected, managerSelected:S.managerSelected, managerAssignSelected:S.managerAssignSelected })); }
-  function restoreSession(){ try { const raw=sessionStorage.getItem(STORAGE_KEY); if(!raw) return; const d=JSON.parse(raw); S.ownerUser=norm(d.ownerUser); S.ownerPass=norm(d.ownerPass); S.agencySelected=norm(d.agencySelected); S.managerSelected=norm(d.managerSelected); S.managerAssignSelected=norm(d.managerAssignSelected); $("inUser").value=S.ownerUser; $("inPass").value=S.ownerPass; } catch(_){} }
-  function setAuthState(authed){ $("authState").textContent = authed ? "Owner" : "Guest"; $("btnLogout").disabled=!authed; ["btnRefresh","btnBulk","btnAddOne","selAgency","inSearch","selStatusFilter","btnSendAgencyAll","btnOpenManager","selManagerView","selManagerAssign"].forEach(id=>$(id).disabled=!authed); $("pillText").textContent = authed ? "متصل" : "غير متصل"; }
+const maskPassword = (p) => { const s=String(p||""); if(!s) return ""; if(s.length<=2) return "•".repeat(s.length); return "•".repeat(Math.min(10, Math.max(1,s.length-2))) + s.slice(-2); };
 
-  async function apiFetch(url, options={}){
-    const controller = new AbortController(); const timer = setTimeout(()=>controller.abort(), 15000);
-    try{
-      const response = await fetch(url, { ...options, signal:controller.signal });
-      const data = await response.json().catch(()=>({ ok:false, error:"Invalid server response" }));
-      if(!response.ok && data && typeof data.ok === "undefined") data.ok = false;
-      return data;
-    }catch(err){ return { ok:false, error: err?.name === "AbortError" ? "Request timeout" : (err?.message || "Request failed") }; }
-    finally{ clearTimeout(timer); }
+function toast(title, msg){ const t=$("toast"); $("toastTitle").textContent=title; $("toastMsg").textContent=msg; t.classList.add("show"); clearTimeout(toast._tm); toast._tm=setTimeout(()=>t.classList.remove("show"), 3500); }
+function persistUiState(){ sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ agencySelected:S.agencySelected, managerSelected:S.managerSelected, managerAssignSelected:S.managerAssignSelected, loginUser:S.loginUser })); }
+function restoreUiState(){ try { const raw=sessionStorage.getItem(STORAGE_KEY); if(!raw) return; const d=JSON.parse(raw); S.agencySelected=norm(d.agencySelected); S.managerSelected=norm(d.managerSelected); S.managerAssignSelected=norm(d.managerAssignSelected); S.loginUser=norm(d.loginUser); $("inUser").value=S.loginUser; } catch(_){} }
+function resetLoginFlow(clearCreds=false){
+  S.pendingChallengeId="";
+  $("otpWrap").classList.add("hidden");
+  $("btnVerifyOtp").classList.add("hidden");
+  $("btnLogin").classList.remove("hidden");
+  $("btnLogin").textContent="Send OTP";
+  $("inOtp").value="";
+  if(clearCreds){ $("inPass").value=""; }
+}
+function setAuthState(authed){
+  S.authenticated = !!authed;
+  $("authState").textContent = authed ? "Owner" : "Guest";
+  $("btnLogout").disabled=!authed;
+  ["btnRefresh","btnBulk","btnAddOne","selAgency","inSearch","selStatusFilter","btnSendAgencyAll","btnOpenManager","selManagerView","selManagerAssign"].forEach(id=>$(id).disabled=!authed);
+  $("pillText").textContent = authed ? "متصل" : "غير متصل";
+  if(authed){
+    $("btnLogin").classList.add("hidden");
+    $("btnVerifyOtp").classList.add("hidden");
+    $("otpWrap").classList.add("hidden");
+    $("inPass").disabled = true;
+    $("inUser").disabled = true;
+  }else{
+    $("btnLogin").classList.remove("hidden");
+    $("btnLogin").textContent = "Send OTP";
+    $("btnVerifyOtp").classList.add("hidden");
+    $("otpWrap").classList.add("hidden");
+    $("inPass").disabled = false;
+    $("inUser").disabled = false;
   }
+}
 
-  const API = {
-    ping:()=>apiFetch(OWNER_BASE+"/ping",{headers:ownerHeaders()}),
-    login:(user,pass)=>apiFetch(OWNER_BASE+"/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user,pass})}),
-    agencies:()=>apiFetch(OWNER_BASE+"/agencies",{headers:ownerHeaders()}),
-    accounts:(agency)=>apiFetch(OWNER_BASE+"/accounts?agency="+encodeURIComponent(agency),{headers:ownerHeaders()}),
-    addAccount:(payload)=>apiFetch(OWNER_BASE+"/account",{method:"POST",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
-    editAccount:(payload)=>apiFetch(OWNER_BASE+"/account",{method:"PUT",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
-    delAccount:(payload)=>apiFetch(OWNER_BASE+"/account",{method:"DELETE",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
-    sendAgencyAll:(agency)=>apiFetch(OWNER_BASE+"/agency/send-all",{method:"POST",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify({agency})}),
-    managers:()=>apiFetch(OWNER_BASE+"/managers",{headers:ownerHeaders()}),
-    createManager:(payload)=>apiFetch(OWNER_BASE+"/manager",{method:"POST",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
-    editManager:(payload)=>apiFetch(OWNER_BASE+"/manager",{method:"PUT",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
-    deleteManager:(payload)=>apiFetch(OWNER_BASE+"/manager",{method:"DELETE",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
-    managerSelect:(payload)=>apiFetch(OWNER_BASE+"/manager/select",{method:"POST",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
-    managerUnselect:(payload)=>apiFetch(OWNER_BASE+"/manager/unselect",{method:"POST",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)}),
-    managerStatus:(payload)=>apiFetch(OWNER_BASE+"/manager/status",{method:"POST",headers:{...ownerHeaders(),"Content-Type":"application/json"},body:JSON.stringify(payload)})
+
+async function apiFetch(url, options={}){
+  const controller = new AbortController(); const timer = setTimeout(()=>controller.abort(), 15000);
+  try{
+    const headers = new Headers(options.headers || {});
+    const method = String(options.method || "GET").toUpperCase();
+    if(!["GET","HEAD","OPTIONS"].includes(method) && S.csrfToken){
+      headers.set("X-CSRF-Token", S.csrfToken);
+    }
+    const response = await fetch(url, { ...options, headers, credentials:"include", signal:controller.signal });
+    const data = await response.json().catch(()=>({ ok:false, error:"Invalid server response" }));
+    if(!response.ok && data && typeof data.ok === "undefined") data.ok = false;
+    return data;
+  }catch(err){ return { ok:false, error: err?.name === "AbortError" ? "Request timeout" : (err?.message || "Request failed") }; }
+  finally{ clearTimeout(timer); }
+}
+
+const API = {
+    ping:()=>apiFetch(OWNER_BASE+"/ping"),
+    startAuth:(user,pass)=>apiFetch(OWNER_BASE+"/auth/start",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user,pass})}),
+    verifyOtp:(challengeId,otp)=>apiFetch(OWNER_BASE+"/auth/verify",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({challengeId,otp})}),
+    session:()=>apiFetch(OWNER_BASE+"/session"),
+    logout:()=>apiFetch(OWNER_BASE+"/logout",{method:"POST"}),
+    agencies:()=>apiFetch(OWNER_BASE+"/agencies"),
+    accounts:(agency)=>apiFetch(OWNER_BASE+"/accounts?agency="+encodeURIComponent(agency)),
+    addAccount:(payload)=>apiFetch(OWNER_BASE+"/account",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),
+    editAccount:(payload)=>apiFetch(OWNER_BASE+"/account",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),
+    delAccount:(payload)=>apiFetch(OWNER_BASE+"/account",{method:"DELETE",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),
+    sendAgencyAll:(agency)=>apiFetch(OWNER_BASE+"/agency/send-all",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({agency})}),
+    managers:()=>apiFetch(OWNER_BASE+"/managers"),
+    createManager:(payload)=>apiFetch(OWNER_BASE+"/manager",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),
+    editManager:(payload)=>apiFetch(OWNER_BASE+"/manager",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),
+    deleteManager:(payload)=>apiFetch(OWNER_BASE+"/manager",{method:"DELETE",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),
+    managerSelect:(payload)=>apiFetch(OWNER_BASE+"/manager/select",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),
+    managerUnselect:(payload)=>apiFetch(OWNER_BASE+"/manager/unselect",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),
+    managerStatus:(payload)=>apiFetch(OWNER_BASE+"/manager/status",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)})
   };
 
   function applyFilters(list){
@@ -457,24 +500,59 @@ tbody tr:hover{background:#fbfdff}
 
   const UI = {
     _oneMode:"add", _oneMatch:{email:"",passport:""}, _mgrMode:"add",
-    logout(){ S.ownerUser=""; S.ownerPass=""; S.agencies=[]; S.accounts=[]; S.managers=[]; S.agencySelected=""; S.managerSelected=""; S.managerAssignSelected=""; sessionStorage.removeItem(STORAGE_KEY); setAuthState(false); renderAgencies(); renderAccounts(); renderManagers(); toast('Logout','Logged out'); },
-    async login(){
+    async logout(){
+      await API.logout();
+      S.csrfToken=""; S.pendingChallengeId=""; S.loginUser=norm($("inUser").value); S.agencies=[]; S.accounts=[]; S.managers=[]; S.agencySelected=""; S.managerSelected=""; S.managerAssignSelected="";
+      sessionStorage.removeItem(STORAGE_KEY);
+      setAuthState(false); resetLoginFlow(true); renderAgencies(); renderAccounts(); renderManagers(); toast('Logout','Logged out');
+    },
+    async beginLogin(){
       const user=norm($("inUser").value), pass=norm($("inPass").value);
       if(!user || !pass) return toast('Login','أدخل بيانات الدخول');
-      const res=await API.login(user,pass); if(!res.ok) return toast('Login',res.error||'Unauthorized');
-      S.ownerUser=user; S.ownerPass=pass; setAuthState(true); persistSession(); await UI.refreshAll(); toast('Login','تم تسجيل الدخول');
+      const res=await API.startAuth(user,pass);
+      if(!res.ok) return toast('Login',res.error||'Unauthorized');
+      S.pendingChallengeId = norm(res.challengeId);
+      S.loginUser = user;
+      persistUiState();
+      $("otpWrap").classList.remove("hidden");
+      $("btnVerifyOtp").classList.remove("hidden");
+      $("btnLogin").classList.add("hidden");
+      $("inOtp").focus();
+      toast('OTP','تم إرسال الرمز إلى تيليغرام');
+    },
+    async verifyOtp(){
+      const otp=norm($("inOtp").value);
+      if(!S.pendingChallengeId) return toast('OTP','ابدأ تسجيل الدخول أولاً');
+      if(!/^\d{6}$/.test(otp)) return toast('OTP','الرمز يجب أن يكون 6 أرقام');
+      const res=await API.verifyOtp(S.pendingChallengeId, otp);
+      if(!res.ok) return toast('OTP',res.error||'OTP غير صحيح');
+      S.csrfToken = norm(res.csrfToken);
+      setAuthState(true);
+      resetLoginFlow(true);
+      await UI.refreshAll();
+      toast('Login','تم تسجيل الدخول');
+    },
+    async restoreAuth(){
+      const res=await API.session();
+      if(!res.ok || !res.authenticated){
+        setAuthState(false);
+        return;
+      }
+      S.csrfToken = norm(res.csrfToken);
+      S.loginUser = norm(res.user);
+      $("inUser").value = S.loginUser;
+      setAuthState(true);
+      await UI.refreshAll();
     },
     async refreshAll(){
-      const [a,m] = await Promise.all([API.agencies(), API.managers()]);
-      if(!a.ok) return toast('Agencies',a.error||'Failed');
-      S.agencies=Array.isArray(a.agencies)?a.agencies:[];
-      S.managers=Array.isArray(m.managers)?m.managers:[];
+      const res=await API.agencies(); if(!res.ok) return toast('Agencies',res.error||'Failed');
+      S.agencies=Array.isArray(res.agencies)?res.agencies:[];
       renderAgencies(); renderManagers();
       if(S.agencySelected) await UI.loadAgency(S.agencySelected); else { S.accounts=[]; renderAccounts(); }
-      persistSession();
+      persistUiState();
     },
     async loadAgency(agency){
-      S.agencySelected=agency||''; persistSession(); renderAgencies();
+      S.agencySelected=agency||''; persistUiState(); renderAgencies();
       if(!S.agencySelected){ S.accounts=[]; renderAccounts(); return; }
       const res=await API.accounts(S.agencySelected); if(!res.ok) return toast('Accounts',res.error||'Failed');
       S.accounts=Array.isArray(res.accounts)?res.accounts:[];
@@ -483,7 +561,7 @@ tbody tr:hover{background:#fbfdff}
     async loadManagers(){
       const res=await API.managers(); if(!res.ok) return toast('Managers',res.error||'Failed');
       S.managers=Array.isArray(res.managers)?res.managers:[];
-      renderManagers(); renderAccounts(); persistSession();
+      renderManagers(); renderAccounts(); persistUiState();
     },
     openAddOne(){ if(!S.agencySelected) return toast('Account','اختر وكالة أولاً'); UI._oneMode="add"; UI._oneMatch={email:"",passport:""}; $("oneTitle").textContent='Add Account'; $("oneSub").textContent=S.agencySelected; $("oneEmail").value=''; $("onePass").value=''; $("onePassport").value=''; $("oneStatus").value='Pending'; $("oneType").value=''; $("modalOne").classList.add('show'); },
     openEdit(emailEnc, passportEnc){
@@ -568,15 +646,16 @@ tbody tr:hover{background:#fbfdff}
   };
 
   window.UI = UI;
-  $("btnLogin").onclick=UI.login; $("btnLogout").onclick=UI.logout; $("btnPing").onclick=async()=>{ const r=await API.ping(); toast('Ping',r.ok?'OK':(r.error||'Failed')); };
+  $("btnLogin").onclick=UI.beginLogin; $("btnVerifyOtp").onclick=UI.verifyOtp; $("btnLogout").onclick=UI.logout; $("btnPing").onclick=async()=>{ const r=await API.ping(); toast('Ping',r.ok?'OK':(r.error||'Failed')); };
+  $("inOtp").addEventListener('keydown', (e)=>{ if(e.key==="Enter") UI.verifyOtp(); });
+  $("inPass").addEventListener('keydown', (e)=>{ if(e.key==="Enter") UI.beginLogin(); });
   $("btnRefresh").onclick=UI.refreshAll; $("btnBulk").onclick=UI.openBulk; $("btnAddOne").onclick=UI.openAddOne; $("btnParse").onclick=UI.parseBulk; $("btnBulkAdd").onclick=UI.bulkAdd; $("btnSaveOne").onclick=UI.saveOne; $("btnSendAgencyAll").onclick=UI.sendAgencyAll; $("btnOpenManager").onclick=UI.openManager; $("btnSaveManager").onclick=UI.saveManager;
   $("selAgency").addEventListener('change', (e)=>UI.loadAgency(e.target.value||'')); $("inSearch").addEventListener('input', renderAccounts); $("selStatusFilter").addEventListener('change', renderAccounts);
-  $("selManagerView").addEventListener('change', (e)=>{ S.managerSelected=e.target.value||''; persistSession(); renderManagerQueue(); });
-  $("selManagerAssign").addEventListener('change', (e)=>{ S.managerAssignSelected=e.target.value||''; persistSession(); renderAccounts(); });
+  $("selManagerView").addEventListener('change', (e)=>{ S.managerSelected=e.target.value||''; persistUiState(); renderManagerQueue(); });
+  $("selManagerAssign").addEventListener('change', (e)=>{ S.managerAssignSelected=e.target.value||''; persistUiState(); renderAccounts(); });
   document.querySelectorAll('.tabbtn').forEach(btn=>btn.addEventListener('click',()=>{ document.querySelectorAll('.tabbtn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.querySelectorAll('.tabpane').forEach(p=>p.classList.add('hidden')); document.getElementById(btn.dataset.tab).classList.remove('hidden'); }));
 
-  restoreSession(); setAuthState(false);
-  if(S.ownerUser && S.ownerPass){ setAuthState(true); UI.refreshAll().catch(()=>{}); }
+  restoreUiState(); setAuthState(false); resetLoginFlow(false); UI.restoreAuth().catch(()=>{});
 })();
 </script>
 </body>
