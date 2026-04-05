@@ -64,8 +64,8 @@ textarea{min-height:180px;resize:vertical}
 @media (max-width:900px){.panelHead{flex-direction:column;align-items:stretch}}
 .panelHead h2{margin:0;font-size:18px}
 .panelHead .actions{justify-content:flex-end}
-.filters{display:grid;grid-template-columns:1.05fr 1fr .75fr .9fr .9fr;gap:12px;margin-bottom:14px}
-@media (max-width:1200px){.filters{grid-template-columns:1fr 1fr 1fr}} @media (max-width:850px){.filters{grid-template-columns:1fr 1fr}} @media (max-width:700px){.filters{grid-template-columns:1fr}}
+.filters{display:grid;grid-template-columns:1.05fr 1fr .9fr .8fr .9fr;gap:12px;margin-bottom:14px}
+@media (max-width:1100px){.filters{grid-template-columns:1fr 1fr}} @media (max-width:700px){.filters{grid-template-columns:1fr}}
 .tablewrap{border:1px solid var(--line);border-radius:20px;overflow:auto;background:#fff}
 table{width:100%;border-collapse:separate;border-spacing:0;min-width:900px}
 thead th{position:sticky;top:0;background:#f8fbff;color:var(--muted);font-size:12px;font-weight:800;text-align:right;padding:14px 12px;border-bottom:1px solid var(--line)}
@@ -161,6 +161,12 @@ tbody tr:hover{background:#fbfdff}
               <input id="inSearch" placeholder="email / passport / status" disabled />
             </div>
             <div>
+              <label class="label">Month</label>
+              <select id="selMonthFilter" disabled>
+                <option value="current">Current Month</option>
+              </select>
+            </div>
+            <div>
               <label class="label">Status</label>
               <select id="selStatusFilter" disabled>
                 <option value="">All</option>
@@ -173,10 +179,6 @@ tbody tr:hover{background:#fbfdff}
             <div>
               <label class="label">Manager</label>
               <select id="selManagerAssign" disabled></select>
-            </div>
-            <div>
-              <label class="label">Month</label>
-              <select id="selMonthFilter" disabled></select>
             </div>
           </div>
           <div class="tablewrap">
@@ -302,7 +304,7 @@ tbody tr:hover{background:#fbfdff}
   const STORAGE_KEY = "owner-panel-safe-ui:v2";
   const VALID_STATUSES = ["Done","In Progress","Rejected","Pending"];
   const STATUS_PRIORITY = {"Done":0,"In Progress":1,"Rejected":2,"Pending":3};
-  const S = { authenticated:false, csrfToken:"", pendingChallengeId:"", loginUser:"", agencies:[], agencySelected:"", accounts:[], managers:[], managerSelected:"", managerAssignSelected:"", monthSelected:"", bulkParsed:[] };
+  const S = { authenticated:false, csrfToken:"", pendingChallengeId:"", loginUser:"", agencies:[], agencySelected:"", accounts:[], managers:[], managerSelected:"", managerAssignSelected:"", monthFilter:"current", bulkParsed:[] };
 
   const $ = (id) => document.getElementById(id);
   const norm = (s) => String(s || "").trim();
@@ -318,8 +320,8 @@ tbody tr:hover{background:#fbfdff}
 const maskPassword = (p) => { const s=String(p||""); if(!s) return ""; if(s.length<=2) return "•".repeat(s.length); return "•".repeat(Math.min(10, Math.max(1,s.length-2))) + s.slice(-2); };
 
 function toast(title, msg){ const t=$("toast"); $("toastTitle").textContent=title; $("toastMsg").textContent=msg; t.classList.add("show"); clearTimeout(toast._tm); toast._tm=setTimeout(()=>t.classList.remove("show"), 3500); }
-function persistUiState(){ sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ agencySelected:S.agencySelected, managerSelected:S.managerSelected, managerAssignSelected:S.managerAssignSelected, monthSelected:S.monthSelected, loginUser:S.loginUser })); }
-function restoreUiState(){ try { const raw=sessionStorage.getItem(STORAGE_KEY); if(!raw) return; const d=JSON.parse(raw); S.agencySelected=norm(d.agencySelected); S.managerSelected=norm(d.managerSelected); S.managerAssignSelected=norm(d.managerAssignSelected); S.monthSelected=norm(d.monthSelected); S.loginUser=norm(d.loginUser); $("inUser").value=S.loginUser; } catch(_){} }
+function persistUiState(){ sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ agencySelected:S.agencySelected, managerSelected:S.managerSelected, managerAssignSelected:S.managerAssignSelected, monthFilter:S.monthFilter, loginUser:S.loginUser })); }
+function restoreUiState(){ try { const raw=sessionStorage.getItem(STORAGE_KEY); if(!raw) return; const d=JSON.parse(raw); S.agencySelected=norm(d.agencySelected); S.managerSelected=norm(d.managerSelected); S.managerAssignSelected=norm(d.managerAssignSelected); S.monthFilter=norm(d.monthFilter)||"current"; S.loginUser=norm(d.loginUser); $("inUser").value=S.loginUser; } catch(_){} }
 function resetLoginFlow(clearCreds=false){
   S.pendingChallengeId="";
   $("otpWrap").classList.add("hidden");
@@ -333,7 +335,7 @@ function setAuthState(authed){
   S.authenticated = !!authed;
   $("authState").textContent = authed ? "Owner" : "Guest";
   $("btnLogout").disabled=!authed;
-  ["btnRefresh","btnBulk","btnAddOne","selAgency","inSearch","selStatusFilter","btnSendAgencyAll","btnOpenManager","selManagerView","selManagerAssign","selMonthFilter"].forEach(id=>$(id).disabled=!authed);
+  ["btnRefresh","btnBulk","btnAddOne","selAgency","inSearch","selMonthFilter","selStatusFilter","btnSendAgencyAll","btnOpenManager","selManagerView","selManagerAssign"].forEach(id=>$(id).disabled=!authed);
   $("pillText").textContent = authed ? "متصل" : "غير متصل";
   if(authed){
     $("btnLogin").classList.add("hidden");
@@ -389,60 +391,40 @@ const API = {
     managerStatus:(payload)=>apiFetch(OWNER_BASE+"/manager/status",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)})
   };
 
-
-  function monthKeyFromDate(value){
-    const d = new Date(value || "");
-    if(Number.isNaN(d.getTime())) return "";
-    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
+  function parseDateSafe(v){ const d = v ? new Date(v) : null; return d && !isNaN(d) ? d : null; }
+  function monthKeyOf(v){ const d=parseDateSafe(v); if(!d) return ""; return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; }
+  function currentMonthKey(){ const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; }
+  function monthLabel(key){ if(key==="current") return "Current Month"; const [y,m]=String(key||"").split('-'); if(!y||!m) return key||"—"; const d=new Date(Number(y), Number(m)-1, 1); return d.toLocaleDateString('en-US',{month:'long', year:'numeric'}); }
+  function accountCreatedMonth(a){ return monthKeyOf(a.createdAt || a.updatedAt); }
+  function accountDoneMonth(a){ return statusValue(a.status)==="Done" ? monthKeyOf(a.statusChangedAt || a.updatedAt) : ""; }
+  function accountVisibleInMonth(a, selectedMonth){
+    const st = statusValue(a.status);
+    const month = selectedMonth === 'current' ? currentMonthKey() : selectedMonth;
+    if(st !== 'Done') return selectedMonth === 'current' ? true : accountCreatedMonth(a) === month || monthKeyOf(a.updatedAt) === month;
+    return accountCreatedMonth(a) === month || accountDoneMonth(a) === month;
   }
-
-  function currentMonthKey(){
-    const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
-  }
-
-  function monthLabel(key){
-    if(!key) return "Month";
-    const [y,m] = String(key).split("-");
-    const d = new Date(Number(y), Number(m)-1, 1);
-    if(Number.isNaN(d.getTime())) return key;
-    return d.toLocaleDateString("en-CA",{year:"numeric",month:"long"});
-  }
-
-  function accountDoneMonths(a){
-    const months = new Set();
-    const createdMonth = monthKeyFromDate(a.createdAt);
-    const doneMonth = monthKeyFromDate(a.doneAt || a.statusChangedAt || a.updatedAt);
-    if(createdMonth) months.add(createdMonth);
-    if(doneMonth) months.add(doneMonth);
-    return [...months];
-  }
-
-  function populateMonthFilter(list){
+  function renderMonthFilter(){
     const sel = $("selMonthFilter");
     const current = currentMonthKey();
-    const months = new Set([current]);
-    for(const a of (Array.isArray(list)?list:[])){
-      if(statusValue(a.status)==="Done"){
-        for(const key of accountDoneMonths(a)) if(key) months.add(key);
-      }
+    const set = new Set([current]);
+    for(const a of Array.isArray(S.accounts)?S.accounts:[]){
+      const c = accountCreatedMonth(a); if(c) set.add(c);
+      const d = accountDoneMonth(a); if(d) set.add(d);
+      const u = monthKeyOf(a.updatedAt); if(u) set.add(u);
     }
-    const ordered = [...months].sort((a,b)=> a < b ? 1 : -1);
-    if(!S.monthSelected || !months.has(S.monthSelected)) S.monthSelected = current;
-    sel.innerHTML = ordered.map(key=>`<option value="${escapeHtml(key)}">${escapeHtml(monthLabel(key))}</option>`).join("");
-    sel.value = S.monthSelected;
+    const months = [...set].filter(Boolean).sort((a,b)=> b.localeCompare(a));
+    sel.innerHTML = `<option value="current">Current Month</option>` + months.filter(m=>m!==current).map(m=>`<option value="${m}">${monthLabel(m)}</option>`).join('');
+    if(S.monthFilter !== 'current' && months.includes(S.monthFilter)) sel.value = S.monthFilter;
+    else { S.monthFilter = 'current'; sel.value = 'current'; }
   }
-
   function applyFilters(list){
     const q = norm($("inSearch").value).toLowerCase();
     const sf = norm($("selStatusFilter").value);
-    const selectedMonth = norm($("selMonthFilter").value) || S.monthSelected || currentMonthKey();
-    S.monthSelected = selectedMonth;
+    const selectedMonth = norm($("selMonthFilter").value) || S.monthFilter || 'current';
     return (Array.isArray(list)?list:[]).filter(a => {
-      const status = statusValue(a.status);
       const okQ = !q || [a.agency,a.email,a.passport,a.status,a.type].join(" ").toLowerCase().includes(q);
-      const okS = !sf || status === sf;
-      const okM = status !== "Done" || accountDoneMonths(a).includes(selectedMonth);
+      const okS = !sf || statusValue(a.status) === sf;
+      const okM = accountVisibleInMonth(a, selectedMonth);
       return okQ && okS && okM;
     }).sort((a,b)=> (STATUS_PRIORITY[statusValue(a.status)]-STATUS_PRIORITY[statusValue(b.status)]) || String(a.email).localeCompare(String(b.email)));
   }
@@ -489,7 +471,7 @@ const API = {
 
   function renderAccounts(){
     const tb=$("tbody");
-    populateMonthFilter(S.accounts);
+    renderMonthFilter();
     if(!S.agencySelected){ tb.innerHTML='<tr><td colspan="9" class="muted" style="padding:16px">اختر وكالة أولاً</td></tr>'; return; }
     const filtered=applyFilters(S.accounts);
     if(!filtered.length){ tb.innerHTML='<tr><td colspan="9" class="muted" style="padding:16px">لا توجد بيانات</td></tr>'; return; }
@@ -555,7 +537,7 @@ const API = {
     _oneMode:"add", _oneMatch:{email:"",passport:""}, _mgrMode:"add",
     async logout(){
       await API.logout();
-      S.csrfToken=""; S.pendingChallengeId=""; S.loginUser=norm($("inUser").value); S.agencies=[]; S.accounts=[]; S.managers=[]; S.agencySelected=""; S.managerSelected=""; S.managerAssignSelected=""; S.monthSelected=currentMonthKey();
+      S.csrfToken=""; S.pendingChallengeId=""; S.loginUser=norm($("inUser").value); S.agencies=[]; S.accounts=[]; S.managers=[]; S.agencySelected=""; S.managerSelected=""; S.managerAssignSelected=""; S.monthFilter="current";
       sessionStorage.removeItem(STORAGE_KEY);
       setAuthState(false); resetLoginFlow(true); renderAgencies(); renderAccounts(); renderManagers(); toast('Logout','Logged out');
     },
@@ -580,7 +562,6 @@ const API = {
       const res=await API.verifyOtp(S.pendingChallengeId, otp);
       if(!res.ok) return toast('OTP',res.error||'OTP غير صحيح');
       S.csrfToken = norm(res.csrfToken);
-      S.monthSelected = currentMonthKey();
       setAuthState(true);
       resetLoginFlow(true);
       await UI.refreshAll();
@@ -704,10 +685,9 @@ const API = {
   $("inOtp").addEventListener('keydown', (e)=>{ if(e.key==="Enter") UI.verifyOtp(); });
   $("inPass").addEventListener('keydown', (e)=>{ if(e.key==="Enter") UI.beginLogin(); });
   $("btnRefresh").onclick=UI.refreshAll; $("btnBulk").onclick=UI.openBulk; $("btnAddOne").onclick=UI.openAddOne; $("btnParse").onclick=UI.parseBulk; $("btnBulkAdd").onclick=UI.bulkAdd; $("btnSaveOne").onclick=UI.saveOne; $("btnSendAgencyAll").onclick=UI.sendAgencyAll; $("btnOpenManager").onclick=UI.openManager; $("btnSaveManager").onclick=UI.saveManager;
-  $("selAgency").addEventListener('change', (e)=>UI.loadAgency(e.target.value||'')); $("inSearch").addEventListener('input', renderAccounts); $("selStatusFilter").addEventListener('change', renderAccounts);
+  $("selAgency").addEventListener('change', (e)=>UI.loadAgency(e.target.value||'')); $("inSearch").addEventListener('input', renderAccounts); $("selMonthFilter").addEventListener('change', (e)=>{ S.monthFilter=e.target.value||'current'; persistUiState(); renderAccounts(); }); $("selStatusFilter").addEventListener('change', renderAccounts);
   $("selManagerView").addEventListener('change', (e)=>{ S.managerSelected=e.target.value||''; persistUiState(); renderManagerQueue(); });
   $("selManagerAssign").addEventListener('change', (e)=>{ S.managerAssignSelected=e.target.value||''; persistUiState(); renderAccounts(); });
-  $("selMonthFilter").addEventListener('change', (e)=>{ S.monthSelected=e.target.value||currentMonthKey(); persistUiState(); renderAccounts(); });
   document.querySelectorAll('.tabbtn').forEach(btn=>btn.addEventListener('click',()=>{ document.querySelectorAll('.tabbtn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.querySelectorAll('.tabpane').forEach(p=>p.classList.add('hidden')); document.getElementById(btn.dataset.tab).classList.remove('hidden'); }));
 
   restoreUiState(); setAuthState(false); resetLoginFlow(false); UI.restoreAuth().catch(()=>{});
