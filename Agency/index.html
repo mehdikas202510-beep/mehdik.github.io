@@ -509,71 +509,93 @@
     .savedMobile{display:none}
     .savedTableWrap{
       border:1px solid rgba(255,255,255,.14);
-      border-radius:18px;
+      border-radius:20px;
       overflow:hidden;
-      background:rgba(255,255,255,.04);
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
+      background:rgba(255,255,255,.05);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.05), 0 18px 40px rgba(0,0,0,.18);
     }
     .savedRow{
       display:grid;
-      grid-template-columns:minmax(220px,1.2fr) minmax(140px,.8fr) minmax(140px,.8fr) minmax(130px,.85fr) 150px;
-      gap:12px;
-      align-items:center;
-      padding:12px 14px;
+      grid-template-columns:minmax(240px,1.35fr) minmax(180px,1fr) minmax(160px,.95fr) minmax(150px,.95fr) 170px;
+      gap:14px;
+      align-items:start;
+      padding:14px 16px;
     }
     .savedTableHead{
-      background:rgba(255,255,255,.09);
-      font-size:.8rem;
+      background:rgba(255,255,255,.10);
+      font-size:.81rem;
       font-weight:950;
       letter-spacing:.2px;
     }
     .savedTableBody{
-      max-height:420px;
+      max-height:430px;
       overflow:auto;
     }
     .savedTableBody .savedRow{
       border-top:1px solid rgba(255,255,255,.08);
-      background:rgba(5,28,70,.16);
+      background:linear-gradient(180deg, rgba(5,28,70,.18), rgba(5,28,70,.12));
+    }
+    .savedTableBody .savedRow:hover{
+      background:linear-gradient(180deg, rgba(255,255,255,.09), rgba(5,28,70,.18));
     }
     .savedCell{
       min-width:0;
       overflow:visible;
       white-space:normal;
       word-break:break-word;
-      line-height:1.45;
+      line-height:1.55;
+      font-size:.92rem;
+    }
+    .savedCell strong{
+      display:block;
+      font-size:.74rem;
+      opacity:.78;
+      margin-bottom:5px;
+      font-weight:900;
+      letter-spacing:.18px;
+      text-transform:uppercase;
     }
     .savedCell.actions{
       display:flex;
       justify-content:flex-end;
       align-items:center;
+      min-height:100%;
+    }
+    .savedTableBody::-webkit-scrollbar,
+    .savedMobileList::-webkit-scrollbar{
+      width:10px;
+    }
+    .savedTableBody::-webkit-scrollbar-thumb,
+    .savedMobileList::-webkit-scrollbar-thumb{
+      background:rgba(255,255,255,.18);
+      border-radius:999px;
     }
 
     .savedMobileList{
       display:grid;
-      gap:12px;
+      gap:10px;
       max-height:60vh;
       overflow:auto;
       padding-right:2px;
     }
     .savedMobileCard{
       border:1px solid rgba(255,255,255,.14);
-      border-radius:20px;
+      border-radius:18px;
       background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(5,28,70,.22));
-      box-shadow:0 16px 35px rgba(0,0,0,.28);
-      overflow:hidden;
+      box-shadow:0 14px 30px rgba(0,0,0,.24);
       transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
     }
-    .savedMobileCard.active{
-      border-color:rgba(255,255,255,.34);
-      box-shadow:0 20px 40px rgba(0,0,0,.38);
+    .savedMobileCard:hover{
       transform:translateY(-1px);
+      border-color:rgba(255,255,255,.28);
+      box-shadow:0 18px 36px rgba(0,0,0,.32);
     }
     .savedMobileHead{
       width:100%;
       border:none;
       background:transparent;
       color:#fff;
-      padding:16px;
+      padding:15px 16px;
       display:flex;
       align-items:center;
       justify-content:space-between;
@@ -584,68 +606,104 @@
     .savedMobileHead .mail{
       min-width:0;
       font-weight:900;
-      font-size:.95rem;
+      font-size:.96rem;
       overflow:hidden;
       text-overflow:ellipsis;
       white-space:nowrap;
     }
-    .savedMobileArrow{
+    .savedMobileHead .meta{
       flex:0 0 auto;
-      width:34px;height:34px;
-      border-radius:12px;
+      width:38px;height:38px;
+      border-radius:14px;
       border:1px solid rgba(255,255,255,.14);
       background:rgba(255,255,255,.08);
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      transition:transform .18s ease, background .18s ease;
       font-size:1rem;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
     }
-    .savedMobileCard.active .savedMobileArrow{
-      transform:rotate(180deg);
-      background:rgba(255,255,255,.14);
+
+    .savedInfoModalBox{
+      max-width:560px;
+      width:100%;
+      background:rgba(15,23,42,.93);
+      border-color:rgba(255,255,255,.18);
+      box-shadow:0 24px 60px rgba(0,0,0,.55);
     }
-    .savedMobileDetails{
-      display:none;
-      padding:0 16px 16px;
-      border-top:1px solid rgba(255,255,255,.08);
-      background:rgba(255,255,255,.03);
+    .savedInfoHero{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      padding:14px 16px;
+      margin-bottom:12px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      background:linear-gradient(135deg, rgba(255,255,255,.10), rgba(5,28,70,.26));
     }
-    .savedMobileCard.active .savedMobileDetails{display:block}
-    .savedMobileGrid{
+    .savedInfoHero b{
+      display:block;
+      font-size:1.02rem;
+      line-height:1.5;
+      word-break:break-word;
+    }
+    .savedInfoHero span{
+      display:block;
+      margin-top:6px;
+      font-size:.78rem;
+      opacity:.84;
+    }
+    .savedInfoHero .metaIcon{
+      width:44px;height:44px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.08);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-size:1.15rem;
+      flex:0 0 auto;
+    }
+    .savedInfoCards{
       display:grid;
       gap:10px;
-      padding-top:14px;
     }
-    .savedInfo{
-      padding:11px 12px;
-      border-radius:14px;
+    .savedInfoCard{
+      padding:12px 13px;
+      border-radius:16px;
       border:1px solid rgba(255,255,255,.12);
-      background:rgba(5,28,70,.22);
+      background:rgba(255,255,255,.05);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
     }
-    .savedInfo label{
+    .savedInfoCard label{
       display:block;
-      margin:0 0 5px;
-      font-size:.73rem;
-      opacity:.82;
+      margin:0 0 6px;
+      font-size:.74rem;
+      font-weight:900;
+      opacity:.8;
+      text-transform:uppercase;
+      letter-spacing:.18px;
+    }
+    .savedInfoCard .value{
+      font-size:.96rem;
+      line-height:1.55;
       font-weight:800;
-    }
-    .savedInfo div{
-      font-size:.9rem;
-      font-weight:700;
       word-break:break-word;
-      line-height:1.45;
     }
-    .savedMobileActions{
+    .savedInfoCard .value.badgeWrap{
       display:flex;
-      justify-content:flex-end;
-      padding-top:2px;
+      align-items:flex-start;
     }
+
     @media (max-width:760px){
       .savedDesktop{display:none}
       .savedMobile{display:block}
     }
-
+    @media (min-width:761px){
+      .savedMobile{display:none !important}
+      .savedDesktop{display:block !important}
+    }
 </style>
 </head>
 
@@ -828,6 +886,40 @@
       </div>
     </div>
   </div>
+  <div id="savedInfoModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:997;align-items:center;justify-content:center;padding:18px">
+    <div class="panel savedInfoModalBox">
+      <div class="titleRow" style="margin:0 0 10px">
+        <b data-i18n="saved_info_title">Account Details</b>
+        <button id="savedInfoClose" type="button" class="xbtn" aria-label="Close">×</button>
+      </div>
+      <div class="savedInfoHero">
+        <div>
+          <b id="savedInfoEmail">—</b>
+          <span data-i18n="saved_info_hint">Review full account details and continue from here.</span>
+        </div>
+        <span class="metaIcon">👤</span>
+      </div>
+      <div class="savedInfoCards">
+        <div class="savedInfoCard">
+          <label data-i18n="col_password">Password</label>
+          <div class="value" id="savedInfoPassword">—</div>
+        </div>
+        <div class="savedInfoCard">
+          <label data-i18n="col_passport">Passport</label>
+          <div class="value" id="savedInfoPassport">—</div>
+        </div>
+        <div class="savedInfoCard">
+          <label data-i18n="col_status">Status</label>
+          <div class="value badgeWrap" id="savedInfoStatus">—</div>
+        </div>
+      </div>
+      <div class="btnRow" style="margin-top:14px">
+        <button id="savedInfoPwBtn" type="button" class="btn btnPrimary" style="flex:1" data-i18n="btn_req_pw">Request password change</button>
+        <button id="savedInfoCancel" type="button" class="btn btnSoft" data-i18n="btn_cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <div id="toast"></div>
 
   <script>
@@ -891,6 +983,8 @@
         toast_saved_loaded: "Saved accounts loaded",
         saved_empty: "No saved accounts for this agency.",
         saved_search_ph: "Search by email or passport…",
+        saved_info_title: "Account Details",
+        saved_info_hint: "Review full account details and continue from here.",
         btn_req_pw: "Password",
         pw_title: "Request password change",
         pw_new_lbl: "New Password",
@@ -957,6 +1051,8 @@
         toast_saved_loaded: "تم تحميل الحسابات المحفوظة",
         saved_empty: "لا توجد حسابات محفوظة لهذه الوكالة.",
         saved_search_ph: "ابحث بالإيميل أو رقم الجواز…",
+        saved_info_title: "تفاصيل الحساب",
+        saved_info_hint: "راجع كل تفاصيل الحساب وتابع من هنا.",
         btn_req_pw: "تعديل كلمة السر",
         pw_title: "طلب تعديل كلمة السر",
         pw_new_lbl: "كلمة السر الجديدة",
@@ -993,6 +1089,14 @@
     const savedMobileBody = document.getElementById("savedMobileBody");
     const savedEmpty = document.getElementById("savedEmpty");
     const savedSearchEl = document.getElementById("savedSearch");
+    const savedInfoModal = document.getElementById("savedInfoModal");
+    const savedInfoClose = document.getElementById("savedInfoClose");
+    const savedInfoCancel = document.getElementById("savedInfoCancel");
+    const savedInfoPwBtn = document.getElementById("savedInfoPwBtn");
+    const savedInfoEmail = document.getElementById("savedInfoEmail");
+    const savedInfoPassword = document.getElementById("savedInfoPassword");
+    const savedInfoPassport = document.getElementById("savedInfoPassport");
+    const savedInfoStatus = document.getElementById("savedInfoStatus");
 
     const pwModal = document.getElementById("pwModal");
     const pwClose = document.getElementById("pwClose");
@@ -1095,6 +1199,7 @@
         if(statusStat) statusStat.style.display = "none";
         statusEl.textContent = "";
       }else{
+        closeSavedInfoModal();
         mainUI.style.display = "block";
         savedWrap.style.display = "none";
         modePill.style.display = "inline-flex";
@@ -1106,6 +1211,24 @@
 
     function updateCount(){
       countEl.textContent = String(inSavedView ? savedAccounts.length : accounts.length);
+    }
+
+    let savedInfoTarget = null;
+
+    function openSavedInfoModal(acc){
+      if(!acc) return;
+      savedInfoTarget = acc;
+      savedInfoEmail.textContent = acc.email || "—";
+      savedInfoPassword.textContent = maskPassword(acc.password || "");
+      savedInfoPassport.textContent = acc.passport || "—";
+      savedInfoStatus.innerHTML = "";
+      savedInfoStatus.appendChild(makeBadge(acc.status));
+      savedInfoModal.style.display = "flex";
+    }
+
+    function closeSavedInfoModal(){
+      savedInfoTarget = null;
+      savedInfoModal.style.display = "none";
     }
 
     function toggleMode(skipListRender){
@@ -1295,12 +1418,29 @@
         dRow.className = "savedRow";
         dRow.setAttribute("role","row");
 
-        const d1 = document.createElement("div"); d1.className = "savedCell"; d1.textContent = a.email || "";
-        const d2 = document.createElement("div"); d2.className = "savedCell"; d2.textContent = maskPassword(a.password || "");
-        const d3 = document.createElement("div"); d3.className = "savedCell"; d3.textContent = a.passport || "";
-        const d4 = document.createElement("div"); d4.className = "savedCell"; d4.appendChild(makeBadge(a.status));
-        const d5 = document.createElement("div"); d5.className = "savedCell actions";
-        const dWrap = document.createElement("div"); dWrap.className = "actionBtns";
+        const d1 = document.createElement("div");
+        d1.className = "savedCell";
+        d1.innerHTML = `<strong>${t("col_email")}</strong>${a.email || ""}`;
+
+        const d2 = document.createElement("div");
+        d2.className = "savedCell";
+        d2.innerHTML = `<strong>${t("col_password")}</strong>${maskPassword(a.password || "")}`;
+
+        const d3 = document.createElement("div");
+        d3.className = "savedCell";
+        d3.innerHTML = `<strong>${t("col_passport")}</strong>${a.passport || ""}`;
+
+        const d4 = document.createElement("div");
+        d4.className = "savedCell";
+        const d4label = document.createElement("strong");
+        d4label.textContent = t("col_status");
+        d4.appendChild(d4label);
+        d4.appendChild(makeBadge(a.status));
+
+        const d5 = document.createElement("div");
+        d5.className = "savedCell actions";
+        const dWrap = document.createElement("div");
+        dWrap.className = "actionBtns";
         const dBtn = document.createElement("button");
         dBtn.type = "button";
         dBtn.className = "miniBtn";
@@ -1308,6 +1448,7 @@
         dBtn.addEventListener("click", ()=> openPwModal(a));
         dWrap.appendChild(dBtn);
         d5.appendChild(dWrap);
+
         dRow.appendChild(d1); dRow.appendChild(d2); dRow.appendChild(d3); dRow.appendChild(d4); dRow.appendChild(d5);
         savedBody.appendChild(dRow);
 
@@ -1317,60 +1458,19 @@
         const mHead = document.createElement("button");
         mHead.type = "button";
         mHead.className = "savedMobileHead";
+        mHead.addEventListener("click", ()=> openSavedInfoModal(a));
+
         const mMail = document.createElement("div");
         mMail.className = "mail";
         mMail.textContent = a.email || "";
-        const mArrow = document.createElement("span");
-        mArrow.className = "savedMobileArrow";
-        mArrow.textContent = "⌄";
+
+        const mMeta = document.createElement("span");
+        mMeta.className = "meta";
+        mMeta.textContent = "›";
+
         mHead.appendChild(mMail);
-        mHead.appendChild(mArrow);
-
-        const mDetails = document.createElement("div");
-        mDetails.className = "savedMobileDetails";
-        const mGrid = document.createElement("div");
-        mGrid.className = "savedMobileGrid";
-
-        const infoPassword = document.createElement("div");
-        infoPassword.className = "savedInfo";
-        infoPassword.innerHTML = `<label>${t("col_password")}</label><div>${maskPassword(a.password || "")}</div>`;
-
-        const infoPassport = document.createElement("div");
-        infoPassport.className = "savedInfo";
-        infoPassport.innerHTML = `<label>${t("col_passport")}</label><div>${a.passport || ""}</div>`;
-
-        const infoStatus = document.createElement("div");
-        infoStatus.className = "savedInfo";
-        const stLabel = document.createElement("label");
-        stLabel.textContent = t("col_status");
-        const stValue = document.createElement("div");
-        stValue.appendChild(makeBadge(a.status));
-        infoStatus.appendChild(stLabel);
-        infoStatus.appendChild(stValue);
-
-        const mActions = document.createElement("div");
-        mActions.className = "savedMobileActions";
-        const mBtn = document.createElement("button");
-        mBtn.type = "button";
-        mBtn.className = "miniBtn";
-        mBtn.textContent = t("btn_req_pw");
-        mBtn.addEventListener("click", (ev)=>{ ev.stopPropagation(); openPwModal(a); });
-        mActions.appendChild(mBtn);
-
-        mGrid.appendChild(infoPassword);
-        mGrid.appendChild(infoPassport);
-        mGrid.appendChild(infoStatus);
-        mGrid.appendChild(mActions);
-        mDetails.appendChild(mGrid);
-
-        mHead.addEventListener("click", ()=>{
-          const already = mCard.classList.contains("active");
-          savedMobileBody.querySelectorAll('.savedMobileCard.active').forEach(card=>card.classList.remove('active'));
-          if(!already) mCard.classList.add("active");
-        });
-
+        mHead.appendChild(mMeta);
         mCard.appendChild(mHead);
-        mCard.appendChild(mDetails);
         savedMobileBody.appendChild(mCard);
       }
 
@@ -1432,6 +1532,15 @@
 
     document.getElementById("copyEmailBtn").addEventListener("click", ()=> copyText(pwEmail.value));
     document.getElementById("copyPassportBtn").addEventListener("click", ()=> copyText(pwPassport.value));
+
+    savedInfoClose.addEventListener("click", closeSavedInfoModal);
+    savedInfoCancel.addEventListener("click", closeSavedInfoModal);
+    savedInfoModal.addEventListener("click", (e)=>{ if(e.target === savedInfoModal) closeSavedInfoModal(); });
+    savedInfoPwBtn.addEventListener("click", ()=>{
+      if(!savedInfoTarget) return;
+      closeSavedInfoModal();
+      openPwModal(savedInfoTarget);
+    });
 
     document.getElementById("pwSave").addEventListener("click", async ()=>{
       if(!pwTarget) return;
