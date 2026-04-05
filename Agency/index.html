@@ -125,43 +125,15 @@
     @media (min-width:720px){.row{grid-template-columns:1fr 1fr}}
 
     .toggle{
-      display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+      display:flex;align-items:center;gap:10px;
       padding:10px 12px;border-radius:16px;
       border:1px solid rgba(255,255,255,.18);
       background:rgba(5,28,70,.22)
     }
     .toggle input{width:18px;height:18px}
-    .toggle .meta{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+    .toggle .meta{display:flex;flex-direction:column;gap:2px}
     .toggle .meta b{font-size:.95rem}
     .toggle .meta span{font-size:.78rem;opacity:.86}
-    .inlineType{
-      display:flex;align-items:center;gap:8px;
-      margin-inline-start:auto;
-      min-width:min(220px,100%);
-    }
-    .inlineType label{
-      margin:0;
-      font-size:.8rem;
-      white-space:nowrap;
-      opacity:.92;
-    }
-    .inlineType select{
-      flex:1;
-      min-width:120px;
-      padding:8px 10px;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.22);
-      outline:none;
-      background:rgba(5,28,70,.55);
-      color:#fff;
-      font-size:.84rem;
-      transition:all .2s ease;
-    }
-    .inlineType select:focus{
-      border-color:#fff;
-      box-shadow:0 0 0 1px rgba(255,255,255,.55);
-      background:rgba(5,28,70,.75);
-    }
 
     .btnRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
     .btn{
@@ -228,206 +200,29 @@
     }
 
 
-    /* ✅ Saved Accounts: desktop full table + mobile compact cards */
-    .savedDesktop{display:block}
-    .savedMobile{display:none}
-    .savedTableWrap{
-      border:1px solid rgba(255,255,255,.14);
-      border-radius:18px;
-      overflow:hidden;
-      background:rgba(255,255,255,.05);
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+    /* ✅ Saved Accounts (with Status column) */
+    #savedWrap .listHead, #savedWrap .listRow{
+      grid-template-columns:1.12fr .72fr .72fr .95fr 132px;
     }
-    .savedRow{
-      display:grid;
-      grid-template-columns:minmax(230px,1.35fr) minmax(140px,.85fr) minmax(150px,.9fr) minmax(120px,.7fr) minmax(170px,.9fr);
-      gap:12px;
-      align-items:center;
-      padding:12px 14px;
-    }
-    .savedTableHead{
-      background:rgba(255,255,255,.09);
-      font-size:.8rem;
-      font-weight:950;
-      letter-spacing:.2px;
-      border-bottom:1px solid rgba(255,255,255,.10);
-    }
-    .savedTableHead > div:last-child{ text-align:right; }
-    .savedTableBody{
-      max-height:430px;
-      overflow:auto;
-    }
-    .savedTableBody::-webkit-scrollbar{ width:10px; }
-    .savedTableBody::-webkit-scrollbar-thumb{ background:rgba(255,255,255,.18); border-radius:999px; }
-    .savedTableBody::-webkit-scrollbar-track{ background:transparent; }
-    .savedTableBody .savedRow{
-      border-bottom:1px solid rgba(255,255,255,.07);
-      background:rgba(5,28,70,.12);
-    }
-    .savedTableBody .savedRow:hover{
-      background:rgba(255,255,255,.07);
-    }
-    .savedTableBody .savedRow:last-child{ border-bottom:0; }
-    .savedCell{
-      min-width:0;
-      overflow:visible;
-      white-space:normal;
-      word-break:break-word;
-      line-height:1.45;
-    }
-    .savedCell.actions{
-      display:flex;
-      justify-content:flex-end;
-      align-items:center;
+    @media (max-width:560px){
+      #savedWrap .listHead{display:none}
+      #savedWrap .listRow{
+        grid-template-columns:1fr;
+        gap:8px;
+        padding:12px;
+      }
+      #savedWrap .listRow > div:nth-child(1)::before{content:"Email: ";opacity:.8;font-weight:900}
+      #savedWrap .listRow > div:nth-child(2)::before{content:"Password: ";opacity:.8;font-weight:900}
+      #savedWrap .listRow > div:nth-child(3)::before{content:"Passport: ";opacity:.8;font-weight:900}
+      #savedWrap .listRow > div:nth-child(4)::before{content:"Status: ";opacity:.8;font-weight:900}
+      #savedWrap .listRow > div:nth-child(5){
+        display:flex;
+        justify-content:flex-end;
+        padding-top:6px;
+      }
     }
 
-    .savedMobileList{display:grid;gap:12px}
-    .savedMobileCard{
-      border:1px solid rgba(255,255,255,.16);
-      border-radius:20px;
-      background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05));
-      box-shadow:0 14px 30px rgba(0,0,0,.24);
-      overflow:hidden;
-      cursor:pointer;
-    }
-    .savedMobileHead{
-      width:100%;
-      border:none;
-      background:transparent;
-      color:#fff;
-      text-align:inherit;
-      display:grid;
-      grid-template-columns:minmax(0,1fr) auto;
-      gap:12px;
-      align-items:center;
-      padding:14px 14px;
-      cursor:pointer;
-    }
-    .savedMobileMail{
-      min-width:0;
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-    }
-    .savedMobileMail .mail{
-      font-weight:900;
-      font-size:.95rem;
-      line-height:1.35;
-      word-break:break-word;
-    }
-    .savedMobileMetaHint{
-      font-size:.75rem;
-      opacity:.78;
-    }
-    .savedMobileArrow{
-      width:34px;height:34px;border-radius:12px;
-      display:inline-flex;align-items:center;justify-content:center;
-      border:1px solid rgba(255,255,255,.16);
-      background:rgba(255,255,255,.08);
-      font-size:1rem;
-      flex:0 0 auto;
-    }
-
-    .savedDetailsOverlay{
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,.58);
-      z-index:997;
-      display:none;
-      align-items:center;
-      justify-content:center;
-      padding:18px;
-    }
-    .savedDetailsOverlay.show{display:flex}
-    .savedDetailsCard{
-      width:min(520px,100%);
-      border-radius:26px;
-      border:1px solid rgba(255,255,255,.18);
-      background:linear-gradient(180deg, rgba(7,24,58,.97), rgba(9,30,72,.95));
-      box-shadow:0 24px 60px rgba(0,0,0,.48);
-      overflow:hidden;
-    }
-    .savedDetailsHead{
-      padding:18px 18px 12px;
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:14px;
-      border-bottom:1px solid rgba(255,255,255,.08);
-      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
-    }
-    .savedDetailsHead .title{
-      font-size:1.02rem;
-      font-weight:950;
-      line-height:1.45;
-      word-break:break-word;
-    }
-    .savedDetailsHead .sub{
-      margin-top:6px;
-      font-size:.78rem;
-      opacity:.76;
-    }
-    .savedDetailsBody{
-      padding:16px 18px 18px;
-      display:grid;
-      gap:12px;
-    }
-    .savedDetailsInfo{
-      display:grid;
-      gap:10px;
-    }
-    .savedInfoRow{
-      border:1px solid rgba(255,255,255,.10);
-      border-radius:18px;
-      background:rgba(255,255,255,.05);
-      padding:12px 13px;
-      display:grid;
-      gap:6px;
-    }
-    .savedInfoRow label{
-      margin:0;
-      font-size:.77rem;
-      opacity:.78;
-      font-weight:900;
-    }
-    .savedInfoRow .value{
-      font-size:.95rem;
-      line-height:1.45;
-      word-break:break-word;
-    }
-    .savedDetailsActions{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      padding-top:4px;
-    }
-    .savedPrimaryBtn{
-      border:none;
-      border-radius:16px;
-      padding:12px 15px;
-      font-weight:950;
-      color:#fff;
-      background:linear-gradient(135deg,#16a34a,#22c55e);
-      box-shadow:0 14px 28px rgba(34,197,94,.22);
-      cursor:pointer;
-      flex:1;
-    }
-    .savedGhostBtn{
-      border:1px solid rgba(255,255,255,.16);
-      border-radius:16px;
-      padding:12px 15px;
-      font-weight:900;
-      color:#fff;
-      background:rgba(255,255,255,.06);
-      cursor:pointer;
-    }
-
-    @media (max-width:760px){
-      .savedDesktop{display:none}
-      .savedMobile{display:block}
-      .savedTableWrap{display:none}
-    }
-.xbtn{
+    .xbtn{
       width:36px;height:36px;border-radius:12px;
       border:1px solid rgba(255,255,255,.18);
       background:rgba(255,255,255,.08);
@@ -630,256 +425,35 @@
 
 
 
-    /* === Professional Saved Accounts responsive view === */
+    /* === Saved Accounts redesign === */
     .savedDesktop{display:block}
     .savedMobile{display:none}
-    .savedTableWrap{
-      border:1px solid rgba(255,255,255,.14);
-      border-radius:18px;
-      overflow:hidden;
-      background:rgba(255,255,255,.04);
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
-    }
-    .savedRow{
-      display:grid;
-      grid-template-columns:minmax(220px,1.2fr) minmax(140px,.8fr) minmax(140px,.8fr) minmax(130px,.85fr) 150px;
-      gap:12px;
-      align-items:center;
-      padding:12px 14px;
-    }
-    .savedTableHead{
-      background:rgba(255,255,255,.09);
-      font-size:.8rem;
-      font-weight:950;
-      letter-spacing:.2px;
-    }
-    .savedTableBody{
-      max-height:420px;
-      overflow:auto;
-    }
-    .savedTableBody .savedRow{
-      border-top:1px solid rgba(255,255,255,.08);
-      background:rgba(5,28,70,.16);
-    }
-    .savedCell{
-      min-width:0;
-      overflow:visible;
-      white-space:normal;
-      word-break:break-word;
-      line-height:1.45;
-    }
-    .savedCell.actions{
-      display:flex;
-      justify-content:flex-end;
-      align-items:center;
-    }
-
-    .savedMobileList{
-      display:grid;
-      gap:12px;
-      max-height:60vh;
-      overflow:auto;
-      padding-right:2px;
-    }
-    .savedMobileCard{
-      border:1px solid rgba(255,255,255,.14);
-      border-radius:20px;
-      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(5,28,70,.22));
-      box-shadow:0 16px 35px rgba(0,0,0,.28);
-      overflow:hidden;
-      transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
-    }
-    .savedMobileCard.active{
-      border-color:rgba(255,255,255,.34);
-      box-shadow:0 20px 40px rgba(0,0,0,.38);
-      transform:translateY(-1px);
-    }
-    .savedMobileHead{
-      width:100%;
-      border:none;
-      background:transparent;
-      color:#fff;
-      padding:16px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      cursor:pointer;
-      text-align:start;
-    }
-    .savedMobileHead .mail{
-      min-width:0;
-      font-weight:900;
-      font-size:.95rem;
-      white-space:normal;
-      word-break:break-word;
-      line-height:1.45;
-    }
-    .savedMobileArrow{
-      flex:0 0 auto;
-      width:34px;height:34px;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.08);
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      transition:transform .18s ease, background .18s ease;
-      font-size:1rem;
-    }
-    .savedMobileCard.active .savedMobileArrow{
-      transform:rotate(180deg);
-      background:rgba(255,255,255,.14);
-    }
-    .savedMobileDetails{
-      display:none;
-      padding:0 16px 16px;
-      border-top:1px solid rgba(255,255,255,.08);
-      background:rgba(255,255,255,.03);
-    }
-    .savedMobileCard.active .savedMobileDetails{display:block}
-    .savedMobileGrid{
-      display:grid;
-      gap:10px;
-      padding-top:14px;
-    }
-    .savedInfo{
-      padding:11px 12px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(5,28,70,.22);
-    }
-    .savedInfo label{
-      display:block;
-      margin:0 0 5px;
-      font-size:.73rem;
-      opacity:.82;
-      font-weight:800;
-    }
-    .savedInfo div{
-      font-size:.9rem;
-      font-weight:700;
-      word-break:break-word;
-      line-height:1.45;
-    }
-    .savedMobileActions{
-      display:flex;
-      justify-content:flex-end;
-      padding-top:2px;
-    }
-    @media (max-width:760px){
-      .savedDesktop{display:none}
-      .savedMobile{display:block}
-    }
-
-
-    /* === Professional Request password change modal === */
-    .pwOverlay{
-      position:fixed;
-      inset:0;
-      background:radial-gradient(circle at top, rgba(0,122,255,.16), rgba(0,0,0,.66));
-      backdrop-filter:blur(8px);
-      z-index:998;
-      display:none;
-      align-items:center;
-      justify-content:center;
-      padding:18px;
-    }
-    .pwOverlay.show{display:flex}
-    .pwCard{
-      width:min(560px,100%);
-      border-radius:26px;
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,.18);
-      background:linear-gradient(180deg, rgba(10,25,56,.96), rgba(7,17,39,.96));
-      box-shadow:0 28px 70px rgba(0,0,0,.45);
-    }
-    .pwCardHead{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:14px;
-      padding:22px 22px 14px;
-      border-bottom:1px solid rgba(255,255,255,.08);
-    }
-    .pwEyebrow{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:6px 10px;
-      border-radius:999px;
-      font-size:.72rem;
-      font-weight:900;
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.12);
-      margin-bottom:10px;
-    }
-    .pwCardHead h3{
-      margin:0;
-      font-size:1.2rem;
-      font-weight:950;
-    }
-    .pwCardHead p{
-      margin:7px 0 0;
-      opacity:.82;
-      font-size:.85rem;
-      line-height:1.5;
-    }
-    .pwCardBody{padding:18px 22px 22px;display:grid;gap:14px}
-    .pwInfoGrid{display:grid;gap:12px}
-    .pwInfoBox{
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.05);
-      border-radius:18px;
-      padding:13px 14px;
-    }
-    .pwInfoTop{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
-    .pwInfoTop label{margin:0;font-size:.78rem;opacity:.84}
-    .pwInfoValue{
-      font-size:.95rem;
-      font-weight:800;
-      line-height:1.45;
-      word-break:break-word;
-      color:#fff;
-    }
-    .pwInputWrap{
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.05);
-      border-radius:20px;
-      padding:14px;
-    }
-    .pwInputWrap label{margin:0 0 8px;display:block}
-    .pwInputWrap input{
-      background:rgba(5,28,70,.45);
-      border-color:rgba(255,255,255,.16);
-    }
-    .pwActions{display:flex;gap:10px;flex-wrap:wrap;padding-top:4px}
-    .savedPrimaryBtn,.savedGhostBtn{
-      border:none;
-      border-radius:16px;
-      min-height:46px;
-      padding:12px 16px;
-      font-weight:900;
-      cursor:pointer;
-      transition:transform .18s ease, filter .18s ease, box-shadow .18s ease;
-      color:#fff;
-    }
-    .savedPrimaryBtn{
-      flex:1;
-      background:linear-gradient(135deg,#2563eb,#38bdf8);
-      box-shadow:0 16px 35px rgba(37,99,235,.32);
-    }
-    .savedGhostBtn{
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.12);
-      min-width:124px;
-    }
-    .savedPrimaryBtn:hover,.savedGhostBtn:hover{transform:translateY(-1px);filter:brightness(1.05)}
-    @media (max-width:600px){
-      .pwCardHead,.pwCardBody{padding-inline:16px}
-      .pwActions{flex-direction:column}
-      .savedPrimaryBtn,.savedGhostBtn{width:100%}
-    }
+    #savedWrap .savedHeadRow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+    #savedWrap .savedHeadRow .titleRow{margin:0}
+    .savedSearchRow{display:grid;grid-template-columns:1fr;gap:10px;margin:8px 0 10px}
+    .savedDesktop .listHead,
+    .savedDesktop .listRow{grid-template-columns:1.35fr 1fr .95fr .9fr 170px}
+    .savedDesktop .listRow > div{overflow:visible;text-overflow:clip;white-space:normal;word-break:break-word;line-height:1.35}
+    .savedActionBtn{min-height:34px;padding:7px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.24);background:linear-gradient(135deg, rgba(255,255,255,.14), rgba(255,255,255,.08));color:#fff;font-size:.75rem;font-weight:900;cursor:pointer;box-shadow:0 10px 22px rgba(0,0,0,.22);white-space:nowrap}
+    .savedActionBtn:hover{filter:brightness(1.06);transform:translateY(-1px)}
+    .savedMobileList{display:grid;gap:10px}
+    .savedMobileItem{border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.07);border-radius:18px;padding:12px 14px;box-shadow:0 12px 28px rgba(0,0,0,.18);cursor:pointer;transition:.18s ease}
+    .savedMobileItem:hover{transform:translateY(-1px);background:rgba(255,255,255,.09)}
+    .savedMobileItem.active{border-color:rgba(255,255,255,.34);background:rgba(255,255,255,.12);box-shadow:0 16px 34px rgba(0,0,0,.24)}
+    .savedMobileEmail{font-weight:900;font-size:.96rem;line-height:1.45;white-space:nowrap;overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
+    .savedMobileEmail::-webkit-scrollbar{display:none}
+    .savedMobileHint{margin-top:6px;font-size:.75rem;opacity:.78}
+    .savedMobileCard{margin-top:12px;border:1px solid rgba(255,255,255,.18);background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.08));border-radius:22px;padding:16px;box-shadow:0 18px 40px rgba(0,0,0,.26)}
+    .savedCardHead{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px}
+    .savedCardHead b{font-size:1rem;line-height:1.4;word-break:break-word}
+    .savedCardSub{font-size:.78rem;opacity:.8;margin-top:4px}
+    .savedInfoGrid{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:14px}
+    .savedInfoBox{border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:12px 13px;background:rgba(5,28,70,.24)}
+    .savedInfoBox span{display:block;font-size:.75rem;opacity:.78;margin-bottom:5px}
+    .savedInfoBox b{display:block;font-size:.92rem;line-height:1.45;word-break:break-word}
+    .savedCardActions{display:flex;gap:10px;flex-wrap:wrap}
+    .savedPrimaryBtn{flex:1;min-height:44px;border:none;border-radius:14px;background:linear-gradient(135deg,#2563eb,#38bdf8);color:#fff;font-weight:950;box-shadow:0 14px 28px rgba(37,99,235,.28);cursor:pointer}
+    @media (max-width:760px){.savedDesktop{display:none}.savedMobile{display:block}#savedBody{max-height:none;overflow:visible;border:none;background:transparent;padding:0}}
 
 </style>
 </head>
@@ -921,13 +495,6 @@
                 <div class="meta">
                   <b data-i18n="multi">Multi</b>
                   <span data-i18n="multi_hint">Add multiple accounts in one request</span>
-                </div>
-                <div class="inlineType">
-                  <label for="typeSelect" data-i18n="type_lbl">Type</label>
-                  <select id="typeSelect">
-                    <option value="Appointment" data-i18n="type_appointment">Appointment</option>
-                    <option value="Waiting list" data-i18n="type_waiting">Waiting list</option>
-                  </select>
                 </div>
               </div>
 
@@ -978,32 +545,18 @@
 
             <!-- Saved Accounts view -->
             <div id="savedWrap" style="display:none;margin-top:12px">
-              <div class="titleRow">
-                <b data-i18n="saved_title">Saved Accounts</b>
+              <div class="savedHeadRow">
+                <div class="titleRow">
+                  <b data-i18n="saved_title">Saved Accounts</b>
+                </div>
                 <button id="backBtn" type="button" class="btn btnSoft" style="padding:8px 14px;border-radius:999px;box-shadow:none" data-i18n="back_btn">Back</button>
               </div>
 
-              <div class="row" style="grid-template-columns:1fr;gap:10px;margin:8px 0 10px">
+              <div class="savedSearchRow">
                 <input id="savedSearch" type="text" placeholder="Search…" style="width:100%"/>
-
-                <div class="savedDesktop" id="savedDesktopWrap">
-                  <div class="savedTableWrap">
-                    <div class="savedRow savedTableHead" role="row">
-                      <div role="columnheader" data-i18n="col_email">Email</div>
-                      <div role="columnheader" data-i18n="col_password">Password</div>
-                      <div role="columnheader" data-i18n="col_passport">Passport</div>
-                      <div role="columnheader" data-i18n="col_status">Status</div>
-                      <div role="columnheader" data-i18n="col_action">Action</div>
-                    </div>
-                    <div id="savedBody" class="savedTableBody"></div>
-                  </div>
-                </div>
-
-                <div class="savedMobile" id="savedMobileWrap">
-                  <div id="savedMobileBody" class="savedMobileList"></div>
-                </div>
               </div>
 
+              <div id="savedBody"></div>
               <div id="savedEmpty" class="emptyBox" style="display:none" data-i18n="saved_empty">No saved accounts for this agency.</div>
             </div>
 
@@ -1030,74 +583,36 @@
     </div>
   </div>
 
-  <div id="savedDetailsModal" class="savedDetailsOverlay" aria-hidden="true">
-    <div class="savedDetailsCard">
-      <div class="savedDetailsHead">
-        <div>
-          <div class="title" id="savedDetailsEmail">—</div>
-          <div class="sub" data-i18n="saved_mobile_sub">Tap Request password change to continue</div>
-        </div>
-        <button id="savedDetailsClose" type="button" class="xbtn" aria-label="Close">×</button>
-      </div>
-      <div class="savedDetailsBody">
-        <div class="savedDetailsInfo">
-          <div class="savedInfoRow">
-            <label data-i18n="col_password">Password</label>
-            <div class="value" id="savedDetailsPassword">—</div>
-          </div>
-          <div class="savedInfoRow">
-            <label data-i18n="col_passport">Passport</label>
-            <div class="value" id="savedDetailsPassport">—</div>
-          </div>
-          <div class="savedInfoRow">
-            <label data-i18n="col_status">Status</label>
-            <div class="value" id="savedDetailsStatus"></div>
-          </div>
-        </div>
-        <div class="savedDetailsActions">
-          <button id="savedDetailsRequestBtn" type="button" class="savedPrimaryBtn" data-i18n="btn_req_pw">Request password change</button>
-          <button id="savedDetailsCancel" type="button" class="savedGhostBtn" data-i18n="btn_cancel">Cancel</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Password update modal -->
-  <div id="pwModal" class="pwOverlay" aria-hidden="true">
-    <div class="pwCard">
-      <div class="pwCardHead">
-        <div>
-          <div class="pwEyebrow">🔐 <span data-i18n="pw_title">Request password change</span></div>
-          <h3 data-i18n="pw_title">Request password change</h3>
-          <p data-i18n="pw_subtitle">Review account details, then enter the new password and save securely.</p>
-        </div>
+  <div id="pwModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:998;align-items:center;justify-content:center;padding:18px">
+    <div class="panel" style="max-width:520px;width:100%;background:rgba(15,23,42,.92);border-color:rgba(255,255,255,.18);box-shadow:0 18px 45px rgba(0,0,0,.55)">
+      <div class="titleRow" style="margin:0 0 10px">
+        <b data-i18n="pw_title">Request password change</b>
         <button id="pwClose" type="button" class="xbtn" aria-label="Close">×</button>
       </div>
-      <div class="pwCardBody">
-        <div class="pwInfoGrid">
-          <div class="pwInfoBox">
-            <div class="pwInfoTop">
-              <label data-i18n="email_lbl">Email</label>
-              <button id="copyEmailBtn" type="button" class="miniBtn" data-i18n="btn_copy">Copy</button>
-            </div>
-            <div id="pwEmail" class="pwInfoValue">—</div>
+      <div class="row" style="grid-template-columns:1fr;gap:10px">
+        <div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+            <label style="margin:0" data-i18n="email_lbl">Email</label>
+            <button id="copyEmailBtn" type="button" class="miniBtn" data-i18n="btn_copy">Copy</button>
           </div>
-          <div class="pwInfoBox">
-            <div class="pwInfoTop">
-              <label data-i18n="passport_lbl">Passport Number</label>
-              <button id="copyPassportBtn" type="button" class="miniBtn" data-i18n="btn_copy">Copy</button>
-            </div>
-            <div id="pwPassport" class="pwInfoValue">—</div>
-          </div>
+          <input id="pwEmail" type="text" readonly/>
         </div>
-        <div class="pwInputWrap">
+        <div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+            <label style="margin:0" data-i18n="passport_lbl">Passport Number</label>
+            <button id="copyPassportBtn" type="button" class="miniBtn" data-i18n="btn_copy">Copy</button>
+          </div>
+          <input id="pwPassport" type="text" readonly/>
+        </div>
+        <div>
           <label for="pwNew" data-i18n="pw_new_lbl">New Password</label>
           <input id="pwNew" type="text" placeholder="********"/>
         </div>
-        <div class="pwActions">
-          <button id="pwSave" type="button" class="savedPrimaryBtn" data-i18n="btn_save">Save</button>
-          <button id="pwCancel" type="button" class="savedGhostBtn" data-i18n="btn_cancel">Cancel</button>
-        </div>
+      </div>
+      <div class="btnRow" style="margin-top:12px">
+        <button id="pwSave" type="button" class="btn btnPrimary" style="flex:1" data-i18n="btn_save">Save</button>
+        <button id="pwCancel" type="button" class="btn btnSoft" data-i18n="btn_cancel">Cancel</button>
       </div>
     </div>
   </div>
@@ -1114,9 +629,6 @@
         firma_lbl: "Agency Signature",
         multi: "Multi",
         multi_hint: "Add multiple accounts in one request",
-        type_lbl: "Type",
-        type_appointment: "Appointment",
-        type_waiting: "Waiting list",
         account: "Account",
         account_hint: "Email + Password + Passport",
         email_lbl: "Email",
@@ -1164,17 +676,17 @@
         toast_saved_loaded: "Saved accounts loaded",
         saved_empty: "No saved accounts for this agency.",
         saved_search_ph: "Search by email or passport…",
-        btn_req_pw: "Password",
+        saved_mobile_hint: "Tap to view details",
+        saved_selected: "Selected account",
+        btn_req_pw: "Request password change",
         pw_title: "Request password change",
         pw_new_lbl: "New Password",
-        pw_subtitle: "Review account details, then enter the new password and save securely.",
         btn_copy: "Copy",
         btn_save: "Save",
         btn_cancel: "Cancel",
         toast_copied: "Copied",
         toast_pw_updated: "Password updated",
-        toast_pw_failed: "Password update failed",
-        saved_mobile_sub: "Tap Request password change to continue"
+        toast_pw_failed: "Password update failed"
       },
       ar: {
         title: "الوكالة",
@@ -1182,9 +694,6 @@
         firma_lbl: "توقيع الوكالة",
         multi: "متعدد",
         multi_hint: "إضافة عدة حسابات في طلب واحد",
-        type_lbl: "النوع",
-        type_appointment: "Appointment",
-        type_waiting: "Waiting list",
         account: "الحساب",
         account_hint: "إيميل + كلمة سر + رقم الجواز",
         email_lbl: "الإيميل",
@@ -1232,17 +741,17 @@
         toast_saved_loaded: "تم تحميل الحسابات المحفوظة",
         saved_empty: "لا توجد حسابات محفوظة لهذه الوكالة.",
         saved_search_ph: "ابحث بالإيميل أو رقم الجواز…",
-        btn_req_pw: "تعديل كلمة السر",
+        saved_mobile_hint: "اضغط لعرض التفاصيل",
+        saved_selected: "الحساب المحدد",
+        btn_req_pw: "طلب تعديل كلمة السر",
         pw_title: "طلب تعديل كلمة السر",
         pw_new_lbl: "كلمة السر الجديدة",
-        pw_subtitle: "راجع بيانات الحساب ثم أدخل كلمة السر الجديدة واحفظها بشكل آمن.",
         btn_copy: "نسخ",
         btn_save: "حفظ",
         btn_cancel: "إلغاء",
         toast_copied: "تم النسخ",
         toast_pw_updated: "تم تعديل كلمة السر",
-        toast_pw_failed: "فشل تعديل كلمة السر",
-        saved_mobile_sub: "اضغط طلب تعديل كلمة السر للمتابعة"
+        toast_pw_failed: "فشل تعديل كلمة السر"
       }
     };
 
@@ -1267,7 +776,6 @@
     const mainUI = document.getElementById("mainUI");
     const savedWrap = document.getElementById("savedWrap");
     const savedBody = document.getElementById("savedBody");
-    const savedMobileBody = document.getElementById("savedMobileBody");
     const savedEmpty = document.getElementById("savedEmpty");
     const savedSearchEl = document.getElementById("savedSearch");
 
@@ -1281,17 +789,7 @@
     const copyEmailBtn = document.getElementById("copyEmailBtn");
     const copyPassportBtn = document.getElementById("copyPassportBtn");
 
-    const savedDetailsModal = document.getElementById("savedDetailsModal");
-    const savedDetailsClose = document.getElementById("savedDetailsClose");
-    const savedDetailsCancel = document.getElementById("savedDetailsCancel");
-    const savedDetailsEmail = document.getElementById("savedDetailsEmail");
-    const savedDetailsPassword = document.getElementById("savedDetailsPassword");
-    const savedDetailsPassport = document.getElementById("savedDetailsPassport");
-    const savedDetailsStatus = document.getElementById("savedDetailsStatus");
-    const savedDetailsRequestBtn = document.getElementById("savedDetailsRequestBtn");
-
     const moltiEl = document.getElementById("molti");
-    const typeSelectEl = document.getElementById("typeSelect");
     const emailEl = document.getElementById("email");
     const passEl = document.getElementById("password");
     const passpEl = document.getElementById("passport");
@@ -1316,6 +814,7 @@
     // Saved accounts view
     let inSavedView = false;
     let savedAccounts = [];
+    let selectedSavedIndex = -1;
 
     function showToast(msg){
       toastEl.textContent = msg;
@@ -1351,14 +850,6 @@
 
       firmaEl.placeholder = lang === "ar" ? "اسم الوكالة / توقيع" : "Agency name / Signature";
       passEl.placeholder = lang === "ar" ? "كلمة السر" : "Password";
-      if(typeSelectEl){
-        const currentType = typeSelectEl.value || "Appointment";
-        typeSelectEl.innerHTML = `
-          <option value="Appointment">${t("type_appointment")}</option>
-          <option value="Waiting list">${t("type_waiting")}</option>
-        `;
-        typeSelectEl.value = currentType;
-      }
 
       if(savedSearchEl) savedSearchEl.placeholder = t("saved_search_ph");
       if(pwNew) pwNew.placeholder = lang === "ar" ? "كلمة السر الجديدة" : "New password";
@@ -1374,6 +865,7 @@
 
     function setViewSaved(on){
       inSavedView = on;
+      if(!on) selectedSavedIndex = -1;
       if(on){
         mainUI.style.display = "none";
         savedWrap.style.display = "block";
@@ -1514,7 +1006,6 @@
             emailEl.value = a.email || "";
             passEl.value = a.password || "";
             passpEl.value = a.passport || "";
-            if(typeSelectEl) typeSelectEl.value = a.type || "Appointment";
             accounts.splice(i,1);
             dupIndex = -1;
             multiListReady = false;
@@ -1564,7 +1055,6 @@
 
     function renderSaved(){
       savedBody.innerHTML = "";
-      savedMobileBody.innerHTML = "";
       const q = ((savedSearchEl && savedSearchEl.value) || "").trim().toLowerCase();
       const view = q ? savedAccounts.filter(a =>
         ((a.email||"" ).toLowerCase().includes(q)) ||
@@ -1573,114 +1063,141 @@
       ) : savedAccounts;
 
       savedEmpty.style.display = view.length ? "none" : "block";
+      if(!view.length){
+        selectedSavedIndex = -1;
+        updateCount();
+        return;
+      }
+      if(selectedSavedIndex >= view.length) selectedSavedIndex = 0;
+      if(selectedSavedIndex === -1) selectedSavedIndex = 0;
 
+      const desktopWrap = document.createElement("div");
+      desktopWrap.className = "savedDesktop";
+      desktopWrap.innerHTML = `
+        <div class="list" role="table" aria-label="Saved accounts list">
+          <div class="listHead" role="row">
+            <div role="columnheader">${t("col_email")}</div>
+            <div role="columnheader">${t("col_password")}</div>
+            <div role="columnheader">${t("col_passport")}</div>
+            <div role="columnheader">${t("col_status")}</div>
+            <div role="columnheader">${t("col_action")}</div>
+          </div>
+          <div id="savedDesktopRows"></div>
+        </div>`;
+      const desktopRows = desktopWrap.querySelector("#savedDesktopRows");
       for(let i=0;i<view.length;i++){
         const a = view[i];
+        const row = document.createElement("div");
+        row.className = "listRow";
+        row.setAttribute("role","row");
 
-        const dRow = document.createElement("div");
-        dRow.className = "savedRow";
-        dRow.setAttribute("role","row");
+        const c1 = document.createElement("div"); c1.textContent = a.email || "";
+        const c2 = document.createElement("div"); c2.textContent = a.password || "";
+        const c3 = document.createElement("div"); c3.textContent = a.passport || "";
+        const c4 = document.createElement("div"); c4.appendChild(makeBadge(a.status));
+        const c5 = document.createElement("div");
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "savedActionBtn";
+        btn.textContent = t("btn_req_pw");
+        btn.addEventListener("click", ()=> openPwModal(a));
+        c5.appendChild(btn);
 
-        const d1 = document.createElement("div"); d1.className = "savedCell"; d1.textContent = a.email || "";
-        const d2 = document.createElement("div"); d2.className = "savedCell"; d2.textContent = maskPassword(a.password || "");
-        const d3 = document.createElement("div"); d3.className = "savedCell"; d3.textContent = a.passport || "";
-        const d4 = document.createElement("div"); d4.className = "savedCell"; d4.appendChild(makeBadge(a.status));
-        const d5 = document.createElement("div"); d5.className = "savedCell actions";
-        const dWrap = document.createElement("div"); dWrap.className = "actionBtns";
-        const dBtn = document.createElement("button");
-        dBtn.type = "button";
-        dBtn.className = "miniBtn";
-        dBtn.textContent = t("btn_req_pw");
-        dBtn.addEventListener("click", ()=> openPwModal(a));
-        dWrap.appendChild(dBtn);
-        d5.appendChild(dWrap);
-        dRow.appendChild(d1); dRow.appendChild(d2); dRow.appendChild(d3); dRow.appendChild(d4); dRow.appendChild(d5);
-        savedBody.appendChild(dRow);
-
-        const mCard = document.createElement("div");
-        mCard.className = "savedMobileCard";
-        mCard.tabIndex = 0;
-
-        const mHead = document.createElement("button");
-        mHead.type = "button";
-        mHead.className = "savedMobileHead";
-
-        const mMailWrap = document.createElement("div");
-        mMailWrap.className = "savedMobileMail";
-        const mMail = document.createElement("div");
-        mMail.className = "mail";
-        mMail.textContent = a.email || "";
-        const mHint = document.createElement("div");
-        mHint.className = "savedMobileMetaHint";
-        mHint.textContent = t("saved_mobile_sub");
-        mMailWrap.appendChild(mMail);
-        mMailWrap.appendChild(mHint);
-
-        const mRight = document.createElement("div");
-        mRight.style.display = "grid";
-        mRight.style.justifyItems = "end";
-        mRight.style.gap = "8px";
-        const mBadge = makeBadge(a.status);
-        const mArrow = document.createElement("span");
-        mArrow.className = "savedMobileArrow";
-        mArrow.textContent = "›";
-        mRight.appendChild(mBadge);
-        mRight.appendChild(mArrow);
-
-        mHead.appendChild(mMailWrap);
-        mHead.appendChild(mRight);
-        mHead.addEventListener("click", ()=> openSavedDetails(a));
-        mCard.addEventListener("keydown", (ev)=>{
-          if(ev.key === "Enter" || ev.key === " "){
-            ev.preventDefault();
-            openSavedDetails(a);
-          }
-        });
-        mCard.appendChild(mHead);
-        savedMobileBody.appendChild(mCard);
+        row.appendChild(c1); row.appendChild(c2); row.appendChild(c3); row.appendChild(c4); row.appendChild(c5);
+        desktopRows.appendChild(row);
       }
+      savedBody.appendChild(desktopWrap);
 
+      const mobileWrap = document.createElement("div");
+      mobileWrap.className = "savedMobile";
+      const mobileList = document.createElement("div");
+      mobileList.className = "savedMobileList";
+      view.forEach((a, i)=>{
+        const item = document.createElement("button");
+        item.type = "button";
+        item.className = "savedMobileItem" + (i === selectedSavedIndex ? " active" : "");
+        item.addEventListener("click", ()=>{ selectedSavedIndex = i; renderSaved(); });
+        const email = document.createElement("div");
+        email.className = "savedMobileEmail";
+        email.textContent = a.email || "";
+        const hint = document.createElement("div");
+        hint.className = "savedMobileHint";
+        hint.textContent = t("saved_mobile_hint");
+        item.appendChild(email);
+        item.appendChild(hint);
+        mobileList.appendChild(item);
+      });
+      mobileWrap.appendChild(mobileList);
+
+      const selected = view[selectedSavedIndex] || view[0];
+      if(selected){
+        const card = document.createElement("div");
+        card.className = "savedMobileCard";
+        const head = document.createElement("div");
+        head.className = "savedCardHead";
+        const headText = document.createElement("div");
+        const headTitle = document.createElement("b");
+        headTitle.textContent = selected.email || "";
+        const headSub = document.createElement("div");
+        headSub.className = "savedCardSub";
+        headSub.textContent = t("saved_selected");
+        headText.appendChild(headTitle);
+        headText.appendChild(headSub);
+        const badgeWrap = document.createElement("div");
+        badgeWrap.appendChild(makeBadge(selected.status));
+        head.appendChild(headText);
+        head.appendChild(badgeWrap);
+
+        const grid = document.createElement("div");
+        grid.className = "savedInfoGrid";
+        const fields = [
+          [t("email_lbl"), selected.email || ""],
+          [t("pass_lbl"), selected.password || ""],
+          [t("passport_lbl"), selected.passport || ""],
+          [t("status_lbl"), (selected.status != null && String(selected.status).trim() !== "") ? String(selected.status) : t("status_pending")],
+        ];
+        fields.forEach(([label, value])=>{
+          const box = document.createElement("div");
+          box.className = "savedInfoBox";
+          const s = document.createElement("span"); s.textContent = label;
+          const b = document.createElement("b"); b.textContent = value;
+          box.appendChild(s); box.appendChild(b);
+          grid.appendChild(box);
+        });
+
+        const actions = document.createElement("div");
+        actions.className = "savedCardActions";
+        const reqBtn = document.createElement("button");
+        reqBtn.type = "button";
+        reqBtn.className = "savedPrimaryBtn";
+        reqBtn.textContent = t("btn_req_pw");
+        reqBtn.addEventListener("click", ()=> openPwModal(selected));
+        actions.appendChild(reqBtn);
+        card.appendChild(head);
+        card.appendChild(grid);
+        card.appendChild(actions);
+        mobileWrap.appendChild(card);
+      }
+      savedBody.appendChild(mobileWrap);
       updateCount();
     }
 
     // ---- Saved: password update modal + copy helpers ----
     let pwTarget = null;
-    let savedDetailsTarget = null;
-
-    function openSavedDetails(acc){
-      if(!acc) return;
-      savedDetailsTarget = acc;
-      savedDetailsEmail.textContent = acc.email || "—";
-      savedDetailsPassword.textContent = maskPassword(acc.password || "");
-      savedDetailsPassport.textContent = acc.passport || "—";
-      savedDetailsStatus.innerHTML = "";
-      savedDetailsStatus.appendChild(makeBadge(acc.status));
-      savedDetailsModal.classList.add("show");
-      savedDetailsModal.setAttribute("aria-hidden", "false");
-    }
-
-    function closeSavedDetails(){
-      savedDetailsTarget = null;
-      savedDetailsModal.classList.remove("show");
-      savedDetailsModal.setAttribute("aria-hidden", "true");
-    }
 
     function openPwModal(acc){
       if(!acc) return;
-      closeSavedDetails();
       pwTarget = acc;
-      pwEmail.textContent = acc.email || "";
-      pwPassport.textContent = acc.passport || "";
+      pwEmail.value = acc.email || "";
+      pwPassport.value = acc.passport || "";
       pwNew.value = "";
-      pwModal.classList.add("show");
-      pwModal.setAttribute("aria-hidden", "false");
+      pwModal.style.display = "flex";
       pwNew.focus();
     }
 
     function closePwModal(){
       pwTarget = null;
-      pwModal.classList.remove("show");
-      pwModal.setAttribute("aria-hidden", "true");
+      pwModal.style.display = "none";
     }
 
     async function copyText(txt){
@@ -1718,15 +1235,8 @@
     document.getElementById("pwCancel").addEventListener("click", closePwModal);
     pwModal.addEventListener("click", (e)=>{ if(e.target === pwModal) closePwModal(); });
 
-    savedDetailsClose.addEventListener("click", closeSavedDetails);
-    savedDetailsCancel.addEventListener("click", closeSavedDetails);
-    savedDetailsModal.addEventListener("click", (e)=>{ if(e.target === savedDetailsModal) closeSavedDetails(); });
-    savedDetailsRequestBtn.addEventListener("click", ()=>{
-      if(savedDetailsTarget) openPwModal(savedDetailsTarget);
-    });
-
-    document.getElementById("copyEmailBtn").addEventListener("click", ()=> copyText(pwEmail.textContent));
-    document.getElementById("copyPassportBtn").addEventListener("click", ()=> copyText(pwPassport.textContent));
+    document.getElementById("copyEmailBtn").addEventListener("click", ()=> copyText(pwEmail.value));
+    document.getElementById("copyPassportBtn").addEventListener("click", ()=> copyText(pwPassport.value));
 
     document.getElementById("pwSave").addEventListener("click", async ()=>{
       if(!pwTarget) return;
@@ -1763,7 +1273,6 @@
         email: (emailEl.value||"").trim(),
         password: (passEl.value||"").trim(),
         passport: (passpEl.value||"").trim(),
-        type: (typeSelectEl && typeSelectEl.value) ? typeSelectEl.value : "Appointment",
         status: t("status_ready_state"),
       };
     }
@@ -1798,7 +1307,7 @@
     }
 
     function buildAccountsText(list){
-      return list.map(a => `${a.email};${a.password};${a.passport};Pending;${a.type || "Appointment"}`).join("\n");
+      return list.map(a => `${a.email};${a.password};${a.passport}`).join("\n");
     }
 
     async function postForm(fd){
@@ -1955,11 +1464,10 @@
       if(isMulti){
         fd.append("accounts", buildAccountsText(list));
       }else{
-        const a = list[0] || {email:"",password:"",passport:"",type:"Appointment"};
+        const a = list[0] || {email:"",password:"",passport:""};
         fd.append("email", a.email);
         fd.append("password", a.password);
         fd.append("passport", a.passport);
-        fd.append("type", a.type || "Appointment");
       }
 
       const json = await postForm(fd);
@@ -2032,7 +1540,6 @@
           fd.append("email", a.email);
           fd.append("password", a.password);
           fd.append("passport", a.passport);
-          fd.append("type", a.type || "Appointment");
         }else{
           fd.append("accounts", buildAccountsText(listToSend));
         }
