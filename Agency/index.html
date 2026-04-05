@@ -269,8 +269,17 @@
       #savedWrap .savedRow .savedEmailCell{
         font-weight:900;
         white-space:nowrap;
-        overflow:hidden;
-        text-overflow:ellipsis;
+        overflow-x:auto;
+        overflow-y:hidden;
+        text-overflow:clip;
+        scrollbar-width:thin;
+      }
+      #savedWrap .savedRow .savedEmailCell::-webkit-scrollbar{
+        height:6px;
+      }
+      #savedWrap .savedRow .savedEmailCell::-webkit-scrollbar-thumb{
+        background:rgba(255,255,255,.22);
+        border-radius:999px;
       }
       #savedWrap .savedCompactHint{display:block;}
     }
@@ -545,32 +554,6 @@
       transition:.18s ease;
     }
     .btnHero:hover{transform:translateY(-1px);filter:brightness(1.04);}
-
-
-    /* Full email display without truncation */
-    #savedBody .listRow > div.emailCell,
-    #savedWrap .listHead > div.emailCell,
-    #savedDetailEmail {
-      overflow: visible !important;
-      text-overflow: clip !important;
-      white-space: nowrap !important;
-      word-break: normal !important;
-      overflow-wrap: normal !important;
-    }
-    #savedBody .listRow > div.emailCell{
-      min-width: 0;
-    }
-    @media (max-width:560px){
-      #savedBody .listRow > div.emailCell{
-        white-space: nowrap !important;
-        overflow-x: auto !important;
-        overflow-y: hidden !important;
-        text-overflow: clip !important;
-        scrollbar-width: thin;
-      }
-      #savedBody .listRow > div.emailCell::-webkit-scrollbar{height:6px}
-      #savedBody .listRow > div.emailCell::-webkit-scrollbar-thumb{background:rgba(255,255,255,.22);border-radius:999px}
-    }
 
 </style>
 </head>
