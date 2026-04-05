@@ -541,6 +541,31 @@
       white-space:nowrap;
     }
 
+
+    /* ✅ Desktop wide tables: show full content */
+    @media (min-width:900px){
+      .shell{max-width:1280px}
+      .grid{grid-template-columns:minmax(0,1.55fr) minmax(260px,.45fr)}
+      .list{overflow-x:auto;overflow-y:hidden}
+      #savedBody{overflow-x:auto}
+      .listHead,.listRow,
+      .listHead{
+        min-width:1120px;
+        grid-template-columns:minmax(340px,1.7fr) minmax(180px,1fr) minmax(170px,1fr) minmax(170px,.95fr) minmax(150px,.9fr);
+      }
+      #savedWrap .listHead, #savedWrap .listRow{
+        min-width:1120px;
+        grid-template-columns:minmax(340px,1.7fr) minmax(180px,1fr) minmax(170px,1fr) minmax(170px,.95fr) minmax(150px,.9fr);
+      }
+      .listRow > div:not(:last-child){
+        overflow:visible;
+        text-overflow:clip;
+        white-space:nowrap;
+      }
+      .list::-webkit-scrollbar,
+      #savedBody::-webkit-scrollbar{height:10px;width:10px}
+    }
+
 </style>
 </head>
 
