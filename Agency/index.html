@@ -439,24 +439,40 @@
     #savedWrap .savedDesktop .listRow > div:nth-child(5),
     #savedWrap .savedDesktop .listHead > div:nth-child(5){justify-content:flex-end}
     #savedWrap .savedDesktop .listRow{min-width:980px}
+    #savedWrap .savedDesktop .listRow > div:nth-child(1),
+    #savedWrap .savedDesktop .listRow > div:nth-child(2),
+    #savedWrap .savedDesktop .listRow > div:nth-child(3){overflow-x:auto;overflow-y:hidden;padding-bottom:2px;scrollbar-width:thin}
+    #savedWrap .savedDesktop .listRow > div:nth-child(1)::-webkit-scrollbar,
+    #savedWrap .savedDesktop .listRow > div:nth-child(2)::-webkit-scrollbar,
+    #savedWrap .savedDesktop .listRow > div:nth-child(3)::-webkit-scrollbar{height:6px}
+    #savedWrap .savedDesktop .listRow > div:nth-child(1)::-webkit-scrollbar-thumb,
+    #savedWrap .savedDesktop .listRow > div:nth-child(2)::-webkit-scrollbar-thumb,
+    #savedWrap .savedDesktop .listRow > div:nth-child(3)::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border-radius:999px}
+
     #savedDesktopScroll{overflow-x:auto;overflow-y:hidden;border:1px solid rgba(255,255,255,.12);border-radius:16px;background:rgba(255,255,255,.04)}
     #savedDesktopScroll::-webkit-scrollbar{height:10px}
     #savedDesktopScroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:999px}
 
-    #savedMobileList{display:none;gap:10px;overflow-x:auto;padding-bottom:4px;scroll-snap-type:x proximity}
-    #savedMobileList::-webkit-scrollbar{height:8px}
-    #savedMobileList::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:999px}
+    #savedMobileList{display:none;gap:10px;overflow:visible;padding-bottom:0;flex-direction:column}
     .savedMiniRow{
-      min-width:max-content;
-      display:flex;align-items:center;gap:10px;
-      padding:12px 14px;border-radius:16px;
-      border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.07);
-      cursor:pointer;scroll-snap-align:start;
+      width:100%;
+      display:flex;flex-direction:column;align-items:flex-start;gap:8px;
+      padding:14px 15px;border-radius:18px;
+      border:1px solid rgba(255,255,255,.14);background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.05));
+      cursor:pointer;
       box-shadow:0 10px 25px rgba(0,0,0,.18);
+      text-align:left;
     }
-    .savedMiniRow.active{border-color:rgba(255,255,255,.42);background:rgba(255,255,255,.11);box-shadow:0 14px 30px rgba(0,0,0,.24)}
-    .savedMiniEmail{font-weight:900;white-space:nowrap;direction:ltr;text-align:left}
-    .savedMiniStatus{display:inline-flex;align-items:center;justify-content:center}
+    .savedMiniRow.active{border-color:rgba(56,189,248,.58);background:linear-gradient(180deg,rgba(56,189,248,.12),rgba(37,99,235,.08));box-shadow:0 16px 34px rgba(14,165,233,.18)}
+    .savedMiniTop{width:100%;display:flex;flex-direction:column;align-items:flex-start;gap:7px;min-width:0}
+    .savedMiniEmail{
+      width:100%;font-weight:950;white-space:nowrap;overflow-x:auto;overflow-y:hidden;
+      direction:ltr;text-align:left;display:block;line-height:1.45;padding-bottom:2px;
+      scrollbar-width:thin;
+    }
+    .savedMiniEmail::-webkit-scrollbar{height:6px}
+    .savedMiniEmail::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:999px}
+    .savedMiniStatus{display:inline-flex;align-items:center;justify-content:flex-start}
 
     .savedDetailCard{
       margin-top:12px;padding:16px;border-radius:18px;
@@ -479,13 +495,22 @@
     .savedInfoBox div{font-weight:900;font-size:.92rem;white-space:nowrap;overflow-x:auto;overflow-y:hidden;direction:ltr;text-align:left;padding-bottom:2px}
     .savedInfoBox div::-webkit-scrollbar{height:6px}
     .savedInfoBox div::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border-radius:999px}
-    .savedDetailActions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .savedDetailActions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin-top:16px}
     .requestPwBtn{
-      border:none;border-radius:14px;padding:11px 16px;
-      background:linear-gradient(135deg,#2563eb,#38bdf8);color:#fff;font-weight:950;
-      box-shadow:0 14px 30px rgba(37,99,235,.35);cursor:pointer;
-      display:inline-flex;align-items:center;gap:8px;
+      border:none;border-radius:16px;padding:12px 18px;
+      background:linear-gradient(135deg,#1d4ed8,#38bdf8);color:#fff;font-weight:950;
+      box-shadow:0 16px 34px rgba(37,99,235,.35);cursor:pointer;
+      display:inline-flex;align-items:center;gap:10px;
+      letter-spacing:.2px;
     }
+    .requestPwBtn .rqIcon{
+      width:34px;height:34px;border-radius:12px;
+      display:inline-flex;align-items:center;justify-content:center;
+      background:rgba(255,255,255,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.14);
+      font-size:1rem;
+    }
+    .requestPwBtn .rqText{display:flex;flex-direction:column;align-items:flex-start;line-height:1.1}
+    .requestPwBtn .rqText small{font-size:.68rem;opacity:.86;font-weight:800;margin-top:4px}
     .requestPwBtn:hover{filter:brightness(1.06);transform:translateY(-1px)}
 
     @media (max-width:760px){
@@ -1156,7 +1181,7 @@
           </div>
         </div>
         <div class="savedDetailActions">
-          <button type="button" class="requestPwBtn" id="savedDetailPwBtn">🔐 ${t("btn_req_pw")}</button>
+          <button type="button" class="requestPwBtn" id="savedDetailPwBtn"><span class="rqIcon">🔐</span><span class="rqText">${t("btn_req_pw")}<small>${t("request_pw_sub")}</small></span></button>
         </div>
       `;
       const detailBtn = document.getElementById("savedDetailPwBtn");
@@ -1210,7 +1235,12 @@
         const mobileRow = document.createElement("button");
         mobileRow.type = "button";
         mobileRow.className = "savedMiniRow" + (savedAccountKey(a) === selectedSavedKey ? " active" : "");
-        mobileRow.innerHTML = `<span class="savedMiniEmail">${a.email || ""}</span><span class="savedMiniStatus">${makeBadge(a.status).outerHTML}</span>`;
+        mobileRow.innerHTML = `
+          <span class="savedMiniTop">
+            <span class="savedMiniEmail">${a.email || ""}</span>
+            <span class="savedMiniStatus">${makeBadge(a.status).outerHTML}</span>
+          </span>
+        `;
         mobileRow.addEventListener("click", ()=>{
           selectedSavedKey = savedAccountKey(a);
           renderSaved();
