@@ -513,6 +513,32 @@
     .requestPwBtn .rqText small{font-size:.68rem;opacity:.86;font-weight:800;margin-top:4px}
     .requestPwBtn:hover{filter:brightness(1.06);transform:translateY(-1px)}
 
+    .savedModalPanel{
+      width:min(560px,100%);
+      border-radius:26px;
+      border:1px solid rgba(255,255,255,.18);
+      background:linear-gradient(180deg,rgba(7,16,40,.96),rgba(10,24,62,.94));
+      box-shadow:0 28px 70px rgba(0,0,0,.48);
+      overflow:hidden;
+      backdrop-filter:blur(16px);
+    }
+    .savedModalHead,.savedModalFoot{
+      padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+    }
+    .savedModalFoot{border-bottom:none;border-top:1px solid rgba(255,255,255,.10);flex-wrap:wrap;justify-content:flex-end}
+    .savedModalTitleWrap{display:flex;flex-direction:column;gap:5px;min-width:0}
+    .savedModalTitleWrap b{font-size:1.08rem;white-space:nowrap;overflow-x:auto;overflow-y:hidden;direction:ltr;text-align:left}
+    .savedModalTitleWrap span{font-size:.8rem;opacity:.78}
+    .savedModalBody{padding:18px;display:grid;gap:12px}
+    .savedModalGrid{display:grid;grid-template-columns:1fr;gap:10px}
+    .savedModalInfo{padding:13px 14px;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06)}
+    .savedModalInfo label{display:block;margin:0 0 7px;font-size:.74rem;font-weight:800;opacity:.78}
+    .savedModalInfo div{font-weight:900;font-size:.92rem;line-height:1.45;white-space:nowrap;overflow-x:auto;overflow-y:hidden;direction:ltr;text-align:left;padding-bottom:2px}
+    .savedModalInfo div::-webkit-scrollbar{height:6px}
+    .savedModalInfo div::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border-radius:999px}
+
+
     @media (max-width:760px){
       #savedWrap .savedDesktop{display:none}
       #savedMobileList{display:flex}
@@ -638,7 +664,6 @@
               </div>
 
               <div id="savedMobileList"></div>
-              <div id="savedDetailCard" class="savedDetailCard" style="display:none"></div>
             </div>
 
           </div>
@@ -664,9 +689,29 @@
     </div>
   </div>
 
+
+
+  <!-- Saved account details modal -->
+  <div id="savedInfoModal" style="display:none;position:fixed;inset:0;background:rgba(2,6,23,.62);z-index:997;align-items:center;justify-content:center;padding:18px">
+    <div class="savedModalPanel">
+      <div class="savedModalHead">
+        <div class="savedModalTitleWrap">
+          <b id="savedInfoTitle">Account Details</b>
+          <span id="savedInfoSub">Saved account</span>
+        </div>
+        <button id="savedInfoClose" type="button" class="xbtn" aria-label="Close">×</button>
+      </div>
+      <div id="savedInfoContent" class="savedModalBody"></div>
+      <div class="savedModalFoot">
+        <button id="savedInfoPwBtn" type="button" class="requestPwBtn"><span class="rqIcon">🔐</span><span class="rqText">Request password change<small>Open secure password update</small></span></button>
+        <button id="savedInfoCloseBtn" type="button" class="btn btnSoft" data-i18n="btn_close">Close</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Password update modal -->
   <div id="pwModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:998;align-items:center;justify-content:center;padding:18px">
-    <div class="panel" style="max-width:520px;width:100%;background:rgba(15,23,42,.92);border-color:rgba(255,255,255,.18);box-shadow:0 18px 45px rgba(0,0,0,.55)">
+    <div class="panel" style="max-width:560px;width:100%;background:linear-gradient(180deg,rgba(7,16,40,.96),rgba(10,24,62,.94));border-color:rgba(255,255,255,.18);box-shadow:0 28px 70px rgba(0,0,0,.55);border-radius:26px">
       <div class="titleRow" style="margin:0 0 10px">
         <b data-i18n="pw_title">Request password change</b>
         <button id="pwClose" type="button" class="xbtn" aria-label="Close">×</button>
@@ -766,9 +811,10 @@
         toast_copied: "Copied",
         toast_pw_updated: "Password updated",
         toast_pw_failed: "Password update failed",
-        saved_select_hint: "Select an account to view details",
-        saved_details: "Account details",
-        request_pw_sub: "Open password change request for this account"
+        btn_close: "Close",
+        saved_info_title: "Account Details",
+        saved_info_sub: "Saved account information",
+        request_pw_sub: "Open secure password update"
       },
       ar: {
         title: "الوكالة",
@@ -832,9 +878,10 @@
         toast_copied: "تم النسخ",
         toast_pw_updated: "تم تعديل كلمة السر",
         toast_pw_failed: "فشل تعديل كلمة السر",
-        saved_select_hint: "اختر حسابًا لعرض التفاصيل",
-        saved_details: "تفاصيل الحساب",
-        request_pw_sub: "افتح طلب تعديل كلمة السر لهذا الحساب"
+        btn_close: "إغلاق",
+        saved_info_title: "تفاصيل الحساب",
+        saved_info_sub: "معلومات الحساب المحفوظ",
+        request_pw_sub: "فتح تعديل كلمة السر بشكل آمن"
       }
     };
 
@@ -862,7 +909,14 @@
     const savedEmpty = document.getElementById("savedEmpty");
     const savedSearchEl = document.getElementById("savedSearch");
     const savedMobileList = document.getElementById("savedMobileList");
-    const savedDetailCard = document.getElementById("savedDetailCard");
+
+    const savedInfoModal = document.getElementById("savedInfoModal");
+    const savedInfoContent = document.getElementById("savedInfoContent");
+    const savedInfoTitle = document.getElementById("savedInfoTitle");
+    const savedInfoSub = document.getElementById("savedInfoSub");
+    const savedInfoClose = document.getElementById("savedInfoClose");
+    const savedInfoCloseBtn = document.getElementById("savedInfoCloseBtn");
+    const savedInfoPwBtn = document.getElementById("savedInfoPwBtn");
 
     const pwModal = document.getElementById("pwModal");
     const pwClose = document.getElementById("pwClose");
@@ -943,6 +997,10 @@
       listDoneBtn.textContent = t("btn_list_done");
       sendBtn.textContent = t("btn_send");
       searchAgencyBtn.title = lang === "ar" ? "بحث" : "Search";
+      if(savedInfoTitle) savedInfoTitle.textContent = t("saved_info_title");
+      if(savedInfoSub) savedInfoSub.textContent = t("saved_info_sub");
+      if(savedInfoCloseBtn) savedInfoCloseBtn.textContent = t("btn_close");
+      if(savedInfoPwBtn) savedInfoPwBtn.innerHTML = `<span class="rqIcon">🔐</span><span class="rqText">${t("btn_req_pw")}<small>${t("request_pw_sub")}</small></span>`;
 
       toggleMode(true);
       if(statusEl.textContent.trim().length === 0) setStatusKey("status_ready");
@@ -1146,46 +1204,45 @@
       renderSaved();
     }
 
-    function renderSavedDetail(acc){
-      if(!acc){
-        savedDetailCard.style.display = savedAccounts.length ? "block" : "none";
-        savedDetailCard.innerHTML = savedAccounts.length ? `<div class="savedDetailHead"><div class="savedDetailTitle"><b>${t("saved_details")}</b><span>${t("saved_select_hint")}</span></div></div>` : "";
-        return;
-      }
-
-      savedDetailCard.style.display = "block";
-      savedDetailCard.innerHTML = `
-        <div class="savedDetailHead">
-          <div class="savedDetailTitle">
-            <b>${acc.email || ""}</b>
-            <span>${t("request_pw_sub")}</span>
-          </div>
-          <div>${makeBadge(acc.status).outerHTML}</div>
-        </div>
-        <div class="savedDetailGrid">
-          <div class="savedInfoBox">
+    function fillSavedInfoModal(acc){
+      if(!acc || !savedInfoContent) return;
+      if(savedInfoTitle) savedInfoTitle.textContent = acc.email || t("saved_info_title");
+      if(savedInfoSub) savedInfoSub.textContent = t("saved_info_sub");
+      savedInfoContent.innerHTML = `
+        <div style="display:flex;justify-content:flex-start">${makeBadge(acc.status).outerHTML}</div>
+        <div class="savedModalGrid">
+          <div class="savedModalInfo">
             <label>${t("email_lbl")}</label>
             <div>${acc.email || ""}</div>
           </div>
-          <div class="savedInfoBox">
+          <div class="savedModalInfo">
+            <label>${t("pass_lbl")}</label>
+            <div>${acc.password || ""}</div>
+          </div>
+          <div class="savedModalInfo">
             <label>${t("passport_lbl")}</label>
             <div>${acc.passport || ""}</div>
           </div>
-          <div class="savedInfoBox">
-            <label>${t("pass_lbl")}</label>
-            <div>${maskPassword(acc.password || "")}</div>
-          </div>
-          <div class="savedInfoBox">
+          <div class="savedModalInfo">
             <label>${t("col_status")}</label>
             <div style="direction:inherit;text-align:inherit;overflow:visible;white-space:normal">${acc.status || t("status_pending")}</div>
           </div>
         </div>
-        <div class="savedDetailActions">
-          <button type="button" class="requestPwBtn" id="savedDetailPwBtn"><span class="rqIcon">🔐</span><span class="rqText">${t("btn_req_pw")}<small>${t("request_pw_sub")}</small></span></button>
-        </div>
       `;
-      const detailBtn = document.getElementById("savedDetailPwBtn");
-      if(detailBtn) detailBtn.addEventListener("click", ()=> openPwModal(acc));
+      if(savedInfoPwBtn){
+        savedInfoPwBtn.innerHTML = `<span class="rqIcon">🔐</span><span class="rqText">${t("btn_req_pw")}<small>${t("request_pw_sub")}</small></span>`;
+        savedInfoPwBtn.onclick = ()=>{ closeSavedInfoModal(); openPwModal(acc); };
+      }
+    }
+
+    function openSavedInfoModal(acc){
+      if(!acc || !savedInfoModal) return;
+      fillSavedInfoModal(acc);
+      savedInfoModal.style.display = "flex";
+    }
+
+    function closeSavedInfoModal(){
+      if(savedInfoModal) savedInfoModal.style.display = "none";
     }
 
     function renderSaved(){
@@ -1244,11 +1301,11 @@
         mobileRow.addEventListener("click", ()=>{
           selectedSavedKey = savedAccountKey(a);
           renderSaved();
+          openSavedInfoModal(a);
         });
         savedMobileList.appendChild(mobileRow);
       }
 
-      renderSavedDetail(view.find(a => savedAccountKey(a) === selectedSavedKey) || null);
       updateCount();
     }
 
@@ -1304,6 +1361,9 @@
     pwClose.addEventListener("click", closePwModal);
     document.getElementById("pwCancel").addEventListener("click", closePwModal);
     pwModal.addEventListener("click", (e)=>{ if(e.target === pwModal) closePwModal(); });
+    if(savedInfoClose) savedInfoClose.addEventListener("click", closeSavedInfoModal);
+    if(savedInfoCloseBtn) savedInfoCloseBtn.addEventListener("click", closeSavedInfoModal);
+    if(savedInfoModal) savedInfoModal.addEventListener("click", (e)=>{ if(e.target === savedInfoModal) closeSavedInfoModal(); });
 
     document.getElementById("copyEmailBtn").addEventListener("click", ()=> copyText(pwEmail.value));
     document.getElementById("copyPassportBtn").addEventListener("click", ()=> copyText(pwPassport.value));
