@@ -29,7 +29,7 @@
       font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
     }
 
-    .shell{width:100%;max-width:980px}
+    .shell{width:100%;max-width:1180px}
     .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px}
     .langbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 
@@ -58,7 +58,17 @@
 
     .head{
       padding:clamp(14px, 2vw, 18px) clamp(14px, 2vw, 18px) 0;
-      display:flex;flex-direction:column;gap:8px
+      display:flex;flex-direction:column;gap:10px;
+      position:relative;
+    }
+    .head::after{
+      content:"";
+      display:block;
+      width:92px;
+      height:4px;
+      border-radius:999px;
+      background:linear-gradient(90deg,rgba(255,255,255,.95),rgba(255,255,255,.25));
+      box-shadow:0 8px 18px rgba(255,255,255,.18);
     }
     h1{
       margin:0;
@@ -86,10 +96,11 @@
     }
 
     .panel{
-      background:rgba(5,28,70,.26);
+      background:linear-gradient(180deg,rgba(8,34,84,.34),rgba(5,28,70,.24));
       border:1px solid rgba(255,255,255,.16);
-      border-radius:18px;
-      padding:clamp(12px, 2vw, 14px)
+      border-radius:22px;
+      padding:clamp(14px, 2vw, 16px);
+      box-shadow:0 16px 35px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.05)
     }
 
     .titleRow{
@@ -175,8 +186,8 @@
     }
     .btn:disabled{opacity:.6;cursor:wait;box-shadow:none}
     .btn:hover:not(:disabled){transform:translateY(-1px);filter:brightness(1.05);box-shadow:0 16px 38px rgba(0,0,0,.55)}
-    .btnPrimary{background:linear-gradient(135deg,#16a34a,#22c55e)}
-    .btnSoft{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2)}
+    .btnPrimary{background:linear-gradient(135deg,#10b981,#22c55e)}
+    .btnSoft{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.22)}
     .err{color:#ffd0d0;font-size:.78rem;margin:6px 6px 0;display:none}
     .err.show{display:block}
     .invalid{border-color:var(--danger)!important;box-shadow:0 0 0 1px rgba(255,90,90,.6)!important}
@@ -232,11 +243,11 @@
     .savedDesktop{display:block}
     .savedMobile{display:none}
     .savedTableWrap{
-      border:1px solid rgba(255,255,255,.14);
-      border-radius:18px;
+      border:1px solid rgba(255,255,255,.16);
+      border-radius:22px;
       overflow:hidden;
-      background:rgba(255,255,255,.05);
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+      background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.04));
+      box-shadow:0 18px 38px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.05);
     }
     .savedRow{
       display:grid;
