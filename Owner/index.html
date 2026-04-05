@@ -473,14 +473,34 @@ async function apiFetch(url, options={}){
     return d.toLocaleDateString("en-US", { month:"long", year:"numeric" });
   }
 
+  function doneMonthKeyOf(account){
+    return monthKeyOf(account?.doneAt || account?.createdAt || account?.updatedAt);
+  }
+
+  function isVisibleInMonth(account, monthKey){
+    const selected = norm(monthKey || currentMonthKey());
+    const current = currentMonthKey();
+    const st = statusValue(account?.status);
+    if(selected === "all") return true;
+    if(selected === current){
+      if(st !== "Done") return true;
+      return doneMonthKeyOf(account) === selected;
+    }
+    if(st !== "Done") return false;
+    return doneMonthKeyOf(account) === selected;
+  }
+
   function renderMonthFilter(){
     const sel = $("selMonthFilter");
-    const keys = [...new Set((Array.isArray(S.accounts)?S.accounts:[]).map(a => monthKeyOf(a.updatedAt)).filter(Boolean))].sort().reverse();
     const current = currentMonthKey();
+    const keys = [...new Set((Array.isArray(S.accounts)?S.accounts:[])
+      .filter(a => statusValue(a.status) === "Done")
+      .map(a => doneMonthKeyOf(a))
+      .filter(Boolean))].sort().reverse();
     if(!keys.includes(current)) keys.unshift(current);
     if(!S.monthFilter) S.monthFilter = current;
     if(S.monthFilter !== "all" && !keys.includes(S.monthFilter)) S.monthFilter = current;
-    sel.innerHTML = '<option value="all">All months</option>' + keys.map(k => `<option value="${k}">${monthLabel(k)}</option>`).join("");
+    sel.innerHTML = keys.map(k => `<option value="${k}">${monthLabel(k)}</option>`).join("");
     sel.value = S.monthFilter || current;
   }
 
@@ -515,17 +535,11 @@ const API = {
     const q = norm($("inSearch").value).toLowerCase();
     const sf = norm($("selStatusFilter").value);
     const mf = norm(S.monthFilter || $("selMonthFilter").value || currentMonthKey());
-    const current = currentMonthKey();
-    const monthMode = mf === "all" ? "all" : (mf === current ? "current" : "past");
     return (Array.isArray(list)?list:[]).filter(a => {
-      const itemMonth = monthKeyOf(a.updatedAt);
-      const okMonth = mf === "all" ? true : itemMonth === mf;
-      if(!okMonth) return false;
+      if(!isVisibleInMonth(a, mf)) return false;
       const okQ = !q || [a.agency,a.email,a.passport,a.status,a.type].join(" ").toLowerCase().includes(q);
       if(!okQ) return false;
       const st = statusValue(a.status);
-      if(monthMode === "past") return st === "Done";
-      if(monthMode === "current") return sf ? st === sf : true;
       return sf ? st === sf : true;
     }).sort((a,b)=> (STATUS_PRIORITY[statusValue(a.status)]-STATUS_PRIORITY[statusValue(b.status)]) || String(a.email).localeCompare(String(b.email)));
   }
@@ -794,7 +808,7 @@ const API = {
   $("inPass").addEventListener('keydown', (e)=>{ if(e.key==="Enter") UI.beginLogin(); });
   $("inUser").addEventListener('keydown', (e)=>{ if(e.key==="Enter") UI.beginLogin(); });
   $("btnRefresh").onclick=UI.refreshAll; $("btnBulk").onclick=UI.openBulk; $("btnAddOne").onclick=UI.openAddOne; $("btnParse").onclick=UI.parseBulk; $("btnBulkAdd").onclick=UI.bulkAdd; $("btnSaveOne").onclick=UI.saveOne; $("btnSendAgencyAll").onclick=UI.sendAgencyAll; $("btnOpenManager").onclick=UI.openManager; $("btnSaveManager").onclick=UI.saveManager;
-  $("selAgency").addEventListener('change', (e)=>UI.loadAgency(e.target.value||'')); $("inSearch").addEventListener('input', renderAccounts); $("selStatusFilter").addEventListener('change', renderAccounts); $("selMonthFilter").addEventListener('change', (e)=>{ S.monthFilter=e.target.value||currentMonthKey(); if(S.monthFilter!=="all" && S.monthFilter!==currentMonthKey()) $("selStatusFilter").value=""; persistUiState(); renderAccounts(); });
+  $("selAgency").addEventListener('change', (e)=>UI.loadAgency(e.target.value||'')); $("inSearch").addEventListener('input', renderAccounts); $("selStatusFilter").addEventListener('change', renderAccounts); $("selMonthFilter").addEventListener('change', (e)=>{ S.monthFilter=e.target.value||currentMonthKey(); if(S.monthFilter!==currentMonthKey()) $("selStatusFilter").value=""; persistUiState(); renderAccounts(); });
   $("selManagerView").addEventListener('change', (e)=>{ S.managerSelected=e.target.value||''; persistUiState(); renderManagerQueue(); });
   $("selManagerAssign").addEventListener('change', (e)=>{ S.managerAssignSelected=e.target.value||''; persistUiState(); renderAccounts(); });
   document.querySelectorAll('.tabbtn').forEach(btn=>btn.addEventListener('click',async ()=>{ document.querySelectorAll('.tabbtn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.querySelectorAll('.tabpane').forEach(p=>p.classList.add('hidden')); document.getElementById(btn.dataset.tab).classList.remove('hidden'); if(S.authenticated && btn.dataset.tab==='managersTab'){ await UI.loadManagers(); } }));
