@@ -64,7 +64,7 @@ textarea{min-height:180px;resize:vertical}
 @media (max-width:900px){.panelHead{flex-direction:column;align-items:stretch}}
 .panelHead h2{margin:0;font-size:18px}
 .panelHead .actions{justify-content:flex-end}
-.filters{display:grid;grid-template-columns:1.05fr 1fr .9fr .8fr .9fr;gap:12px;margin-bottom:14px}
+.filters{display:grid;grid-template-columns:1.1fr 1fr .7fr .9fr;gap:12px;margin-bottom:14px}
 @media (max-width:1100px){.filters{grid-template-columns:1fr 1fr}} @media (max-width:700px){.filters{grid-template-columns:1fr}}
 .tablewrap{border:1px solid var(--line);border-radius:20px;overflow:auto;background:#fff}
 table{width:100%;border-collapse:separate;border-spacing:0;min-width:900px}
@@ -91,44 +91,117 @@ tbody tr:hover{background:#fbfdff}
 .list{list-style:none;margin:0;padding:0;display:grid;gap:10px;max-height:320px;overflow:auto}
 .list li{padding:12px 14px;border:1px solid var(--line);border-radius:16px;background:#fbfdff}
 .mono{font-family:var(--mono)}
+
+.auth-shell{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.auth-shell.hidden{display:none!important}
+.auth-wrap{width:min(460px,100%)}
+.auth-card{padding:28px;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border:1px solid rgba(226,232,240,.95);border-radius:28px;box-shadow:0 24px 60px rgba(15,23,42,.10)}
+.auth-brand{display:flex;align-items:center;gap:14px;margin-bottom:24px}
+.auth-brand .logo{width:56px;height:56px;border-radius:20px}
+.auth-brand h1{margin:0;font-size:24px}
+.auth-brand p{margin:6px 0 0;color:var(--muted);font-size:13px}
+.auth-stack{display:grid;gap:14px}
+.auth-actions{display:grid;gap:10px;margin-top:8px}
+.auth-card .btn{width:100%;justify-content:center;min-height:48px}
+.auth-meta{display:flex;justify-content:center;margin-top:14px}
+.auth-status{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--muted);font-size:12px}
+.app.hidden{display:none!important}
+.sidebarMeta{display:grid;gap:12px}
+.sidebarStat{padding:14px 16px;border-radius:18px;border:1px solid var(--line);background:linear-gradient(180deg,#fff,#f9fbff)}
+.sidebarStat b{display:block;font-size:22px;line-height:1.1;margin-bottom:6px}
+.sidebarStat span{font-size:12px;color:var(--muted)}
+.sessionBox{display:grid;gap:10px;margin-top:8px}
+.sessionLine{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:16px;background:#fff}
+.sessionLine span{font-size:12px;color:var(--muted)}
+.sessionLine b{font-size:13px}
+
 </style>
 </head>
 <body>
-<div class="app">
+
+<div class="auth-shell" id="authShell">
+  <div class="auth-wrap">
+    <div class="auth-card" id="loginView">
+      <div class="auth-brand">
+        <div class="logo"></div>
+        <div>
+          <h1>Owner Panel</h1>
+          <p class="apiHost">…</p>
+        </div>
+      </div>
+      <div class="auth-stack">
+        <div class="field">
+          <label class="label">User</label>
+          <input id="inUser" class="input" placeholder="admin" autocomplete="username" />
+        </div>
+        <div class="field">
+          <label class="label">Password</label>
+          <input id="inPass" class="input" type="password" placeholder="••••••••" autocomplete="current-password" />
+        </div>
+      </div>
+      <div class="auth-actions">
+        <button class="btn primary" id="btnLogin">Continue</button>
+      </div>
+      <div class="auth-meta">
+        <span class="auth-status"><span class="dot"></span><span id="authStageLabel">Secure Access</span></span>
+      </div>
+    </div>
+
+    <div class="auth-card hidden" id="otpView">
+      <div class="auth-brand">
+        <div class="logo"></div>
+        <div>
+          <h1>Verification</h1>
+          <p id="otpUserLabel">Owner</p>
+        </div>
+      </div>
+      <div class="auth-stack">
+        <div class="field">
+          <label class="label">OTP</label>
+          <input id="inOtp" class="input" inputmode="numeric" maxlength="6" placeholder="123456" autocomplete="one-time-code" />
+        </div>
+      </div>
+      <div class="auth-actions">
+        <button class="btn primary" id="btnVerifyOtp">Verify</button>
+        <button class="btn" id="btnBackToLogin">Back</button>
+      </div>
+      <div class="auth-meta">
+        <span class="auth-status"><span class="dot"></span><span>OTP</span></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="app hidden" id="appShell">
   <div class="shell">
     <aside class="card sidebar">
       <div class="brand">
         <div class="logo"></div>
         <div>
           <h1>Owner Panel</h1>
-          <p id="apiHost">…</p>
+          <p class="apiHost">…</p>
         </div>
       </div>
-      <div class="badgeRow">
-        <span class="pill"><span class="dot"></span><span id="pillText">غير متصل</span></span>
-        <span class="chip">Auth: <b id="authState">Guest</b></span>
-      </div>
-      <div class="field">
-        <label class="label">User</label>
-        <input id="inUser" placeholder="admin" />
-      </div>
-      <div class="field">
-        <label class="label">Password</label>
-        <input id="inPass" type="password" placeholder="••••••••" />
-      </div>
-      <div class="field hidden" id="otpWrap">
-        <label class="label">OTP</label>
-        <input id="inOtp" inputmode="numeric" maxlength="6" placeholder="123456" />
-      </div>
-      <div class="sideActions">
-        <button class="btn primary" id="btnLogin">Send OTP</button>
-        <button class="btn primary hidden" id="btnVerifyOtp">Verify OTP</button>
-        <div class="grid2">
-          <button class="btn" id="btnPing">Ping</button>
-          <button class="btn danger" id="btnLogout" disabled>Logout</button>
-        </div>
-      </div>
-    </aside>
+      
+<div class="badgeRow">
+  <span class="pill"><span class="dot"></span><span id="pillText">Secure Session</span></span>
+  <span class="chip">Auth: <b id="authState">Owner</b></span>
+</div>
+<div class="sidebarMeta">
+  <div class="sidebarStat">
+    <b id="sessionUser">—</b>
+    <span>User</span>
+  </div>
+  <div class="sessionBox">
+    <div class="sessionLine"><span>Session</span><b id="sessionState">Active</b></div>
+    <div class="sessionLine"><span>Expires</span><b id="sessionExpiry">20 min</b></div>
+  </div>
+  <div class="sideActions">
+    <button class="btn danger" id="btnLogout" disabled>Logout</button>
+    <button class="btn hidden" id="btnPing">Ping</button>
+  </div>
+</div>
+</aside>
 
     <main>
       <div class="card topbar">
@@ -161,12 +234,6 @@ tbody tr:hover{background:#fbfdff}
               <input id="inSearch" placeholder="email / passport / status" disabled />
             </div>
             <div>
-              <label class="label">Month</label>
-              <select id="selMonthFilter" disabled>
-                <option value="current">Current Month</option>
-              </select>
-            </div>
-            <div>
               <label class="label">Status</label>
               <select id="selStatusFilter" disabled>
                 <option value="">All</option>
@@ -175,6 +242,10 @@ tbody tr:hover{background:#fbfdff}
                 <option value="Rejected">Rejected</option>
                 <option value="Pending">Pending</option>
               </select>
+            </div>
+            <div>
+              <label class="label">Month</label>
+              <select id="selMonthFilter" disabled></select>
             </div>
             <div>
               <label class="label">Manager</label>
@@ -300,11 +371,11 @@ tbody tr:hover{background:#fbfdff}
 (() => {
   const API_BASE = (document.body?.dataset?.apiBase || "https://api.mehdik.site").replace(/\/$/, "");
   const OWNER_BASE = API_BASE + "/owner";
-  document.getElementById("apiHost").textContent = API_BASE;
+  document.querySelectorAll(".apiHost").forEach((el)=>el.textContent = API_BASE);
   const STORAGE_KEY = "owner-panel-safe-ui:v2";
   const VALID_STATUSES = ["Done","In Progress","Rejected","Pending"];
   const STATUS_PRIORITY = {"Done":0,"In Progress":1,"Rejected":2,"Pending":3};
-  const S = { authenticated:false, csrfToken:"", pendingChallengeId:"", loginUser:"", agencies:[], agencySelected:"", accounts:[], managers:[], managerSelected:"", managerAssignSelected:"", monthFilter:"current", bulkParsed:[] };
+  const S = { authenticated:false, csrfToken:"", pendingChallengeId:"", loginUser:"", sessionExpiresAt:0, agencies:[], agencySelected:"", accounts:[], managers:[], managerSelected:"", managerAssignSelected:"", monthFilter:"", bulkParsed:[] };
 
   const $ = (id) => document.getElementById(id);
   const norm = (s) => String(s || "").trim();
@@ -321,36 +392,47 @@ const maskPassword = (p) => { const s=String(p||""); if(!s) return ""; if(s.leng
 
 function toast(title, msg){ const t=$("toast"); $("toastTitle").textContent=title; $("toastMsg").textContent=msg; t.classList.add("show"); clearTimeout(toast._tm); toast._tm=setTimeout(()=>t.classList.remove("show"), 3500); }
 function persistUiState(){ sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ agencySelected:S.agencySelected, managerSelected:S.managerSelected, managerAssignSelected:S.managerAssignSelected, monthFilter:S.monthFilter, loginUser:S.loginUser })); }
-function restoreUiState(){ try { const raw=sessionStorage.getItem(STORAGE_KEY); if(!raw) return; const d=JSON.parse(raw); S.agencySelected=norm(d.agencySelected); S.managerSelected=norm(d.managerSelected); S.managerAssignSelected=norm(d.managerAssignSelected); S.monthFilter=norm(d.monthFilter)||"current"; S.loginUser=norm(d.loginUser); $("inUser").value=S.loginUser; } catch(_){} }
-function resetLoginFlow(clearCreds=false){
-  S.pendingChallengeId="";
-  $("otpWrap").classList.add("hidden");
-  $("btnVerifyOtp").classList.add("hidden");
-  $("btnLogin").classList.remove("hidden");
-  $("btnLogin").textContent="Send OTP";
-  $("inOtp").value="";
-  if(clearCreds){ $("inPass").value=""; }
+function restoreUiState(){ try { const raw=sessionStorage.getItem(STORAGE_KEY); if(!raw) return; const d=JSON.parse(raw); S.agencySelected=norm(d.agencySelected); S.managerSelected=norm(d.managerSelected); S.managerAssignSelected=norm(d.managerAssignSelected); S.monthFilter=norm(d.monthFilter); S.loginUser=norm(d.loginUser); $("inUser").value=S.loginUser; } catch(_){} }
+
+function showLoginView(clearPass=false){
+  $("authShell").classList.remove("hidden");
+  $("loginView").classList.remove("hidden");
+  $("otpView").classList.add("hidden");
+  $("authStageLabel").textContent = "Secure Access";
+  S.pendingChallengeId = "";
+  $("inOtp").value = "";
+  if(clearPass) $("inPass").value = "";
+}
+function showOtpView(){
+  $("authShell").classList.remove("hidden");
+  $("loginView").classList.add("hidden");
+  $("otpView").classList.remove("hidden");
+  $("otpUserLabel").textContent = S.loginUser || "Owner";
+  $("inOtp").value = "";
+}
+function updateSessionInfo(){
+  $("sessionUser").textContent = S.loginUser || "—";
+  $("sessionState").textContent = S.authenticated ? "Active" : "Inactive";
+  if(!S.authenticated || !S.sessionExpiresAt){
+    $("sessionExpiry").textContent = "—";
+    return;
+  }
+  const remaining = Math.max(0, Math.ceil((Number(S.sessionExpiresAt) - Date.now()) / 60000));
+  $("sessionExpiry").textContent = remaining > 0 ? `${remaining} min` : "Expired";
 }
 function setAuthState(authed){
   S.authenticated = !!authed;
+  $("btnLogout").disabled = !authed;
+  ["btnRefresh","btnBulk","btnAddOne","selAgency","inSearch","selStatusFilter","selMonthFilter","btnSendAgencyAll","btnOpenManager","selManagerView","selManagerAssign"].forEach(id=>$(id).disabled=!authed);
+  $("pillText").textContent = authed ? "Authenticated" : "Secure Session";
   $("authState").textContent = authed ? "Owner" : "Guest";
-  $("btnLogout").disabled=!authed;
-  ["btnRefresh","btnBulk","btnAddOne","selAgency","inSearch","selMonthFilter","selStatusFilter","btnSendAgencyAll","btnOpenManager","selManagerView","selManagerAssign"].forEach(id=>$(id).disabled=!authed);
-  $("pillText").textContent = authed ? "متصل" : "غير متصل";
-  if(authed){
-    $("btnLogin").classList.add("hidden");
-    $("btnVerifyOtp").classList.add("hidden");
-    $("otpWrap").classList.add("hidden");
-    $("inPass").disabled = true;
-    $("inUser").disabled = true;
-  }else{
-    $("btnLogin").classList.remove("hidden");
-    $("btnLogin").textContent = "Send OTP";
-    $("btnVerifyOtp").classList.add("hidden");
-    $("otpWrap").classList.add("hidden");
-    $("inPass").disabled = false;
-    $("inUser").disabled = false;
-  }
+  $("appShell").classList.toggle("hidden", !authed);
+  $("authShell").classList.toggle("hidden", authed);
+  updateSessionInfo();
+  if(!authed) showLoginView(false);
+}
+function resetLoginFlow(clearCreds=false){
+  showLoginView(clearCreds);
 }
 
 
@@ -370,6 +452,39 @@ async function apiFetch(url, options={}){
   finally{ clearTimeout(timer); }
 }
 
+
+  function monthKeyOf(value){
+    const d = value ? new Date(value) : null;
+    if(!d || Number.isNaN(d.getTime())) return "";
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,"0");
+    return `${y}-${m}`;
+  }
+
+  function currentMonthKey(){
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
+  }
+
+  function monthLabel(key){
+    if(!/^\d{4}-\d{2}$/.test(key)) return "All months";
+    const [y,m] = key.split("-");
+    const d = new Date(Number(y), Number(m)-1, 1);
+    return d.toLocaleDateString("en-US", { month:"long", year:"numeric" });
+  }
+
+  function renderMonthFilter(){
+    const sel = $("selMonthFilter");
+    const keys = [...new Set((Array.isArray(S.accounts)?S.accounts:[]).map(a => monthKeyOf(a.updatedAt)).filter(Boolean))].sort().reverse();
+    const current = currentMonthKey();
+    if(!keys.includes(current)) keys.unshift(current);
+    if(!S.monthFilter) S.monthFilter = current;
+    if(S.monthFilter !== "all" && !keys.includes(S.monthFilter)) S.monthFilter = current;
+    sel.innerHTML = '<option value="all">All months</option>' + keys.map(k => `<option value="${k}">${monthLabel(k)}</option>`).join("");
+    sel.value = S.monthFilter || current;
+  }
+
+
 const API = {
     ping:()=>apiFetch(OWNER_BASE+"/ping"),
     startAuth:(user,pass)=>apiFetch(OWNER_BASE+"/auth/start",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user,pass})}),
@@ -377,7 +492,12 @@ const API = {
     session:()=>apiFetch(OWNER_BASE+"/session"),
     logout:()=>apiFetch(OWNER_BASE+"/logout",{method:"POST"}),
     agencies:()=>apiFetch(OWNER_BASE+"/agencies"),
-    accounts:(agency)=>apiFetch(OWNER_BASE+"/accounts?agency="+encodeURIComponent(agency)),
+    accounts:(agency, month="", includeDone="")=>{
+      const qs = new URLSearchParams({ agency });
+      if(month) qs.set("month", month);
+      if(includeDone!=="") qs.set("includeDone", String(!!includeDone));
+      return apiFetch(OWNER_BASE+"/accounts?"+qs.toString());
+    },
     addAccount:(payload)=>apiFetch(OWNER_BASE+"/account",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),
     editAccount:(payload)=>apiFetch(OWNER_BASE+"/account",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),
     delAccount:(payload)=>apiFetch(OWNER_BASE+"/account",{method:"DELETE",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),
@@ -391,41 +511,22 @@ const API = {
     managerStatus:(payload)=>apiFetch(OWNER_BASE+"/manager/status",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)})
   };
 
-  function parseDateSafe(v){ const d = v ? new Date(v) : null; return d && !isNaN(d) ? d : null; }
-  function monthKeyOf(v){ const d=parseDateSafe(v); if(!d) return ""; return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; }
-  function currentMonthKey(){ const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; }
-  function monthLabel(key){ if(key==="current") return "Current Month"; const [y,m]=String(key||"").split('-'); if(!y||!m) return key||"—"; const d=new Date(Number(y), Number(m)-1, 1); return d.toLocaleDateString('en-US',{month:'long', year:'numeric'}); }
-  function accountCreatedMonth(a){ return monthKeyOf(a.createdAt || a.updatedAt); }
-  function accountDoneMonth(a){ return statusValue(a.status)==="Done" ? monthKeyOf(a.statusChangedAt || a.updatedAt) : ""; }
-  function accountVisibleInMonth(a, selectedMonth){
-    const st = statusValue(a.status);
-    const month = selectedMonth === 'current' ? currentMonthKey() : selectedMonth;
-    if(st !== 'Done') return selectedMonth === 'current' ? true : accountCreatedMonth(a) === month || monthKeyOf(a.updatedAt) === month;
-    return accountCreatedMonth(a) === month || accountDoneMonth(a) === month;
-  }
-  function renderMonthFilter(){
-    const sel = $("selMonthFilter");
-    const current = currentMonthKey();
-    const set = new Set([current]);
-    for(const a of Array.isArray(S.accounts)?S.accounts:[]){
-      const c = accountCreatedMonth(a); if(c) set.add(c);
-      const d = accountDoneMonth(a); if(d) set.add(d);
-      const u = monthKeyOf(a.updatedAt); if(u) set.add(u);
-    }
-    const months = [...set].filter(Boolean).sort((a,b)=> b.localeCompare(a));
-    sel.innerHTML = `<option value="current">Current Month</option>` + months.filter(m=>m!==current).map(m=>`<option value="${m}">${monthLabel(m)}</option>`).join('');
-    if(S.monthFilter !== 'current' && months.includes(S.monthFilter)) sel.value = S.monthFilter;
-    else { S.monthFilter = 'current'; sel.value = 'current'; }
-  }
   function applyFilters(list){
     const q = norm($("inSearch").value).toLowerCase();
     const sf = norm($("selStatusFilter").value);
-    const selectedMonth = norm($("selMonthFilter").value) || S.monthFilter || 'current';
+    const mf = norm(S.monthFilter || $("selMonthFilter").value || currentMonthKey());
+    const current = currentMonthKey();
+    const monthMode = mf === "all" ? "all" : (mf === current ? "current" : "past");
     return (Array.isArray(list)?list:[]).filter(a => {
+      const itemMonth = monthKeyOf(a.updatedAt);
+      const okMonth = mf === "all" ? true : itemMonth === mf;
+      if(!okMonth) return false;
       const okQ = !q || [a.agency,a.email,a.passport,a.status,a.type].join(" ").toLowerCase().includes(q);
-      const okS = !sf || statusValue(a.status) === sf;
-      const okM = accountVisibleInMonth(a, selectedMonth);
-      return okQ && okS && okM;
+      if(!okQ) return false;
+      const st = statusValue(a.status);
+      if(monthMode === "past") return st === "Done";
+      if(monthMode === "current") return sf ? st === sf : true;
+      return sf ? st === sf : true;
     }).sort((a,b)=> (STATUS_PRIORITY[statusValue(a.status)]-STATUS_PRIORITY[statusValue(b.status)]) || String(a.email).localeCompare(String(b.email)));
   }
 
@@ -454,7 +555,7 @@ const API = {
   function renderManagers(){
     renderManagersSelectors();
     const tb=$("managersTbody");
-    if(!S.managers.length){ tb.innerHTML='<tr><td colspan="6" class="muted" style="padding:16px">—</td></tr>'; renderManagerQueue(); return; }
+    if(!S.managers.length){ tb.innerHTML='<tr><td colspan="6" class="muted" style="padding:16px">لا يوجد مديرون</td></tr>'; renderManagerQueue(); return; }
     tb.innerHTML=S.managers.map((m,i)=>`<tr>
       <td>${i+1}</td>
       <td class="mono">${escapeHtml(m.id)}</td>
@@ -471,7 +572,6 @@ const API = {
 
   function renderAccounts(){
     const tb=$("tbody");
-    renderMonthFilter();
     if(!S.agencySelected){ tb.innerHTML='<tr><td colspan="9" class="muted" style="padding:16px">اختر وكالة أولاً</td></tr>'; return; }
     const filtered=applyFilters(S.accounts);
     if(!filtered.length){ tb.innerHTML='<tr><td colspan="9" class="muted" style="padding:16px">لا توجد بيانات</td></tr>'; return; }
@@ -537,7 +637,7 @@ const API = {
     _oneMode:"add", _oneMatch:{email:"",passport:""}, _mgrMode:"add",
     async logout(){
       await API.logout();
-      S.csrfToken=""; S.pendingChallengeId=""; S.loginUser=norm($("inUser").value); S.agencies=[]; S.accounts=[]; S.managers=[]; S.agencySelected=""; S.managerSelected=""; S.managerAssignSelected=""; S.monthFilter="current";
+      S.csrfToken=""; S.pendingChallengeId=""; S.sessionExpiresAt=0; S.agencies=[]; S.accounts=[]; S.managers=[]; S.agencySelected=""; S.managerSelected=""; S.managerAssignSelected=""; S.monthFilter=currentMonthKey();
       sessionStorage.removeItem(STORAGE_KEY);
       setAuthState(false); resetLoginFlow(true); renderAgencies(); renderAccounts(); renderManagers(); toast('Logout','Logged out');
     },
@@ -549,23 +649,21 @@ const API = {
       S.pendingChallengeId = norm(res.challengeId);
       S.loginUser = user;
       persistUiState();
-      $("otpWrap").classList.remove("hidden");
-      $("btnVerifyOtp").classList.remove("hidden");
-      $("btnLogin").classList.add("hidden");
+      showOtpView();
       $("inOtp").focus();
-      toast('OTP','تم إرسال الرمز إلى تيليغرام');
+      toast('OTP','Code sent');
     },
     async verifyOtp(){
       const otp=norm($("inOtp").value);
-      if(!S.pendingChallengeId) return toast('OTP','ابدأ تسجيل الدخول أولاً');
-      if(!/^\d{6}$/.test(otp)) return toast('OTP','الرمز يجب أن يكون 6 أرقام');
+      if(!S.pendingChallengeId) return toast('OTP','Start again');
+      if(!/^\d{6}$/.test(otp)) return toast('OTP','Invalid OTP');
       const res=await API.verifyOtp(S.pendingChallengeId, otp);
-      if(!res.ok) return toast('OTP',res.error||'OTP غير صحيح');
+      if(!res.ok) return toast('OTP',res.error||'OTP failed');
       S.csrfToken = norm(res.csrfToken);
+      S.sessionExpiresAt = Number(res.expiresAt || 0);
       setAuthState(true);
-      resetLoginFlow(true);
       await UI.refreshAll();
-      toast('Login','تم تسجيل الدخول');
+      toast('Login','Authenticated');
     },
     async restoreAuth(){
       const res=await API.session();
@@ -575,27 +673,36 @@ const API = {
       }
       S.csrfToken = norm(res.csrfToken);
       S.loginUser = norm(res.user);
+      S.sessionExpiresAt = Number(res.expiresAt || 0);
       $("inUser").value = S.loginUser;
       setAuthState(true);
       await UI.refreshAll();
     },
     async refreshAll(){
-      const res=await API.agencies(); if(!res.ok) return toast('Agencies',res.error||'Failed');
-      S.agencies=Array.isArray(res.agencies)?res.agencies:[];
-      renderAgencies(); renderManagers();
-      if(S.agencySelected) await UI.loadAgency(S.agencySelected); else { S.accounts=[]; renderAccounts(); }
+      const [a,m] = await Promise.all([API.agencies(), API.managers()]);
+      if(!a.ok) return toast('Agencies',a.error||'Failed');
+      if(!m.ok) return toast('Managers',m.error||'Failed');
+      S.agencies=Array.isArray(a.agencies)?a.agencies:[];
+      S.managers=Array.isArray(m.managers)?m.managers:[];
+      renderAgencies();
+      renderManagers();
+      if(S.agencySelected) await UI.loadAgency(S.agencySelected); else { S.accounts=[]; renderMonthFilter(); renderAccounts(); renderManagerQueue(); }
       persistUiState();
     },
     async loadAgency(agency){
       S.agencySelected=agency||''; persistUiState(); renderAgencies();
-      if(!S.agencySelected){ S.accounts=[]; renderAccounts(); return; }
-      const res=await API.accounts(S.agencySelected); if(!res.ok) return toast('Accounts',res.error||'Failed');
+      if(!S.agencySelected){ S.accounts=[]; renderMonthFilter(); renderAccounts(); renderManagerQueue(); return; }
+      const res=await API.accounts(S.agencySelected, "all", true); if(!res.ok) return toast('Accounts',res.error||'Failed');
       S.accounts=Array.isArray(res.accounts)?res.accounts:[];
+      renderMonthFilter();
       renderAccounts();
+      renderManagerQueue();
     },
     async loadManagers(){
       const res=await API.managers(); if(!res.ok) return toast('Managers',res.error||'Failed');
       S.managers=Array.isArray(res.managers)?res.managers:[];
+      if(S.managerSelected && !S.managers.some(m=>m.id===S.managerSelected)) S.managerSelected='';
+      if(S.managerAssignSelected && !S.managers.some(m=>m.id===S.managerAssignSelected)) S.managerAssignSelected='';
       renderManagers(); renderAccounts(); persistUiState();
     },
     openAddOne(){ if(!S.agencySelected) return toast('Account','اختر وكالة أولاً'); UI._oneMode="add"; UI._oneMatch={email:"",passport:""}; $("oneTitle").textContent='Add Account'; $("oneSub").textContent=S.agencySelected; $("oneEmail").value=''; $("onePass").value=''; $("onePassport").value=''; $("oneStatus").value='Pending'; $("oneType").value=''; $("modalOne").classList.add('show'); },
@@ -682,15 +789,19 @@ const API = {
 
   window.UI = UI;
   $("btnLogin").onclick=UI.beginLogin; $("btnVerifyOtp").onclick=UI.verifyOtp; $("btnLogout").onclick=UI.logout; $("btnPing").onclick=async()=>{ const r=await API.ping(); toast('Ping',r.ok?'OK':(r.error||'Failed')); };
+  $("btnBackToLogin").onclick=()=>showLoginView(true);
   $("inOtp").addEventListener('keydown', (e)=>{ if(e.key==="Enter") UI.verifyOtp(); });
   $("inPass").addEventListener('keydown', (e)=>{ if(e.key==="Enter") UI.beginLogin(); });
+  $("inUser").addEventListener('keydown', (e)=>{ if(e.key==="Enter") UI.beginLogin(); });
   $("btnRefresh").onclick=UI.refreshAll; $("btnBulk").onclick=UI.openBulk; $("btnAddOne").onclick=UI.openAddOne; $("btnParse").onclick=UI.parseBulk; $("btnBulkAdd").onclick=UI.bulkAdd; $("btnSaveOne").onclick=UI.saveOne; $("btnSendAgencyAll").onclick=UI.sendAgencyAll; $("btnOpenManager").onclick=UI.openManager; $("btnSaveManager").onclick=UI.saveManager;
-  $("selAgency").addEventListener('change', (e)=>UI.loadAgency(e.target.value||'')); $("inSearch").addEventListener('input', renderAccounts); $("selMonthFilter").addEventListener('change', (e)=>{ S.monthFilter=e.target.value||'current'; persistUiState(); renderAccounts(); }); $("selStatusFilter").addEventListener('change', renderAccounts);
+  $("selAgency").addEventListener('change', (e)=>UI.loadAgency(e.target.value||'')); $("inSearch").addEventListener('input', renderAccounts); $("selStatusFilter").addEventListener('change', renderAccounts); $("selMonthFilter").addEventListener('change', (e)=>{ S.monthFilter=e.target.value||currentMonthKey(); if(S.monthFilter!=="all" && S.monthFilter!==currentMonthKey()) $("selStatusFilter").value=""; persistUiState(); renderAccounts(); });
   $("selManagerView").addEventListener('change', (e)=>{ S.managerSelected=e.target.value||''; persistUiState(); renderManagerQueue(); });
   $("selManagerAssign").addEventListener('change', (e)=>{ S.managerAssignSelected=e.target.value||''; persistUiState(); renderAccounts(); });
-  document.querySelectorAll('.tabbtn').forEach(btn=>btn.addEventListener('click',()=>{ document.querySelectorAll('.tabbtn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.querySelectorAll('.tabpane').forEach(p=>p.classList.add('hidden')); document.getElementById(btn.dataset.tab).classList.remove('hidden'); }));
+  document.querySelectorAll('.tabbtn').forEach(btn=>btn.addEventListener('click',async ()=>{ document.querySelectorAll('.tabbtn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.querySelectorAll('.tabpane').forEach(p=>p.classList.add('hidden')); document.getElementById(btn.dataset.tab).classList.remove('hidden'); if(S.authenticated && btn.dataset.tab==='managersTab'){ await UI.loadManagers(); } }));
 
-  restoreUiState(); setAuthState(false); resetLoginFlow(false); UI.restoreAuth().catch(()=>{});
+  restoreUiState(); if(!S.monthFilter) S.monthFilter=currentMonthKey(); setAuthState(false); resetLoginFlow(false); UI.restoreAuth().catch(()=>{});
+
+  setInterval(()=>{ if(S.authenticated) updateSessionInfo(); }, 30000);
 })();
 </script>
 </body>
