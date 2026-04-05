@@ -125,15 +125,43 @@
     @media (min-width:720px){.row{grid-template-columns:1fr 1fr}}
 
     .toggle{
-      display:flex;align-items:center;gap:10px;
+      display:flex;align-items:center;gap:10px;flex-wrap:wrap;
       padding:10px 12px;border-radius:16px;
       border:1px solid rgba(255,255,255,.18);
       background:rgba(5,28,70,.22)
     }
     .toggle input{width:18px;height:18px}
-    .toggle .meta{display:flex;flex-direction:column;gap:2px}
+    .toggle .meta{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
     .toggle .meta b{font-size:.95rem}
     .toggle .meta span{font-size:.78rem;opacity:.86}
+    .inlineType{
+      display:flex;align-items:center;gap:8px;
+      margin-inline-start:auto;
+      min-width:min(220px,100%);
+    }
+    .inlineType label{
+      margin:0;
+      font-size:.8rem;
+      white-space:nowrap;
+      opacity:.92;
+    }
+    .inlineType select{
+      flex:1;
+      min-width:120px;
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.22);
+      outline:none;
+      background:rgba(5,28,70,.55);
+      color:#fff;
+      font-size:.84rem;
+      transition:all .2s ease;
+    }
+    .inlineType select:focus{
+      border-color:#fff;
+      box-shadow:0 0 0 1px rgba(255,255,255,.55);
+      background:rgba(5,28,70,.75);
+    }
 
     .btnRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
     .btn{
@@ -200,27 +228,79 @@
     }
 
 
-    /* ✅ Saved Accounts (with Status column) */
+    /* ✅ Saved Accounts (desktop/tablet) */
     #savedWrap .listHead, #savedWrap .listRow{
       grid-template-columns:1.12fr .72fr .72fr .95fr 132px;
     }
-    @media (max-width:560px){
-      #savedWrap .listHead{display:none}
-      #savedWrap .listRow{
-        grid-template-columns:1fr;
-        gap:8px;
-        padding:12px;
-      }
-      #savedWrap .listRow > div:nth-child(1)::before{content:"Email: ";opacity:.8;font-weight:900}
-      #savedWrap .listRow > div:nth-child(2)::before{content:"Password: ";opacity:.8;font-weight:900}
-      #savedWrap .listRow > div:nth-child(3)::before{content:"Passport: ";opacity:.8;font-weight:900}
-      #savedWrap .listRow > div:nth-child(4)::before{content:"Status: ";opacity:.8;font-weight:900}
-      #savedWrap .listRow > div:nth-child(5){
-        display:flex;
-        justify-content:flex-end;
-        padding-top:6px;
-      }
+
+
+    .savedTapHint{
+      margin-top:-2px;
+      padding:0 2px;
     }
+    .savedRowInteractive{
+      cursor:pointer;
+      transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+    .savedRowInteractive:hover{
+      transform:translateY(-1px);
+      background:rgba(255,255,255,.08);
+      box-shadow:0 14px 28px rgba(0,0,0,.18);
+    }
+    .savedEmailLine{
+      font-weight:900;
+      letter-spacing:.1px;
+    }
+    .savedStatusLine{
+      margin-top:8px;
+      display:flex;
+      align-items:center;
+      justify-content:flex-start;
+    }
+    .savedDesktopOnly{display:block}
+    .savedMobileOnly{display:none}
+
+    .detailsCard{
+      max-width:560px;
+      width:100%;
+      background:rgba(15,23,42,.94);
+      border-color:rgba(255,255,255,.18);
+      box-shadow:0 18px 45px rgba(0,0,0,.55);
+    }
+    .detailsGrid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+    .detailItem{
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:18px;
+      padding:12px 13px;
+      min-width:0;
+    }
+    .detailItemFull{grid-column:1 / -1}
+    .detailLabel{
+      display:block;
+      font-size:.78rem;
+      opacity:.8;
+      margin-bottom:7px;
+      font-weight:800;
+    }
+    .detailValue{
+      font-size:.95rem;
+      font-weight:850;
+      word-break:break-word;
+      line-height:1.45;
+    }
+    .detailValueEmail{
+      white-space:nowrap;
+      overflow-x:auto;
+      overflow-y:hidden;
+      scrollbar-width:none;
+    }
+    .detailValueEmail::-webkit-scrollbar{display:none}
+    .detailsActions .btn{min-width:140px}
 
     .xbtn{
       width:36px;height:36px;border-radius:12px;
@@ -310,7 +390,7 @@
     }
 
 
-    /* ✅ Saved accounts balance: smaller action button + wider status */
+    /* ✅ Saved accounts balance */
     #savedWrap .listHead > div:nth-child(4),
     #savedWrap .listRow > div:nth-child(4){
       display:flex;
@@ -345,6 +425,44 @@
         min-width:84px;
         font-size:.74rem;
       }
+    }
+    @media (max-width:560px){
+      .savedDesktopHead,
+      #savedWrap .savedDesktopOnly{display:none!important}
+      #savedWrap .savedMobileOnly{display:block!important}
+      #savedBody{
+        max-height:60vh;
+        border:none;
+        background:transparent;
+      }
+      #savedBody .listRow{
+        grid-template-columns:1fr;
+        gap:0;
+        padding:14px;
+        border:1px solid rgba(255,255,255,.14);
+        border-radius:18px;
+        background:rgba(5,28,70,.24);
+        margin-bottom:10px;
+        box-shadow:0 12px 26px rgba(0,0,0,.18);
+      }
+      #savedBody .listRow > div{
+        overflow:visible!important;
+        text-overflow:clip!important;
+        white-space:normal!important;
+      }
+      .savedEmailLine{
+        white-space:nowrap!important;
+        overflow-x:auto!important;
+        overflow-y:hidden!important;
+        text-overflow:clip!important;
+        scrollbar-width:none;
+        padding-bottom:2px;
+      }
+      .savedEmailLine::-webkit-scrollbar{display:none}
+      .savedStatusLine{margin-top:10px}
+      .detailsGrid{grid-template-columns:1fr}
+      .detailsActions{flex-direction:column}
+      .detailsActions .btn{width:100%}
     }
     /* ✅ تحسينات إضافية للموبايل */
     @media (max-width:600px){
@@ -423,130 +541,6 @@
       white-space:nowrap;
     }
 
-
-
-    /* === Saved Accounts redesign === */
-    #savedWrap .savedToolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:8px 0 12px}
-    #savedWrap .savedSearchBox{flex:1;min-width:240px}
-    #savedWrap .savedDesktop{display:block}
-    #savedWrap .savedDesktop .listHead,
-    #savedWrap .savedDesktop .listRow{
-      grid-template-columns:minmax(260px,1.25fr) minmax(160px,.8fr) minmax(160px,.8fr) minmax(140px,.8fr) 170px;
-      gap:12px;
-    }
-    #savedWrap .savedDesktop .listRow > div,
-    #savedWrap .savedDesktop .listHead > div{white-space:nowrap;overflow:visible;text-overflow:clip}
-    #savedWrap .savedDesktop .listRow > div:nth-child(5),
-    #savedWrap .savedDesktop .listHead > div:nth-child(5){justify-content:flex-end}
-    #savedWrap .savedDesktop .listRow{min-width:980px}
-    #savedWrap .savedDesktop .listRow > div:nth-child(1),
-    #savedWrap .savedDesktop .listRow > div:nth-child(2),
-    #savedWrap .savedDesktop .listRow > div:nth-child(3){overflow-x:auto;overflow-y:hidden;padding-bottom:2px;scrollbar-width:thin}
-    #savedWrap .savedDesktop .listRow > div:nth-child(1)::-webkit-scrollbar,
-    #savedWrap .savedDesktop .listRow > div:nth-child(2)::-webkit-scrollbar,
-    #savedWrap .savedDesktop .listRow > div:nth-child(3)::-webkit-scrollbar{height:6px}
-    #savedWrap .savedDesktop .listRow > div:nth-child(1)::-webkit-scrollbar-thumb,
-    #savedWrap .savedDesktop .listRow > div:nth-child(2)::-webkit-scrollbar-thumb,
-    #savedWrap .savedDesktop .listRow > div:nth-child(3)::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border-radius:999px}
-
-    #savedDesktopScroll{overflow-x:auto;overflow-y:hidden;border:1px solid rgba(255,255,255,.12);border-radius:16px;background:rgba(255,255,255,.04)}
-    #savedDesktopScroll::-webkit-scrollbar{height:10px}
-    #savedDesktopScroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:999px}
-
-    #savedMobileList{display:none;gap:10px;overflow:visible;padding-bottom:0;flex-direction:column}
-    .savedMiniRow{
-      width:100%;
-      display:flex;flex-direction:column;align-items:flex-start;gap:8px;
-      padding:14px 15px;border-radius:18px;
-      border:1px solid rgba(255,255,255,.14);background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.05));
-      cursor:pointer;
-      box-shadow:0 10px 25px rgba(0,0,0,.18);
-      text-align:left;
-    }
-    .savedMiniRow.active{border-color:rgba(56,189,248,.58);background:linear-gradient(180deg,rgba(56,189,248,.12),rgba(37,99,235,.08));box-shadow:0 16px 34px rgba(14,165,233,.18)}
-    .savedMiniTop{width:100%;display:flex;flex-direction:column;align-items:flex-start;gap:7px;min-width:0}
-    .savedMiniEmail{
-      width:100%;font-weight:950;white-space:nowrap;overflow-x:auto;overflow-y:hidden;
-      direction:ltr;text-align:left;display:block;line-height:1.45;padding-bottom:2px;
-      scrollbar-width:thin;
-    }
-    .savedMiniEmail::-webkit-scrollbar{height:6px}
-    .savedMiniEmail::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:999px}
-    .savedMiniStatus{display:inline-flex;align-items:center;justify-content:flex-start}
-
-    .savedDetailCard{
-      margin-top:12px;padding:16px;border-radius:18px;
-      border:1px solid rgba(255,255,255,.16);background:rgba(5,28,70,.24);
-      box-shadow:0 16px 35px rgba(0,0,0,.18);
-    }
-    .savedDetailHead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
-    .savedDetailTitle{display:flex;flex-direction:column;gap:5px;min-width:0}
-    .savedDetailTitle b{font-size:1rem;white-space:nowrap;overflow:auto;max-width:100%;direction:ltr;text-align:left}
-    .savedDetailTitle b::-webkit-scrollbar{height:6px}
-    .savedDetailTitle b::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:999px}
-    .savedDetailTitle span{font-size:.8rem;opacity:.82}
-    .savedDetailGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-    .savedInfoBox{
-      padding:12px 13px;border-radius:15px;
-      border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);
-      min-width:0;
-    }
-    .savedInfoBox label{display:block;margin:0 0 6px;font-size:.76rem;opacity:.82;font-weight:800}
-    .savedInfoBox div{font-weight:900;font-size:.92rem;white-space:nowrap;overflow-x:auto;overflow-y:hidden;direction:ltr;text-align:left;padding-bottom:2px}
-    .savedInfoBox div::-webkit-scrollbar{height:6px}
-    .savedInfoBox div::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border-radius:999px}
-    .savedDetailActions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin-top:16px}
-    .requestPwBtn{
-      border:none;border-radius:16px;padding:12px 18px;
-      background:linear-gradient(135deg,#1d4ed8,#38bdf8);color:#fff;font-weight:950;
-      box-shadow:0 16px 34px rgba(37,99,235,.35);cursor:pointer;
-      display:inline-flex;align-items:center;gap:10px;
-      letter-spacing:.2px;
-    }
-    .requestPwBtn .rqIcon{
-      width:34px;height:34px;border-radius:12px;
-      display:inline-flex;align-items:center;justify-content:center;
-      background:rgba(255,255,255,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.14);
-      font-size:1rem;
-    }
-    .requestPwBtn .rqText{display:flex;flex-direction:column;align-items:flex-start;line-height:1.1}
-    .requestPwBtn .rqText small{font-size:.68rem;opacity:.86;font-weight:800;margin-top:4px}
-    .requestPwBtn:hover{filter:brightness(1.06);transform:translateY(-1px)}
-
-    .savedModalPanel{
-      width:min(560px,100%);
-      border-radius:26px;
-      border:1px solid rgba(255,255,255,.18);
-      background:linear-gradient(180deg,rgba(7,16,40,.96),rgba(10,24,62,.94));
-      box-shadow:0 28px 70px rgba(0,0,0,.48);
-      overflow:hidden;
-      backdrop-filter:blur(16px);
-    }
-    .savedModalHead,.savedModalFoot{
-      padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;
-      border-bottom:1px solid rgba(255,255,255,.10);
-    }
-    .savedModalFoot{border-bottom:none;border-top:1px solid rgba(255,255,255,.10);flex-wrap:wrap;justify-content:flex-end}
-    .savedModalTitleWrap{display:flex;flex-direction:column;gap:5px;min-width:0}
-    .savedModalTitleWrap b{font-size:1.08rem;white-space:nowrap;overflow-x:auto;overflow-y:hidden;direction:ltr;text-align:left}
-    .savedModalTitleWrap span{font-size:.8rem;opacity:.78}
-    .savedModalBody{padding:18px;display:grid;gap:12px}
-    .savedModalGrid{display:grid;grid-template-columns:1fr;gap:10px}
-    .savedModalInfo{padding:13px 14px;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06)}
-    .savedModalInfo label{display:block;margin:0 0 7px;font-size:.74rem;font-weight:800;opacity:.78}
-    .savedModalInfo div{font-weight:900;font-size:.92rem;line-height:1.45;white-space:nowrap;overflow-x:auto;overflow-y:hidden;direction:ltr;text-align:left;padding-bottom:2px}
-    .savedModalInfo div::-webkit-scrollbar{height:6px}
-    .savedModalInfo div::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border-radius:999px}
-
-
-    @media (max-width:760px){
-      #savedWrap .savedDesktop{display:none}
-      #savedMobileList{display:flex}
-      .savedDetailGrid{grid-template-columns:1fr}
-      .savedDetailActions{justify-content:stretch}
-      .savedDetailActions .requestPwBtn{width:100%;justify-content:center}
-    }
-
 </style>
 </head>
 
@@ -587,6 +581,13 @@
                 <div class="meta">
                   <b data-i18n="multi">Multi</b>
                   <span data-i18n="multi_hint">Add multiple accounts in one request</span>
+                </div>
+                <div class="inlineType">
+                  <label for="typeSelect" data-i18n="type_lbl">Type</label>
+                  <select id="typeSelect">
+                    <option value="Appointment" data-i18n="type_appointment">Appointment</option>
+                    <option value="Waiting list" data-i18n="type_waiting">Waiting list</option>
+                  </select>
                 </div>
               </div>
 
@@ -642,28 +643,20 @@
                 <button id="backBtn" type="button" class="btn btnSoft" style="padding:8px 14px;border-radius:999px;box-shadow:none" data-i18n="back_btn">Back</button>
               </div>
 
-              <div class="savedToolbar">
-                <div class="savedSearchBox">
-                  <input id="savedSearch" type="text" placeholder="Search…" style="width:100%"/>
+              <div class="row" style="grid-template-columns:1fr;gap:10px;margin:8px 0 10px">
+                <input id="savedSearch" type="text" placeholder="Search…" style="width:100%"/>
+                <div class="hint savedTapHint" data-i18n="saved_tap_hint">Tap any account to view full details</div>
+                <div class="listHead savedDesktopHead" role="row">
+                  <div role="columnheader" data-i18n="col_email">Email</div>
+                  <div role="columnheader" data-i18n="col_password">Password</div>
+                  <div role="columnheader" data-i18n="col_passport">Passport</div>
+                  <div role="columnheader" data-i18n="col_status">Status</div>
+                  <div role="columnheader" data-i18n="col_action">Action</div>
                 </div>
+                <div id="savedBody"></div>
               </div>
 
               <div id="savedEmpty" class="emptyBox" style="display:none" data-i18n="saved_empty">No saved accounts for this agency.</div>
-
-              <div class="savedDesktop">
-                <div id="savedDesktopScroll">
-                  <div class="listHead" role="row">
-                    <div role="columnheader" data-i18n="col_email">Email</div>
-                    <div role="columnheader" data-i18n="col_password">Password</div>
-                    <div role="columnheader" data-i18n="col_passport">Passport</div>
-                    <div role="columnheader" data-i18n="col_status">Status</div>
-                    <div role="columnheader" data-i18n="col_action">Action</div>
-                  </div>
-                  <div id="savedBody"></div>
-                </div>
-              </div>
-
-              <div id="savedMobileList"></div>
             </div>
 
           </div>
@@ -689,29 +682,46 @@
     </div>
   </div>
 
-
-
   <!-- Saved account details modal -->
-  <div id="savedInfoModal" style="display:none;position:fixed;inset:0;background:rgba(2,6,23,.62);z-index:997;align-items:center;justify-content:center;padding:18px">
-    <div class="savedModalPanel">
-      <div class="savedModalHead">
-        <div class="savedModalTitleWrap">
-          <b id="savedInfoTitle">Account Details</b>
-          <span id="savedInfoSub">Saved account</span>
+  <div id="detailsModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:997;align-items:center;justify-content:center;padding:18px">
+    <div class="panel detailsCard">
+      <div class="titleRow" style="margin:0 0 12px">
+        <div style="display:flex;flex-direction:column;gap:3px">
+          <b data-i18n="details_title">Account details</b>
+          <span class="hint" data-i18n="details_hint">Full account information</span>
         </div>
-        <button id="savedInfoClose" type="button" class="xbtn" aria-label="Close">×</button>
+        <button id="detailsClose" type="button" class="xbtn" aria-label="Close">×</button>
       </div>
-      <div id="savedInfoContent" class="savedModalBody"></div>
-      <div class="savedModalFoot">
-        <button id="savedInfoPwBtn" type="button" class="requestPwBtn"><span class="rqIcon">🔐</span><span class="rqText">Request password change<small>Open secure password update</small></span></button>
-        <button id="savedInfoCloseBtn" type="button" class="btn btnSoft" data-i18n="btn_close">Close</button>
+
+      <div class="detailsGrid">
+        <div class="detailItem detailItemFull">
+          <span class="detailLabel" data-i18n="email_lbl">Email</span>
+          <div class="detailValue detailValueEmail" id="detailEmail"></div>
+        </div>
+        <div class="detailItem">
+          <span class="detailLabel" data-i18n="passport_lbl">Passport Number</span>
+          <div class="detailValue" id="detailPassport"></div>
+        </div>
+        <div class="detailItem">
+          <span class="detailLabel" data-i18n="field_password_masked">Saved password</span>
+          <div class="detailValue" id="detailPassword"></div>
+        </div>
+        <div class="detailItem detailItemFull">
+          <span class="detailLabel" data-i18n="status_lbl">Status</span>
+          <div class="detailValue" id="detailStatus"></div>
+        </div>
+      </div>
+
+      <div class="btnRow detailsActions" style="margin-top:14px">
+        <button id="detailsPwBtn" type="button" class="btn btnPrimary" style="flex:1" data-i18n="details_open_pw">Request password change</button>
+        <button id="detailsDismiss" type="button" class="btn btnSoft" data-i18n="details_close">Close</button>
       </div>
     </div>
   </div>
 
   <!-- Password update modal -->
   <div id="pwModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:998;align-items:center;justify-content:center;padding:18px">
-    <div class="panel" style="max-width:560px;width:100%;background:linear-gradient(180deg,rgba(7,16,40,.96),rgba(10,24,62,.94));border-color:rgba(255,255,255,.18);box-shadow:0 28px 70px rgba(0,0,0,.55);border-radius:26px">
+    <div class="panel" style="max-width:520px;width:100%;background:rgba(15,23,42,.92);border-color:rgba(255,255,255,.18);box-shadow:0 18px 45px rgba(0,0,0,.55)">
       <div class="titleRow" style="margin:0 0 10px">
         <b data-i18n="pw_title">Request password change</b>
         <button id="pwClose" type="button" class="xbtn" aria-label="Close">×</button>
@@ -755,6 +765,9 @@
         firma_lbl: "Agency Signature",
         multi: "Multi",
         multi_hint: "Add multiple accounts in one request",
+        type_lbl: "Type",
+        type_appointment: "Appointment",
+        type_waiting: "Waiting list",
         account: "Account",
         account_hint: "Email + Password + Passport",
         email_lbl: "Email",
@@ -811,10 +824,12 @@
         toast_copied: "Copied",
         toast_pw_updated: "Password updated",
         toast_pw_failed: "Password update failed",
-        btn_close: "Close",
-        saved_info_title: "Account Details",
-        saved_info_sub: "Saved account information",
-        request_pw_sub: "Open secure password update"
+        saved_tap_hint: "Tap any account to view full details",
+        details_title: "Account details",
+        details_hint: "Full account information",
+        details_open_pw: "Request password change",
+        details_close: "Close",
+        field_password_masked: "Saved password"
       },
       ar: {
         title: "الوكالة",
@@ -822,6 +837,9 @@
         firma_lbl: "توقيع الوكالة",
         multi: "متعدد",
         multi_hint: "إضافة عدة حسابات في طلب واحد",
+        type_lbl: "النوع",
+        type_appointment: "Appointment",
+        type_waiting: "Waiting list",
         account: "الحساب",
         account_hint: "إيميل + كلمة سر + رقم الجواز",
         email_lbl: "الإيميل",
@@ -878,10 +896,12 @@
         toast_copied: "تم النسخ",
         toast_pw_updated: "تم تعديل كلمة السر",
         toast_pw_failed: "فشل تعديل كلمة السر",
-        btn_close: "إغلاق",
-        saved_info_title: "تفاصيل الحساب",
-        saved_info_sub: "معلومات الحساب المحفوظ",
-        request_pw_sub: "فتح تعديل كلمة السر بشكل آمن"
+        saved_tap_hint: "اضغط على أي حساب لعرض كل التفاصيل",
+        details_title: "تفاصيل الحساب",
+        details_hint: "معلومات الحساب كاملة",
+        details_open_pw: "طلب تعديل كلمة السر",
+        details_close: "إغلاق",
+        field_password_masked: "كلمة السر المحفوظة"
       }
     };
 
@@ -908,15 +928,15 @@
     const savedBody = document.getElementById("savedBody");
     const savedEmpty = document.getElementById("savedEmpty");
     const savedSearchEl = document.getElementById("savedSearch");
-    const savedMobileList = document.getElementById("savedMobileList");
 
-    const savedInfoModal = document.getElementById("savedInfoModal");
-    const savedInfoContent = document.getElementById("savedInfoContent");
-    const savedInfoTitle = document.getElementById("savedInfoTitle");
-    const savedInfoSub = document.getElementById("savedInfoSub");
-    const savedInfoClose = document.getElementById("savedInfoClose");
-    const savedInfoCloseBtn = document.getElementById("savedInfoCloseBtn");
-    const savedInfoPwBtn = document.getElementById("savedInfoPwBtn");
+    const detailsModal = document.getElementById("detailsModal");
+    const detailsClose = document.getElementById("detailsClose");
+    const detailsDismiss = document.getElementById("detailsDismiss");
+    const detailsPwBtn = document.getElementById("detailsPwBtn");
+    const detailEmail = document.getElementById("detailEmail");
+    const detailPassport = document.getElementById("detailPassport");
+    const detailPassword = document.getElementById("detailPassword");
+    const detailStatus = document.getElementById("detailStatus");
 
     const pwModal = document.getElementById("pwModal");
     const pwClose = document.getElementById("pwClose");
@@ -929,6 +949,7 @@
     const copyPassportBtn = document.getElementById("copyPassportBtn");
 
     const moltiEl = document.getElementById("molti");
+    const typeSelectEl = document.getElementById("typeSelect");
     const emailEl = document.getElementById("email");
     const passEl = document.getElementById("password");
     const passpEl = document.getElementById("passport");
@@ -953,7 +974,6 @@
     // Saved accounts view
     let inSavedView = false;
     let savedAccounts = [];
-    let selectedSavedKey = "";
 
     function showToast(msg){
       toastEl.textContent = msg;
@@ -989,6 +1009,14 @@
 
       firmaEl.placeholder = lang === "ar" ? "اسم الوكالة / توقيع" : "Agency name / Signature";
       passEl.placeholder = lang === "ar" ? "كلمة السر" : "Password";
+      if(typeSelectEl){
+        const currentType = typeSelectEl.value || "Appointment";
+        typeSelectEl.innerHTML = `
+          <option value="Appointment">${t("type_appointment")}</option>
+          <option value="Waiting list">${t("type_waiting")}</option>
+        `;
+        typeSelectEl.value = currentType;
+      }
 
       if(savedSearchEl) savedSearchEl.placeholder = t("saved_search_ph");
       if(pwNew) pwNew.placeholder = lang === "ar" ? "كلمة السر الجديدة" : "New password";
@@ -997,10 +1025,6 @@
       listDoneBtn.textContent = t("btn_list_done");
       sendBtn.textContent = t("btn_send");
       searchAgencyBtn.title = lang === "ar" ? "بحث" : "Search";
-      if(savedInfoTitle) savedInfoTitle.textContent = t("saved_info_title");
-      if(savedInfoSub) savedInfoSub.textContent = t("saved_info_sub");
-      if(savedInfoCloseBtn) savedInfoCloseBtn.textContent = t("btn_close");
-      if(savedInfoPwBtn) savedInfoPwBtn.innerHTML = `<span class="rqIcon">🔐</span><span class="rqText">${t("btn_req_pw")}<small>${t("request_pw_sub")}</small></span>`;
 
       toggleMode(true);
       if(statusEl.textContent.trim().length === 0) setStatusKey("status_ready");
@@ -1059,10 +1083,9 @@
     }
 
     function maskPassword(p){
-      const s = String(p || "");
-      if(!s) return "";
-      if(s.length <= 5) return s;
-      return s.slice(0,5) + "*".repeat(s.length - 5);
+      if(!p) return "";
+      if(p.length <= 2) return "••";
+      return "•".repeat(Math.min(10, p.length - 2)) + p.slice(-2);
     }
 
 
@@ -1149,6 +1172,7 @@
             emailEl.value = a.email || "";
             passEl.value = a.password || "";
             passpEl.value = a.passport || "";
+            if(typeSelectEl) typeSelectEl.value = a.type || "Appointment";
             accounts.splice(i,1);
             dupIndex = -1;
             multiListReady = false;
@@ -1196,122 +1220,107 @@
       updateCount();
     }
 
-    function savedAccountKey(a){
-      return `${(a.email||"").trim().toLowerCase()}||${(a.passport||"").trim().toUpperCase()}`;
-    }
-
-    function setSelectedSaved(acc){
-      selectedSavedKey = acc ? savedAccountKey(acc) : "";
-      renderSaved();
-    }
-
-    function fillSavedInfoModal(acc){
-      if(!acc || !savedInfoContent) return;
-      if(savedInfoTitle) savedInfoTitle.textContent = acc.email || t("saved_info_title");
-      if(savedInfoSub) savedInfoSub.textContent = t("saved_info_sub");
-      savedInfoContent.innerHTML = `
-        <div style="display:flex;justify-content:flex-start">${makeBadge(acc.status).outerHTML}</div>
-        <div class="savedModalGrid">
-          <div class="savedModalInfo">
-            <label>${t("email_lbl")}</label>
-            <div>${acc.email || ""}</div>
-          </div>
-          <div class="savedModalInfo">
-            <label>${t("pass_lbl")}</label>
-            <div>${maskPassword(acc.password)}</div>
-          </div>
-          <div class="savedModalInfo">
-            <label>${t("passport_lbl")}</label>
-            <div>${acc.passport || ""}</div>
-          </div>
-          <div class="savedModalInfo">
-            <label>${t("col_status")}</label>
-            <div style="direction:inherit;text-align:inherit;overflow:visible;white-space:normal">${acc.status || t("status_pending")}</div>
-          </div>
-        </div>
-      `;
-      if(savedInfoPwBtn){
-        savedInfoPwBtn.innerHTML = `<span class="rqIcon">🔐</span><span class="rqText">${t("btn_req_pw")}<small>${t("request_pw_sub")}</small></span>`;
-        savedInfoPwBtn.onclick = ()=>{ closeSavedInfoModal(); openPwModal(acc); };
-      }
-    }
-
-    function openSavedInfoModal(acc){
-      if(!acc || !savedInfoModal) return;
-      fillSavedInfoModal(acc);
-      savedInfoModal.style.display = "flex";
-    }
-
-    function closeSavedInfoModal(){
-      if(savedInfoModal) savedInfoModal.style.display = "none";
-    }
-
     function renderSaved(){
       savedBody.innerHTML = "";
-      savedMobileList.innerHTML = "";
       const q = ((savedSearchEl && savedSearchEl.value) || "").trim().toLowerCase();
       const view = q ? savedAccounts.filter(a =>
-        (((a.email||"").toLowerCase().includes(q)) ||
-        ((a.passport||"").toLowerCase().includes(q)) ||
-        ((String(a.status||"").toLowerCase()).includes(q)))
+        ((a.email||"" ).toLowerCase().includes(q)) ||
+        ((a.passport||"" ).toLowerCase().includes(q)) ||
+        ((String(a.status||"").toLowerCase()).includes(q))
       ) : savedAccounts;
 
       savedEmpty.style.display = view.length ? "none" : "block";
 
-      if(view.length && (!selectedSavedKey || !view.some(a => savedAccountKey(a) === selectedSavedKey))){
-        selectedSavedKey = savedAccountKey(view[0]);
-      }
-      if(!view.length) selectedSavedKey = "";
-
       for(let i=0;i<view.length;i++){
         const a = view[i];
         const row = document.createElement("div");
-        row.className = "listRow";
-        row.setAttribute("role","row");
+        row.className = "listRow savedRowInteractive";
+        row.setAttribute("role","button");
+        row.setAttribute("tabindex","0");
+        row.setAttribute("aria-label", `${a.email || "Account"} - ${a.status || t("status_pending")}`);
 
-        const c1 = document.createElement("div"); c1.textContent = a.email || "";
-        const c2 = document.createElement("div"); c2.textContent = a.password || "";
-        const c3 = document.createElement("div"); c3.textContent = a.passport || "";
+        const c1 = document.createElement("div");
+        c1.className = "savedDesktopOnly";
+        c1.textContent = a.email || "";
+
+        const c2 = document.createElement("div");
+        c2.className = "savedDesktopOnly";
+        c2.textContent = maskPassword(a.password || "");
+
+        const c3 = document.createElement("div");
+        c3.className = "savedDesktopOnly";
+        c3.textContent = a.passport || "";
+
         const c4 = document.createElement("div");
+        c4.className = "savedDesktopOnly";
         c4.appendChild(makeBadge(a.status));
 
         const c5 = document.createElement("div");
+        c5.className = "savedDesktopOnly";
         const wrap = document.createElement("div");
         wrap.className = "actionBtns";
 
         const btn = document.createElement("button");
         btn.type = "button";
-        btn.className = "requestPwBtn";
-        btn.innerHTML = `🔐 ${t("btn_req_pw")}`;
-        btn.addEventListener("click", ()=> openPwModal(a));
-        wrap.appendChild(btn);
-
-        c5.appendChild(wrap);
-        row.appendChild(c1); row.appendChild(c2); row.appendChild(c3); row.appendChild(c4); row.appendChild(c5);
-        savedBody.appendChild(row);
-
-        const mobileRow = document.createElement("button");
-        mobileRow.type = "button";
-        mobileRow.className = "savedMiniRow" + (savedAccountKey(a) === selectedSavedKey ? " active" : "");
-        mobileRow.innerHTML = `
-          <span class="savedMiniTop">
-            <span class="savedMiniEmail">${a.email || ""}</span>
-            <span class="savedMiniStatus">${makeBadge(a.status).outerHTML}</span>
-          </span>
-        `;
-        mobileRow.addEventListener("click", ()=>{
-          selectedSavedKey = savedAccountKey(a);
-          renderSaved();
-          openSavedInfoModal(a);
+        btn.className = "miniBtn";
+        btn.textContent = t("btn_req_pw");
+        btn.addEventListener("click", (e)=>{
+          e.stopPropagation();
+          openPwModal(a);
         });
-        savedMobileList.appendChild(mobileRow);
+        wrap.appendChild(btn);
+        c5.appendChild(wrap);
+
+        const mobile = document.createElement("div");
+        mobile.className = "savedMobileOnly";
+        mobile.innerHTML = `
+          <div class="savedEmailLine">${escapeHtml(a.email || "")}</div>
+          <div class="savedStatusLine"></div>
+        `;
+        mobile.querySelector('.savedStatusLine').appendChild(makeBadge(a.status));
+
+        row.appendChild(c1); row.appendChild(c2); row.appendChild(c3); row.appendChild(c4); row.appendChild(c5); row.appendChild(mobile);
+        row.addEventListener("click", ()=> openDetailsModal(a));
+        row.addEventListener("keydown", (e)=>{
+          if(e.key === "Enter" || e.key === " "){
+            e.preventDefault();
+            openDetailsModal(a);
+          }
+        });
+        savedBody.appendChild(row);
       }
 
       updateCount();
     }
 
-    // ---- Saved: password update modal + copy helpers ----
+    // ---- Saved: details + password update modal ----
     let pwTarget = null;
+    let detailsTarget = null;
+
+    function escapeHtml(str){
+      return String(str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function openDetailsModal(acc){
+      if(!acc) return;
+      detailsTarget = acc;
+      detailEmail.textContent = acc.email || "";
+      detailPassport.textContent = acc.passport || "";
+      detailPassword.textContent = maskPassword(acc.password || "");
+      detailStatus.innerHTML = "";
+      detailStatus.appendChild(makeBadge(acc.status));
+      detailsModal.style.display = "flex";
+    }
+
+    function closeDetailsModal(){
+      detailsTarget = null;
+      detailsModal.style.display = "none";
+    }
 
     function openPwModal(acc){
       if(!acc) return;
@@ -1320,6 +1329,7 @@
       pwPassport.value = acc.passport || "";
       pwNew.value = "";
       pwModal.style.display = "flex";
+      closeDetailsModal();
       pwNew.focus();
     }
 
@@ -1359,12 +1369,14 @@
       savedSearchEl.addEventListener("input", ()=>{ if(inSavedView) renderSaved(); });
     }
 
+    detailsClose.addEventListener("click", closeDetailsModal);
+    detailsDismiss.addEventListener("click", closeDetailsModal);
+    detailsPwBtn.addEventListener("click", ()=>{ if(detailsTarget) openPwModal(detailsTarget); });
+    detailsModal.addEventListener("click", (e)=>{ if(e.target === detailsModal) closeDetailsModal(); });
+
     pwClose.addEventListener("click", closePwModal);
     document.getElementById("pwCancel").addEventListener("click", closePwModal);
     pwModal.addEventListener("click", (e)=>{ if(e.target === pwModal) closePwModal(); });
-    if(savedInfoClose) savedInfoClose.addEventListener("click", closeSavedInfoModal);
-    if(savedInfoCloseBtn) savedInfoCloseBtn.addEventListener("click", closeSavedInfoModal);
-    if(savedInfoModal) savedInfoModal.addEventListener("click", (e)=>{ if(e.target === savedInfoModal) closeSavedInfoModal(); });
 
     document.getElementById("copyEmailBtn").addEventListener("click", ()=> copyText(pwEmail.value));
     document.getElementById("copyPassportBtn").addEventListener("click", ()=> copyText(pwPassport.value));
@@ -1404,6 +1416,7 @@
         email: (emailEl.value||"").trim(),
         password: (passEl.value||"").trim(),
         passport: (passpEl.value||"").trim(),
+        type: (typeSelectEl && typeSelectEl.value) ? typeSelectEl.value : "Appointment",
         status: t("status_ready_state"),
       };
     }
@@ -1438,7 +1451,7 @@
     }
 
     function buildAccountsText(list){
-      return list.map(a => `${a.email};${a.password};${a.passport}`).join("\n");
+      return list.map(a => `${a.email};${a.password};${a.passport};Pending;${a.type || "Appointment"}`).join("\n");
     }
 
     async function postForm(fd){
@@ -1474,7 +1487,6 @@
 
         const list = await loadSavedAccounts(agency);
         savedAccounts = list;
-        selectedSavedKey = list.length ? savedAccountKey(list[0]) : "";
         setViewSaved(true);
         renderSaved();
         showToast(t("toast_saved_loaded"));
@@ -1596,10 +1608,11 @@
       if(isMulti){
         fd.append("accounts", buildAccountsText(list));
       }else{
-        const a = list[0] || {email:"",password:"",passport:""};
+        const a = list[0] || {email:"",password:"",passport:"",type:"Appointment"};
         fd.append("email", a.email);
         fd.append("password", a.password);
         fd.append("passport", a.passport);
+        fd.append("type", a.type || "Appointment");
       }
 
       const json = await postForm(fd);
@@ -1672,6 +1685,7 @@
           fd.append("email", a.email);
           fd.append("password", a.password);
           fd.append("passport", a.passport);
+          fd.append("type", a.type || "Appointment");
         }else{
           fd.append("accounts", buildAccountsText(listToSend));
         }
