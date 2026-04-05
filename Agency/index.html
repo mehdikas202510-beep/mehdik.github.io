@@ -125,15 +125,43 @@
     @media (min-width:720px){.row{grid-template-columns:1fr 1fr}}
 
     .toggle{
-      display:flex;align-items:center;gap:10px;
+      display:flex;align-items:center;gap:10px;flex-wrap:wrap;
       padding:10px 12px;border-radius:16px;
       border:1px solid rgba(255,255,255,.18);
       background:rgba(5,28,70,.22)
     }
     .toggle input{width:18px;height:18px}
-    .toggle .meta{display:flex;flex-direction:column;gap:2px}
+    .toggle .meta{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
     .toggle .meta b{font-size:.95rem}
     .toggle .meta span{font-size:.78rem;opacity:.86}
+    .inlineType{
+      display:flex;align-items:center;gap:8px;
+      margin-inline-start:auto;
+      min-width:min(220px,100%);
+    }
+    .inlineType label{
+      margin:0;
+      font-size:.8rem;
+      white-space:nowrap;
+      opacity:.92;
+    }
+    .inlineType select{
+      flex:1;
+      min-width:120px;
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.22);
+      outline:none;
+      background:rgba(5,28,70,.55);
+      color:#fff;
+      font-size:.84rem;
+      transition:all .2s ease;
+    }
+    .inlineType select:focus{
+      border-color:#fff;
+      box-shadow:0 0 0 1px rgba(255,255,255,.55);
+      background:rgba(5,28,70,.75);
+    }
 
     .btnRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
     .btn{
@@ -464,6 +492,13 @@
                   <b data-i18n="multi">Multi</b>
                   <span data-i18n="multi_hint">Add multiple accounts in one request</span>
                 </div>
+                <div class="inlineType">
+                  <label for="typeSelect" data-i18n="type_lbl">Type</label>
+                  <select id="typeSelect">
+                    <option value="Appointment" data-i18n="type_appointment">Appointment</option>
+                    <option value="Waiting list" data-i18n="type_waiting">Waiting list</option>
+                  </select>
+                </div>
               </div>
 
               <div style="height:8px"></div>
@@ -602,6 +637,9 @@
         firma_lbl: "Agency Signature",
         multi: "Multi",
         multi_hint: "Add multiple accounts in one request",
+        type_lbl: "Type",
+        type_appointment: "Appointment",
+        type_waiting: "Waiting list",
         account: "Account",
         account_hint: "Email + Password + Passport",
         email_lbl: "Email",
@@ -665,6 +703,9 @@
         firma_lbl: "توقيع الوكالة",
         multi: "متعدد",
         multi_hint: "إضافة عدة حسابات في طلب واحد",
+        type_lbl: "النوع",
+        type_appointment: "Appointment",
+        type_waiting: "Waiting list",
         account: "الحساب",
         account_hint: "إيميل + كلمة سر + رقم الجواز",
         email_lbl: "الإيميل",
@@ -759,6 +800,7 @@
     const copyPassportBtn = document.getElementById("copyPassportBtn");
 
     const moltiEl = document.getElementById("molti");
+    const typeSelectEl = document.getElementById("typeSelect");
     const emailEl = document.getElementById("email");
     const passEl = document.getElementById("password");
     const passpEl = document.getElementById("passport");
@@ -818,6 +860,14 @@
 
       firmaEl.placeholder = lang === "ar" ? "اسم الوكالة / توقيع" : "Agency name / Signature";
       passEl.placeholder = lang === "ar" ? "كلمة السر" : "Password";
+      if(typeSelectEl){
+        const currentType = typeSelectEl.value || "Appointment";
+        typeSelectEl.innerHTML = `
+          <option value="Appointment">${t("type_appointment")}</option>
+          <option value="Waiting list">${t("type_waiting")}</option>
+        `;
+        typeSelectEl.value = currentType;
+      }
 
       if(savedSearchEl) savedSearchEl.placeholder = t("saved_search_ph");
       if(pwNew) pwNew.placeholder = lang === "ar" ? "كلمة السر الجديدة" : "New password";
@@ -973,6 +1023,7 @@
             emailEl.value = a.email || "";
             passEl.value = a.password || "";
             passpEl.value = a.passport || "";
+            if(typeSelectEl) typeSelectEl.value = a.type || "Appointment";
             accounts.splice(i,1);
             dupIndex = -1;
             multiListReady = false;
@@ -1153,6 +1204,7 @@
         email: (emailEl.value||"").trim(),
         password: (passEl.value||"").trim(),
         passport: (passpEl.value||"").trim(),
+        type: (typeSelectEl && typeSelectEl.value) ? typeSelectEl.value : "Appointment",
         status: t("status_ready_state"),
       };
     }
@@ -1187,7 +1239,7 @@
     }
 
     function buildAccountsText(list){
-      return list.map(a => `${a.email};${a.password};${a.passport}`).join("\n");
+      return list.map(a => `${a.email};${a.password};${a.passport};Pending;${a.type || "Appointment"}`).join("\n");
     }
 
     async function postForm(fd){
@@ -1344,10 +1396,11 @@
       if(isMulti){
         fd.append("accounts", buildAccountsText(list));
       }else{
-        const a = list[0] || {email:"",password:"",passport:""};
+        const a = list[0] || {email:"",password:"",passport:"",type:"Appointment"};
         fd.append("email", a.email);
         fd.append("password", a.password);
         fd.append("passport", a.passport);
+        fd.append("type", a.type || "Appointment");
       }
 
       const json = await postForm(fd);
@@ -1420,6 +1473,7 @@
           fd.append("email", a.email);
           fd.append("password", a.password);
           fd.append("passport", a.passport);
+          fd.append("type", a.type || "Appointment");
         }else{
           fd.append("accounts", buildAccountsText(listToSend));
         }
