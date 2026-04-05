@@ -228,25 +228,76 @@
     }
 
 
-    /* ✅ Saved Accounts (with Status column) */
+    /* ✅ Saved Accounts (desktop: full row, mobile: expandable card) */
     #savedWrap .listHead, #savedWrap .listRow{
       grid-template-columns:1.12fr .72fr .72fr .95fr 132px;
+    }
+    #savedWrap .listRow{
+      cursor:default;
+    }
+    @media (min-width:561px){
+      #savedWrap .listRow > div:not(:last-child),
+      #savedWrap .listHead > div:not(:last-child){
+        overflow:visible;
+        text-overflow:clip;
+        white-space:normal;
+        word-break:break-word;
+      }
+    }
+    #savedWrap .savedMobileDetails{
+      display:none;
     }
     @media (max-width:560px){
       #savedWrap .listHead{display:none}
       #savedWrap .listRow{
         grid-template-columns:1fr;
-        gap:8px;
-        padding:12px;
+        gap:0;
+        padding:0;
+        cursor:pointer;
+        overflow:hidden;
       }
-      #savedWrap .listRow > div:nth-child(1)::before{content:"Email: ";opacity:.8;font-weight:900}
-      #savedWrap .listRow > div:nth-child(2)::before{content:"Password: ";opacity:.8;font-weight:900}
-      #savedWrap .listRow > div:nth-child(3)::before{content:"Passport: ";opacity:.8;font-weight:900}
-      #savedWrap .listRow > div:nth-child(4)::before{content:"Status: ";opacity:.8;font-weight:900}
-      #savedWrap .listRow > div:nth-child(5){
+      #savedWrap .listRow > div:nth-child(1){
+        display:block;
+        padding:14px 12px;
+        font-weight:900;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+      }
+      #savedWrap .listRow > div:nth-child(n+2):nth-child(-n+5){
+        display:none;
+      }
+      #savedWrap .listRow.expanded > div:nth-child(1){
+        display:none;
+      }
+      #savedWrap .savedMobileDetails{
+        display:none;
+        padding:12px;
+        background:rgba(255,255,255,.04);
+        border-top:1px solid rgba(255,255,255,.08);
+      }
+      #savedWrap .listRow.expanded .savedMobileDetails{
+        display:grid;
+        gap:10px;
+      }
+      #savedWrap .savedMobileItem{
+        display:grid;
+        gap:4px;
+      }
+      #savedWrap .savedMobileItem b{
+        font-size:.78rem;
+        opacity:.82;
+      }
+      #savedWrap .savedMobileValue{
+        min-width:0;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+      }
+      #savedWrap .savedMobileAction{
         display:flex;
         justify-content:flex-end;
-        padding-top:6px;
+        padding-top:4px;
       }
     }
 
@@ -1102,11 +1153,66 @@
         btn.type = "button";
         btn.className = "miniBtn";
         btn.textContent = t("btn_req_pw");
-        btn.addEventListener("click", ()=> openPwModal(a));
+        btn.addEventListener("click", (e)=>{
+          e.stopPropagation();
+          openPwModal(a);
+        });
         wrap.appendChild(btn);
 
         c5.appendChild(wrap);
         row.appendChild(c1); row.appendChild(c2); row.appendChild(c3); row.appendChild(c4); row.appendChild(c5);
+
+        const mobileDetails = document.createElement("div");
+        mobileDetails.className = "savedMobileDetails";
+
+        const makeMobileItem = (labelKey, valueNode) => {
+          const item = document.createElement("div");
+          item.className = "savedMobileItem";
+          const label = document.createElement("b");
+          label.textContent = t(labelKey);
+          item.appendChild(label);
+          if(typeof valueNode === "string"){
+            const value = document.createElement("div");
+            value.className = "savedMobileValue";
+            value.textContent = valueNode;
+            item.appendChild(value);
+          }else{
+            item.appendChild(valueNode);
+          }
+          return item;
+        };
+
+        mobileDetails.appendChild(makeMobileItem("pass_lbl", maskPassword(a.password || "")));
+        mobileDetails.appendChild(makeMobileItem("passport_lbl", a.passport || ""));
+
+        const statusMobileWrap = document.createElement("div");
+        statusMobileWrap.appendChild(makeBadge(a.status));
+        mobileDetails.appendChild(makeMobileItem("col_status", statusMobileWrap));
+
+        const mobileAction = document.createElement("div");
+        mobileAction.className = "savedMobileAction";
+        const mobileBtn = document.createElement("button");
+        mobileBtn.type = "button";
+        mobileBtn.className = "miniBtn";
+        mobileBtn.textContent = t("btn_req_pw");
+        mobileBtn.addEventListener("click", (e)=>{
+          e.stopPropagation();
+          openPwModal(a);
+        });
+        mobileAction.appendChild(mobileBtn);
+        mobileDetails.appendChild(mobileAction);
+
+        row.appendChild(mobileDetails);
+
+        row.addEventListener("click", ()=>{
+          if(window.innerWidth > 560) return;
+          const isExpanded = row.classList.contains("expanded");
+          savedBody.querySelectorAll(".listRow.expanded").forEach(el=>{
+            if(el !== row) el.classList.remove("expanded");
+          });
+          row.classList.toggle("expanded", !isExpanded);
+        });
+
         savedBody.appendChild(row);
       }
 
