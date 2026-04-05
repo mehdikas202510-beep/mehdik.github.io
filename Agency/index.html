@@ -228,80 +228,206 @@
     }
 
 
-    /* ✅ Saved Accounts (desktop: full row, mobile: expandable card) */
-    #savedWrap .listHead, #savedWrap .listRow{
-      grid-template-columns:1.12fr .72fr .72fr .95fr 132px;
+    /* ✅ Saved Accounts: desktop full table + mobile compact cards */
+    .savedDesktop{display:block}
+    .savedMobile{display:none}
+    .savedTableWrap{
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:18px;
+      overflow:hidden;
+      background:rgba(255,255,255,.05);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
     }
-    #savedWrap .listRow{
-      cursor:default;
+    .savedRow{
+      display:grid;
+      grid-template-columns:minmax(230px,1.35fr) minmax(140px,.85fr) minmax(150px,.9fr) minmax(120px,.7fr) minmax(170px,.9fr);
+      gap:12px;
+      align-items:center;
+      padding:12px 14px;
     }
-    @media (min-width:561px){
-      #savedWrap .listRow > div:not(:last-child),
-      #savedWrap .listHead > div:not(:last-child){
-        overflow:visible;
-        text-overflow:clip;
-        white-space:normal;
-        word-break:break-word;
-      }
+    .savedTableHead{
+      background:rgba(255,255,255,.09);
+      font-size:.8rem;
+      font-weight:950;
+      letter-spacing:.2px;
+      border-bottom:1px solid rgba(255,255,255,.10);
     }
-    #savedWrap .savedMobileDetails{
-      display:none;
+    .savedTableHead > div:last-child{ text-align:right; }
+    .savedTableBody{
+      max-height:430px;
+      overflow:auto;
     }
-    @media (max-width:560px){
-      #savedWrap .listHead{display:none}
-      #savedWrap .listRow{
-        grid-template-columns:1fr;
-        gap:0;
-        padding:0;
-        cursor:pointer;
-        overflow:hidden;
-      }
-      #savedWrap .listRow > div:nth-child(1){
-        display:block;
-        padding:14px 12px;
-        font-weight:900;
-        white-space:nowrap;
-        overflow:hidden;
-        text-overflow:ellipsis;
-      }
-      #savedWrap .listRow > div:nth-child(n+2):nth-child(-n+5){
-        display:none;
-      }
-      #savedWrap .listRow.expanded > div:nth-child(1){
-        display:none;
-      }
-      #savedWrap .savedMobileDetails{
-        display:none;
-        padding:12px;
-        background:rgba(255,255,255,.04);
-        border-top:1px solid rgba(255,255,255,.08);
-      }
-      #savedWrap .listRow.expanded .savedMobileDetails{
-        display:grid;
-        gap:10px;
-      }
-      #savedWrap .savedMobileItem{
-        display:grid;
-        gap:4px;
-      }
-      #savedWrap .savedMobileItem b{
-        font-size:.78rem;
-        opacity:.82;
-      }
-      #savedWrap .savedMobileValue{
-        min-width:0;
-        overflow:hidden;
-        text-overflow:ellipsis;
-        white-space:nowrap;
-      }
-      #savedWrap .savedMobileAction{
-        display:flex;
-        justify-content:flex-end;
-        padding-top:4px;
-      }
+    .savedTableBody::-webkit-scrollbar{ width:10px; }
+    .savedTableBody::-webkit-scrollbar-thumb{ background:rgba(255,255,255,.18); border-radius:999px; }
+    .savedTableBody::-webkit-scrollbar-track{ background:transparent; }
+    .savedTableBody .savedRow{
+      border-bottom:1px solid rgba(255,255,255,.07);
+      background:rgba(5,28,70,.12);
+    }
+    .savedTableBody .savedRow:hover{
+      background:rgba(255,255,255,.07);
+    }
+    .savedTableBody .savedRow:last-child{ border-bottom:0; }
+    .savedCell{
+      min-width:0;
+      overflow:visible;
+      white-space:normal;
+      word-break:break-word;
+      line-height:1.45;
+    }
+    .savedCell.actions{
+      display:flex;
+      justify-content:flex-end;
+      align-items:center;
     }
 
-    .xbtn{
+    .savedMobileList{display:grid;gap:12px}
+    .savedMobileCard{
+      border:1px solid rgba(255,255,255,.16);
+      border-radius:20px;
+      background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05));
+      box-shadow:0 14px 30px rgba(0,0,0,.24);
+      overflow:hidden;
+      cursor:pointer;
+    }
+    .savedMobileHead{
+      width:100%;
+      border:none;
+      background:transparent;
+      color:#fff;
+      text-align:inherit;
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:12px;
+      align-items:center;
+      padding:14px 14px;
+      cursor:pointer;
+    }
+    .savedMobileMail{
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .savedMobileMail .mail{
+      font-weight:900;
+      font-size:.95rem;
+      line-height:1.35;
+      word-break:break-word;
+    }
+    .savedMobileMetaHint{
+      font-size:.75rem;
+      opacity:.78;
+    }
+    .savedMobileArrow{
+      width:34px;height:34px;border-radius:12px;
+      display:inline-flex;align-items:center;justify-content:center;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(255,255,255,.08);
+      font-size:1rem;
+      flex:0 0 auto;
+    }
+
+    .savedDetailsOverlay{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.58);
+      z-index:997;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+    }
+    .savedDetailsOverlay.show{display:flex}
+    .savedDetailsCard{
+      width:min(520px,100%);
+      border-radius:26px;
+      border:1px solid rgba(255,255,255,.18);
+      background:linear-gradient(180deg, rgba(7,24,58,.97), rgba(9,30,72,.95));
+      box-shadow:0 24px 60px rgba(0,0,0,.48);
+      overflow:hidden;
+    }
+    .savedDetailsHead{
+      padding:18px 18px 12px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+    }
+    .savedDetailsHead .title{
+      font-size:1.02rem;
+      font-weight:950;
+      line-height:1.45;
+      word-break:break-word;
+    }
+    .savedDetailsHead .sub{
+      margin-top:6px;
+      font-size:.78rem;
+      opacity:.76;
+    }
+    .savedDetailsBody{
+      padding:16px 18px 18px;
+      display:grid;
+      gap:12px;
+    }
+    .savedDetailsInfo{
+      display:grid;
+      gap:10px;
+    }
+    .savedInfoRow{
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:18px;
+      background:rgba(255,255,255,.05);
+      padding:12px 13px;
+      display:grid;
+      gap:6px;
+    }
+    .savedInfoRow label{
+      margin:0;
+      font-size:.77rem;
+      opacity:.78;
+      font-weight:900;
+    }
+    .savedInfoRow .value{
+      font-size:.95rem;
+      line-height:1.45;
+      word-break:break-word;
+    }
+    .savedDetailsActions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      padding-top:4px;
+    }
+    .savedPrimaryBtn{
+      border:none;
+      border-radius:16px;
+      padding:12px 15px;
+      font-weight:950;
+      color:#fff;
+      background:linear-gradient(135deg,#16a34a,#22c55e);
+      box-shadow:0 14px 28px rgba(34,197,94,.22);
+      cursor:pointer;
+      flex:1;
+    }
+    .savedGhostBtn{
+      border:1px solid rgba(255,255,255,.16);
+      border-radius:16px;
+      padding:12px 15px;
+      font-weight:900;
+      color:#fff;
+      background:rgba(255,255,255,.06);
+      cursor:pointer;
+    }
+
+    @media (max-width:760px){
+      .savedDesktop{display:none}
+      .savedMobile{display:block}
+      .savedTableWrap{display:none}
+    }
+.xbtn{
       width:36px;height:36px;border-radius:12px;
       border:1px solid rgba(255,255,255,.18);
       background:rgba(255,255,255,.08);
@@ -509,43 +635,38 @@
     .savedMobile{display:none}
     .savedTableWrap{
       border:1px solid rgba(255,255,255,.14);
-      border-radius:20px;
+      border-radius:18px;
       overflow:hidden;
-      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(5,28,70,.18));
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.05), 0 14px 32px rgba(0,0,0,.20);
+      background:rgba(255,255,255,.04);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
     }
     .savedRow{
       display:grid;
-      grid-template-columns:minmax(240px,1.3fr) minmax(150px,.85fr) minmax(150px,.85fr) minmax(135px,.8fr) 168px;
-      gap:14px;
+      grid-template-columns:minmax(220px,1.2fr) minmax(140px,.8fr) minmax(140px,.8fr) minmax(130px,.85fr) 150px;
+      gap:12px;
       align-items:center;
-      padding:14px 16px;
+      padding:12px 14px;
     }
     .savedTableHead{
       background:rgba(255,255,255,.09);
       font-size:.8rem;
       font-weight:950;
       letter-spacing:.2px;
-      text-transform:uppercase;
     }
     .savedTableBody{
-      max-height:460px;
+      max-height:420px;
       overflow:auto;
     }
     .savedTableBody .savedRow{
       border-top:1px solid rgba(255,255,255,.08);
       background:rgba(5,28,70,.16);
-      transition:background .18s ease;
-    }
-    .savedTableBody .savedRow:hover{
-      background:rgba(255,255,255,.07);
     }
     .savedCell{
       min-width:0;
       overflow:visible;
       white-space:normal;
       word-break:break-word;
-      line-height:1.5;
+      line-height:1.45;
     }
     .savedCell.actions{
       display:flex;
@@ -560,108 +681,91 @@
       overflow:auto;
       padding-right:2px;
     }
-    .savedMobileRow{
-      display:grid;
-      grid-template-columns:minmax(0,1fr) auto;
-      gap:10px;
-      align-items:center;
-      padding:14px 14px;
+    .savedMobileCard{
       border:1px solid rgba(255,255,255,.14);
-      border-radius:18px;
+      border-radius:20px;
       background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(5,28,70,.22));
-      box-shadow:0 14px 30px rgba(0,0,0,.26);
+      box-shadow:0 16px 35px rgba(0,0,0,.28);
+      overflow:hidden;
+      transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
     }
-    .savedMobileEmail{
+    .savedMobileCard.active{
+      border-color:rgba(255,255,255,.34);
+      box-shadow:0 20px 40px rgba(0,0,0,.38);
+      transform:translateY(-1px);
+    }
+    .savedMobileHead{
+      width:100%;
+      border:none;
+      background:transparent;
+      color:#fff;
+      padding:16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      cursor:pointer;
+      text-align:start;
+    }
+    .savedMobileHead .mail{
       min-width:0;
-      font-size:.95rem;
       font-weight:900;
+      font-size:.95rem;
       overflow:hidden;
       text-overflow:ellipsis;
       white-space:nowrap;
     }
-    .savedMobileViewBtn{
-      border:1px solid rgba(255,255,255,.26);
-      background:rgba(255,255,255,.10);
-      color:#fff;
+    .savedMobileArrow{
+      flex:0 0 auto;
+      width:34px;height:34px;
       border-radius:12px;
-      padding:9px 12px;
-      font-size:.76rem;
-      font-weight:900;
-      cursor:pointer;
-      box-shadow:0 10px 22px rgba(0,0,0,.18);
-      white-space:nowrap;
-    }
-    .savedMobileViewBtn:hover{filter:brightness(1.05);transform:translateY(-1px)}
-
-    .savedDetailsModal{
-      display:none;
-      position:fixed;
-      inset:0;
-      z-index:997;
-      background:rgba(0,0,0,.56);
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.08);
+      display:inline-flex;
       align-items:center;
       justify-content:center;
-      padding:18px;
-    }
-    .savedDetailsModal.show{display:flex}
-    .savedDetailsCard{
-      width:min(560px,100%);
-      border:1px solid rgba(255,255,255,.18);
-      border-radius:26px;
-      background:linear-gradient(180deg, rgba(15,23,42,.96), rgba(5,28,70,.96));
-      box-shadow:0 24px 60px rgba(0,0,0,.55);
-      overflow:hidden;
-    }
-    .savedDetailsHead{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:14px;
-      padding:18px 18px 14px;
-      border-bottom:1px solid rgba(255,255,255,.08);
-    }
-    .savedDetailsHead b{
-      display:block;
+      transition:transform .18s ease, background .18s ease;
       font-size:1rem;
-      line-height:1.45;
-      word-break:break-word;
     }
-    .savedDetailsHead span{
-      display:block;
-      margin-top:4px;
-      font-size:.8rem;
-      opacity:.82;
+    .savedMobileCard.active .savedMobileArrow{
+      transform:rotate(180deg);
+      background:rgba(255,255,255,.14);
     }
-    .savedDetailsBody{
+    .savedMobileDetails{
+      display:none;
+      padding:0 16px 16px;
+      border-top:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.03);
+    }
+    .savedMobileCard.active .savedMobileDetails{display:block}
+    .savedMobileGrid{
       display:grid;
-      gap:12px;
-      padding:16px 18px 18px;
-    }
-    .savedDetailsInfo{
-      padding:13px 14px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.05);
-    }
-    .savedDetailsInfo label{
-      display:block;
-      margin:0 0 6px;
-      font-size:.76rem;
-      font-weight:800;
-      opacity:.82;
-    }
-    .savedDetailsInfo div{
-      font-size:.95rem;
-      font-weight:800;
-      line-height:1.5;
-      word-break:break-word;
-    }
-    .savedDetailsActions{
-      display:flex;
       gap:10px;
+      padding-top:14px;
+    }
+    .savedInfo{
+      padding:11px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(5,28,70,.22);
+    }
+    .savedInfo label{
+      display:block;
+      margin:0 0 5px;
+      font-size:.73rem;
+      opacity:.82;
+      font-weight:800;
+    }
+    .savedInfo div{
+      font-size:.9rem;
+      font-weight:700;
+      word-break:break-word;
+      line-height:1.45;
+    }
+    .savedMobileActions{
+      display:flex;
       justify-content:flex-end;
-      flex-wrap:wrap;
-      padding-top:4px;
+      padding-top:2px;
     }
     @media (max-width:760px){
       .savedDesktop{display:none}
@@ -817,31 +921,33 @@
     </div>
   </div>
 
-  <div id="savedDetailsModal" class="savedDetailsModal">
+  <div id="savedDetailsModal" class="savedDetailsOverlay" aria-hidden="true">
     <div class="savedDetailsCard">
       <div class="savedDetailsHead">
         <div>
-          <b id="savedDetailsEmail">—</b>
-          <span id="savedDetailsHint">Saved account details</span>
+          <div class="title" id="savedDetailsEmail">—</div>
+          <div class="sub" data-i18n="saved_mobile_sub">Tap Request password change to continue</div>
         </div>
         <button id="savedDetailsClose" type="button" class="xbtn" aria-label="Close">×</button>
       </div>
       <div class="savedDetailsBody">
         <div class="savedDetailsInfo">
-          <label data-i18n="col_password">Password</label>
-          <div id="savedDetailsPassword">—</div>
-        </div>
-        <div class="savedDetailsInfo">
-          <label data-i18n="col_passport">Passport</label>
-          <div id="savedDetailsPassport">—</div>
-        </div>
-        <div class="savedDetailsInfo">
-          <label data-i18n="col_status">Status</label>
-          <div id="savedDetailsStatus"></div>
+          <div class="savedInfoRow">
+            <label data-i18n="col_password">Password</label>
+            <div class="value" id="savedDetailsPassword">—</div>
+          </div>
+          <div class="savedInfoRow">
+            <label data-i18n="col_passport">Passport</label>
+            <div class="value" id="savedDetailsPassport">—</div>
+          </div>
+          <div class="savedInfoRow">
+            <label data-i18n="col_status">Status</label>
+            <div class="value" id="savedDetailsStatus"></div>
+          </div>
         </div>
         <div class="savedDetailsActions">
-          <button id="savedDetailsPwBtn" type="button" class="btn btnPrimary" data-i18n="btn_req_pw">Request password change</button>
-          <button id="savedDetailsBackBtn" type="button" class="btn btnSoft" data-i18n="back_btn">Back</button>
+          <button id="savedDetailsRequestBtn" type="button" class="savedPrimaryBtn" data-i18n="btn_req_pw">Request password change</button>
+          <button id="savedDetailsCancel" type="button" class="savedGhostBtn" data-i18n="btn_cancel">Cancel</button>
         </div>
       </div>
     </div>
@@ -951,7 +1057,8 @@
         btn_cancel: "Cancel",
         toast_copied: "Copied",
         toast_pw_updated: "Password updated",
-        toast_pw_failed: "Password update failed"
+        toast_pw_failed: "Password update failed",
+        saved_mobile_sub: "Tap Request password change to continue"
       },
       ar: {
         title: "الوكالة",
@@ -1017,7 +1124,8 @@
         btn_cancel: "إلغاء",
         toast_copied: "تم النسخ",
         toast_pw_updated: "تم تعديل كلمة السر",
-        toast_pw_failed: "فشل تعديل كلمة السر"
+        toast_pw_failed: "فشل تعديل كلمة السر",
+        saved_mobile_sub: "اضغط طلب تعديل كلمة السر للمتابعة"
       }
     };
 
@@ -1045,15 +1153,6 @@
     const savedMobileBody = document.getElementById("savedMobileBody");
     const savedEmpty = document.getElementById("savedEmpty");
     const savedSearchEl = document.getElementById("savedSearch");
-    const savedDetailsModal = document.getElementById("savedDetailsModal");
-    const savedDetailsClose = document.getElementById("savedDetailsClose");
-    const savedDetailsBackBtn = document.getElementById("savedDetailsBackBtn");
-    const savedDetailsPwBtn = document.getElementById("savedDetailsPwBtn");
-    const savedDetailsEmail = document.getElementById("savedDetailsEmail");
-    const savedDetailsPassword = document.getElementById("savedDetailsPassword");
-    const savedDetailsPassport = document.getElementById("savedDetailsPassport");
-    const savedDetailsStatus = document.getElementById("savedDetailsStatus");
-    const savedDetailsHint = document.getElementById("savedDetailsHint");
 
     const pwModal = document.getElementById("pwModal");
     const pwClose = document.getElementById("pwClose");
@@ -1064,6 +1163,15 @@
     const pwNew = document.getElementById("pwNew");
     const copyEmailBtn = document.getElementById("copyEmailBtn");
     const copyPassportBtn = document.getElementById("copyPassportBtn");
+
+    const savedDetailsModal = document.getElementById("savedDetailsModal");
+    const savedDetailsClose = document.getElementById("savedDetailsClose");
+    const savedDetailsCancel = document.getElementById("savedDetailsCancel");
+    const savedDetailsEmail = document.getElementById("savedDetailsEmail");
+    const savedDetailsPassword = document.getElementById("savedDetailsPassword");
+    const savedDetailsPassport = document.getElementById("savedDetailsPassport");
+    const savedDetailsStatus = document.getElementById("savedDetailsStatus");
+    const savedDetailsRequestBtn = document.getElementById("savedDetailsRequestBtn");
 
     const moltiEl = document.getElementById("molti");
     const typeSelectEl = document.getElementById("typeSelect");
@@ -1136,7 +1244,6 @@
       }
 
       if(savedSearchEl) savedSearchEl.placeholder = t("saved_search_ph");
-      if(savedDetailsHint) savedDetailsHint.textContent = lang === "ar" ? "تفاصيل الحساب المحفوظ" : "Saved account details";
       if(pwNew) pwNew.placeholder = lang === "ar" ? "كلمة السر الجديدة" : "New password";
 
       addBtn.textContent = t("btn_add");
@@ -1151,14 +1258,12 @@
     function setViewSaved(on){
       inSavedView = on;
       if(on){
-        closeSavedDetails();
         mainUI.style.display = "none";
         savedWrap.style.display = "block";
         modePill.style.display = "none";
         if(statusStat) statusStat.style.display = "none";
         statusEl.textContent = "";
       }else{
-        closeSavedDetails();
         mainUI.style.display = "block";
         savedWrap.style.display = "none";
         modePill.style.display = "inline-flex";
@@ -1375,48 +1480,77 @@
         dRow.appendChild(d1); dRow.appendChild(d2); dRow.appendChild(d3); dRow.appendChild(d4); dRow.appendChild(d5);
         savedBody.appendChild(dRow);
 
-        const mRow = document.createElement("div");
-        mRow.className = "savedMobileRow";
+        const mCard = document.createElement("div");
+        mCard.className = "savedMobileCard";
+        mCard.tabIndex = 0;
 
-        const mEmail = document.createElement("div");
-        mEmail.className = "savedMobileEmail";
-        mEmail.textContent = a.email || "";
+        const mHead = document.createElement("button");
+        mHead.type = "button";
+        mHead.className = "savedMobileHead";
 
-        const mView = document.createElement("button");
-        mView.type = "button";
-        mView.className = "savedMobileViewBtn";
-        mView.textContent = t("btn_view");
-        mView.addEventListener("click", ()=> openSavedDetails(a));
+        const mMailWrap = document.createElement("div");
+        mMailWrap.className = "savedMobileMail";
+        const mMail = document.createElement("div");
+        mMail.className = "mail";
+        mMail.textContent = a.email || "";
+        const mHint = document.createElement("div");
+        mHint.className = "savedMobileMetaHint";
+        mHint.textContent = t("saved_mobile_sub");
+        mMailWrap.appendChild(mMail);
+        mMailWrap.appendChild(mHint);
 
-        mRow.appendChild(mEmail);
-        mRow.appendChild(mView);
-        savedMobileBody.appendChild(mRow);
+        const mRight = document.createElement("div");
+        mRight.style.display = "grid";
+        mRight.style.justifyItems = "end";
+        mRight.style.gap = "8px";
+        const mBadge = makeBadge(a.status);
+        const mArrow = document.createElement("span");
+        mArrow.className = "savedMobileArrow";
+        mArrow.textContent = "›";
+        mRight.appendChild(mBadge);
+        mRight.appendChild(mArrow);
+
+        mHead.appendChild(mMailWrap);
+        mHead.appendChild(mRight);
+        mHead.addEventListener("click", ()=> openSavedDetails(a));
+        mCard.addEventListener("keydown", (ev)=>{
+          if(ev.key === "Enter" || ev.key === " "){
+            ev.preventDefault();
+            openSavedDetails(a);
+          }
+        });
+        mCard.appendChild(mHead);
+        savedMobileBody.appendChild(mCard);
       }
 
       updateCount();
     }
 
+    // ---- Saved: password update modal + copy helpers ----
+    let pwTarget = null;
+    let savedDetailsTarget = null;
+
     function openSavedDetails(acc){
       if(!acc) return;
+      savedDetailsTarget = acc;
       savedDetailsEmail.textContent = acc.email || "—";
       savedDetailsPassword.textContent = maskPassword(acc.password || "");
       savedDetailsPassport.textContent = acc.passport || "—";
       savedDetailsStatus.innerHTML = "";
       savedDetailsStatus.appendChild(makeBadge(acc.status));
-      savedDetailsPwBtn.onclick = ()=>{ closeSavedDetails(); openPwModal(acc); };
       savedDetailsModal.classList.add("show");
+      savedDetailsModal.setAttribute("aria-hidden", "false");
     }
 
     function closeSavedDetails(){
+      savedDetailsTarget = null;
       savedDetailsModal.classList.remove("show");
-      savedDetailsPwBtn.onclick = null;
+      savedDetailsModal.setAttribute("aria-hidden", "true");
     }
-
-    // ---- Saved: password update modal + copy helpers ----
-    let pwTarget = null;
 
     function openPwModal(acc){
       if(!acc) return;
+      closeSavedDetails();
       pwTarget = acc;
       pwEmail.value = acc.email || "";
       pwPassport.value = acc.passport || "";
@@ -1460,13 +1594,17 @@
     if(savedSearchEl){
       savedSearchEl.addEventListener("input", ()=>{ if(inSavedView) renderSaved(); });
     }
-    savedDetailsClose.addEventListener("click", closeSavedDetails);
-    savedDetailsBackBtn.addEventListener("click", closeSavedDetails);
-    savedDetailsModal.addEventListener("click", (e)=>{ if(e.target === savedDetailsModal) closeSavedDetails(); });
 
     pwClose.addEventListener("click", closePwModal);
     document.getElementById("pwCancel").addEventListener("click", closePwModal);
     pwModal.addEventListener("click", (e)=>{ if(e.target === pwModal) closePwModal(); });
+
+    savedDetailsClose.addEventListener("click", closeSavedDetails);
+    savedDetailsCancel.addEventListener("click", closeSavedDetails);
+    savedDetailsModal.addEventListener("click", (e)=>{ if(e.target === savedDetailsModal) closeSavedDetails(); });
+    savedDetailsRequestBtn.addEventListener("click", ()=>{
+      if(savedDetailsTarget) openPwModal(savedDetailsTarget);
+    });
 
     document.getElementById("copyEmailBtn").addEventListener("click", ()=> copyText(pwEmail.value));
     document.getElementById("copyPassportBtn").addEventListener("click", ()=> copyText(pwPassport.value));
