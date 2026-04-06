@@ -1,0 +1,32 @@
+(function () {
+    'use strict';
+
+    // تعتيم الصفحة
+    const overlay = document.createElement('div');
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    overlay.style.background = 'rgba(0, 0, 0, 0.6)';
+    overlay.style.zIndex = '999999';
+
+    // إنشاء رسالة الترحيب
+    const message = document.createElement('div');
+    message.textContent = 'مرحباً بك';
+    message.style.position = 'fixed';
+    message.style.top = '50%';
+    message.style.left = '50%';
+    message.style.transform = 'translate(-50%, -50%)';
+    message.style.padding = '20px 40px';
+    message.style.background = '#ffffff';
+    message.style.color = '#000000';
+    message.style.fontSize = '32px';
+    message.style.fontWeight = 'bold';
+    message.style.borderRadius = '12px';
+    message.style.boxShadow = '0 0 20px rgba(0,0,0,0.3)';
+    message.style.zIndex = '1000000';
+
+    document.body.appendChild(overlay);
+    document.body.appendChild(message);
+})();
