@@ -1,32 +1,33 @@
 (function () {
-    'use strict';
+  'use strict';
 
-    // تعتيم الصفحة
-    const overlay = document.createElement('div');
-    overlay.style.position = 'fixed';
-    overlay.style.top = '0';
-    overlay.style.left = '0';
-    overlay.style.width = '100%';
-    overlay.style.height = '100%';
-    overlay.style.background = 'rgba(0, 0, 0, 0.6)';
-    overlay.style.zIndex = '999999';
+  const BTN_ID = 'pingid-button';
+  const CHECK_EVERY_MS = 500;   // كل قدّاش يشيّك
+  const STOP_AFTER_MS = 30000;  // يوقف بعد 30 ثانية (بدّلها إذا بغيتي)
 
-    // إنشاء رسالة الترحيب
-    const message = document.createElement('div');
-    message.textContent = 'مرحباً بك';
-    message.style.position = 'fixed';
-    message.style.top = '50%';
-    message.style.left = '50%';
-    message.style.transform = 'translate(-50%, -50%)';
-    message.style.padding = '20px 40px';
-    message.style.background = '#ffffff';
-    message.style.color = '#000000';
-    message.style.fontSize = '32px';
-    message.style.fontWeight = 'bold';
-    message.style.borderRadius = '12px';
-    message.style.boxShadow = '0 0 20px rgba(0,0,0,0.3)';
-    message.style.zIndex = '1000000';
+  const start = Date.now();
+  const timer = setInterval(() => {
+    const el = document.getElementById(BTN_ID);
 
-    document.body.appendChild(overlay);
-    document.body.appendChild(message);
+    if (el) {
+      // حماية: ما ينقرش إلا إذا باين ومفعّل
+      const isVisible = !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
+      const isDisabled = el.hasAttribute('disabled') || el.getAttribute('aria-disabled') === 'true';
+
+      if (isVisible && !isDisabled) {
+        clearInterval(timer);
+
+        // إذا كان <a> قد تحتاج dispatch click طبيعي
+        el.click();
+
+        // Debug اختياري
+        console.log('[VM] Clicked #' + BTN_ID);
+      }
+    }
+
+    if (Date.now() - start > STOP_AFTER_MS) {
+      clearInterval(timer);
+      console.log('[VM] Stop: timeout waiting for #' + BTN_ID);
+    }
+  }, CHECK_EVERY_MS);
 })();
