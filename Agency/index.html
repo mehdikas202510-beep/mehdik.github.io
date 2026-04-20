@@ -1,1758 +1,475 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
+<!doctype html>
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Agency</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Agency Panel</title>
   <style>
     :root{
-      --glass:rgba(255,255,255,.12);
-      --border:rgba(255,255,255,.24);
-      --ink:#fff;
-      --danger:#ff5a5a;
-      --bg1:#00c6ff;
-      --bg2:#007aff;
-      --bg3:#001b4d;
-      --dark:rgba(5,28,70,.55);
-      --dark2:rgba(5,28,70,.75);
+      --bg:#f3f6fb;--card:#ffffff;--text:#0f172a;--muted:#64748b;--line:#e2e8f0;
+      --primary:#2563eb;--primarySoft:#eff6ff;--success:#16a34a;--successSoft:#f0fdf4;
+      --danger:#dc2626;--dangerSoft:#fef2f2;--warning:#d97706;--warningSoft:#fff7ed;
+      --shadow:0 16px 40px rgba(15,23,42,.08);--radius:22px;
+      --sans:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,"Noto Sans Arabic",sans-serif;
     }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      padding:clamp(12px, 2vw, 18px);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:radial-gradient(circle at top,var(--bg1) 0,var(--bg2) 45%,var(--bg3) 100%);
-      color:var(--ink);
-      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
-    }
-
-    .shell{width:100%;max-width:980px}
-    .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px}
-    .langbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-
-    .langbtn{
-      border:1px solid rgba(255,255,255,.35);
-      background:rgba(5,28,70,.45);
-      color:#fff;border-radius:999px;
-      padding:6px 12px;font-weight:900;cursor:pointer;
-      transition:.15s ease;user-select:none
-    }
-    .langbtn:hover{filter:brightness(1.07);transform:translateY(-1px)}
-    .langbtn.active{
-      background:rgba(255,255,255,.18);
-      border-color:rgba(255,255,255,.65);
-      box-shadow:0 0 0 1px rgba(255,255,255,.25)
-    }
-
-    .card{
-      background:var(--glass);
-      border:1px solid var(--border);
-      border-radius:22px;
-      box-shadow:0 18px 45px rgba(0,0,0,.45);
-      backdrop-filter:blur(16px);
-      overflow:hidden
-    }
-
-    .head{
-      padding:clamp(14px, 2vw, 18px) clamp(14px, 2vw, 18px) 0;
-      display:flex;flex-direction:column;gap:8px
-    }
-    h1{
-      margin:0;
-      font-size:clamp(1.5rem, 2.2vw, 1.9rem);
-      font-weight:900;
-      text-shadow:0 10px 25px rgba(0,0,0,.3)
-    }
-
-    form{padding:clamp(12px, 2vw, 14px) clamp(14px, 2vw, 18px) clamp(14px, 2vw, 18px)}
-
-    /* ✅ Responsive Grid:
-       - موبايل: عمود واحد (Summary تحت)
-       - ديسكتوب: عمودين */
-    .grid{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:12px;
-      align-items:start;
-    }
-    @media (min-width:900px){
-      .grid{
-        grid-template-columns:1.1fr .9fr;
-        gap:14px;
-      }
-    }
-
-    .panel{
-      background:rgba(5,28,70,.26);
-      border:1px solid rgba(255,255,255,.16);
-      border-radius:18px;
-      padding:clamp(12px, 2vw, 14px)
-    }
-
-    .titleRow{
-      display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 10px;
-      flex-wrap:wrap;
-    }
-    .titleRow b{font-size:1.02rem;letter-spacing:.2px}
-    .pill{
-      border:1px solid rgba(255,255,255,.3);
-      padding:4px 10px;border-radius:999px;
-      background:rgba(255,255,255,.08);
-      font-size:.78rem;font-weight:900;opacity:.95;
-    }
-    .hint{font-size:.8rem;opacity:.86;line-height:1.35}
-
-    label{display:block;font-weight:900;margin:10px 6px 6px;font-size:.9rem}
-
-    input[type=text],input[type=password]{
-      width:100%;
-      padding:10px 11px;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.22);
-      outline:none;
-      background:var(--dark);
-      color:#fff;
-      font-size:.95rem;
-      transition:all .2s ease
-    }
-    input::placeholder{color:rgba(255,255,255,.55)}
-    input:focus{border-color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.55);background:var(--dark2)}
-
-    .row{display:grid;grid-template-columns:1fr;gap:10px}
-    @media (min-width:720px){.row{grid-template-columns:1fr 1fr}}
-
-    .toggle{
-      display:flex;align-items:center;gap:10px;flex-wrap:wrap;
-      padding:10px 12px;border-radius:16px;
-      border:1px solid rgba(255,255,255,.18);
-      background:rgba(5,28,70,.22)
-    }
-    .toggle input{width:18px;height:18px}
-    .toggle .meta{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
-    .toggle .meta b{font-size:.95rem}
-    .toggle .meta span{font-size:.78rem;opacity:.86}
-    .inlineType{
-      display:flex;align-items:center;gap:8px;
-      margin-inline-start:auto;
-      min-width:min(220px,100%);
-    }
-    .inlineType label{
-      margin:0;
-      font-size:.8rem;
-      white-space:nowrap;
-      opacity:.92;
-    }
-    .inlineType select{
-      flex:1;
-      min-width:120px;
-      padding:8px 10px;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.22);
-      outline:none;
-      background:rgba(5,28,70,.55);
-      color:#fff;
-      font-size:.84rem;
-      transition:all .2s ease;
-    }
-    .inlineType select:focus{
-      border-color:#fff;
-      box-shadow:0 0 0 1px rgba(255,255,255,.55);
-      background:rgba(5,28,70,.75);
-    }
-
-    .btnRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-    .btn{
-      border:none;border-radius:999px;
-      padding:10px 14px;
-      font-weight:950;
-      cursor:pointer;
-      box-shadow:0 12px 28px rgba(0,0,0,.4);
-      transition:transform .15s ease,filter .15s ease,box-shadow .15s ease;
-      color:#fff
-    }
-    .btn:disabled{opacity:.6;cursor:wait;box-shadow:none}
-    .btn:hover:not(:disabled){transform:translateY(-1px);filter:brightness(1.05);box-shadow:0 16px 38px rgba(0,0,0,.55)}
-    .btnPrimary{background:linear-gradient(135deg,#16a34a,#22c55e)}
-    .btnSoft{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2)}
-    .err{color:#ffd0d0;font-size:.78rem;margin:6px 6px 0;display:none}
-    .err.show{display:block}
-    .invalid{border-color:var(--danger)!important;box-shadow:0 0 0 1px rgba(255,90,90,.6)!important}
-
-    /* ✅ القائمة (Desktop/Tablet) */
-    .list{margin-top:10px;border-radius:16px;border:1px solid rgba(255,255,255,.14);overflow:hidden}
-    .listHead,.listRow{
-      display:grid;
-      grid-template-columns:1.12fr .72fr .72fr .95fr 132px;
-      gap:10px;
-      padding:10px 12px;
-      align-items:center
-    }
-    .listHead{
-      background:rgba(255,255,255,.08);
-      font-size:.78rem;
-      letter-spacing:.2px;
-      opacity:.95;
-      font-weight:950;
-      display:grid;
-      grid-template-columns:1.12fr .72fr .72fr .95fr 132px;
-      gap:10px;
-      padding:10px 12px;
-      align-items:center
-    }
-    .listRow{
-      background:rgba(5,28,70,.18);
-      border-top:1px solid rgba(255,255,255,.09);
-      font-size:.85rem
-    }
-
-    /* ✅ القائمة على الموبايل: تتحول Stack */
-    @media (max-width:560px){
-      .listHead{display:none}
-      .listRow{
-        grid-template-columns:1fr;
-        gap:8px;
-        padding:12px;
-      }
-      .listRow > div:nth-child(1)::before{content:"Email: ";opacity:.8;font-weight:900}
-      .listRow > div:nth-child(2)::before{content:"Password: ";opacity:.8;font-weight:900}
-      .listRow > div:nth-child(3)::before{content:"Passport: ";opacity:.8;font-weight:900}
-      .listRow > div:nth-child(4)::before{content:"Status: ";opacity:.8;font-weight:900}
-      .listRow > div:nth-child(5){
-        display:flex;
-        justify-content:flex-end;
-        padding-top:6px;
-      }
-    }
-
-
-    /* ✅ Saved Accounts (desktop/tablet) */
-    #savedWrap .listHead, #savedWrap .listRow{
-      grid-template-columns:1.12fr .72fr .72fr .95fr 132px;
-    }
-
-
-    .savedTapHint{
-      margin-top:-2px;
-      padding:0 2px;
-    }
-    .savedRowInteractive{
-      cursor:pointer;
-      transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
-    }
-    .savedRowInteractive:hover{
-      transform:translateY(-1px);
-      background:rgba(255,255,255,.08);
-      box-shadow:0 14px 28px rgba(0,0,0,.18);
-    }
-    .savedEmailLine{
-      font-weight:900;
-      letter-spacing:.1px;
-    }
-    .savedStatusLine{
-      margin-top:8px;
-      display:flex;
-      align-items:center;
-      justify-content:flex-start;
-    }
-    .savedDesktopOnly{display:block}
-    .savedMobileOnly{display:none}
-
-    .detailsCard{
-      max-width:560px;
-      width:100%;
-      background:rgba(15,23,42,.94);
-      border-color:rgba(255,255,255,.18);
-      box-shadow:0 18px 45px rgba(0,0,0,.55);
-    }
-    .detailsGrid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:12px;
-    }
-    .detailItem{
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.12);
-      border-radius:18px;
-      padding:12px 13px;
-      min-width:0;
-    }
-    .detailItemFull{grid-column:1 / -1}
-    .detailLabel{
-      display:block;
-      font-size:.78rem;
-      opacity:.8;
-      margin-bottom:7px;
-      font-weight:800;
-    }
-    .detailValue{
-      font-size:.95rem;
-      font-weight:850;
-      word-break:break-word;
-      line-height:1.45;
-    }
-    .detailValueEmail{
-      white-space:nowrap;
-      overflow-x:auto;
-      overflow-y:hidden;
-      scrollbar-width:none;
-    }
-    .detailValueEmail::-webkit-scrollbar{display:none}
-    .detailsActions .btn{min-width:140px}
-
-    .xbtn{
-      width:36px;height:36px;border-radius:12px;
-      border:1px solid rgba(255,255,255,.18);
-      background:rgba(255,255,255,.08);
-      color:#fff;cursor:pointer;
-      display:inline-flex;align-items:center;justify-content:center;
-      transition:.15s ease
-    }
-    .xbtn:hover{filter:brightness(1.08);transform:translateY(-1px)}
-    .iconBtn{
-      width:42px;height:42px;border-radius:14px;
-      border:1px solid rgba(255,255,255,.20);
-      background:rgba(255,255,255,.10);
-      color:#fff;cursor:pointer;
-      display:inline-flex;align-items:center;justify-content:center;
-      transition:.15s ease;
-      box-shadow:0 10px 25px rgba(0,0,0,.35);
-      user-select:none;
-    }
-    .iconBtn:hover{filter:brightness(1.07);transform:translateY(-1px)}
-    .firmaRow{display:flex;gap:10px;align-items:center}
-
-    .asideStats{display:flex;flex-direction:column;gap:10px}
-
-    /* ✅ Sticky Summary على الشاشات الكبيرة */
-    @media (min-width:900px){
-      .asideStats{
-        position:sticky;
-        top:14px;
-      }
-    }
-
-    .stat{
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.14);
-      border-radius:18px;
-      padding:12px 12px;
-      display:flex;flex-direction:column;gap:4px
-    }
-    .stat b{font-size:1.35rem}
-    .stat span{font-size:.85rem;opacity:.86}
-
-    #toast{
-      position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(110%);
-      background:rgba(15,23,42,.96);color:#f9fafb;padding:10px 16px;border-radius:999px;
-      box-shadow:0 16px 35px rgba(0,0,0,.5);font-size:.9rem;opacity:0;pointer-events:none;
-      transition:all .25s ease;z-index:999;max-width:92%;text-align:center
-    }
-    #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-    .dupGlow{
-      outline:2px solid rgba(255,90,90,.9);
-      box-shadow:0 0 0 2px rgba(255,90,90,.25), 0 0 18px rgba(255,90,90,.55);
-      border-radius:14px;
-      animation:dupPulse .9s ease-in-out infinite alternate;
-    }
-    @keyframes dupPulse{
-      from{filter:brightness(1); transform:translateY(0);}
-      to{filter:brightness(1.08); transform:translateY(-1px);}
-    }
-    .actionBtns{display:flex; gap:6px; justify-content:flex-end; align-items:center; flex-wrap:nowrap;}
-    .miniBtn{
-      border:1px solid rgba(255,255,255,.35);
-      background:rgba(5,28,70,.45);
-      color:#fff;
-      border-radius:10px;
-      padding:5px 9px;
-      font-size:.71rem;
-      font-weight:800;
-      cursor:pointer;
-      line-height:1;
-      white-space:nowrap;
-    }
-    .miniBtn.danger{
-      border-color:rgba(255,90,90,.75);
-      background:rgba(255,90,90,.18);
-    }
-    .emptyBox{
-      margin-top:10px;
-      padding:12px 12px;
-      border-radius:16px;
-      border:1px dashed rgba(255,255,255,.22);
-      background:rgba(5,28,70,.16);
-      font-size:.88rem;
-      opacity:.92;
-    }
-
-
-    /* ✅ Saved accounts balance */
-    #savedWrap .listHead > div:nth-child(4),
-    #savedWrap .listRow > div:nth-child(4){
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      overflow:visible;
-      white-space:normal;
-    }
-    #savedWrap .listHead > div:nth-child(5),
-    #savedWrap .listRow > div:nth-child(5){
-      display:flex;
-      justify-content:flex-end;
-      align-items:center;
-    }
-    #savedWrap .miniBtn{
-      box-shadow:none;
-      min-height:30px;
-    }
-    #savedSearch{
-      border-radius:14px;
-      background:rgba(5,28,70,.42);
-    }
-    @media (max-width:760px){
-      #savedWrap .listHead, #savedWrap .listRow{
-        grid-template-columns:1.1fr .78fr .8fr .95fr 120px;
-      }
-      #savedWrap .miniBtn{
-        padding:5px 8px;
-        font-size:.68rem;
-      }
-      .badge{
-        min-width:84px;
-        font-size:.74rem;
-      }
-    }
-    @media (max-width:560px){
-      .savedDesktopHead,
-      #savedWrap .savedDesktopOnly{display:none!important}
-      #savedWrap .savedMobileOnly{display:block!important}
-      #savedBody{
-        max-height:60vh;
-        border:none;
-        background:transparent;
-      }
-      #savedBody .listRow{
-        grid-template-columns:1fr;
-        gap:0;
-        padding:14px;
-        border:1px solid rgba(255,255,255,.14);
-        border-radius:18px;
-        background:rgba(5,28,70,.24);
-        margin-bottom:10px;
-        box-shadow:0 12px 26px rgba(0,0,0,.18);
-      }
-      #savedBody .listRow > div{
-        overflow:visible!important;
-        text-overflow:clip!important;
-        white-space:normal!important;
-      }
-      .savedEmailLine{
-        white-space:nowrap!important;
-        overflow-x:auto!important;
-        overflow-y:hidden!important;
-        text-overflow:clip!important;
-        scrollbar-width:none;
-        padding-bottom:2px;
-      }
-      .savedEmailLine::-webkit-scrollbar{display:none}
-      .savedStatusLine{margin-top:10px}
-      .detailsGrid{grid-template-columns:1fr}
-      .detailsActions{flex-direction:column}
-      .detailsActions .btn{width:100%}
-    }
-    /* ✅ تحسينات إضافية للموبايل */
-    @media (max-width:600px){
-      body{padding:12px;align-items:flex-start}
-      .shell{max-width:560px}
-      .card{border-radius:18px}
-      .head{padding:14px 14px 0}
-      form{padding:12px 14px 14px}
-      .topbar{margin:0 0 10px}
-      .langbar{justify-content:center}
-      /* منع تكبير iOS عند التركيز */
-      input[type=text],input[type=password]{font-size:16px}
-      /* أزرار بعرض كامل */
-      .btnRow{flex-direction:column}
-      .btnRow .btn{width:100%}
-      .iconBtn{width:46px;height:46px;border-radius:16px}
-      /* تحسين القراءة */
-      .hint{font-size:.82rem}
-      label{margin:10px 4px 6px}
-    }
-    @media (max-width:380px){
-      h1{font-size:1.35rem}
-      .panel{border-radius:16px}
-      input[type=text],input[type=password]{padding:11px 11px}
-      .langbtn{padding:6px 10px}
-    }
-
-  
-/* === Scrollable Saved Accounts list === */
-#savedBody{
-  max-height: 420px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  border: 1px solid rgba(255,255,255,.12);
-  border-radius: 14px;
-  background: rgba(255,255,255,.04);
-}
-#savedBody .listRow{ border-bottom: 1px solid rgba(255,255,255,.06); }
-#savedBody .listRow:last-child{ border-bottom: 0; }
-#savedBody::-webkit-scrollbar{ width: 10px; }
-#savedBody::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.18); border-radius: 999px; }
-#savedBody::-webkit-scrollbar-track{ background: transparent; }
-@media (max-width:520px){
-  #savedBody{ max-height: 60vh; }
-}
-
-    /* ✅ Status Badge */
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      padding:6px 12px;
-      min-height:30px;
-      min-width:92px;
-      border-radius:999px;
-      font-weight:950;
-      font-size:.78rem;
-      letter-spacing:.2px;
-      border:1px solid rgba(255,255,255,.22);
-      background:rgba(255,255,255,.10);
-      white-space:nowrap;
-      max-width:100%;
-    }
-    .badge[data-variant="ok"]{ background:rgba(34,197,94,.18); border-color:rgba(34,197,94,.45); }
-    .badge[data-variant="warn"]{ background:rgba(251,191,36,.18); border-color:rgba(251,191,36,.45); }
-    .badge[data-variant="danger"]{ background:rgba(239,68,68,.22); border-color:rgba(239,68,68,.65); color:#ffb3b3; box-shadow:inset 0 0 0 1px rgba(239,68,68,.12); }
-    .badge[data-variant="info"]{ background:rgba(56,189,248,.16); border-color:rgba(56,189,248,.45); }
-
-
-
-    .listHead > div:last-child{ text-align:right; }
-    .listRow > div{ min-width:0; } /* allow ellipsis */
-    .listRow > div:not(:last-child){
-      overflow:hidden;
-      text-overflow:ellipsis;
-      white-space:nowrap;
-    }
-
-
-    /* ✅ Desktop width expansion to show full content */
-    @media (min-width: 900px){
-      .shell{max-width:1280px}
-      .listHead,
-      .listRow,
-      #savedWrap .listHead,
-      #savedWrap .listRow{
-        grid-template-columns: minmax(280px,2.2fr) minmax(180px,1.35fr) minmax(160px,1.1fr) minmax(170px,1fr) minmax(150px,.9fr);
-        gap:14px;
-      }
-      .listHead > div,
-      .listRow > div,
-      #savedWrap .listHead > div,
-      #savedWrap .listRow > div{
-        overflow:visible;
-        text-overflow:clip;
-        white-space:normal;
-        word-break:break-word;
-      }
-      .listHead > div:last-child,
-      .listRow > div:last-child,
-      #savedWrap .listHead > div:last-child,
-      #savedWrap .listRow > div:last-child{
-        white-space:nowrap;
-        word-break:normal;
-      }
-      .actionBtns{flex-wrap:wrap}
-    }
-
-</style>
+    *{box-sizing:border-box} html,body{height:100%}
+    body{margin:0;font-family:var(--sans);color:var(--text);background:
+      radial-gradient(circle at top right, rgba(37,99,235,.08), transparent 28%),
+      radial-gradient(circle at top left, rgba(14,165,233,.06), transparent 24%),
+      linear-gradient(180deg,#f8fbff 0%,#f2f5fa 100%)}
+    button,input,select{font:inherit}.hidden{display:none!important}
+    .auth-shell{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+    .auth-card,.card{background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border:1px solid rgba(226,232,240,.95);border-radius:28px;box-shadow:0 24px 60px rgba(15,23,42,.10)}
+    .auth-wrap{width:min(460px,100%)} .auth-card{padding:28px}
+    .brand{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+    .logo{width:56px;height:56px;border-radius:20px;background:linear-gradient(135deg,#0ea5e9,#2563eb 55%,#4338ca)}
+    .brand h1{margin:0;font-size:24px}.brand p{margin:6px 0 0;color:var(--muted);font-size:13px}
+    .field{margin-bottom:14px}.label{display:block;margin:0 0 8px;font-size:12px;color:var(--muted)}
+    .input,select{width:100%;border:1px solid var(--line);background:#fff;padding:12px 14px;border-radius:16px;outline:none;color:var(--text)}
+    .input:focus,select:focus{border-color:#93c5fd;box-shadow:0 0 0 4px rgba(59,130,246,.12)}
+    .btn{border:1px solid var(--line);background:#fff;color:var(--text);padding:11px 14px;border-radius:15px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+    .btn.primary{background:var(--primarySoft);border-color:#bfdbfe;color:#1d4ed8}
+    .btn.good{background:var(--successSoft);border-color:#bbf7d0;color:#15803d}
+    .btn.danger{background:var(--dangerSoft);border-color:#fecaca;color:#b91c1c}
+    .btn.warn{background:var(--warningSoft);border-color:#fed7aa;color:#b45309}
+    .btn[disabled]{opacity:.55;cursor:not-allowed}
+    .app{max-width:1400px;margin:0 auto;padding:24px}.shell{display:grid;grid-template-columns:290px 1fr;gap:20px}
+    @media (max-width:1100px){.shell{grid-template-columns:1fr}}
+    .sidebar{position:sticky;top:20px;padding:18px;height:max-content}
+    @media (max-width:1100px){.sidebar{position:static}}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:12px;color:var(--muted)}
+    .dot{width:9px;height:9px;border-radius:999px;background:#94a3b8}
+    .sessionLine{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:16px;background:#fff;margin-top:10px}
+    .sessionLine span{font-size:12px;color:var(--muted)} .sessionLine b{font-size:13px}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px;padding:18px}
+    @media (max-width:900px){.topbar{flex-direction:column;align-items:stretch}}
+    .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+    @media (max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}}
+    .kpi{padding:18px;border-radius:20px;background:linear-gradient(180deg,#fff,#f9fbff);border:1px solid var(--line)}
+    .kpi b{display:block;font-size:28px;line-height:1;margin-bottom:8px}.kpi span{font-size:13px;color:var(--muted)}
+    .panel{padding:18px}.filters{display:grid;grid-template-columns:1.2fr 1fr .9fr .9fr;gap:12px;margin-bottom:14px}
+    @media (max-width:1100px){.filters{grid-template-columns:1fr 1fr}} @media (max-width:700px){.filters{grid-template-columns:1fr}}
+    .tablewrap{border:1px solid var(--line);border-radius:20px;overflow:auto;background:#fff}
+    table{width:100%;border-collapse:separate;border-spacing:0;min-width:950px}
+    thead th{position:sticky;top:0;background:#f8fbff;color:var(--muted);font-size:12px;font-weight:800;text-align:right;padding:14px 12px;border-bottom:1px solid var(--line)}
+    tbody td{padding:13px 12px;border-bottom:1px solid #eef2f7;font-size:13px;vertical-align:middle;white-space:nowrap}
+    tbody tr:hover{background:#fbfdff}
+    .status{display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border-radius:999px;font-size:12px;font-weight:800;border:1px solid var(--line);background:#fff}
+    .s-good{background:#f0fdf4;color:#166534;border-color:#bbf7d0}.s-bad{background:#fef2f2;color:#991b1b;border-color:#fecaca}.s-neutral{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}.s-warn{background:#fff7ed;color:#b45309;border-color:#fed7aa}
+    .toast{position:fixed;left:20px;bottom:20px;max-width:360px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);border-radius:18px;padding:14px 16px;display:none;z-index:60}
+    .toast.show{display:block}.toast b{display:block;margin-bottom:5px}.toast span{color:var(--muted);font-size:13px;line-height:1.6;white-space:pre-wrap}
+    .modal{position:fixed;inset:0;background:rgba(15,23,42,.38);display:none;align-items:center;justify-content:center;padding:20px;z-index:70}
+    .modal.show{display:flex}.box{width:min(920px,100%);background:#fff;border:1px solid var(--line);border-radius:28px;overflow:hidden}
+    .modalHd,.modalFt{padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line)}
+    .modalFt{border-bottom:none;border-top:1px solid var(--line);justify-content:flex-start;flex-wrap:wrap}.modalBd{padding:20px}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.empty{padding:26px 18px;text-align:center;color:var(--muted)}
+    .auth-status{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--muted);font-size:12px}
+  </style>
 </head>
-
 <body>
-  <div class="shell">
-    <div class="topbar">
-      <div class="langbar">
-        <button id="btnEN" class="langbtn active" type="button">EN</button>
-        <button id="btnAR" class="langbtn" type="button">AR</button>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="head">
-        <h1 data-i18n="title">Agency</h1>
-      </div>
-
-      <form id="agency-form" novalidate>
-        <div class="grid">
-          <div class="panel">
-            <div class="titleRow">
-              <b data-i18n="agency_details">Agency Details</b>
-              <span class="pill" id="modePill">Single</span>
-            </div>
-
-            <label for="firma" data-i18n="firma_lbl">Agency Signature</label>
-            <div class="firmaRow">
-              <input id="firma" name="firma" type="text" autocomplete="organization" style="flex:1"/>
-              <button id="searchAgencyBtn" type="button" class="iconBtn" title="Search">🔎</button>
-            </div>
-            <div id="errFirma" class="err" data-i18n="err_firma">Invalid agency signature</div>
-
-            <div id="mainUI">
-              <div style="height:10px"></div>
-
-              <div class="toggle">
-                <input id="molti" type="checkbox"/>
-                <div class="meta">
-                  <b data-i18n="multi">Multi</b>
-                  <span data-i18n="multi_hint">Add multiple accounts in one request</span>
-                </div>
-                <div class="inlineType">
-                  <label for="typeSelect" data-i18n="type_lbl">Type</label>
-                  <select id="typeSelect">
-                    <option value="Appointment" data-i18n="type_appointment">Appointment</option>
-                    <option value="Waiting list" data-i18n="type_waiting">Waiting list</option>
-                  </select>
-                </div>
-              </div>
-
-              <div style="height:8px"></div>
-
-              <div class="titleRow" style="margin-top:8px">
-                <b data-i18n="account">Account</b>
-                <span class="hint" data-i18n="account_hint">Email + Password + Passport</span>
-              </div>
-
-              <div class="row">
-                <div>
-                  <label for="email" data-i18n="email_lbl">Email</label>
-                  <input id="email" name="email" type="text" placeholder="email@example.com" autocomplete="username"/>
-                  <div id="errEmail" class="err" data-i18n="err_email">Invalid email</div>
-                </div>
-                <div>
-                  <label for="password" data-i18n="pass_lbl">Password</label>
-                  <input id="password" name="password" type="password" autocomplete="current-password"/>
-                  <div id="errPassword" class="err" data-i18n="err_pass">Invalid password</div>
-                </div>
-              </div>
-
-              <label for="passport" data-i18n="passport_lbl">Passport Number</label>
-              <input id="passport" name="passport" type="text" placeholder="AA1234567"/>
-              <div id="errPassport" class="err" data-i18n="err_passport">Invalid passport number</div>
-
-              <div class="btnRow">
-                <button id="addBtn" type="button" class="btn btnSoft" style="display:none"></button>
-                <button id="listDoneBtn" type="button" class="btn btnSoft" style="display:none"></button>
-                <button id="sendBtn" type="submit" class="btn btnPrimary" style="flex:1;display:inline-flex;align-items:center;justify-content:center"></button>
-              </div>
-
-              <div id="listWrap" style="display:none">
-                <div class="list" role="table" aria-label="Accounts list">
-                  <div class="listHead" role="row">
-                    <div role="columnheader" data-i18n="col_email">Email</div>
-                    <div role="columnheader" data-i18n="col_password">Password</div>
-                    <div role="columnheader" data-i18n="col_passport">Passport</div>
-                    <div role="columnheader" data-i18n="col_status">Status</div>
-                    <div role="columnheader" data-i18n="col_action">Action</div>
-                  </div>
-                  <div id="listBody"></div>
-                </div>
-                <div id="errList" class="err" data-i18n="err_list">Add at least one account</div>
-              </div>
-            </div>
-
-            <!-- Saved Accounts view -->
-            <div id="savedWrap" style="display:none;margin-top:12px">
-              <div class="titleRow">
-                <b data-i18n="saved_title">Saved Accounts</b>
-                <button id="backBtn" type="button" class="btn btnSoft" style="padding:8px 14px;border-radius:999px;box-shadow:none" data-i18n="back_btn">Back</button>
-              </div>
-
-              <div class="row" style="grid-template-columns:1fr;gap:10px;margin:8px 0 10px">
-                <input id="savedSearch" type="text" placeholder="Search…" style="width:100%"/>
-                <div class="hint savedTapHint" data-i18n="saved_tap_hint">Tap any account to view full details</div>
-                <div class="listHead savedDesktopHead" role="row">
-                  <div role="columnheader" data-i18n="col_email">Email</div>
-                  <div role="columnheader" data-i18n="col_password">Password</div>
-                  <div role="columnheader" data-i18n="col_passport">Passport</div>
-                  <div role="columnheader" data-i18n="col_status">Status</div>
-                  <div role="columnheader" data-i18n="col_action">Action</div>
-                </div>
-                <div id="savedBody"></div>
-              </div>
-
-              <div id="savedEmpty" class="emptyBox" style="display:none" data-i18n="saved_empty">No saved accounts for this agency.</div>
-            </div>
-
-          </div>
-
-          <div class="asideStats">
-            <div class="panel">
-              <div class="titleRow">
-                <b data-i18n="summary">Summary</b>
-                <span class="hint" data-i18n="status_lbl">Status</span>
-              </div>
-              <div class="stat">
-                <b id="count">0</b>
-                <span data-i18n="count_lbl">Accounts</span>
-              </div>
-              <div class="stat" id="statusStat">
-                <b id="status"></b>
-                <span data-i18n="fill_send">Fill and send</span>
-              </div>
-            </div>
+  <div class="auth-shell" id="authShell">
+    <div class="auth-wrap">
+      <div class="auth-card" id="loginView">
+        <div class="brand">
+          <div class="logo"></div>
+          <div>
+            <h1>Agency Panel</h1>
+            <p class="apiHost">…</p>
           </div>
         </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- Saved account details modal -->
-  <div id="detailsModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:997;align-items:center;justify-content:center;padding:18px">
-    <div class="panel detailsCard">
-      <div class="titleRow" style="margin:0 0 12px">
-        <div style="display:flex;flex-direction:column;gap:3px">
-          <b data-i18n="details_title">Account details</b>
-          <span class="hint" data-i18n="details_hint">Full account information</span>
+        <div class="field">
+          <label class="label">User</label>
+          <input id="inUser" class="input" placeholder="agency_user" autocomplete="username" />
         </div>
-        <button id="detailsClose" type="button" class="xbtn" aria-label="Close">×</button>
-      </div>
-
-      <div class="detailsGrid">
-        <div class="detailItem detailItemFull">
-          <span class="detailLabel" data-i18n="email_lbl">Email</span>
-          <div class="detailValue detailValueEmail" id="detailEmail"></div>
+        <div class="field">
+          <label class="label">Password</label>
+          <input id="inPass" class="input" type="password" placeholder="••••••••" autocomplete="current-password" />
         </div>
-        <div class="detailItem">
-          <span class="detailLabel" data-i18n="passport_lbl">Passport Number</span>
-          <div class="detailValue" id="detailPassport"></div>
+        <button class="btn primary" id="btnLogin" style="width:100%">دخول الوكالة</button>
+        <div style="display:flex;justify-content:center;margin-top:14px">
+          <span class="auth-status"><span class="dot"></span><span id="authStageLabel">Secure Access</span></span>
         </div>
-        <div class="detailItem">
-          <span class="detailLabel" data-i18n="field_password_masked">Saved password</span>
-          <div class="detailValue" id="detailPassword"></div>
-        </div>
-        <div class="detailItem detailItemFull">
-          <span class="detailLabel" data-i18n="status_lbl">Status</span>
-          <div class="detailValue" id="detailStatus"></div>
-        </div>
-      </div>
-
-      <div class="btnRow detailsActions" style="margin-top:14px">
-        <button id="detailsPwBtn" type="button" class="btn btnPrimary" style="flex:1" data-i18n="details_open_pw">Request password change</button>
-        <button id="detailsDismiss" type="button" class="btn btnSoft" data-i18n="details_close">Close</button>
       </div>
     </div>
   </div>
 
-  <!-- Password update modal -->
-  <div id="pwModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:998;align-items:center;justify-content:center;padding:18px">
-    <div class="panel" style="max-width:520px;width:100%;background:rgba(15,23,42,.92);border-color:rgba(255,255,255,.18);box-shadow:0 18px 45px rgba(0,0,0,.55)">
-      <div class="titleRow" style="margin:0 0 10px">
-        <b data-i18n="pw_title">Request password change</b>
-        <button id="pwClose" type="button" class="xbtn" aria-label="Close">×</button>
-      </div>
-      <div class="row" style="grid-template-columns:1fr;gap:10px">
-        <div>
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
-            <label style="margin:0" data-i18n="email_lbl">Email</label>
-            <button id="copyEmailBtn" type="button" class="miniBtn" data-i18n="btn_copy">Copy</button>
+  <div class="app hidden" id="appShell">
+    <div class="shell">
+      <aside class="card sidebar">
+        <div class="brand">
+          <div class="logo"></div>
+          <div>
+            <h1>Agency Panel</h1>
+            <p class="apiHost">…</p>
           </div>
-          <input id="pwEmail" type="text" readonly/>
         </div>
-        <div>
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
-            <label style="margin:0" data-i18n="passport_lbl">Passport Number</label>
-            <button id="copyPassportBtn" type="button" class="miniBtn" data-i18n="btn_copy">Copy</button>
+        <span class="pill"><span class="dot"></span><span id="pillText">Authenticated</span></span>
+        <div class="sessionLine"><span>Agency</span><b id="sessionAgency">—</b></div>
+        <div class="sessionLine"><span>User</span><b id="sessionUser">—</b></div>
+        <div class="sessionLine"><span>Session</span><b id="sessionState">Active</b></div>
+        <div class="sessionLine"><span>Expires</span><b id="sessionExpiry">20 min</b></div>
+        <div style="margin-top:12px;display:grid;gap:10px">
+          <button class="btn" id="btnRefresh" disabled>Refresh</button>
+          <button class="btn danger" id="btnLogout" disabled>Logout</button>
+        </div>
+      </aside>
+
+      <main>
+        <div class="card topbar">
+          <div>
+            <b>الحسابات الخاصة بالوكالة</b>
+            <div style="color:var(--muted);font-size:13px;margin-top:6px">تعرض هذه الصفحة حسابات الوكالة الحالية فقط، بدون الوصول إلى باقي الوكالات أو المديرين.</div>
           </div>
-          <input id="pwPassport" type="text" readonly/>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn" id="btnBulk" disabled>Bulk Paste</button>
+            <button class="btn primary" id="btnAddOne" disabled>Add Account</button>
+          </div>
         </div>
-        <div>
-          <label for="pwNew" data-i18n="pw_new_lbl">New Password</label>
-          <input id="pwNew" type="text" placeholder="********"/>
+
+        <div class="kpis">
+          <div class="kpi"><b id="kpiTotal">0</b><span>إجمالي الحسابات</span></div>
+          <div class="kpi"><b id="kpiPending">0</b><span>Pending</span></div>
+          <div class="kpi"><b id="kpiProgress">0</b><span>In Progress</span></div>
+          <div class="kpi"><b id="kpiDone">0</b><span>Done / Rejected</span></div>
+        </div>
+
+        <section class="card panel">
+          <div class="filters">
+            <div>
+              <label class="label">Search</label>
+              <input id="inSearch" class="input" placeholder="email / passport / status" disabled />
+            </div>
+            <div>
+              <label class="label">Status</label>
+              <select id="selStatusFilter" disabled>
+                <option value="">All</option>
+                <option value="Done">Done</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Rejected">Rejected</option>
+                <option value="Pending">Pending</option>
+              </select>
+            </div>
+            <div>
+              <label class="label">Month</label>
+              <select id="selMonthFilter" disabled></select>
+            </div>
+            <div>
+              <label class="label">عرض المنتهية</label>
+              <select id="selIncludeDone" disabled>
+                <option value="1">نعم</option>
+                <option value="0">لا</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="tablewrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Email</th>
+                  <th>Password</th>
+                  <th>Passport</th>
+                  <th>Status</th>
+                  <th>Type</th>
+                  <th>Updated</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="tbody"><tr><td colspan="8" class="empty">—</td></tr></tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"><b id="toastTitle">—</b><span id="toastMsg">—</span></div>
+
+  <div class="modal" id="modalOne">
+    <div class="box">
+      <div class="modalHd">
+        <div><b id="oneTitle">Account</b><div id="oneSub" style="color:var(--muted);font-size:13px;margin-top:4px">—</div></div>
+        <button class="btn" onclick="UI.closeOne()">✕</button>
+      </div>
+      <div class="modalBd">
+        <div class="grid2">
+          <div class="field"><label class="label">Email</label><input id="oneEmail" class="input" placeholder="name@example.com" /></div>
+          <div class="field"><label class="label">Password</label><input id="onePass" class="input" placeholder="password" /></div>
+        </div>
+        <div class="grid2">
+          <div class="field"><label class="label">Passport</label><input id="onePassport" class="input" placeholder="AA123456" /></div>
+          <div class="field"><label class="label">Status</label><select id="oneStatus" class="input"><option>Done</option><option>In Progress</option><option>Rejected</option><option selected>Pending</option></select></div>
+          <div class="field"><label class="label">Type</label><select id="oneType" class="input"><option value="">—</option><option>Appointment</option><option>Waiting list</option></select></div>
         </div>
       </div>
-      <div class="btnRow" style="margin-top:12px">
-        <button id="pwSave" type="button" class="btn btnPrimary" style="flex:1" data-i18n="btn_save">Save</button>
-        <button id="pwCancel" type="button" class="btn btnSoft" data-i18n="btn_cancel">Cancel</button>
+      <div class="modalFt">
+        <button class="btn" onclick="UI.closeOne()">Cancel</button>
+        <button class="btn primary" id="btnSaveOne">Save</button>
       </div>
     </div>
   </div>
-  <div id="toast"></div>
 
-  <script>
-    const API_ENDPOINT = "https://api.mehdik.site/";
-    fetch(API_ENDPOINT, { method: "GET", mode: "cors", cache: "no-store" }).catch(()=>{});
+  <div class="modal" id="modalBulk">
+    <div class="box">
+      <div class="modalHd">
+        <div><b>Bulk Paste</b></div>
+        <button class="btn" onclick="UI.closeBulk()">✕</button>
+      </div>
+      <div class="modalBd">
+        <div class="field">
+          <label class="label">JSON</label>
+          <textarea id="bulkText" style="width:100%;min-height:220px;border:1px solid var(--line);border-radius:16px;padding:14px" placeholder='[{"email":"a@x.com","password":"123","passport":"AA1","status":"Pending","type":"Appointment"}]'></textarea>
+        </div>
+        <div style="padding:14px;border:1px solid var(--line);border-radius:16px;background:#fbfdff"><div id="bulkStats">—</div></div>
+        <ul id="bulkList" style="list-style:none;padding:0;margin:14px 0 0;display:grid;gap:10px"></ul>
+      </div>
+      <div class="modalFt">
+        <button class="btn" onclick="UI.closeBulk()">Cancel</button>
+        <button class="btn" id="btnParse">Preview</button>
+        <button class="btn primary" id="btnBulkAdd" disabled>Add</button>
+      </div>
+    </div>
+  </div>
 
-    const i18n = {
-      en: {
-        title: "Agency",
-        agency_details: "Agency Details",
-        firma_lbl: "Agency Signature",
-        multi: "Multi",
-        multi_hint: "Add multiple accounts in one request",
-        type_lbl: "Type",
-        type_appointment: "Appointment",
-        type_waiting: "Waiting list",
-        account: "Account",
-        account_hint: "Email + Password + Passport",
-        email_lbl: "Email",
-        pass_lbl: "Password",
-        passport_lbl: "Passport Number",
-        summary: "Summary",
-        status_lbl: "Status",
-        count_lbl: "Accounts",
-        fill_send: "Fill and send",
-        col_email: "Email",
-        col_password: "Password",
-        col_passport: "Passport",
-        col_status: "Status",
-        col_action: "Action",
-        status_done: "✅",
-        status_pending: "Pending",
-        status_ready_state: "Ready",
-        mode_single: "Single",
-        mode_multi: "Multi",
-        btn_add: "+ Add to list",
-        btn_send: "Send",
-        btn_sending: "Sending…",
-        status_ready: "Ready",
-        status_sending: "Sending…",
-        status_sent: "Sent",
-        status_error: "Error",
-        err_firma: "Invalid agency signature",
-        err_email: "Invalid email",
-        err_pass: "Invalid password",
-        err_passport: "Invalid passport number",
-        err_list: "Add at least one account",
-        toast_check_firma: "Check agency signature",
-        toast_check_account: "Check account fields",
-        toast_added: "Added to list",
-        toast_sent: "Sent successfully",
-        toast_failed: "Send failed",
-        toast_need_one: "Add at least one account",
-        toast_dup: "Account already exists (saved before)",
-        btn_delete: "Delete",
-        btn_edit: "Edit",
-        btn_list_done: "List Done",
-        saved_title: "Saved Accounts",
-        back_btn: "Back",
-        toast_loading: "Loading…",
-        toast_saved_loaded: "Saved accounts loaded",
-        saved_empty: "No saved accounts for this agency.",
-        saved_search_ph: "Search by email or passport…",
-        btn_req_pw: "Password",
-        pw_title: "Request password change",
-        pw_new_lbl: "New Password",
-        btn_copy: "Copy",
-        btn_save: "Save",
-        btn_cancel: "Cancel",
-        toast_copied: "Copied",
-        toast_pw_updated: "Password updated",
-        toast_pw_failed: "Password update failed",
-        saved_tap_hint: "Tap any account to view full details",
-        details_title: "Account details",
-        details_hint: "Full account information",
-        details_open_pw: "Request password change",
-        details_close: "Close",
-        field_password_masked: "Saved password"
-      },
-      ar: {
-        title: "الوكالة",
-        agency_details: "بيانات الوكالة",
-        firma_lbl: "توقيع الوكالة",
-        multi: "متعدد",
-        multi_hint: "إضافة عدة حسابات في طلب واحد",
-        type_lbl: "النوع",
-        type_appointment: "Appointment",
-        type_waiting: "Waiting list",
-        account: "الحساب",
-        account_hint: "إيميل + كلمة سر + رقم الجواز",
-        email_lbl: "الإيميل",
-        pass_lbl: "كلمة السر",
-        passport_lbl: "رقم جواز السفر",
-        summary: "ملخص",
-        status_lbl: "الحالة",
-        count_lbl: "عدد الحسابات",
-        fill_send: "املأ ثم أرسل",
-        col_email: "الإيميل",
-        col_password: "كلمة السر",
-        col_passport: "الجواز",
-        col_status: "الحالة",
-        col_action: "الإجراء",
-        status_done: "✅",
-        status_pending: "Pending",
-        status_ready_state: "Ready",
-        mode_single: "واحد",
-        mode_multi: "متعدد",
-        btn_add: "+ أضف للقائمة",
-        btn_send: "إرسال",
-        btn_sending: "جاري الإرسال…",
-        status_ready: "جاهز",
-        status_sending: "جاري الإرسال…",
-        status_sent: "تم الإرسال",
-        status_error: "خطأ",
-        err_firma: "توقيع غير صالح",
-        err_email: "إيميل غير صالح",
-        err_pass: "كلمة سر غير صالحة",
-        err_passport: "رقم جواز غير صالح",
-        err_list: "أضف حسابًا واحدًا على الأقل",
-        toast_check_firma: "تحقق من توقيع الوكالة",
-        toast_check_account: "تحقق من بيانات الحساب",
-        toast_added: "تمت الإضافة للقائمة",
-        toast_sent: "تم الإرسال بنجاح",
-        toast_failed: "فشل الإرسال",
-        toast_need_one: "أضف حسابًا واحدًا على الأقل",
-        toast_dup: "الحساب موجود مسبقًا (محفوظ سابقًا)",
-        btn_delete: "حذف",
-        btn_edit: "تعديل",
-        btn_list_done: "تم",
-        saved_title: "الحسابات المحفوظة",
-        back_btn: "رجوع",
-        toast_loading: "جاري التحميل…",
-        toast_saved_loaded: "تم تحميل الحسابات المحفوظة",
-        saved_empty: "لا توجد حسابات محفوظة لهذه الوكالة.",
-        saved_search_ph: "ابحث بالإيميل أو رقم الجواز…",
-        btn_req_pw: "تعديل كلمة السر",
-        pw_title: "طلب تعديل كلمة السر",
-        pw_new_lbl: "كلمة السر الجديدة",
-        btn_copy: "نسخ",
-        btn_save: "حفظ",
-        btn_cancel: "إلغاء",
-        toast_copied: "تم النسخ",
-        toast_pw_updated: "تم تعديل كلمة السر",
-        toast_pw_failed: "فشل تعديل كلمة السر",
-        saved_tap_hint: "اضغط على أي حساب لعرض كل التفاصيل",
-        details_title: "تفاصيل الحساب",
-        details_hint: "معلومات الحساب كاملة",
-        details_open_pw: "طلب تعديل كلمة السر",
-        details_close: "إغلاق",
-        field_password_masked: "كلمة السر المحفوظة"
+<script>
+(() => {
+  const API_BASE = (document.body?.dataset?.apiBase || "https://api.mehdik.site").replace(/\/$/, "");
+  const AGENCY_BASE = API_BASE + "/agency";
+  document.querySelectorAll('.apiHost').forEach(el => el.textContent = API_BASE);
+
+  const STORAGE_KEY = 'agency-panel-ui:v1';
+  const VALID_STATUSES = ["Done","In Progress","Rejected","Pending"];
+  const STATUS_PRIORITY = {"Done":0,"In Progress":1,"Rejected":2,"Pending":3};
+  const S = {
+    authenticated:false, csrfToken:'', loginUser:'', agency:'', sessionExpiresAt:0,
+    accounts:[], monthFilter:'', includeDone:true, bulkParsed:[]
+  };
+
+  const $ = (id) => document.getElementById(id);
+  const norm = (s) => String(s || '').trim();
+  const normEmail = (s) => norm(s).toLowerCase();
+  const normPassport = (s) => norm(s).toUpperCase();
+  const statusValue = (s) => VALID_STATUSES.includes(norm(s)) ? norm(s) : 'Pending';
+  const typeValue = (t) => { const v = norm(t).toLowerCase(); if(v==='appointment') return 'Appointment'; if(v==='waiting list'||v==='waitinglist') return 'Waiting list'; return ''; };
+  const escapeHtml = (x) => String(x ?? '').replace(/[&<>"']/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normEmail(email));
+  const isValidPassport = (passport) => /^[A-Z0-9][A-Z0-9\-]{2,19}$/.test(normPassport(passport));
+  const maskPassword = (p) => { const s=String(p||''); if(!s) return ''; if(s.length<=2) return '•'.repeat(s.length); return '•'.repeat(Math.min(10, Math.max(1,s.length-2))) + s.slice(-2); };
+
+  function toast(title, msg){ const t=$('toast'); $('toastTitle').textContent=title; $('toastMsg').textContent=msg; t.classList.add('show'); clearTimeout(toast._tm); toast._tm=setTimeout(()=>t.classList.remove('show'), 3500); }
+  function persistUiState(){ sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ monthFilter:S.monthFilter, includeDone:S.includeDone, loginUser:S.loginUser })); }
+  function restoreUiState(){ try { const d=JSON.parse(sessionStorage.getItem(STORAGE_KEY)||'{}'); S.monthFilter=norm(d.monthFilter); S.includeDone=d.includeDone!==false; S.loginUser=norm(d.loginUser); $('inUser').value=S.loginUser; $('selIncludeDone').value=S.includeDone ? '1' : '0'; } catch(_){} }
+  function monthKeyOf(value){ const d=value?new Date(value):null; if(!d||Number.isNaN(d.getTime())) return ''; return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; }
+  function currentMonthKey(){ const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; }
+  function monthLabel(key){ if(!/^\d{4}-\d{2}$/.test(key)) return 'All months'; const [y,m]=key.split('-'); const d=new Date(Number(y), Number(m)-1, 1); return d.toLocaleDateString('en-US',{month:'long',year:'numeric'}); }
+
+  async function apiFetch(url, options={}){
+    const controller = new AbortController(); const timer = setTimeout(()=>controller.abort(), 15000);
+    try{
+      const headers = new Headers(options.headers || {});
+      const method = String(options.method || 'GET').toUpperCase();
+      if(!['GET','HEAD','OPTIONS'].includes(method) && S.csrfToken){ headers.set('X-CSRF-Token', S.csrfToken); }
+      const response = await fetch(url, { ...options, headers, credentials:'include', signal:controller.signal });
+      const data = await response.json().catch(()=>({ ok:false, error:'Invalid server response' }));
+      if(!response.ok && typeof data.ok === 'undefined') data.ok = false;
+      return data;
+    }catch(err){ return { ok:false, error: err?.name==='AbortError' ? 'Request timeout' : (err?.message||'Request failed') }; }
+    finally{ clearTimeout(timer); }
+  }
+
+  const API = {
+    startAuth:(user,pass)=>apiFetch(AGENCY_BASE + '/auth/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user,pass})}),
+    session:()=>apiFetch(AGENCY_BASE + '/session'),
+    logout:()=>apiFetch(AGENCY_BASE + '/logout',{method:'POST'}),
+    accounts:(month='all', includeDone=true, status='')=>{
+      const qs = new URLSearchParams();
+      if(month) qs.set('month', month);
+      qs.set('includeDone', includeDone ? 'true' : 'false');
+      if(status) qs.set('status', status);
+      return apiFetch(AGENCY_BASE + '/accounts?' + qs.toString());
+    },
+    addAccount:(payload)=>apiFetch(AGENCY_BASE + '/account',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}),
+    editAccount:(payload)=>apiFetch(AGENCY_BASE + '/account',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}),
+    delAccount:(payload)=>apiFetch(AGENCY_BASE + '/account',{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+  };
+
+  function renderMonthFilter(){
+    const sel = $('selMonthFilter');
+    const keys = [...new Set((Array.isArray(S.accounts)?S.accounts:[]).map(a => monthKeyOf(a.updatedAt)).filter(Boolean))].sort().reverse();
+    const current = currentMonthKey();
+    if(!keys.includes(current)) keys.unshift(current);
+    if(!S.monthFilter) S.monthFilter = current;
+    if(S.monthFilter !== 'all' && !keys.includes(S.monthFilter)) S.monthFilter = current;
+    sel.innerHTML = '<option value="all">All months</option>' + keys.map(k => `<option value="${k}">${monthLabel(k)}</option>`).join('');
+    sel.value = S.monthFilter || current;
+  }
+
+  function applyFilters(list){
+    const q = norm($('inSearch').value).toLowerCase();
+    const sf = norm($('selStatusFilter').value);
+    const mf = norm(S.monthFilter || $('selMonthFilter').value || currentMonthKey());
+    return (Array.isArray(list)?list:[])
+      .filter(a => {
+        const okMonth = mf === 'all' ? true : monthKeyOf(a.updatedAt) === mf;
+        if(!okMonth) return false;
+        const okQ = !q || [a.email,a.passport,a.status,a.type].join(' ').toLowerCase().includes(q);
+        if(!okQ) return false;
+        return sf ? statusValue(a.status) === sf : true;
+      })
+      .sort((a,b)=> (STATUS_PRIORITY[statusValue(a.status)] - STATUS_PRIORITY[statusValue(b.status)]) || String(a.email).localeCompare(String(b.email)));
+  }
+
+  function statusClass(st){ return st === 'Done' ? 's-good' : st === 'Rejected' ? 's-bad' : st === 'In Progress' ? 's-neutral' : 's-warn'; }
+
+  function renderKpis(){
+    const list = applyFilters(S.accounts);
+    const total = list.length;
+    let pending=0, progress=0, doneOrRejected=0;
+    for(const a of list){ const s=statusValue(a.status); if(s==='Pending') pending++; else if(s==='In Progress') progress++; else doneOrRejected++; }
+    $('kpiTotal').textContent = total;
+    $('kpiPending').textContent = pending;
+    $('kpiProgress').textContent = progress;
+    $('kpiDone').textContent = doneOrRejected;
+  }
+
+  function renderAccounts(){
+    const list = applyFilters(S.accounts);
+    const tb = $('tbody');
+    if(!list.length){ tb.innerHTML = '<tr><td colspan="8" class="empty">لا توجد حسابات</td></tr>'; renderKpis(); return; }
+    tb.innerHTML = list.map((a,i)=>{
+      const emailEnc = encodeURIComponent(a.email||'');
+      const passportEnc = encodeURIComponent(a.passport||'');
+      return `<tr>
+        <td>${i+1}</td>
+        <td>${escapeHtml(a.email||'')}</td>
+        <td>${escapeHtml(maskPassword(a.password||''))}</td>
+        <td>${escapeHtml(a.passport||'')}</td>
+        <td><span class="status ${statusClass(statusValue(a.status))}">${escapeHtml(statusValue(a.status))}</span></td>
+        <td>${escapeHtml(typeValue(a.type)||'—')}</td>
+        <td>${escapeHtml(a.updatedAt ? new Date(a.updatedAt).toLocaleString() : '—')}</td>
+        <td>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn" onclick="UI.openEdit('${emailEnc}','${passportEnc}')">Edit</button>
+            <button class="btn danger" onclick="UI.deleteOne('${emailEnc}','${passportEnc}')">Delete</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+    renderKpis();
+  }
+
+  function setAuthState(authed){
+    S.authenticated = !!authed;
+    $('appShell').classList.toggle('hidden', !authed);
+    $('authShell').classList.toggle('hidden', authed);
+    ['btnRefresh','btnLogout','btnBulk','btnAddOne','inSearch','selStatusFilter','selMonthFilter','selIncludeDone'].forEach(id=>$(id).disabled=!authed);
+    $('sessionUser').textContent = S.loginUser || '—';
+    $('sessionAgency').textContent = S.agency || '—';
+    $('sessionState').textContent = authed ? 'Active' : 'Inactive';
+    updateSessionInfo();
+  }
+
+  function updateSessionInfo(){
+    if(!S.authenticated || !S.sessionExpiresAt){ $('sessionExpiry').textContent='—'; return; }
+    const remaining = Math.max(0, Math.ceil((Number(S.sessionExpiresAt)-Date.now())/60000));
+    $('sessionExpiry').textContent = remaining > 0 ? `${remaining} min` : 'Expired';
+  }
+
+  const UI = {
+    _oneMode:'add', _oneMatch:{email:'',passport:''},
+    async login(){
+      const user = norm($('inUser').value); const pass = norm($('inPass').value);
+      if(!user || !pass) return toast('Login','أدخل User و Password');
+      const res = await API.startAuth(user,pass);
+      if(!res.ok) return toast('Login', res.error || 'Login failed');
+      S.csrfToken = norm(res.csrfToken);
+      S.loginUser = norm(res.user || user);
+      S.agency = norm(res.agency || '');
+      S.sessionExpiresAt = Number(res.expiresAt || 0);
+      persistUiState();
+      setAuthState(true);
+      await UI.loadAccounts();
+      toast('Login','تم تسجيل الدخول');
+    },
+    async restoreAuth(){
+      const res = await API.session();
+      if(!res.ok || !res.authenticated){ setAuthState(false); return; }
+      S.csrfToken = norm(res.csrfToken); S.loginUser = norm(res.user); S.agency = norm(res.agency); S.sessionExpiresAt = Number(res.expiresAt||0);
+      setAuthState(true); await UI.loadAccounts();
+    },
+    async loadAccounts(){
+      const res = await API.accounts('all', true, '');
+      if(!res.ok) return toast('Accounts', res.error || 'Failed');
+      S.accounts = Array.isArray(res.accounts) ? res.accounts : [];
+      renderMonthFilter(); renderAccounts(); persistUiState();
+    },
+    openAddOne(){ UI._oneMode='add'; UI._oneMatch={email:'',passport:''}; $('oneTitle').textContent='Add Account'; $('oneSub').textContent=S.agency || ''; $('oneEmail').value=''; $('onePass').value=''; $('onePassport').value=''; $('oneStatus').value='Pending'; $('oneType').value=''; $('modalOne').classList.add('show'); },
+    openEdit(emailEnc, passportEnc){
+      const email=decodeURIComponent(emailEnc||''), passport=decodeURIComponent(passportEnc||'');
+      const a=S.accounts.find(x=>normEmail(x.email)===normEmail(email)&&normPassport(x.passport)===normPassport(passport)); if(!a) return;
+      UI._oneMode='edit'; UI._oneMatch={email:a.email,passport:a.passport}; $('oneTitle').textContent='Edit Account'; $('oneSub').textContent=S.agency || ''; $('oneEmail').value=a.email||''; $('onePass').value=a.password||''; $('onePassport').value=a.passport||''; $('oneStatus').value=statusValue(a.status); $('oneType').value=typeValue(a.type); $('modalOne').classList.add('show');
+    },
+    closeOne(){ $('modalOne').classList.remove('show'); },
+    async saveOne(){
+      const payload={ email:norm($('oneEmail').value), password:norm($('onePass').value), passport:norm($('onePassport').value), status:$('oneStatus').value, type:typeValue($('oneType').value) };
+      if(!isValidEmail(payload.email)) return toast('Account','Email غير صالح');
+      if(!isValidPassport(payload.passport)) return toast('Account','Passport غير صالح');
+      if(UI._oneMode==='add' && !payload.password) return toast('Account','Password مطلوب');
+      let res;
+      if(UI._oneMode==='add') res = await API.addAccount(payload);
+      else res = await API.editAccount({ ...payload, matchEmail:UI._oneMatch.email, matchPassport:UI._oneMatch.passport });
+      if(!res.ok) return toast('Account', res.error || 'Failed');
+      UI.closeOne(); await UI.loadAccounts(); toast('Account','تم الحفظ');
+    },
+    async deleteOne(emailEnc, passportEnc){
+      const email=decodeURIComponent(emailEnc||''), passport=decodeURIComponent(passportEnc||'');
+      if(!confirm(`Delete ${email}?`)) return;
+      const res = await API.delAccount({ email, passport });
+      if(!res.ok) return toast('Account', res.error || 'Failed');
+      await UI.loadAccounts(); toast('Account','تم الحذف');
+    },
+    openBulk(){ $('bulkText').value=''; $('bulkStats').textContent='—'; $('bulkList').innerHTML=''; $('btnBulkAdd').disabled=true; S.bulkParsed=[]; $('modalBulk').classList.add('show'); },
+    closeBulk(){ $('modalBulk').classList.remove('show'); },
+    parseBulk(){
+      let arr=[]; try{ arr=JSON.parse($('bulkText').value||'[]'); }catch{ return toast('Bulk','JSON غير صالح'); }
+      if(!Array.isArray(arr)) return toast('Bulk','يجب أن يكون Array');
+      const parsed=[], bad=[];
+      for(const item of arr){
+        const a={ email:norm(item?.email), password:norm(item?.password), passport:norm(item?.passport), status:statusValue(item?.status), type:typeValue(item?.type) };
+        if(!isValidEmail(a.email)||!isValidPassport(a.passport)||!a.password){ bad.push(JSON.stringify(item)); continue; }
+        parsed.push(a);
       }
-    };
-
-    let currentLang = "en";
-    const t = (key) => (i18n[currentLang] && i18n[currentLang][key] != null) ? i18n[currentLang][key] : key;
-
-    const form = document.getElementById("agency-form");
-    const toastEl = document.getElementById("toast");
-    const sendBtn = document.getElementById("sendBtn");
-    const addBtn = document.getElementById("addBtn");
-    const listDoneBtn = document.getElementById("listDoneBtn");
-
-    const modePill = document.getElementById("modePill");
-    const countEl = document.getElementById("count");
-    const statusEl = document.getElementById("status");
-    const statusStat = document.getElementById("statusStat");
-
-    const firmaEl = document.getElementById("firma");
-    const searchAgencyBtn = document.getElementById("searchAgencyBtn");
-    const backBtn = document.getElementById("backBtn");
-
-    const mainUI = document.getElementById("mainUI");
-    const savedWrap = document.getElementById("savedWrap");
-    const savedBody = document.getElementById("savedBody");
-    const savedEmpty = document.getElementById("savedEmpty");
-    const savedSearchEl = document.getElementById("savedSearch");
-
-    const detailsModal = document.getElementById("detailsModal");
-    const detailsClose = document.getElementById("detailsClose");
-    const detailsDismiss = document.getElementById("detailsDismiss");
-    const detailsPwBtn = document.getElementById("detailsPwBtn");
-    const detailEmail = document.getElementById("detailEmail");
-    const detailPassport = document.getElementById("detailPassport");
-    const detailPassword = document.getElementById("detailPassword");
-    const detailStatus = document.getElementById("detailStatus");
-
-    const pwModal = document.getElementById("pwModal");
-    const pwClose = document.getElementById("pwClose");
-    const pwCancel = document.getElementById("pwCancel");
-    const pwSave = document.getElementById("pwSave");
-    const pwEmail = document.getElementById("pwEmail");
-    const pwPassport = document.getElementById("pwPassport");
-    const pwNew = document.getElementById("pwNew");
-    const copyEmailBtn = document.getElementById("copyEmailBtn");
-    const copyPassportBtn = document.getElementById("copyPassportBtn");
-
-    const moltiEl = document.getElementById("molti");
-    const typeSelectEl = document.getElementById("typeSelect");
-    const emailEl = document.getElementById("email");
-    const passEl = document.getElementById("password");
-    const passpEl = document.getElementById("passport");
-
-    const errFirma = document.getElementById("errFirma");
-    const errEmail = document.getElementById("errEmail");
-    const errPassword = document.getElementById("errPassword");
-    const errPassport = document.getElementById("errPassport");
-    const errList = document.getElementById("errList");
-
-    const listWrap = document.getElementById("listWrap");
-    const listBody = document.getElementById("listBody");
-
-    // Multi list
-    const accounts = [];
-    let multiListReady = false;
-
-    // Duplicate highlight (during check)
-    let dupIndex = -1;
-    let singleDupView = false;
-
-    // Saved accounts view
-    let inSavedView = false;
-    let savedAccounts = [];
-
-    function showToast(msg){
-      toastEl.textContent = msg;
-      toastEl.classList.add("show");
-      setTimeout(()=>toastEl.classList.remove("show"), 2600);
-    }
-
-    function validateEmail(val){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val); }
-
-    function clearInvalid(el, err){ if(el) el.classList.remove("invalid"); if(err) err.classList.remove("show"); }
-    function setInvalid(el, err){ if(el) el.classList.add("invalid"); if(err) err.classList.add("show"); ok = false; }
-
-    function setStatusKey(key){ statusEl.textContent = t(key); }
-
-    function applyLanguage(lang){
-      currentLang = lang;
-
-      if(lang === "ar"){
-        document.documentElement.lang = "ar";
-        document.documentElement.dir = "rtl";
-      }else{
-        document.documentElement.lang = "en";
-        document.documentElement.dir = "ltr";
-      }
-
-      document.getElementById("btnEN").classList.toggle("active", lang === "en");
-      document.getElementById("btnAR").classList.toggle("active", lang === "ar");
-
-      document.querySelectorAll("[data-i18n]").forEach(el=>{
-        const key = el.getAttribute("data-i18n");
-        if(i18n[lang][key] != null) el.textContent = i18n[lang][key];
-      });
-
-      firmaEl.placeholder = lang === "ar" ? "اسم الوكالة / توقيع" : "Agency name / Signature";
-      passEl.placeholder = lang === "ar" ? "كلمة السر" : "Password";
-      if(typeSelectEl){
-        const currentType = typeSelectEl.value || "Appointment";
-        typeSelectEl.innerHTML = `
-          <option value="Appointment">${t("type_appointment")}</option>
-          <option value="Waiting list">${t("type_waiting")}</option>
-        `;
-        typeSelectEl.value = currentType;
-      }
-
-      if(savedSearchEl) savedSearchEl.placeholder = t("saved_search_ph");
-      if(pwNew) pwNew.placeholder = lang === "ar" ? "كلمة السر الجديدة" : "New password";
-
-      addBtn.textContent = t("btn_add");
-      listDoneBtn.textContent = t("btn_list_done");
-      sendBtn.textContent = t("btn_send");
-      searchAgencyBtn.title = lang === "ar" ? "بحث" : "Search";
-
-      toggleMode(true);
-      if(statusEl.textContent.trim().length === 0) setStatusKey("status_ready");
-    }
-
-    function setViewSaved(on){
-      inSavedView = on;
-      if(on){
-        mainUI.style.display = "none";
-        savedWrap.style.display = "block";
-        modePill.style.display = "none";
-        if(statusStat) statusStat.style.display = "none";
-        statusEl.textContent = "";
-      }else{
-        mainUI.style.display = "block";
-        savedWrap.style.display = "none";
-        modePill.style.display = "inline-flex";
-        if(statusStat) statusStat.style.display = "flex";
-        if(statusEl.textContent.trim().length === 0) setStatusKey("status_ready");
-      }
-      updateCount();
-    }
-
-    function updateCount(){
-      countEl.textContent = String(inSavedView ? savedAccounts.length : accounts.length);
-    }
-
-    function toggleMode(skipListRender){
-      if(inSavedView) return;
-
-      const on = moltiEl.checked;
-      modePill.textContent = on ? t("mode_multi") : t("mode_single");
-
-      if(on) singleDupView = false;
-
-      if(on){
-        addBtn.style.display = "inline-flex";
-        listWrap.style.display = "block";
-        if(!multiListReady){
-          sendBtn.style.display = "none";
-          listDoneBtn.style.display = "inline-flex";
-        }else{
-          sendBtn.style.display = "inline-flex";
-          listDoneBtn.style.display = "none";
-        }
-      }else{
-        multiListReady = false;
-        addBtn.style.display = "none";
-        listDoneBtn.style.display = "none";
-        listWrap.style.display = singleDupView ? "block" : "none";
-        sendBtn.style.display = "inline-flex";
-        errList.classList.remove("show");
-      }
-
-      if(!skipListRender) renderList();
-    }
-
-    function maskPassword(p){
-      if(!p) return "";
-      if(p.length <= 2) return "••";
-      return "•".repeat(Math.min(10, p.length - 2)) + p.slice(-2);
-    }
-
-
-    function statusVariant(s){
-      const v = (s == null ? "" : String(s)).trim().toLowerCase();
-      if(!v) return "warn";
-
-      if(
-        v.includes("reject") ||
-        v.includes("rejected") ||
-        v.includes("رفض") ||
-        v.includes("مرفوض") ||
-        v.includes("fail") ||
-        v.includes("failed") ||
-        v.includes("error") ||
-        v.includes("خطأ") ||
-        v.includes("فشل")
-      ) return "danger";
-
-      if(
-        v.includes("sent") ||
-        v.includes("done") ||
-        v.includes("approved") ||
-        v.includes("تم") ||
-        v === "✅"
-      ) return "ok";
-
-      if(
-        v.includes("pending") ||
-        v.includes("انتظار") ||
-        v.includes("waiting")
-      ) return "warn";
-
-      if(
-        v.includes("ready") ||
-        v.includes("progress") ||
-        v.includes("in progress") ||
-        v.includes("جاهز") ||
-        v.includes("قيد")
-      ) return "info";
-
-      return "info";
-    }
-
-    function makeBadge(text){
-      const span = document.createElement("span");
-      span.className = "badge";
-      span.setAttribute("data-variant", statusVariant(text));
-      span.textContent = (text != null && String(text).trim() !== "") ? String(text) : t("status_pending");
-      return span;
-    }
-
-
-    function renderList(){
-      if(inSavedView) return;
-      listBody.innerHTML = "";
-
-      for(let i=0;i<accounts.length;i++){
-        const a = accounts[i];
-
-        const row = document.createElement("div");
-        row.className = "listRow";
-        row.setAttribute("role","row");
-
-        if(i === dupIndex) row.classList.add("dupGlow");
-
-        const c1 = document.createElement("div"); c1.textContent = a.email;
-        const c2 = document.createElement("div"); c2.textContent = maskPassword(a.password);
-        const c3 = document.createElement("div"); c3.textContent = a.passport;
-
-        const c4 = document.createElement("div");
-        c4.appendChild(makeBadge(a.status));
-
-        const c5 = document.createElement("div");
-        const wrap = document.createElement("div");
-        wrap.className = "actionBtns";
-
-        if(i === dupIndex){
-          const editBtn = document.createElement("button");
-          editBtn.type = "button";
-          editBtn.className = "miniBtn";
-          editBtn.textContent = t("btn_edit");
-          editBtn.addEventListener("click", ()=>{
-            emailEl.value = a.email || "";
-            passEl.value = a.password || "";
-            passpEl.value = a.passport || "";
-            if(typeSelectEl) typeSelectEl.value = a.type || "Appointment";
-            accounts.splice(i,1);
-            dupIndex = -1;
-            multiListReady = false;
-            singleDupView = false;
-            toggleMode(true);
-            renderList();
-            emailEl.focus();
-          });
-
-          const delBtn = document.createElement("button");
-          delBtn.type = "button";
-          delBtn.className = "miniBtn danger";
-          delBtn.textContent = t("btn_delete");
-          delBtn.addEventListener("click", ()=>{
-            accounts.splice(i,1);
-            dupIndex = -1;
-            multiListReady = false;
-            if(!moltiEl.checked) singleDupView = false;
-            toggleMode(true);
-            renderList();
-          });
-
-          wrap.appendChild(editBtn);
-          wrap.appendChild(delBtn);
-        } else {
-          const x = document.createElement("button");
-          x.className = "xbtn";
-          x.type = "button";
-          x.textContent = "×";
-          x.addEventListener("click", ()=>{
-            accounts.splice(i,1);
-            dupIndex = -1;
-            multiListReady = false;
-            toggleMode(true);
-            renderList();
-          });
-          wrap.appendChild(x);
-        }
-
-        c5.appendChild(wrap);
-        row.appendChild(c1); row.appendChild(c2); row.appendChild(c3); row.appendChild(c4); row.appendChild(c5);
-        listBody.appendChild(row);
-      }
-
-      updateCount();
-    }
-
-    function renderSaved(){
-      savedBody.innerHTML = "";
-      const q = ((savedSearchEl && savedSearchEl.value) || "").trim().toLowerCase();
-      const view = q ? savedAccounts.filter(a =>
-        ((a.email||"" ).toLowerCase().includes(q)) ||
-        ((a.passport||"" ).toLowerCase().includes(q)) ||
-        ((String(a.status||"").toLowerCase()).includes(q))
-      ) : savedAccounts;
-
-      savedEmpty.style.display = view.length ? "none" : "block";
-
-      for(let i=0;i<view.length;i++){
-        const a = view[i];
-        const row = document.createElement("div");
-        row.className = "listRow savedRowInteractive";
-        row.setAttribute("role","button");
-        row.setAttribute("tabindex","0");
-        row.setAttribute("aria-label", `${a.email || "Account"} - ${a.status || t("status_pending")}`);
-
-        const c1 = document.createElement("div");
-        c1.className = "savedDesktopOnly";
-        c1.textContent = a.email || "";
-
-        const c2 = document.createElement("div");
-        c2.className = "savedDesktopOnly";
-        c2.textContent = maskPassword(a.password || "");
-
-        const c3 = document.createElement("div");
-        c3.className = "savedDesktopOnly";
-        c3.textContent = a.passport || "";
-
-        const c4 = document.createElement("div");
-        c4.className = "savedDesktopOnly";
-        c4.appendChild(makeBadge(a.status));
-
-        const c5 = document.createElement("div");
-        c5.className = "savedDesktopOnly";
-        const wrap = document.createElement("div");
-        wrap.className = "actionBtns";
-
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "miniBtn";
-        btn.textContent = t("btn_req_pw");
-        btn.addEventListener("click", (e)=>{
-          e.stopPropagation();
-          openPwModal(a);
-        });
-        wrap.appendChild(btn);
-        c5.appendChild(wrap);
-
-        const mobile = document.createElement("div");
-        mobile.className = "savedMobileOnly";
-        mobile.innerHTML = `
-          <div class="savedEmailLine">${escapeHtml(a.email || "")}</div>
-          <div class="savedStatusLine"></div>
-        `;
-        mobile.querySelector('.savedStatusLine').appendChild(makeBadge(a.status));
-
-        row.appendChild(c1); row.appendChild(c2); row.appendChild(c3); row.appendChild(c4); row.appendChild(c5); row.appendChild(mobile);
-        row.addEventListener("click", ()=> openDetailsModal(a));
-        row.addEventListener("keydown", (e)=>{
-          if(e.key === "Enter" || e.key === " "){
-            e.preventDefault();
-            openDetailsModal(a);
-          }
-        });
-        savedBody.appendChild(row);
-      }
-
-      updateCount();
-    }
-
-    // ---- Saved: details + password update modal ----
-    let pwTarget = null;
-    let detailsTarget = null;
-
-    function escapeHtml(str){
-      return String(str || "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#39;");
-    }
-
-    function openDetailsModal(acc){
-      if(!acc) return;
-      detailsTarget = acc;
-      detailEmail.textContent = acc.email || "";
-      detailPassport.textContent = acc.passport || "";
-      detailPassword.textContent = maskPassword(acc.password || "");
-      detailStatus.innerHTML = "";
-      detailStatus.appendChild(makeBadge(acc.status));
-      detailsModal.style.display = "flex";
-    }
-
-    function closeDetailsModal(){
-      detailsTarget = null;
-      detailsModal.style.display = "none";
-    }
-
-    function openPwModal(acc){
-      if(!acc) return;
-      pwTarget = acc;
-      pwEmail.value = acc.email || "";
-      pwPassport.value = acc.passport || "";
-      pwNew.value = "";
-      pwModal.style.display = "flex";
-      closeDetailsModal();
-      pwNew.focus();
-    }
-
-    function closePwModal(){
-      pwTarget = null;
-      pwModal.style.display = "none";
-    }
-
-    async function copyText(txt){
-      try{
-        await navigator.clipboard.writeText(txt || "");
-        showToast(t("toast_copied"));
-      }catch(_){
-        const ta = document.createElement("textarea");
-        ta.value = txt || "";
-        ta.style.position = "fixed";
-        ta.style.opacity = "0";
-        document.body.appendChild(ta);
-        ta.select();
-        try{ document.execCommand("copy"); showToast(t("toast_copied")); }catch(e){}
-        document.body.removeChild(ta);
-      }
-    }
-
-    async function updatePasswordOnServer(agency, email, passport, newPassword){
-      const fd = new FormData();
-      fd.append("formType","agency");
-      fd.append("action","update_password");
-      fd.append("firma", agency);
-      fd.append("email", email || "");
-      fd.append("passport", passport || "");
-      fd.append("newPassword", newPassword || "");
-      return await postForm(fd);
-    }
-
-    if(savedSearchEl){
-      savedSearchEl.addEventListener("input", ()=>{ if(inSavedView) renderSaved(); });
-    }
-
-    detailsClose.addEventListener("click", closeDetailsModal);
-    detailsDismiss.addEventListener("click", closeDetailsModal);
-    detailsPwBtn.addEventListener("click", ()=>{ if(detailsTarget) openPwModal(detailsTarget); });
-    detailsModal.addEventListener("click", (e)=>{ if(e.target === detailsModal) closeDetailsModal(); });
-
-    pwClose.addEventListener("click", closePwModal);
-    document.getElementById("pwCancel").addEventListener("click", closePwModal);
-    pwModal.addEventListener("click", (e)=>{ if(e.target === pwModal) closePwModal(); });
-
-    document.getElementById("copyEmailBtn").addEventListener("click", ()=> copyText(pwEmail.value));
-    document.getElementById("copyPassportBtn").addEventListener("click", ()=> copyText(pwPassport.value));
-
-    document.getElementById("pwSave").addEventListener("click", async ()=>{
-      if(!pwTarget) return;
-      if(!validateFirma()){ showToast(t("toast_check_firma")); return; }
-      const agency = (firmaEl.value||"").trim();
-      const newPass = (pwNew.value||"").trim();
-      if(newPass.length < 1){ showToast(t("err_pass")); return; }
-
-      try{
-        document.getElementById("pwSave").disabled = true;
-        const r = await updatePasswordOnServer(agency, pwTarget.email, pwTarget.passport, newPass);
-        if(!r || !r.ok) throw new Error((r && r.error) || "Server error");
-
-        for(const a of savedAccounts){
-          if(((a.email||"").toLowerCase() === (pwTarget.email||"").toLowerCase()) &&
-             ((a.passport||"").toUpperCase() === (pwTarget.passport||"").toUpperCase())){
-            a.password = newPass;
-            break;
-          }
-        }
-        renderSaved();
-        closePwModal();
-        showToast(t("toast_pw_updated"));
-      }catch(err){
-        console.error(err);
-        showToast(t("toast_pw_failed"));
-      }finally{
-        document.getElementById("pwSave").disabled = false;
-      }
-    });
-
-    function getCurrentAccount(){
-      return {
-        email: (emailEl.value||"").trim(),
-        password: (passEl.value||"").trim(),
-        passport: (passpEl.value||"").trim(),
-        type: (typeSelectEl && typeSelectEl.value) ? typeSelectEl.value : "Appointment",
-        status: t("status_ready_state"),
-      };
-    }
-
-    let ok = true;
-    function validateFirma(){
-      ok = true;
-      clearInvalid(firmaEl, errFirma);
-      const firma = (firmaEl.value||"").trim();
-      if(firma.length < 2) setInvalid(firmaEl, errFirma);
-      return ok;
-    }
-
-    function validateCurrentAccount(){
-      ok = true;
-      clearInvalid(emailEl, errEmail);
-      clearInvalid(passEl, errPassword);
-      clearInvalid(passpEl, errPassport);
-
-      const a = getCurrentAccount();
-      if(!validateEmail(a.email)) setInvalid(emailEl, errEmail);
-      if(a.password.length < 1) setInvalid(passEl, errPassword);
-      if(a.passport.length < 3) setInvalid(passpEl, errPassport);
-      return ok;
-    }
-
-    function clearAccountFields(){
-      emailEl.value = "";
-      passEl.value = "";
-      passpEl.value = "";
-      emailEl.focus();
-    }
-
-    function buildAccountsText(list){
-      return list.map(a => `${a.email};${a.password};${a.passport};Pending;${a.type || "Appointment"}`).join("\n");
-    }
-
-    async function postForm(fd){
-      const res = await fetch(API_ENDPOINT, { method:"POST", body: fd });
-      let json = null;
-      try { json = await res.json(); } catch { throw new Error("Invalid response"); }
-      if(!res.ok) throw new Error(json && json.error ? json.error : "Server error");
-      return json;
-    }
-
-    async function loadSavedAccounts(agency){
-      const fd = new FormData();
-      fd.append("formType","agency");
-      fd.append("action","list");
-      fd.append("firma", agency);
-      const json = await postForm(fd);
-      return Array.isArray(json.accounts) ? json.accounts : [];
-    }
-
-    searchAgencyBtn.addEventListener("click", async ()=>{
-      if(!validateFirma()){
-        showToast(t("toast_check_firma"));
-        return;
-      }
-
-      const agency = (firmaEl.value||"").trim();
-      try{
-        showToast(t("toast_loading"));
-        sendBtn.disabled = true;
-        addBtn.disabled = true;
-        listDoneBtn.disabled = true;
-        searchAgencyBtn.disabled = true;
-
-        const list = await loadSavedAccounts(agency);
-        savedAccounts = list;
-        setViewSaved(true);
-        renderSaved();
-        showToast(t("toast_saved_loaded"));
-      }catch(err){
-        console.error(err);
-        showToast(t("toast_failed"));
-      }finally{
-        sendBtn.disabled = false;
-        addBtn.disabled = false;
-        listDoneBtn.disabled = false;
-        searchAgencyBtn.disabled = false;
-      }
-    });
-
-    backBtn.addEventListener("click", ()=>{
-      setViewSaved(false);
-      renderList();
-      toggleMode(true);
-    });
-
-    function findDuplicateLocalIndex(a){
-      const key = `${(a.email||"").trim().toLowerCase()}||${(a.password||"").trim()}||${(a.passport||"").trim().toUpperCase()}`;
-      for(let i=0;i<accounts.length;i++){
-        const b = accounts[i];
-        const k2 = `${(b.email||"").trim().toLowerCase()}||${(b.password||"").trim()}||${(b.passport||"").trim().toUpperCase()}`;
-        if(k2 === key) return i;
-      }
-      return -1;
-    }
-
-    addBtn.addEventListener("click", ()=>{
-      if(inSavedView) return;
-      if(!validateFirma()){ showToast(t("toast_check_firma")); return; }
-      if(!validateCurrentAccount()){ showToast(t("toast_check_account")); return; }
-
-      const a = getCurrentAccount();
-      const di = findDuplicateLocalIndex(a);
-      if(di !== -1){
-        dupIndex = di;
-        multiListReady = false;
-        renderList();
-        showToast(t("toast_dup"));
-        return;
-      }
-
-      dupIndex = -1;
-      accounts.push(a);
-      errList.classList.remove("show");
-      multiListReady = false;
-      renderList();
-      showToast(t("toast_added"));
-      clearAccountFields();
-    });
-
-    listDoneBtn.addEventListener("click", ()=>{
-      if(inSavedView) return;
-
-      const currentFilled = (emailEl.value||"").trim() || (passEl.value||"").trim() || (passpEl.value||"").trim();
-
-      if(currentFilled){
-        if(!validateFirma()){ showToast(t("toast_check_firma")); return; }
-        if(!validateCurrentAccount()){ showToast(t("toast_check_account")); return; }
-
-        const a2 = getCurrentAccount();
-        const di2 = findDuplicateLocalIndex(a2);
-        if(di2 !== -1){
-          dupIndex = di2;
-          multiListReady = false;
-          renderList();
-          showToast(t("toast_dup"));
-          return;
-        }
-
-        dupIndex = -1;
-        accounts.push(a2);
-        clearAccountFields();
-      }
-
-      if(accounts.length === 0){
-        errList.classList.add("show");
-        showToast(t("toast_need_one"));
-        return;
-      }
-
-      accounts.sort((a,b)=>{
-        const ae = (a.email||"").toLowerCase();
-        const be = (b.email||"").toLowerCase();
-        if(ae < be) return -1;
-        if(ae > be) return 1;
-        return (a.passport||"").localeCompare(b.passport||"");
-      });
-
-      errList.classList.remove("show");
-      multiListReady = true;
-      renderList();
-
-      listDoneBtn.style.display = "none";
-      sendBtn.style.display = "inline-flex";
-    });
-
-    moltiEl.addEventListener("change", ()=>{
-      if(inSavedView) return;
-      dupIndex = -1;
-      multiListReady = false;
-      if(!moltiEl.checked){
-        accounts.length = 0;
-      }
-      toggleMode(false);
-      renderList();
-    });
-
-    async function checkDuplicatesOnServer(agency, isMulti, list){
-      const fd = new FormData();
-      fd.append("formType", "agency");
-      fd.append("action", "check");
-      fd.append("firma", agency);
-      fd.append("molti", isMulti ? "1" : "0");
-
-      if(isMulti){
-        fd.append("accounts", buildAccountsText(list));
-      }else{
-        const a = list[0] || {email:"",password:"",passport:"",type:"Appointment"};
-        fd.append("email", a.email);
-        fd.append("password", a.password);
-        fd.append("passport", a.passport);
-        fd.append("type", a.type || "Appointment");
-      }
-
-      const json = await postForm(fd);
-      return Array.isArray(json.duplicates) ? json.duplicates : [];
-    }
-
-    form.addEventListener("submit", async (e)=>{
-      e.preventDefault();
-      if(inSavedView) return;
-
-      if(!validateFirma()){
-        showToast(t("toast_check_firma"));
-        return;
-      }
-
-      const agency = (firmaEl.value||"").trim();
-      const isMulti = moltiEl.checked;
-
-      let listToSend = [];
-      if(!isMulti){
-        if(!validateCurrentAccount()){
-          showToast(t("toast_check_account"));
-          return;
-        }
-        listToSend = [getCurrentAccount()];
-      }else{
-        if(!multiListReady){
-          showToast(t("btn_list_done"));
-          return;
-        }
-        if(accounts.length === 0){
-          errList.classList.add("show");
-          showToast(t("toast_need_one"));
-          return;
-        }
-        listToSend = [...accounts];
-      }
-
-      try{
-        sendBtn.disabled = true;
-        setStatusKey("status_sending");
-        sendBtn.textContent = t("btn_sending");
-
-        const dup = await checkDuplicatesOnServer(agency, isMulti, listToSend);
-
-        if(dup.length){
-          dupIndex = dup[0];
-
-          if(!isMulti){
-            accounts.length = 0;
-            accounts.push(listToSend[0]);
-            singleDupView = true;
-            listWrap.style.display = "block";
-          }
-
-          renderList();
-          showToast(t("toast_dup"));
-          setStatusKey("status_ready");
-          return;
-        }
-
-        const fd = new FormData();
-        fd.append("formType", "agency");
-        fd.append("action", "add");
-        fd.append("firma", agency);
-        fd.append("molti", isMulti ? "1" : "0");
-
-        if(!isMulti){
-          const a = listToSend[0];
-          fd.append("email", a.email);
-          fd.append("password", a.password);
-          fd.append("passport", a.passport);
-          fd.append("type", a.type || "Appointment");
-        }else{
-          fd.append("accounts", buildAccountsText(listToSend));
-        }
-
-        const json = await postForm(fd);
-        if(!json.ok) throw new Error(json.error || "Server error");
-
-        setStatusKey("status_sent");
-        showToast(t("toast_sent"));
-
-        form.reset();
-        accounts.length = 0;
-        dupIndex = -1;
-        multiListReady = false;
-        singleDupView = false;
-        toggleMode(false);
-        renderList();
-
-      }catch(err){
-        console.error(err);
-        setStatusKey("status_error");
-        showToast(t("toast_failed"));
-      }finally{
-        sendBtn.disabled = false;
-        sendBtn.textContent = t("btn_send");
-        if(statusEl.textContent.trim().length === 0) setStatusKey("status_ready");
-      }
-    });
-
-    document.getElementById("btnEN").addEventListener("click", ()=>applyLanguage("en"));
-    document.getElementById("btnAR").addEventListener("click", ()=>applyLanguage("ar"));
-
-    setStatusKey("status_ready");
-    applyLanguage("en");
-    setViewSaved(false);
-    toggleMode(false);
-    renderList();
-  </script>
+      S.bulkParsed=parsed;
+      $('bulkStats').textContent = `Valid: ${parsed.length}\nInvalid: ${bad.length}`;
+      $('bulkList').innerHTML = parsed.slice(0,50).map(a=>`<li style="padding:12px 14px;border:1px solid var(--line);border-radius:16px;background:#fbfdff">${escapeHtml(a.email)} — ${escapeHtml(a.passport)} — ${escapeHtml(a.status)}${a.type?` — ${escapeHtml(a.type)}`:''}</li>`).join('');
+      $('btnBulkAdd').disabled=!parsed.length;
+    },
+    async bulkAdd(){
+      let ok=0, fail=0;
+      for(const item of S.bulkParsed){ const res = await API.addAccount(item); if(res.ok) ok++; else fail++; }
+      await UI.loadAccounts(); toast('Bulk', `Added: ${ok} | Failed: ${fail}`); UI.closeBulk();
+    },
+    async logout(){ const res=await API.logout(); if(!res.ok) return toast('Logout', res.error||'Failed'); S.authenticated=false; S.csrfToken=''; S.agency=''; S.sessionExpiresAt=0; setAuthState(false); toast('Logout','تم تسجيل الخروج'); }
+  };
+
+  window.UI = UI;
+  $('btnLogin').addEventListener('click', UI.login);
+  $('btnRefresh').addEventListener('click', UI.loadAccounts);
+  $('btnLogout').addEventListener('click', UI.logout);
+  $('btnAddOne').addEventListener('click', UI.openAddOne);
+  $('btnSaveOne').addEventListener('click', UI.saveOne);
+  $('btnBulk').addEventListener('click', UI.openBulk);
+  $('btnParse').addEventListener('click', UI.parseBulk);
+  $('btnBulkAdd').addEventListener('click', UI.bulkAdd);
+  $('inSearch').addEventListener('input', renderAccounts);
+  $('selStatusFilter').addEventListener('change', renderAccounts);
+  $('selMonthFilter').addEventListener('change', ()=>{ S.monthFilter=$('selMonthFilter').value; persistUiState(); renderAccounts(); });
+  $('selIncludeDone').addEventListener('change', async ()=>{ S.includeDone = $('selIncludeDone').value === '1'; persistUiState(); const res = await API.accounts('all', S.includeDone, ''); if(res.ok){ S.accounts = Array.isArray(res.accounts) ? res.accounts : []; renderMonthFilter(); renderAccounts(); } else toast('Accounts', res.error || 'Failed'); });
+  setInterval(updateSessionInfo, 30000);
+  restoreUiState();
+  UI.restoreAuth();
+})();
+</script>
 </body>
 </html>
