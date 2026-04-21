@@ -7,30 +7,43 @@
 <style>
 :root{
   --bg:#f3f6fb;--card:#ffffff;--card2:#f8fbff;--text:#0f172a;--muted:#64748b;--line:#e2e8f0;
-  --primary:#2563eb;--primarySoft:#eff6ff;--success:#16a34a;--successSoft:#f0fdf4;--danger:#dc2626;--dangerSoft:#fef2f2;--warning:#d97706;--warningSoft:#fff7ed;
+  --primary:#1537c7;--primarySoft:#eff6ff;--success:#16a34a;--successSoft:#f0fdf4;--danger:#dc2626;--dangerSoft:#fef2f2;--warning:#d97706;--warningSoft:#fff7ed;
   --shadow:0 16px 40px rgba(15,23,42,.08);--radius:22px;--radiusSm:16px;--mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
   --sans:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,"Noto Sans Arabic","Noto Sans",sans-serif;
 }
 *{box-sizing:border-box}
 html,body{height:100%}
-body{margin:0;font-family:var(--sans);color:var(--text);background:
-radial-gradient(circle at top right, rgba(37,99,235,.08), transparent 28%),
-radial-gradient(circle at top left, rgba(14,165,233,.06), transparent 24%),
-linear-gradient(180deg,#f8fbff 0%,#f2f5fa 100%)}
+body{
+  margin:0;font-family:var(--sans);color:var(--text);
+  background:
+    radial-gradient(circle at top right, rgba(37,99,235,.08), transparent 28%),
+    radial-gradient(circle at top left, rgba(14,165,233,.06), transparent 24%),
+    linear-gradient(180deg,#f8fbff 0%,#f2f5fa 100%);
+}
 button,input,select,textarea{font:inherit}
 .hidden{display:none!important}
 .app{max-width:1500px;margin:0 auto;padding:24px}
 .shell{display:grid;grid-template-columns:300px 1fr;gap:20px;align-items:start}
 @media (max-width:1150px){.shell{grid-template-columns:1fr}}
-.card{background:rgba(255,255,255,.88);backdrop-filter:blur(12px);border:1px solid rgba(226,232,240,.9);border-radius:var(--radius);box-shadow:var(--shadow)}
+.card{
+  background:rgba(255,255,255,.88);backdrop-filter:blur(12px);
+  border:1px solid rgba(226,232,240,.9);border-radius:var(--radius);box-shadow:var(--shadow)
+}
 .sidebar{position:sticky;top:20px;padding:18px}
 @media (max-width:1150px){.sidebar{position:static}}
 .brand{display:flex;align-items:center;gap:14px;padding:6px 2px 18px}
-.logo{width:48px;height:48px;border-radius:18px;background:linear-gradient(135deg,#0ea5e9,#2563eb 55%,#4338ca);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 16px 30px rgba(37,99,235,.22)}
+.logo{
+  width:48px;height:48px;border-radius:18px;
+  background:linear-gradient(135deg,#0ea5e9,#2563eb 55%,#4338ca);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 16px 30px rgba(37,99,235,.22)
+}
 .brand h1{margin:0;font-size:20px}
 .brand p{margin:4px 0 0;color:var(--muted);font-size:12px}
 .badgeRow{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
-.chip,.pill,.tag{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:12px;color:var(--muted)}
+.chip,.pill,.tag{
+  display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--line);
+  border-radius:999px;background:#fff;font-size:12px;color:var(--muted)
+}
 .tag.good{background:#f0fdf4;color:#166534;border-color:#bbf7d0}
 .tag.bad{background:#fef2f2;color:#991b1b;border-color:#fecaca}
 .tag.pending{background:#fff7ed;color:#9a3412;border-color:#fdba74}
@@ -42,11 +55,20 @@ button,input,select,textarea{font:inherit}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .label{display:block;margin:0 0 8px;font-size:12px;color:var(--muted)}
 .field{margin-bottom:12px}
-.input,select,textarea,input{width:100%;border:1px solid var(--line);background:#fff;padding:12px 14px;border-radius:16px;outline:none;color:var(--text);transition:.18s border,.18s box-shadow,.18s transform}
-.input:focus,select:focus,textarea:focus,input:focus{border-color:#93c5fd;box-shadow:0 0 0 4px rgba(59,130,246,.12)}
+.input,select,textarea,input{
+  width:100%;border:1px solid var(--line);background:#fff;padding:12px 14px;border-radius:16px;
+  outline:none;color:var(--text);transition:.18s border,.18s box-shadow,.18s transform
+}
+.input:focus,select:focus,textarea:focus,input:focus{
+  border-color:#93c5fd;box-shadow:0 0 0 4px rgba(59,130,246,.12)
+}
 textarea{min-height:180px;resize:vertical}
 .actions{display:flex;gap:10px;flex-wrap:wrap}
-.btn{border:1px solid var(--line);background:#fff;color:var(--text);padding:11px 14px;border-radius:15px;font-weight:700;cursor:pointer;transition:.18s transform,.18s box-shadow,.18s border,.18s background;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn{
+  border:1px solid var(--line);background:#fff;color:var(--text);padding:11px 14px;border-radius:15px;
+  font-weight:700;cursor:pointer;transition:.18s transform,.18s box-shadow,.18s border,.18s background;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px
+}
 .btn:hover{transform:translateY(-1px);box-shadow:0 10px 22px rgba(15,23,42,.06)}
 .btn.primary{background:var(--primarySoft);border-color:#bfdbfe;color:#1d4ed8}
 .btn.good{background:var(--successSoft);border-color:#bbf7d0;color:#15803d}
@@ -54,11 +76,40 @@ textarea{min-height:180px;resize:vertical}
 .btn.warn{background:var(--warningSoft);border-color:#fed7aa;color:#b45309}
 .btn[disabled]{opacity:.55;cursor:not-allowed;transform:none;box-shadow:none}
 .sideActions{display:grid;gap:10px}
-.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px;padding:18px}
+
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  margin-bottom:18px;padding:18px
+}
 @media (max-width:900px){.topbar{flex-direction:column;align-items:stretch}}
+
+.topbarLeft{
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap
+}
+
 .tabs{display:flex;gap:10px;flex-wrap:wrap}
-.tabbtn{border:1px solid var(--line);background:#fff;color:var(--text);padding:11px 16px;border-radius:14px;font-weight:800;cursor:pointer}
+.tabbtn{
+  border:1px solid var(--line);background:#fff;color:var(--text);padding:11px 16px;border-radius:14px;
+  font-weight:800;cursor:pointer
+}
 .tabbtn.active{background:var(--primarySoft);border-color:#bfdbfe;color:#1d4ed8}
+
+.notifBellWrap{position:relative;display:inline-block}
+.notifBellBtn{
+  width:74px;height:58px;border:none;cursor:pointer;border-radius:0;
+  background:#1537c7;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 10px 24px rgba(21,55,199,.28);position:relative
+}
+.notifBellBtn:hover{transform:translateY(-1px)}
+.notifBellBtn svg{width:28px;height:28px;fill:#ffffff}
+.notifBadge{
+  position:absolute;top:-8px;right:-8px;min-width:24px;height:24px;padding:0 6px;
+  border-radius:999px;background:#dc2626;color:#fff;font-size:12px;font-weight:800;
+  display:none;align-items:center;justify-content:center;border:2px solid #fff;
+  box-shadow:0 6px 12px rgba(220,38,38,.3)
+}
+.notifBadge.show{display:flex}
+
 .panel{padding:18px}
 .panelHead{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px}
 @media (max-width:900px){.panelHead{flex-direction:column;align-items:stretch}}
@@ -69,10 +120,16 @@ textarea{min-height:180px;resize:vertical}
 @media (max-width:700px){.filters{grid-template-columns:1fr}}
 .tablewrap{border:1px solid var(--line);border-radius:20px;overflow:auto;background:#fff}
 table{width:100%;border-collapse:separate;border-spacing:0;min-width:900px}
-thead th{position:sticky;top:0;background:#f8fbff;color:var(--muted);font-size:12px;font-weight:800;text-align:right;padding:14px 12px;border-bottom:1px solid var(--line)}
+thead th{
+  position:sticky;top:0;background:#f8fbff;color:var(--muted);font-size:12px;font-weight:800;
+  text-align:right;padding:14px 12px;border-bottom:1px solid var(--line)
+}
 tbody td{padding:13px 12px;border-bottom:1px solid #eef2f7;font-size:13px;vertical-align:middle;white-space:nowrap}
 tbody tr:hover{background:#fbfdff}
-.status{display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border-radius:999px;font-size:12px;font-weight:800;border:1px solid var(--line);background:#fff}
+.status{
+  display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border-radius:999px;
+  font-size:12px;font-weight:800;border:1px solid var(--line);background:#fff
+}
 .s-good{background:#f0fdf4;color:#166534;border-color:#bbf7d0}
 .s-bad{background:#fef2f2;color:#991b1b;border-color:#fecaca}
 .s-neutral{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
@@ -82,21 +139,37 @@ tbody tr:hover{background:#fbfdff}
 .subHead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
 .subHead h3{margin:0;font-size:16px}
 .empty{padding:26px 18px;text-align:center;color:var(--muted)}
-.toast{position:fixed;left:20px;bottom:20px;max-width:360px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);border-radius:18px;padding:14px 16px;display:none;z-index:60}
+.toast{
+  position:fixed;left:20px;bottom:20px;max-width:360px;background:#fff;border:1px solid var(--line);
+  box-shadow:var(--shadow);border-radius:18px;padding:14px 16px;display:none;z-index:60
+}
 .toast.show{display:block}
 .toast b{display:block;margin-bottom:5px}
 .toast span{color:var(--muted);font-size:13px;line-height:1.6;white-space:pre-wrap}
-.modal{position:fixed;inset:0;background:rgba(15,23,42,.38);display:none;align-items:center;justify-content:center;padding:20px;z-index:70}
+.modal{
+  position:fixed;inset:0;background:rgba(15,23,42,.38);display:none;align-items:center;justify-content:center;
+  padding:20px;z-index:70
+}
 .modal.show{display:flex}
-.box{width:min(980px,100%);background:#fff;border:1px solid var(--line);border-radius:28px;box-shadow:0 20px 60px rgba(15,23,42,.22);overflow:hidden}
-.modalHd,.modalFt{padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line)}
+.box{
+  width:min(980px,100%);background:#fff;border:1px solid var(--line);border-radius:28px;
+  box-shadow:0 20px 60px rgba(15,23,42,.22);overflow:hidden
+}
+.modalHd,.modalFt{
+  padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  border-bottom:1px solid var(--line)
+}
 .modalFt{border-bottom:none;border-top:1px solid var(--line);justify-content:flex-start;flex-wrap:wrap}
 .modalBd{padding:20px}
 .mono{font-family:var(--mono)}
+
 .auth-shell{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
 .auth-shell.hidden{display:none!important}
 .auth-wrap{width:min(460px,100%)}
-.auth-card{padding:28px;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border:1px solid rgba(226,232,240,.95);border-radius:28px;box-shadow:0 24px 60px rgba(15,23,42,.10)}
+.auth-card{
+  padding:28px;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);
+  border:1px solid rgba(226,232,240,.95);border-radius:28px;box-shadow:0 24px 60px rgba(15,23,42,.10)
+}
 .auth-brand{display:flex;align-items:center;gap:14px;margin-bottom:24px}
 .auth-brand .logo{width:56px;height:56px;border-radius:20px}
 .auth-brand h1{margin:0;font-size:24px}
@@ -105,16 +178,23 @@ tbody tr:hover{background:#fbfdff}
 .auth-actions{display:grid;gap:10px;margin-top:8px}
 .auth-card .btn{width:100%;justify-content:center;min-height:48px}
 .auth-meta{display:flex;justify-content:center;margin-top:14px}
-.auth-status{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--muted);font-size:12px}
+.auth-status{
+  display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border:1px solid var(--line);
+  border-radius:999px;background:#fff;color:var(--muted);font-size:12px
+}
 .app.hidden{display:none!important}
 .sidebarMeta{display:grid;gap:12px}
 .sidebarStat{padding:14px 16px;border-radius:18px;border:1px solid var(--line);background:linear-gradient(180deg,#fff,#f9fbff)}
 .sidebarStat b{display:block;font-size:22px;line-height:1.1;margin-bottom:6px}
 .sidebarStat span{font-size:12px;color:var(--muted)}
 .sessionBox{display:grid;gap:10px;margin-top:8px}
-.sessionLine{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:16px;background:#fff}
+.sessionLine{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;
+  border:1px solid var(--line);border-radius:16px;background:#fff
+}
 .sessionLine span{font-size:12px;color:var(--muted)}
 .sessionLine b{font-size:13px}
+
 .notif-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
 .notif-summary{display:flex;gap:10px;flex-wrap:wrap}
 .notif-chip{padding:10px 14px;border:1px solid var(--line);border-radius:16px;background:#fff;font-size:13px}
@@ -156,7 +236,10 @@ tbody tr:hover{background:#fbfdff}
       <div class="auth-stack">
         <div class="field"><label class="label">OTP</label><input id="inOtp" class="input" inputmode="numeric" maxlength="6" placeholder="123456" autocomplete="one-time-code" /></div>
       </div>
-      <div class="auth-actions"><button class="btn primary" id="btnVerifyOtp">Verify</button><button class="btn" id="btnBackToLogin">Back</button></div>
+      <div class="auth-actions">
+        <button class="btn primary" id="btnVerifyOtp">Verify</button>
+        <button class="btn" id="btnBackToLogin">Back</button>
+      </div>
       <div class="auth-meta"><span class="auth-status"><span class="dot"></span><span>OTP</span></span></div>
     </div>
   </div>
@@ -183,17 +266,30 @@ tbody tr:hover{background:#fbfdff}
           <div class="sessionLine"><span>Session</span><b id="sessionState">Active</b></div>
           <div class="sessionLine"><span>Expires</span><b id="sessionExpiry">20 min</b></div>
         </div>
-        <div class="sideActions"><button class="btn danger" id="btnLogout" disabled>Logout</button></div>
+        <div class="sideActions">
+          <button class="btn danger" id="btnLogout" disabled>Logout</button>
+        </div>
       </div>
     </aside>
 
     <main>
       <div class="card topbar">
-        <div class="tabs">
-          <button class="tabbtn active" data-tab="accountsTab">الحسابات</button>
-          <button class="tabbtn" data-tab="managersTab">المديرين</button>
-          <button class="tabbtn" data-tab="notificationsTab">مركز الإشعارات</button>
+        <div class="topbarLeft">
+          <div class="tabs">
+            <button class="tabbtn active" data-tab="accountsTab">الحسابات</button>
+            <button class="tabbtn" data-tab="managersTab">المديرين</button>
+          </div>
+
+          <div class="notifBellWrap">
+            <button class="notifBellBtn" id="notifBellBtn" title="مركز الإشعارات">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 22a2.46 2.46 0 0 0 2.45-2h-4.9A2.46 2.46 0 0 0 12 22Zm7-6V11a7 7 0 1 0-14 0v5L3.29 17.71A1 1 0 0 0 4 19h16a1 1 0 0 0 .71-1.71L19 16Z"/>
+              </svg>
+            </button>
+            <span class="notifBadge" id="notifBellBadge">0</span>
+          </div>
         </div>
+
         <div class="actions">
           <button class="btn" id="btnRefresh" disabled>Refresh</button>
           <button class="btn" id="btnRefreshNotifications" disabled>Refresh Notifications</button>
@@ -210,17 +306,39 @@ tbody tr:hover{background:#fbfdff}
               <button class="btn primary" id="btnAddOne" disabled>Add Account</button>
             </div>
           </div>
+
           <div class="filters">
             <div><label class="label">Agency</label><select id="selAgency" disabled></select></div>
             <div><label class="label">Search</label><input id="inSearch" placeholder="email / passport / status" disabled /></div>
-            <div><label class="label">Status</label><select id="selStatusFilter" disabled><option value="">All</option><option value="Done">Done</option><option value="In Progress">In Progress</option><option value="Rejected">Rejected</option><option value="Pending">Pending</option></select></div>
+            <div><label class="label">Status</label><select id="selStatusFilter" disabled>
+              <option value="">All</option>
+              <option value="Done">Done</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Rejected">Rejected</option>
+              <option value="Pending">Pending</option>
+            </select></div>
             <div><label class="label">Month</label><select id="selMonthFilter" disabled></select></div>
             <div><label class="label">Manager</label><select id="selManagerAssign" disabled></select></div>
           </div>
+
           <div class="tablewrap">
             <table>
-              <thead><tr><th>#</th><th>Agency</th><th>Email</th><th>Password</th><th>Passport</th><th>Status</th><th>Type</th><th>Manager</th><th>Actions</th></tr></thead>
-              <tbody id="tbody"><tr><td colspan="9" class="empty">—</td></tr></tbody>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Agency</th>
+                  <th>Email</th>
+                  <th>Password</th>
+                  <th>Passport</th>
+                  <th>Status</th>
+                  <th>Type</th>
+                  <th>Manager</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="tbody">
+                <tr><td colspan="9" class="empty">—</td></tr>
+              </tbody>
             </table>
           </div>
         </div>
@@ -229,11 +347,25 @@ tbody tr:hover{background:#fbfdff}
       <section id="managersTab" class="tabpane hidden">
         <div class="sectionGrid">
           <div class="card subcard">
-            <div class="subHead"><div></div><button class="btn primary" id="btnOpenManager" disabled>Add Manager</button></div>
+            <div class="subHead">
+              <div></div>
+              <button class="btn primary" id="btnOpenManager" disabled>Add Manager</button>
+            </div>
             <div class="tablewrap">
               <table>
-                <thead><tr><th>#</th><th>ID</th><th>Name</th><th>Limit</th><th>Selected</th><th>Actions</th></tr></thead>
-                <tbody id="managersTbody"><tr><td colspan="6" class="empty">—</td></tr></tbody>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Limit</th>
+                    <th>Selected</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="managersTbody">
+                  <tr><td colspan="6" class="empty">—</td></tr>
+                </tbody>
               </table>
             </div>
           </div>
@@ -256,15 +388,30 @@ tbody tr:hover{background:#fbfdff}
               </select>
             </div>
           </div>
+
           <div class="notif-summary">
             <div class="notif-chip">Pending <b id="sumPending">0</b></div>
             <div class="notif-chip">Approved <b id="sumApproved">0</b></div>
             <div class="notif-chip">Rejected <b id="sumRejected">0</b></div>
           </div>
+
           <div class="tablewrap" style="margin-top:14px">
             <table>
-              <thead><tr><th>#</th><th>Agency</th><th>Type</th><th>Target</th><th>Requested By</th><th>Status</th><th>Created</th><th>Actions</th></tr></thead>
-              <tbody id="notificationsTbody"><tr><td colspan="8" class="empty">—</td></tr></tbody>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Agency</th>
+                  <th>Type</th>
+                  <th>Target</th>
+                  <th>Requested By</th>
+                  <th>Status</th>
+                  <th>Created</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="notificationsTbody">
+                <tr><td colspan="8" class="empty">—</td></tr>
+              </tbody>
             </table>
           </div>
         </div>
@@ -273,12 +420,18 @@ tbody tr:hover{background:#fbfdff}
   </div>
 </div>
 
-<div class="toast" id="toast"><b id="toastTitle">—</b><span id="toastMsg">—</span></div>
+<div class="toast" id="toast">
+  <b id="toastTitle">—</b>
+  <span id="toastMsg">—</span>
+</div>
 
 <div class="modal" id="modalNotif">
   <div class="box">
     <div class="modalHd">
-      <div><b id="notifTitle">تفاصيل الطلب</b><div id="notifSub" style="color:var(--muted);font-size:13px;margin-top:4px">—</div></div>
+      <div>
+        <b id="notifTitle">تفاصيل الطلب</b>
+        <div id="notifSub" style="color:var(--muted);font-size:13px;margin-top:4px">—</div>
+      </div>
       <button class="btn" onclick="UI.closeNotif()">✕</button>
     </div>
     <div class="modalBd">
@@ -297,32 +450,118 @@ tbody tr:hover{background:#fbfdff}
   const API_BASE = (document.body?.dataset?.apiBase || "https://api.mehdik.site").replace(/\/$/, "");
   const OWNER_BASE = API_BASE + "/owner";
   document.querySelectorAll(".apiHost").forEach((el)=>el.textContent = API_BASE);
-  const STORAGE_KEY = "owner-panel-safe-ui:v5";
+
+  const STORAGE_KEY = "owner-panel-safe-ui:v6";
   const VALID_STATUSES = ["Done","In Progress","Rejected","Pending"];
   const STATUS_PRIORITY = {"Done":0,"In Progress":1,"Rejected":2,"Pending":3};
-  const S = { authenticated:false, csrfToken:"", pendingChallengeId:"", loginUser:"", sessionExpiresAt:0, agencies:[], agencySelected:"", accounts:[], managers:[], managerSelected:"", managerAssignSelected:"", monthFilter:"", notifications:[], notifStatus:"pending", currentNotif:null };
+
+  const S = {
+    authenticated:false,
+    csrfToken:"",
+    pendingChallengeId:"",
+    loginUser:"",
+    sessionExpiresAt:0,
+    agencies:[],
+    agencySelected:"",
+    accounts:[],
+    managers:[],
+    managerSelected:"",
+    managerAssignSelected:"",
+    monthFilter:"",
+    notifications:[],
+    notifStatus:"pending",
+    currentNotif:null
+  };
 
   const $ = (id) => document.getElementById(id);
   const norm = (s) => String(s || "").trim();
   const statusValue = (s) => VALID_STATUSES.includes(norm(s)) ? norm(s) : "Pending";
-  const typeValue = (t) => { const v = norm(t).toLowerCase(); if(v === "appointment") return "Appointment"; if(v === "waiting list" || v === "waitinglist") return "Waiting list"; return ""; };
+  const typeValue = (t) => {
+    const v = norm(t).toLowerCase();
+    if(v === "appointment") return "Appointment";
+    if(v === "waiting list" || v === "waitinglist") return "Waiting list";
+    return "";
+  };
   const escapeHtml = (x) => String(x ?? "").replace(/[&<>"']/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   const statusClass = (st) => st === "Done" ? "s-good" : st === "Rejected" ? "s-bad" : st === "In Progress" ? "s-neutral" : "s-warn";
-  const maskPassword = (p) => { const s=String(p||""); if(!s) return ""; if(s.length<=2) return "•".repeat(s.length); return "•".repeat(Math.min(10, Math.max(1,s.length-2))) + s.slice(-2); };
+  const maskPassword = (p) => {
+    const s = String(p || "");
+    if(!s) return "";
+    if(s.length <= 2) return "•".repeat(s.length);
+    return "•".repeat(Math.min(10, Math.max(1, s.length - 2))) + s.slice(-2);
+  };
 
-  function toast(title, msg){ const t=$("toast"); $("toastTitle").textContent=title; $("toastMsg").textContent=msg; t.classList.add("show"); clearTimeout(toast._tm); toast._tm=setTimeout(()=>t.classList.remove("show"), 3500); }
-  function persistUiState(){ sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ agencySelected:S.agencySelected, managerSelected:S.managerSelected, managerAssignSelected:S.managerAssignSelected, monthFilter:S.monthFilter, loginUser:S.loginUser, notifStatus:S.notifStatus })); }
-  function restoreUiState(){ try { const raw=sessionStorage.getItem(STORAGE_KEY); if(!raw) return; const d=JSON.parse(raw); S.agencySelected=norm(d.agencySelected); S.managerSelected=norm(d.managerSelected); S.managerAssignSelected=norm(d.managerAssignSelected); S.monthFilter=norm(d.monthFilter); S.loginUser=norm(d.loginUser); S.notifStatus=norm(d.notifStatus||"pending"); $("inUser").value=S.loginUser; $("selNotifStatus").value=S.notifStatus; } catch(_){} }
+  function toast(title, msg){
+    const t = $("toast");
+    $("toastTitle").textContent = title;
+    $("toastMsg").textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toast._tm);
+    toast._tm = setTimeout(()=>t.classList.remove("show"), 3500);
+  }
 
-  function showLoginView(clearPass=false){ $("authShell").classList.remove("hidden"); $("loginView").classList.remove("hidden"); $("otpView").classList.add("hidden"); S.pendingChallengeId=""; $("inOtp").value=""; if(clearPass) $("inPass").value=""; }
-  function showOtpView(){ $("authShell").classList.remove("hidden"); $("loginView").classList.add("hidden"); $("otpView").classList.remove("hidden"); $("otpUserLabel").textContent = S.loginUser || "Owner"; $("inOtp").value = ""; }
+  function persistUiState(){
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
+      agencySelected:S.agencySelected,
+      managerSelected:S.managerSelected,
+      managerAssignSelected:S.managerAssignSelected,
+      monthFilter:S.monthFilter,
+      loginUser:S.loginUser,
+      notifStatus:S.notifStatus
+    }));
+  }
+
+  function restoreUiState(){
+    try {
+      const raw = sessionStorage.getItem(STORAGE_KEY);
+      if(!raw) return;
+      const d = JSON.parse(raw);
+      S.agencySelected = norm(d.agencySelected);
+      S.managerSelected = norm(d.managerSelected);
+      S.managerAssignSelected = norm(d.managerAssignSelected);
+      S.monthFilter = norm(d.monthFilter);
+      S.loginUser = norm(d.loginUser);
+      S.notifStatus = norm(d.notifStatus || "pending");
+      $("inUser").value = S.loginUser;
+      $("selNotifStatus").value = S.notifStatus;
+    } catch(_){}
+  }
+
+  function showLoginView(clearPass=false){
+    $("authShell").classList.remove("hidden");
+    $("loginView").classList.remove("hidden");
+    $("otpView").classList.add("hidden");
+    S.pendingChallengeId = "";
+    $("inOtp").value = "";
+    if(clearPass) $("inPass").value = "";
+  }
+
+  function showOtpView(){
+    $("authShell").classList.remove("hidden");
+    $("loginView").classList.add("hidden");
+    $("otpView").classList.remove("hidden");
+    $("otpUserLabel").textContent = S.loginUser || "Owner";
+    $("inOtp").value = "";
+  }
+
+  function updateBellBadge(count){
+    const badge = $("notifBellBadge");
+    badge.textContent = String(count);
+    badge.classList.toggle("show", count > 0);
+  }
 
   function updateSessionInfo(){
     $("sessionUser").textContent = S.loginUser || "—";
     $("sessionState").textContent = S.authenticated ? "Active" : "Inactive";
-    const pending = (S.notifications||[]).filter(n => String(n.status||"").toLowerCase()==="pending").length;
+
+    const pending = (S.notifications || []).filter(n => String(n.status || "").toLowerCase() === "pending").length;
     $("notifPendingCount").textContent = String(pending);
-    if(!S.authenticated || !S.sessionExpiresAt){ $("sessionExpiry").textContent = "—"; return; }
+    updateBellBadge(pending);
+
+    if(!S.authenticated || !S.sessionExpiresAt){
+      $("sessionExpiry").textContent = "—";
+      return;
+    }
     const remaining = Math.max(0, Math.ceil((Number(S.sessionExpiresAt) - Date.now()) / 60000));
     $("sessionExpiry").textContent = remaining > 0 ? `${remaining} min` : "Expired";
   }
@@ -330,7 +569,10 @@ tbody tr:hover{background:#fbfdff}
   function setAuthState(authed){
     S.authenticated = !!authed;
     $("btnLogout").disabled = !authed;
-    ["btnRefresh","btnRefreshNotifications","btnBulk","btnAddOne","selAgency","inSearch","selStatusFilter","selMonthFilter","btnSendAgencyAll","btnOpenManager","selManagerAssign","selNotifStatus"].forEach(id=>{ const el=$(id); if(el) el.disabled=!authed; });
+    ["btnRefresh","btnRefreshNotifications","btnBulk","btnAddOne","selAgency","inSearch","selStatusFilter","selMonthFilter","btnSendAgencyAll","btnOpenManager","selManagerAssign","selNotifStatus"].forEach(id=>{
+      const el = $(id);
+      if(el) el.disabled = !authed;
+    });
     $("pillText").textContent = authed ? "Authenticated" : "Secure Session";
     $("authState").textContent = authed ? "Owner" : "Guest";
     $("appShell").classList.toggle("hidden", !authed);
@@ -339,24 +581,62 @@ tbody tr:hover{background:#fbfdff}
     if(!authed) showLoginView(false);
   }
 
+  function switchTab(tabId){
+    document.querySelectorAll(".tabbtn").forEach(b=>b.classList.remove("active"));
+    document.querySelectorAll(".tabpane").forEach(p=>p.classList.add("hidden"));
+    if(tabId === "accountsTab") document.querySelector('.tabbtn[data-tab="accountsTab"]').classList.add("active");
+    if(tabId === "managersTab") document.querySelector('.tabbtn[data-tab="managersTab"]').classList.add("active");
+    $(tabId).classList.remove("hidden");
+  }
+
   async function apiFetch(url, options={}){
-    const controller = new AbortController(); const timer = setTimeout(()=>controller.abort(), 15000);
+    const controller = new AbortController();
+    const timer = setTimeout(()=>controller.abort(), 15000);
     try{
       const headers = new Headers(options.headers || {});
       const method = String(options.method || "GET").toUpperCase();
-      if(!["GET","HEAD","OPTIONS"].includes(method) && S.csrfToken) headers.set("X-CSRF-Token", S.csrfToken);
+      if(!["GET","HEAD","OPTIONS"].includes(method) && S.csrfToken){
+        headers.set("X-CSRF-Token", S.csrfToken);
+      }
       const response = await fetch(url, { ...options, headers, credentials:"include", signal:controller.signal });
       const data = await response.json().catch(()=>({ ok:false, error:"Invalid server response" }));
       if(!response.ok && data && typeof data.ok === "undefined") data.ok = false;
       return data;
-    }catch(err){ return { ok:false, error: err?.name === "AbortError" ? "Request timeout" : (err?.message || "Request failed") }; }
-    finally{ clearTimeout(timer); }
+    }catch(err){
+      return { ok:false, error: err?.name === "AbortError" ? "Request timeout" : (err?.message || "Request failed") };
+    }finally{
+      clearTimeout(timer);
+    }
   }
 
-  function monthKeyOf(value){ const d = value ? new Date(value) : null; if(!d || Number.isNaN(d.getTime())) return ""; return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`; }
-  function currentMonthKey(){ const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`; }
-  function monthLabel(key){ if(!/^\d{4}-\d{2}$/.test(key)) return "All months"; const [y,m] = key.split("-"); const d = new Date(Number(y), Number(m)-1, 1); return d.toLocaleDateString("en-US", { month:"long", year:"numeric" }); }
-  function renderMonthFilter(){ const sel = $("selMonthFilter"); const keys = [...new Set((Array.isArray(S.accounts)?S.accounts:[]).map(a => monthKeyOf(a.updatedAt)).filter(Boolean))].sort().reverse(); const current = currentMonthKey(); if(!keys.includes(current)) keys.unshift(current); if(!S.monthFilter) S.monthFilter = current; if(S.monthFilter !== "all" && !keys.includes(S.monthFilter)) S.monthFilter = current; sel.innerHTML = '<option value="all">All months</option>' + keys.map(k => `<option value="${k}">${monthLabel(k)}</option>`).join(""); sel.value = S.monthFilter || current; }
+  function monthKeyOf(value){
+    const d = value ? new Date(value) : null;
+    if(!d || Number.isNaN(d.getTime())) return "";
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
+  }
+
+  function currentMonthKey(){
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
+  }
+
+  function monthLabel(key){
+    if(!/^\d{4}-\d{2}$/.test(key)) return "All months";
+    const [y,m] = key.split("-");
+    const d = new Date(Number(y), Number(m)-1, 1);
+    return d.toLocaleDateString("en-US", { month:"long", year:"numeric" });
+  }
+
+  function renderMonthFilter(){
+    const sel = $("selMonthFilter");
+    const keys = [...new Set((Array.isArray(S.accounts)?S.accounts:[]).map(a => monthKeyOf(a.updatedAt)).filter(Boolean))].sort().reverse();
+    const current = currentMonthKey();
+    if(!keys.includes(current)) keys.unshift(current);
+    if(!S.monthFilter) S.monthFilter = current;
+    if(S.monthFilter !== "all" && !keys.includes(S.monthFilter)) S.monthFilter = current;
+    sel.innerHTML = '<option value="all">All months</option>' + keys.map(k => `<option value="${k}">${monthLabel(k)}</option>`).join("");
+    sel.value = S.monthFilter || current;
+  }
 
   const API = {
     startAuth:(user,pass)=>apiFetch(OWNER_BASE+"/auth/start",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user,pass})}),
@@ -364,7 +644,12 @@ tbody tr:hover{background:#fbfdff}
     session:()=>apiFetch(OWNER_BASE+"/session"),
     logout:()=>apiFetch(OWNER_BASE+"/logout",{method:"POST"}),
     agencies:()=>apiFetch(OWNER_BASE+"/agencies"),
-    accounts:(agency, month="", includeDone="")=>{ const qs = new URLSearchParams({ agency }); if(month) qs.set("month", month); if(includeDone!=="") qs.set("includeDone", String(!!includeDone)); return apiFetch(OWNER_BASE+"/accounts?"+qs.toString()); },
+    accounts:(agency, month="", includeDone="")=>{
+      const qs = new URLSearchParams({ agency });
+      if(month) qs.set("month", month);
+      if(includeDone !== "") qs.set("includeDone", String(!!includeDone));
+      return apiFetch(OWNER_BASE+"/accounts?"+qs.toString());
+    },
     managers:()=>apiFetch(OWNER_BASE+"/managers"),
     notifications:(status='pending')=>apiFetch(OWNER_BASE+"/notifications?status="+encodeURIComponent(status)),
     approveNotification:(id)=>apiFetch(OWNER_BASE+"/notification/approve",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id})}),
@@ -378,6 +663,7 @@ tbody tr:hover{background:#fbfdff}
     const mf = norm(S.monthFilter || $("selMonthFilter").value || currentMonthKey());
     const current = currentMonthKey();
     const monthMode = mf === "all" ? "all" : (mf === current ? "current" : "past");
+
     return (Array.isArray(list)?list:[]).filter(a => {
       const itemMonth = monthKeyOf(a.updatedAt);
       const okMonth = mf === "all" ? true : itemMonth === mf;
@@ -388,43 +674,139 @@ tbody tr:hover{background:#fbfdff}
       if(monthMode === "past") return st === "Done";
       if(monthMode === "current") return sf ? st === sf : true;
       return sf ? st === sf : true;
-    }).sort((a,b)=> (STATUS_PRIORITY[statusValue(a.status)]-STATUS_PRIORITY[statusValue(b.status)]) || String(a.email).localeCompare(String(b.email)));
+    }).sort((a,b)=>
+      (STATUS_PRIORITY[statusValue(a.status)] - STATUS_PRIORITY[statusValue(b.status)]) ||
+      String(a.email).localeCompare(String(b.email))
+    );
   }
 
-  function renderAgencies(){ const sel = $("selAgency"); sel.innerHTML = '<option value="">(اختر وكالة)</option>'; for(const a of S.agencies){ const o=document.createElement('option'); o.value=a.agency; o.textContent=`${a.agency} (${a.count||0})`; sel.appendChild(o); } if(S.agencySelected) sel.value = S.agencySelected; }
-  function renderManagers(){ const tb=$("managersTbody"); if(!S.managers.length){ tb.innerHTML='<tr><td colspan="6" class="empty">لا يوجد مديرون</td></tr>'; return; } tb.innerHTML=S.managers.map((m,i)=>`<tr><td>${i+1}</td><td class="mono">${escapeHtml(m.id)}</td><td>${escapeHtml(m.name)}</td><td>${m.desiredCount}</td><td>${m.assignedCount||0}</td><td><span class="tag good">Manager</span></td></tr>`).join(''); }
-  function renderAccounts(){ const tb=$("tbody"); if(!S.agencySelected){ tb.innerHTML='<tr><td colspan="9" class="empty">اختر وكالة أولاً</td></tr>'; return; } const filtered=applyFilters(S.accounts); if(!filtered.length){ tb.innerHTML='<tr><td colspan="9" class="empty">لا توجد بيانات</td></tr>'; return; } tb.innerHTML=filtered.map((a,i)=>{ const typeBadge = typeValue(a.type) ? `<span class="tag ${typeValue(a.type)==='Appointment' ? 'type-appointment' : 'type-waiting'}">${escapeHtml(typeValue(a.type))}</span>` : '<span class="muted">—</span>'; return `<tr><td class="mono">${i+1}</td><td class="mono">${escapeHtml(a.agency||S.agencySelected)}</td><td class="mono">${escapeHtml(a.email||"")}</td><td class="mono">${escapeHtml(maskPassword(a.password||""))}</td><td class="mono">${escapeHtml(a.passport||"")}</td><td><span class="status ${statusClass(statusValue(a.status))}"><span class="dot"></span>${escapeHtml(statusValue(a.status))}</span></td><td>${typeBadge}</td><td><span class="tag good">Direct</span></td><td><span class="tag">Owner view</span></td></tr>`; }).join(''); }
+  function renderAgencies(){
+    const sel = $("selAgency");
+    sel.innerHTML = '<option value="">(اختر وكالة)</option>';
+    for(const a of S.agencies){
+      const o = document.createElement("option");
+      o.value = a.agency;
+      o.textContent = `${a.agency} (${a.count||0})`;
+      sel.appendChild(o);
+    }
+    if(S.agencySelected) sel.value = S.agencySelected;
+  }
+
+  function renderManagers(){
+    const tb = $("managersTbody");
+    if(!S.managers.length){
+      tb.innerHTML = '<tr><td colspan="6" class="empty">لا يوجد مديرون</td></tr>';
+      return;
+    }
+    tb.innerHTML = S.managers.map((m,i)=>`
+      <tr>
+        <td>${i+1}</td>
+        <td class="mono">${escapeHtml(m.id)}</td>
+        <td>${escapeHtml(m.name)}</td>
+        <td>${m.desiredCount}</td>
+        <td>${m.assignedCount||0}</td>
+        <td><span class="tag good">Manager</span></td>
+      </tr>
+    `).join("");
+  }
+
+  function renderAccounts(){
+    const tb = $("tbody");
+    if(!S.agencySelected){
+      tb.innerHTML = '<tr><td colspan="9" class="empty">اختر وكالة أولاً</td></tr>';
+      return;
+    }
+    const filtered = applyFilters(S.accounts);
+    if(!filtered.length){
+      tb.innerHTML = '<tr><td colspan="9" class="empty">لا توجد بيانات</td></tr>';
+      return;
+    }
+    tb.innerHTML = filtered.map((a,i)=>{
+      const typeBadge = typeValue(a.type)
+        ? `<span class="tag ${typeValue(a.type)==='Appointment' ? 'type-appointment' : 'type-waiting'}">${escapeHtml(typeValue(a.type))}</span>`
+        : '<span class="muted">—</span>';
+
+      return `
+      <tr>
+        <td class="mono">${i+1}</td>
+        <td class="mono">${escapeHtml(a.agency||S.agencySelected)}</td>
+        <td class="mono">${escapeHtml(a.email||"")}</td>
+        <td class="mono">${escapeHtml(maskPassword(a.password||""))}</td>
+        <td class="mono">${escapeHtml(a.passport||"")}</td>
+        <td><span class="status ${statusClass(statusValue(a.status))}"><span class="dot"></span>${escapeHtml(statusValue(a.status))}</span></td>
+        <td>${typeBadge}</td>
+        <td><span class="tag good">Direct</span></td>
+        <td><span class="tag">Owner view</span></td>
+      </tr>`;
+    }).join("");
+  }
 
   function notifTypeLabel(kind){
-    const map={create_account:'Create account', edit_account:'Edit account', delete_account:'Delete account', bulk_create_accounts:'Bulk create'};
+    const map = {
+      create_account:'Create account',
+      edit_account:'Edit account',
+      delete_account:'Delete account',
+      bulk_create_accounts:'Bulk create'
+    };
     return map[kind] || kind || 'Request';
   }
+
   function notifTarget(n){
-    if(n.kind==='bulk_create_accounts') return `${(n.items||[]).length||0} items`;
+    if(n.kind === 'bulk_create_accounts') return `${(n.items||[]).length||0} items`;
     return `${n.matchEmail || n.proposed?.email || '-'} / ${n.matchPassport || n.proposed?.passport || '-'}`;
   }
+
   function notifStatusBadge(status){
     const s = String(status||'pending').toLowerCase();
     const cls = s==='approved' ? 'approved' : s==='rejected' ? 'rejected' : 'pending';
     return `<span class="tag ${cls}">${escapeHtml(s)}</span>`;
   }
+
   function renderNotifSummary(){
-    const list=S.notifications||[];
-    const pending=list.filter(n=>String(n.status).toLowerCase()==='pending').length;
-    const approved=list.filter(n=>String(n.status).toLowerCase()==='approved').length;
-    const rejected=list.filter(n=>String(n.status).toLowerCase()==='rejected').length;
-    $("sumPending").textContent=String(pending);
-    $("sumApproved").textContent=String(approved);
-    $("sumRejected").textContent=String(rejected);
-    $("notifPendingCount").textContent=String(pending);
+    const list = S.notifications || [];
+    const pending = list.filter(n=>String(n.status).toLowerCase()==='pending').length;
+    const approved = list.filter(n=>String(n.status).toLowerCase()==='approved').length;
+    const rejected = list.filter(n=>String(n.status).toLowerCase()==='rejected').length;
+    $("sumPending").textContent = String(pending);
+    $("sumApproved").textContent = String(approved);
+    $("sumRejected").textContent = String(rejected);
+    $("notifPendingCount").textContent = String(pending);
+    updateBellBadge(pending);
   }
+
   function renderNotifications(){
-    const tb=$("notificationsTbody");
-    const current=norm(S.notifStatus||'pending').toLowerCase();
-    const list=(S.notifications||[]).filter(n => current==='all' ? true : String(n.status||'').toLowerCase()===current);
+    const tb = $("notificationsTbody");
+    const current = norm(S.notifStatus||'pending').toLowerCase();
+    const list = (S.notifications||[]).filter(n => current === 'all' ? true : String(n.status||'').toLowerCase() === current);
+
     renderNotifSummary();
-    if(!list.length){ tb.innerHTML='<tr><td colspan="8" class="empty">لا توجد إشعارات</td></tr>'; return; }
-    tb.innerHTML=list.map((n,i)=>`<tr><td>${i+1}</td><td class="mono">${escapeHtml(n.agency||'')}</td><td>${escapeHtml(notifTypeLabel(n.kind))}</td><td class="mono">${escapeHtml(notifTarget(n))}</td><td>${escapeHtml(n.requestedBy||'')}</td><td>${notifStatusBadge(n.status)}</td><td>${escapeHtml(n.createdAt ? new Date(n.createdAt).toLocaleString() : '—')}</td><td><div class="actions"><button class="btn" onclick="UI.openNotif('${encodeURIComponent(n.id||'')}')">View</button>${String(n.status).toLowerCase()==='pending' ? `<button class="btn danger" onclick="UI.rejectNotif('${encodeURIComponent(n.id||'')}')">Reject</button><button class="btn good" onclick="UI.approveNotif('${encodeURIComponent(n.id||'')}')">Approve</button>` : ''}</div></td></tr>`).join('');
+
+    if(!list.length){
+      tb.innerHTML = '<tr><td colspan="8" class="empty">لا توجد إشعارات</td></tr>';
+      return;
+    }
+
+    tb.innerHTML = list.map((n,i)=>`
+      <tr>
+        <td>${i+1}</td>
+        <td class="mono">${escapeHtml(n.agency||'')}</td>
+        <td>${escapeHtml(notifTypeLabel(n.kind))}</td>
+        <td class="mono">${escapeHtml(notifTarget(n))}</td>
+        <td>${escapeHtml(n.requestedBy||'')}</td>
+        <td>${notifStatusBadge(n.status)}</td>
+        <td>${escapeHtml(n.createdAt ? new Date(n.createdAt).toLocaleString() : '—')}</td>
+        <td>
+          <div class="actions">
+            <button class="btn" onclick="UI.openNotif('${encodeURIComponent(n.id||'')}')">View</button>
+            ${String(n.status).toLowerCase()==='pending'
+              ? `<button class="btn danger" onclick="UI.rejectNotif('${encodeURIComponent(n.id||'')}')">Reject</button>
+                 <button class="btn good" onclick="UI.approveNotif('${encodeURIComponent(n.id||'')}')">Approve</button>`
+              : ''
+            }
+          </div>
+        </td>
+      </tr>
+    `).join("");
   }
 
   function addDetailRow(title, value){
@@ -470,9 +852,7 @@ tbody tr:hover{background:#fbfdff}
       const items = Array.isArray(n.items) ? n.items : [];
       html += addDetailRow("Items Count", String(items.length));
       if(items.length){
-        const lines = items.map((it, i) => {
-          return `${i+1}) ${it.email || "-"} | ${it.passport || "-"} | ${it.status || "-"} | ${it.type || "-"}`;
-        }).join("\n");
+        const lines = items.map((it, i) => `${i+1}) ${it.email || "-"} | ${it.passport || "-"} | ${it.status || "-"} | ${it.type || "-"}`).join("\n");
         html += addDetailRow("Items", lines);
       }
     }
@@ -483,138 +863,213 @@ tbody tr:hover{background:#fbfdff}
   const UI = {
     async logout(){
       await API.logout();
-      S.csrfToken=""; S.pendingChallengeId=""; S.sessionExpiresAt=0; S.agencies=[]; S.accounts=[]; S.managers=[]; S.notifications=[]; S.agencySelected=""; S.managerSelected=""; S.managerAssignSelected=""; S.monthFilter=currentMonthKey();
+      S.csrfToken = "";
+      S.pendingChallengeId = "";
+      S.sessionExpiresAt = 0;
+      S.agencies = [];
+      S.accounts = [];
+      S.managers = [];
+      S.notifications = [];
+      S.agencySelected = "";
+      S.managerSelected = "";
+      S.managerAssignSelected = "";
+      S.monthFilter = currentMonthKey();
       sessionStorage.removeItem(STORAGE_KEY);
-      setAuthState(false); showLoginView(true); renderAgencies(); renderAccounts(); renderManagers(); renderNotifications(); toast('Logout','Logged out');
+      setAuthState(false);
+      showLoginView(true);
+      renderAgencies();
+      renderAccounts();
+      renderManagers();
+      renderNotifications();
+      toast("Logout","Logged out");
     },
+
     async beginLogin(){
-      const user=norm($("inUser").value), pass=norm($("inPass").value);
-      if(!user || !pass) return toast('Login','أدخل بيانات الدخول');
-      const res=await API.startAuth(user,pass);
-      if(!res.ok) return toast('Login',res.error||'Unauthorized');
+      const user = norm($("inUser").value), pass = norm($("inPass").value);
+      if(!user || !pass) return toast("Login","أدخل بيانات الدخول");
+      const res = await API.startAuth(user,pass);
+      if(!res.ok) return toast("Login", res.error || "Unauthorized");
       S.loginUser = user;
       persistUiState();
+
       if(res.authenticated && !res.otpRequired){
-        S.pendingChallengeId="";
-        S.csrfToken=norm(res.csrfToken);
-        S.sessionExpiresAt=Number(res.expiresAt||0);
+        S.pendingChallengeId = "";
+        S.csrfToken = norm(res.csrfToken);
+        S.sessionExpiresAt = Number(res.expiresAt || 0);
         setAuthState(true);
         await UI.refreshAll();
-        return toast('Login','Authenticated');
+        return toast("Login","Authenticated");
       }
-      S.pendingChallengeId=norm(res.challengeId);
+
+      S.pendingChallengeId = norm(res.challengeId);
       showOtpView();
       $("inOtp").focus();
-      toast('OTP','Code sent');
+      toast("OTP","Code sent");
     },
+
     async verifyOtp(){
-      const otp=norm($("inOtp").value);
-      if(!S.pendingChallengeId) return toast('OTP','Start again');
-      if(!/^\d{6}$/.test(otp)) return toast('OTP','Invalid OTP');
-      const res=await API.verifyOtp(S.pendingChallengeId, otp);
-      if(!res.ok) return toast('OTP',res.error||'OTP failed');
-      S.csrfToken=norm(res.csrfToken);
-      S.sessionExpiresAt=Number(res.expiresAt||0);
+      const otp = norm($("inOtp").value);
+      if(!S.pendingChallengeId) return toast("OTP","Start again");
+      if(!/^\d{6}$/.test(otp)) return toast("OTP","Invalid OTP");
+      const res = await API.verifyOtp(S.pendingChallengeId, otp);
+      if(!res.ok) return toast("OTP", res.error || "OTP failed");
+      S.csrfToken = norm(res.csrfToken);
+      S.sessionExpiresAt = Number(res.expiresAt || 0);
       setAuthState(true);
       await UI.refreshAll();
-      toast('Login','Authenticated');
+      toast("Login","Authenticated");
     },
+
     async restoreAuth(){
-      const res=await API.session();
-      if(!res.ok || !res.authenticated){ setAuthState(false); return; }
-      S.csrfToken=norm(res.csrfToken);
-      S.loginUser=norm(res.user);
-      S.sessionExpiresAt=Number(res.expiresAt||0);
+      const res = await API.session();
+      if(!res.ok || !res.authenticated){
+        setAuthState(false);
+        return;
+      }
+      S.csrfToken = norm(res.csrfToken);
+      S.loginUser = norm(res.user);
+      S.sessionExpiresAt = Number(res.expiresAt || 0);
       $("inUser").value = S.loginUser;
       setAuthState(true);
       await UI.refreshAll();
     },
+
     async refreshAll(){
-      const [a,m,n] = await Promise.all([API.agencies(), API.managers(), API.notifications(S.notifStatus || 'pending')]);
-      if(!a.ok) return toast('Agencies',a.error||'Failed');
-      if(!m.ok) return toast('Managers',m.error||'Failed');
-      if(!n.ok) return toast('Notifications',n.error||'Failed');
-      S.agencies=Array.isArray(a.agencies)?a.agencies:[];
-      S.managers=Array.isArray(m.managers)?m.managers:[];
-      S.notifications=Array.isArray(n.notifications)?n.notifications:[];
-      renderAgencies(); renderManagers(); renderNotifications();
-      if(S.agencySelected) await UI.loadAgency(S.agencySelected); else { S.accounts=[]; renderMonthFilter(); renderAccounts(); }
-      persistUiState(); updateSessionInfo();
+      const [a,m,n] = await Promise.all([
+        API.agencies(),
+        API.managers(),
+        API.notifications(S.notifStatus || "pending")
+      ]);
+
+      if(!a.ok) return toast("Agencies", a.error || "Failed");
+      if(!m.ok) return toast("Managers", m.error || "Failed");
+      if(!n.ok) return toast("Notifications", n.error || "Failed");
+
+      S.agencies = Array.isArray(a.agencies) ? a.agencies : [];
+      S.managers = Array.isArray(m.managers) ? m.managers : [];
+      S.notifications = Array.isArray(n.notifications) ? n.notifications : [];
+
+      renderAgencies();
+      renderManagers();
+      renderNotifications();
+
+      if(S.agencySelected) await UI.loadAgency(S.agencySelected);
+      else {
+        S.accounts = [];
+        renderMonthFilter();
+        renderAccounts();
+      }
+      persistUiState();
+      updateSessionInfo();
     },
+
     async loadAgency(agency){
-      S.agencySelected=agency||'';
+      S.agencySelected = agency || "";
       persistUiState();
       renderAgencies();
-      if(!S.agencySelected){ S.accounts=[]; renderMonthFilter(); renderAccounts(); return; }
-      const res=await API.accounts(S.agencySelected, 'all', true);
-      if(!res.ok) return toast('Accounts',res.error||'Failed');
-      S.accounts=Array.isArray(res.accounts)?res.accounts:[];
+      if(!S.agencySelected){
+        S.accounts = [];
+        renderMonthFilter();
+        renderAccounts();
+        return;
+      }
+      const res = await API.accounts(S.agencySelected, "all", true);
+      if(!res.ok) return toast("Accounts", res.error || "Failed");
+      S.accounts = Array.isArray(res.accounts) ? res.accounts : [];
       renderMonthFilter();
       renderAccounts();
     },
+
     async loadNotifications(){
-      const res=await API.notifications(S.notifStatus||'pending');
-      if(!res.ok) return toast('Notifications',res.error||'Failed');
-      S.notifications=Array.isArray(res.notifications)?res.notifications:[];
+      const res = await API.notifications(S.notifStatus || "pending");
+      if(!res.ok) return toast("Notifications", res.error || "Failed");
+      S.notifications = Array.isArray(res.notifications) ? res.notifications : [];
       renderNotifications();
       updateSessionInfo();
     },
+
     openNotif(idEnc){
-      const id=decodeURIComponent(idEnc||'');
-      const n=(S.notifications||[]).find(x=>x.id===id);
+      const id = decodeURIComponent(idEnc || "");
+      const n = (S.notifications || []).find(x => x.id === id);
       if(!n) return;
-      S.currentNotif=n;
+      S.currentNotif = n;
       $("notifTitle").textContent = notifTypeLabel(n.kind);
-      $("notifSub").textContent = `${n.agency||''} • ${n.requestedBy||''}`;
+      $("notifSub").textContent = `${n.agency||""} • ${n.requestedBy||""}`;
       $("notifDetails").innerHTML = formatNotificationDetails(n);
-      const pending = String(n.status||'').toLowerCase()==='pending';
-      $("btnApproveNotif").style.display = pending ? 'inline-flex' : 'none';
-      $("btnRejectNotif").style.display = pending ? 'inline-flex' : 'none';
-      $("modalNotif").classList.add('show');
+
+      const pending = String(n.status || "").toLowerCase() === "pending";
+      $("btnApproveNotif").style.display = pending ? "inline-flex" : "none";
+      $("btnRejectNotif").style.display = pending ? "inline-flex" : "none";
+      $("modalNotif").classList.add("show");
     },
-    closeNotif(){ $("modalNotif").classList.remove('show'); },
+
+    closeNotif(){
+      $("modalNotif").classList.remove("show");
+    },
+
     async approveNotif(idEnc){
-      const id=decodeURIComponent(idEnc||S.currentNotif?.id||'');
+      const id = decodeURIComponent(idEnc || S.currentNotif?.id || "");
       if(!id) return;
-      const res=await API.approveNotification(id);
-      if(!res.ok) return toast('Notification',res.error||'Failed');
+      const res = await API.approveNotification(id);
+      if(!res.ok) return toast("Notification", res.error || "Failed");
       await UI.loadNotifications();
       if(S.agencySelected) await UI.loadAgency(S.agencySelected);
       UI.closeNotif();
-      toast('Notification','تمت الموافقة وتطبيق التعديل');
+      toast("Notification","تمت الموافقة وتطبيق التعديل");
     },
+
     async rejectNotif(idEnc){
-      const id=decodeURIComponent(idEnc||S.currentNotif?.id||'');
+      const id = decodeURIComponent(idEnc || S.currentNotif?.id || "");
       if(!id) return;
-      const res=await API.rejectNotification(id);
-      if(!res.ok) return toast('Notification',res.error||'Failed');
+      const res = await API.rejectNotification(id);
+      if(!res.ok) return toast("Notification", res.error || "Failed");
       await UI.loadNotifications();
       UI.closeNotif();
-      toast('Notification','تم رفض الطلب');
+      toast("Notification","تم رفض الطلب");
+    },
+
+    openNotificationsCenter(){
+      switchTab("notificationsTab");
     }
   };
 
   window.UI = UI;
-  $("btnLogin").onclick=UI.beginLogin;
-  $("btnVerifyOtp").onclick=UI.verifyOtp;
-  $("btnBackToLogin").onclick=()=>showLoginView(true);
-  $("inOtp").addEventListener('keydown', (e)=>{ if(e.key==="Enter") UI.verifyOtp(); });
-  $("inPass").addEventListener('keydown', (e)=>{ if(e.key==="Enter") UI.beginLogin(); });
-  $("inUser").addEventListener('keydown', (e)=>{ if(e.key==="Enter") UI.beginLogin(); });
-  $("btnLogout").onclick=UI.logout;
-  $("btnRefresh").onclick=UI.refreshAll;
-  $("btnRefreshNotifications").onclick=UI.loadNotifications;
-  $("btnApproveNotif").onclick=()=>UI.approveNotif();
-  $("btnRejectNotif").onclick=()=>UI.rejectNotif();
-  $("selAgency").addEventListener('change', (e)=>UI.loadAgency(e.target.value||''));
-  $("inSearch").addEventListener('input', renderAccounts);
-  $("selStatusFilter").addEventListener('change', renderAccounts);
-  $("selMonthFilter").addEventListener('change', (e)=>{ S.monthFilter=e.target.value||currentMonthKey(); persistUiState(); renderAccounts(); });
-  $("selNotifStatus").addEventListener('change', (e)=>{ S.notifStatus=e.target.value||'pending'; persistUiState(); UI.loadNotifications(); });
-  document.querySelectorAll('.tabbtn').forEach(btn=>btn.addEventListener('click', ()=>{ document.querySelectorAll('.tabbtn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.querySelectorAll('.tabpane').forEach(p=>p.classList.add('hidden')); document.getElementById(btn.dataset.tab).classList.remove('hidden'); }));
+
+  $("btnLogin").onclick = UI.beginLogin;
+  $("btnVerifyOtp").onclick = UI.verifyOtp;
+  $("btnBackToLogin").onclick = ()=>showLoginView(true);
+
+  $("inOtp").addEventListener("keydown", (e)=>{ if(e.key === "Enter") UI.verifyOtp(); });
+  $("inPass").addEventListener("keydown", (e)=>{ if(e.key === "Enter") UI.beginLogin(); });
+  $("inUser").addEventListener("keydown", (e)=>{ if(e.key === "Enter") UI.beginLogin(); });
+
+  $("btnLogout").onclick = UI.logout;
+  $("btnRefresh").onclick = UI.refreshAll;
+  $("btnRefreshNotifications").onclick = UI.loadNotifications;
+  $("btnApproveNotif").onclick = ()=>UI.approveNotif();
+  $("btnRejectNotif").onclick = ()=>UI.rejectNotif();
+  $("notifBellBtn").onclick = UI.openNotificationsCenter;
+
+  $("selAgency").addEventListener("change", (e)=>UI.loadAgency(e.target.value || ""));
+  $("inSearch").addEventListener("input", renderAccounts);
+  $("selStatusFilter").addEventListener("change", renderAccounts);
+  $("selMonthFilter").addEventListener("change", (e)=>{
+    S.monthFilter = e.target.value || currentMonthKey();
+    persistUiState();
+    renderAccounts();
+  });
+  $("selNotifStatus").addEventListener("change", (e)=>{
+    S.notifStatus = e.target.value || "pending";
+    persistUiState();
+    UI.loadNotifications();
+  });
+
+  document.querySelectorAll(".tabbtn").forEach(btn=>btn.addEventListener("click", ()=>{
+    switchTab(btn.dataset.tab);
+  }));
 
   restoreUiState();
-  if(!S.monthFilter) S.monthFilter=currentMonthKey();
+  if(!S.monthFilter) S.monthFilter = currentMonthKey();
   setAuthState(false);
   showLoginView(false);
   UI.restoreAuth().catch(()=>{});
