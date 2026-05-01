@@ -646,9 +646,18 @@ const API = {
       if(!user || !pass) return toast('Login','أدخل بيانات الدخول');
       const res=await API.startAuth(user,pass);
       if(!res.ok) return toast('Login',res.error||'Unauthorized');
-      S.pendingChallengeId = norm(res.challengeId);
       S.loginUser = user;
       persistUiState();
+      if(res.authenticated && !res.otpRequired){
+        S.pendingChallengeId = "";
+        S.csrfToken = norm(res.csrfToken);
+        S.sessionExpiresAt = Number(res.expiresAt || 0);
+        setAuthState(true);
+        await UI.refreshAll();
+        const left = Number(res.trustedUsesLeft || 0);
+        return toast('Login', left > 0 ? `Authenticated without OTP (${left} left)` : 'Authenticated without OTP');
+      }
+      S.pendingChallengeId = norm(res.challengeId);
       showOtpView();
       $("inOtp").focus();
       toast('OTP','Code sent');
